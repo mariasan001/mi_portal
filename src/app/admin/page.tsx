@@ -1,5 +1,8 @@
-import AdminShell from './AdminShell';
-
 export default function AdminPage() {
-  return <AdminShell />;
+  return (
+    <div style={{ padding: 24 }}>
+      <h1>Hola, admin</h1>
+      <p>Menú cargado ✅</p>
+    </div>
+  );
 }

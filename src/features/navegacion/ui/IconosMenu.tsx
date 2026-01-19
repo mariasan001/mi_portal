@@ -1,21 +1,15 @@
-import type { ComponentType } from 'react';
+'use client';
 
-// ✅ Ejemplo con lucide-react (ajusta al paquete real que instalaste)
-import { Home, Users, Workflow, CircleHelp } from 'lucide-react';
+import { Circle, Home, Users, Workflow } from 'lucide-react';
 
-/**
- * Unificamos el tipo de iconos para usarlos igual en todo el sistema.
- * - size/strokeWidth/className se pasan desde el Sidebar.
- */
-export type IconComponent = ComponentType<{
-  size?: number;
-  strokeWidth?: number;
-  className?: string;
-}>;
+const ICONS = {
+  home: Home,
+  users: Users,
+  workflow: Workflow,
+} as const;
 
-export const IconHome: IconComponent = Home;
-export const IconUsers: IconComponent = Users;
-export const IconWorkflow: IconComponent = Workflow;
-
-/** Ícono para cuando el backend mande algo no mapeado */
-export const IconFallback: IconComponent = CircleHelp;
+export function IconoMenu({ icon }: { icon: string }) {
+  const key = (icon ?? '').toLowerCase();
+  const Comp = ICONS[key as keyof typeof ICONS] ?? Circle;
+  return <Comp size={18} />;
+}

@@ -1,52 +1,54 @@
 'use client';
 
+import type { ReactNode } from 'react';
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 
-import { useAuth } from '@/features/autenticacion/context/autenticacion.context';
-import { useMenu } from '@/features/navegacion/hooks/useMenu';
 import { Sidebar } from '@/features/navegacion/ui/Sidebar';
+import { useMenu } from '@/features/navegacion/hooks/useMenu';
 
-import s from './AdminShell.module.css';
+function safeText(v: string | null | undefined, fallback: string) {
+  const s = (v ?? '').trim();
+  return s ? s : fallback;
+}
 
-export default function AdminShell() {
-  const router = useRouter();
-  const { sesion, appCode, loading: authLoading, isAuthenticated } = useAuth();
-  const { data: menu, loading: menuLoading, error: menuError } = useMenu(appCode);
+export default function AdminShell({
+  children,
+  appCode,
+}: {
+  children: ReactNode;
+  appCode: string | null;
+}) {
+  const menu = useMenu(appCode);
 
+  // ✅ Ya NO asumimos root wrapper.
+  // data.items ya debe ser la lista final (children a pintar).
+  const sidebarItems = menu.data?.items ?? [];
+
+  // ✅ Título: usa appCode (o un fallback bonito)
+  const sidebarTitle = safeText(menu.data?.appCode, 'Menú');
+
+  // ✅ Debug súper detallado (quítalo cuando ya esté ok)
   useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      router.replace('/login');
-    }
-  }, [authLoading, isAuthenticated, router]);
+    console.log('[AdminShell] appCode prop:', appCode);
+    console.log('[AdminShell] loading:', menu.loading);
+    console.log('[AdminShell] error:', menu.error);
+    console.log('[AdminShell] data:', menu.data);
 
-  if (!isAuthenticated) {
-    return <div className={s.center}>Validando sesión...</div>;
-  }
+    console.table(
+      sidebarItems.map((it) => ({
+        code: it.code,
+        name: it.name,
+        route: it.route,
+        icon: it.icon,
+        children: it.children?.length ?? 0,
+      }))
+    );
+  }, [appCode, menu.loading, menu.error, menu.data, sidebarItems]);
 
   return (
-    <div className={s.layout}>
-      <Sidebar title={menu?.appCode ?? 'Admin'} items={menu?.items ?? []} />
-
-      <main className={s.main}>
-        <div className={s.top}>
-          <div className={s.h1}>Hola, {sesion?.username}</div>
-          <div className={s.mini}>Estado: {sesion?.status}</div>
-        </div>
-
-        <div className={s.card}>
-          {menuLoading ? (
-            <div>Cargando menú...</div>
-          ) : menuError ? (
-            <div className={s.err}>Error menú: {menuError}</div>
-          ) : (
-            <div>
-              <div className={s.ok}>Menú cargado ✅</div>
-              <div className={s.note}>Ahora cada ruta del menú puede ser una pantalla real.</div>
-            </div>
-          )}
-        </div>
-      </main>
+    <div style={{ display: 'flex', minHeight: '100vh' }}>
+      <Sidebar title={sidebarTitle} items={sidebarItems} />
+      <main style={{ flex: 1 }}>{children}</main>
     </div>
   );
 }

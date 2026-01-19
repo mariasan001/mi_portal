@@ -1,14 +1,10 @@
-import type { ReactNode } from 'react';
 import React from 'react';
+import type { ReactNode } from 'react';
 
-// ✅ Cambia este import al paquete real que instalaste
+// ✅ ejemplo con lucide-react (ajústalo si tu paquete es otro)
 import { Home, Users, Workflow, CircleHelp } from 'lucide-react';
 import type { LucideIcon, LucideProps } from 'lucide-react';
 
-/**
- * Mapa ESTABLE (fuera del render).
- * OJO: aquí guardamos la REFERENCIA del componente, no wrappers.
- */
 const ICONOS: Record<string, LucideIcon> = {
   home: Home,
   users: Users,
@@ -20,10 +16,11 @@ function norm(v: string) {
 }
 
 /**
- * Devuelve un ELEMENTO (ReactNode), no un componente.
- * Esto evita: "Cannot create components during render"
+ * Devuelve un ReactNode (elemento ya creado).
+ * Así el ESLint no puede acusar “component created during render”.
  */
-export function renderIcon(name: string, props?: LucideProps): ReactNode {
-  const Comp = ICONOS[norm(name)] ?? CircleHelp;
+export function renderIcon(name: string | null | undefined, props?: LucideProps): ReactNode {
+  const key = norm(name ?? '');
+  const Comp = ICONOS[key] ?? CircleHelp;
   return React.createElement(Comp, props);
 }
