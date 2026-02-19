@@ -23,7 +23,7 @@ type CardItem = {
   bgImage: string;
 };
 
-type CardVars = CSSProperties & {
+type ShellVars = CSSProperties & {
   ['--flor-url']?: string;
   ['--flor-size']?: string;
   ['--flor-x']?: string;
@@ -49,7 +49,7 @@ const cards: CardItem[] = [
     cta: 'Explorar trámites',
     icon: <FiClipboard />,
     accent: 'oro',
-    bgImage: '/img/flor_oro.png',
+    bgImage: '/img/flor_2.png',
   },
   {
     title: 'Normativas y Lineamientos',
@@ -58,43 +58,41 @@ const cards: CardItem[] = [
     cta: 'Explorar normatividad',
     icon: <FiBookOpen />,
     accent: 'arena',
-    bgImage: '/img/flor_arena.png',
+    bgImage: '/img/flor_3.png',
   },
 ];
 
-function cardStyle(c: CardItem): CardVars {
-  // ✅ base común para evitar “una más chica”
-  const base: CardVars = {
+function shellStyle(c: CardItem): ShellVars {
+  const base: ShellVars = {
     ['--flor-url']: `url('${c.bgImage}')`,
-    ['--flor-size']: '240px',     // ✅ mismo tamaño en las 3
-    ['--flor-x']: '-92px',        // ✅ posición base consistente
-    ['--flor-rot']: '-18deg',
-    ['--flor-opacity']: '.28',    // ✅ más color (ya no se ve gris/lavada)
+    ['--flor-size']: 'clamp(80px, 10vw, 80px)',
+    ['--flor-x']: '-34px',
+    ['--flor-y']: '-25px',
+    ['--flor-rot']: '-52deg',
+    ['--flor-opacity']: '.95',
   };
-
-  if (c.accent === 'vino') {
-    return {
-      ...base,
-      ['--flor-y']: '-112px',
-    };
-  }
 
   if (c.accent === 'oro') {
     return {
       ...base,
-      ['--flor-y']: '-112px',
-      ['--flor-rot']: '-16deg',
-      ['--flor-opacity']: '.26',
+      ['--flor-rot']: '-40deg',
+      ['--flor-x']: '-33px',
+      ['--flor-y']: '-30px',
+      ['--flor-opacity']: '.93',
     };
   }
 
-  // ✅ arena: subimos más para que NO caiga “debajo” del icono
-  return {
-    ...base,
-    ['--flor-y']: '-132px',
-    ['--flor-rot']: '-16deg',
-    ['--flor-opacity']: '.24',
-  };
+  if (c.accent === 'arena') {
+    return {
+      ...base,
+      ['--flor-rot']: '-40deg',
+      ['--flor-x']: '-33px',
+      ['--flor-y']: '-30px',
+      ['--flor-opacity']: '.92',
+    };
+  }
+
+  return base;
 }
 
 export default function ServicesSection() {
@@ -110,44 +108,52 @@ export default function ServicesSection() {
             Consulta, tramita o busca directamente lo que necesitas en nuestro portal de servicios.
           </p>
 
-          <div className={css.searchRow} role="search" aria-label="Buscar en el portal">
-            <span className={css.searchIcon} aria-hidden="true">
+          <div className={css.searchBar} role="search" aria-label="Buscar en el portal">
+            <span className={css.searchBarIcon} aria-hidden="true">
               <FiSearch />
             </span>
 
             <input
-              className={css.searchInput}
-              placeholder="¿Qué necesitas hoy?"
+              className={css.searchBarInput}
+              placeholder="Buscar trámite, consulta o documento…"
               aria-label="Buscar"
               inputMode="search"
+              autoComplete="off"
+              spellCheck={false}
             />
+
+            <button type="button" className={css.searchBarBtn}>
+              Buscar
+            </button>
           </div>
         </header>
 
         <div className={css.grid} role="list">
           {cards.map((c) => (
-            <article
+            <div
               key={c.href}
-              className={css.card}
+              className={css.cardShell}
               data-accent={c.accent}
-              style={cardStyle(c)}
+              style={shellStyle(c)}
               role="listitem"
               aria-label={c.title}
             >
-              <div className={css.iconWrap} aria-hidden="true">
-                <span className={css.icon}>{c.icon}</span>
-              </div>
+              <article className={css.card}>
+                <div className={css.iconWrap} aria-hidden="true">
+                  <span className={css.icon}>{c.icon}</span>
+                </div>
 
-              <h3 className={css.cardTitle}>{c.title}</h3>
-              <p className={css.cardDesc}>{c.desc}</p>
+                <h3 className={css.cardTitle}>{c.title}</h3>
+                <p className={css.cardDesc}>{c.desc}</p>
 
-              <Link className={css.cardCta} href={c.href} aria-label={`${c.cta}: ${c.title}`}>
-                <span>{c.cta}</span>
-                <span className={css.ctaArrow} aria-hidden="true">
-                  <FiArrowUpRight />
-                </span>
-              </Link>
-            </article>
+                <Link className={css.cardCta} href={c.href} aria-label={`${c.cta}: ${c.title}`}>
+                  <span>{c.cta}</span>
+                  <span className={css.ctaArrow} aria-hidden="true">
+                    <FiArrowUpRight />
+                  </span>
+                </Link>
+              </article>
+            </div>
           ))}
         </div>
       </div>

@@ -1,3 +1,5 @@
+/* src/features/site/Components/ServicesSection/ServicesSection.module.css */
+
 .wrap{
   position: relative;
   padding: 54px 16px 64px;
@@ -19,7 +21,7 @@
 
 .title{
   margin: 0;
-  font-size: 34px;
+  font-size: 36px;
   line-height: 1.15;
   letter-spacing: -0.02em;
   color: var(--text);
@@ -35,54 +37,133 @@
   margin: 0;
   max-width: 78ch;
   color: var(--muted);
-  font-size: 14px;
-  line-height: 1.7;
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 1;
+  margin-bottom: 30px;
 }
 
 /* =========================
-   Search
+   Search Bar (institucional pro)
    ========================= */
-.searchRow{
-  margin-top: 6px;
-  width: min(520px, 100%);
-  height: 40px;
-  border-radius: 999px;
+.searchBar{
+  margin-top: 12px;
+  width: min(620px, 100%);
+  height: 46px;
+
   display: grid;
-  grid-template-columns: 40px 1fr;
+  grid-template-columns: 44px 1fr auto;
   align-items: center;
 
-  background: rgba(255,255,255,.90);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-sm);
+  background: rgba(255,255,255,.96);
+  border: 1px solid rgba(10,10,10,.12);
+  border-radius: 14px;
+  box-shadow: 0 10px 22px rgba(10,10,10,.06);
+
+  padding-right: 6px;
+  overflow: hidden;
+  margin-bottom: 30px;
+
+  transition: box-shadow .16s ease, border-color .16s ease, transform .16s ease;
+  position: relative;
 }
 
-.searchIcon{
-  width: 40px;
-  height: 40px;
+.searchBar:focus-within{
+  transform: translateY(-1px);
+  border-color: rgba(159,33,65,.28);
+  box-shadow:
+    0 18px 32px rgba(10,10,10,.08),
+    0 0 0 4px rgba(159,33,65,.10);
+}
+
+.searchBarIcon{
+  width: 44px;
+  height: 46px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   color: rgba(10,10,10,.55);
+  transition: transform .18s ease, color .18s ease;
 }
 
-.searchIcon svg{
+.searchBar:focus-within .searchBarIcon{
+  transform: scale(1.06);
+}
+
+.searchBarIcon svg{
   width: 18px;
   height: 18px;
 }
 
-.searchInput{
+.searchBarInput{
   width: 100%;
-  height: 100%;
+  height: 46px;
   border: 0;
   outline: none;
   background: transparent;
-  padding: 0 14px 0 6px;
+
+  padding: 0 10px 0 4px;
+
   color: var(--text);
-  font-size: 13px;
+  font-size: 13.5px;
+  font-weight: 300;
 }
 
-.searchInput::placeholder{
-  color: rgba(10,10,10,.45);
+.searchBarInput::placeholder{
+  color: rgba(10,10,10,.42);
+  font-weight: 600;
+}
+
+.searchBarBtn{
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid rgba(10,10,10,.10);
+  border-radius: 12px;
+
+  background: #fff;
+  color: rgba(10,10,10,.80);
+  font-weight: 800;
+  font-size: 12.5px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  cursor: pointer;
+  transition: transform .14s ease, background .14s ease, border-color .14s ease, box-shadow .14s ease;
+}
+
+.searchBarBtn:hover{
+  transform: translateY(-1px);
+  border-color: rgba(188,148,90,.30);
+  box-shadow: 0 10px 18px rgba(10,10,10,.08);
+}
+
+.searchBarBtn:active{
+  transform: translateY(0px);
+  box-shadow: none;
+}
+
+@media (max-width: 520px){
+  .searchBar{
+    height: 44px;
+    border-radius: 12px;
+  }
+
+  .searchBarIcon{
+    height: 44px;
+  }
+
+  .searchBarInput{
+    height: 44px;
+    font-size: 13px;
+  }
+
+  .searchBarBtn{
+    height: 34px;
+    border-radius: 11px;
+    padding: 0 12px;
+  }
 }
 
 /* =========================
@@ -91,52 +172,28 @@
 .grid{
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
+  gap: 35px;
   align-items: stretch;
 }
 
-.card{
-  /* defaults (TSX los sobreescribe por inline style) */
-  --flor-url: url('/img/flor.png');
-  --flor-size: 240px;
-  --flor-x: -92px;
-  --flor-y: -110px;
-  --flor-rot: -18deg;
-  --flor-opacity: .28; /* ✅ más color, menos “lavado” */
-
+.cardShell{
   position: relative;
-  background: rgba(255,255,255,.94);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  box-shadow: var(--shadow-sm);
-  padding: 18px 18px 16px;
-  min-height: 210px;
   overflow: visible;
-  display: grid;
-  grid-template-rows: auto auto 1fr auto;
-  gap: 8px;
-
-  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
-
   isolation: isolate;
 }
 
-.card::before{
-  content: none;
-}
-
-/* ✅ Flor dentro del card pero detrás del contenedor y contenido */
-.card::after{
+/* Flor atrás del card */
+.cardShell::before{
   content: "";
   position: absolute;
+
   width: var(--flor-size);
   height: var(--flor-size);
+
   left: var(--flor-x);
   top: var(--flor-y);
 
   pointer-events: none;
-
-  /* ✅ capa decor detrás */
   z-index: 0;
 
   background-image: var(--flor-url);
@@ -147,32 +204,34 @@
   transform: rotate(var(--flor-rot));
   opacity: var(--flor-opacity);
 
-  /* ✅ NO filtros que “descoloren” */
   filter: none;
-
-  /* ✅ para que conserve color y se integre suave */
-  mix-blend-mode: multiply;
+  mix-blend-mode: normal;
 }
 
-/* ✅ contenido SIEMPRE arriba */
-.iconWrap,
-.cardTitle,
-.cardDesc,
-.cardCta{
+/* Card encima */
+.card{
   position: relative;
-  z-index: 2;
+  z-index: 1;
+
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow-sm);
+
+  padding: 18px 18px 16px;
+  min-height: 210px;
+
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: 8px;
+
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
 }
 
-/* Hover */
 .card:hover{
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
   border-color: rgba(10,10,10,.14);
-}
-
-.card:hover::after{
-  opacity: calc(var(--flor-opacity) + .05);
-  transform: rotate(calc(var(--flor-rot) - 4deg)) translateY(-2px);
 }
 
 /* Icono */
@@ -190,7 +249,7 @@
 }
 
 .icon{
-  color: rgba(10,10,10,.70);
+  color: var(--oro);
   display: inline-flex;
 }
 
@@ -210,7 +269,8 @@
 .cardDesc{
   margin: 0;
   color: rgba(10,10,10,.65);
-  font-size: 12.5px;
+  font-size: 13px;
+  font-weight: 300;
   line-height: 1.65;
   max-width: 56ch;
 }
@@ -236,9 +296,10 @@
   align-items: center;
   justify-content: center;
 
-  border: 1px solid rgba(10,10,10,.12);
-  background: rgba(255,255,255,.85);
+  border: 1px solid var(--oro);
+  background: #fff;
   box-shadow: 0 10px 22px rgba(10,10,10,.08);
+
   transition: transform .16s ease, background .16s ease;
 }
 
@@ -252,10 +313,6 @@
   background: rgba(255,255,255,.95);
 }
 
-/* =========================
-   Responsive
-   (✅ NO pisamos tus variables inline del TSX)
-   ========================= */
 @media (max-width: 1100px){
   .grid{
     grid-template-columns: 1fr;
@@ -283,12 +340,108 @@
     font-size: 13px;
   }
 
-  .searchRow{
-    height: 38px;
-  }
-
   .card{
     border-radius: 16px;
     padding: 16px 16px 14px;
+  }
+}
+
+/* =========================
+   Animaciones suaves (entrada / hover)
+   ========================= */
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes floatSoft {
+  0%   { transform: translateY(0) rotate(var(--flor-rot)); }
+  50%  { transform: translateY(-3px) rotate(var(--flor-rot)); }
+  100% { transform: translateY(0) rotate(var(--flor-rot)); }
+}
+
+@keyframes shine {
+  0%   { transform: translateX(-120%); opacity: 0; }
+  30%  { opacity: .55; }
+  60%  { opacity: .25; }
+  100% { transform: translateX(120%); opacity: 0; }
+}
+
+/* Entrada header */
+.head{ animation: fadeUp .55s ease both; }
+.title{ animation: fadeUp .55s ease both; animation-delay: .03s; }
+.subtitle{ animation: fadeUp .55s ease both; animation-delay: .08s; }
+.searchBar{ animation: fadeUp .55s ease both; animation-delay: .13s; }
+
+/* Shine buscador al cargar */
+.searchBar::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  width: 42%;
+  height: 140%;
+  top: -20%;
+  left: -50%;
+
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,.55) 35%,
+    rgba(255,255,255,0) 70%
+  );
+
+  transform: translateX(-120%);
+  opacity: 0;
+
+  animation: shine 1.15s ease .35s 1 both;
+}
+
+/* Entrada cards escalonada */
+.cardShell{
+  opacity: 0;
+  animation: fadeUp .55s ease both;
+}
+.cardShell:nth-child(1){ animation-delay: .18s; }
+.cardShell:nth-child(2){ animation-delay: .26s; }
+.cardShell:nth-child(3){ animation-delay: .34s; }
+
+/* Flor “respira” */
+.cardShell::before{
+  animation: floatSoft 3.8s ease-in-out .6s infinite;
+}
+
+/* Hover más fino + press */
+.card{
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  will-change: transform;
+}
+.card:hover{ transform: translateY(-3px); }
+.card:active{ transform: translateY(-1px) scale(.99); }
+
+.ctaArrow{
+  transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
+}
+.card:hover .ctaArrow{
+  transform: translateY(-2px) rotate(-10deg);
+}
+
+/* Respeta reduce motion */
+@media (prefers-reduced-motion: reduce){
+  .head,
+  .title,
+  .subtitle,
+  .searchBar,
+  .cardShell,
+  .cardShell::before,
+  .searchBar::after{
+    animation: none !important;
+  }
+  .card,
+  .ctaArrow,
+  .searchBarIcon{
+    transition: none !important;
   }
 }
