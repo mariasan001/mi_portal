@@ -1,0 +1,349 @@
+/* SiteNav.module.css */
+
+.navWrap{
+  position: fixed;     
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 80;
+
+  padding: 14px 16px;
+
+  transition:
+    background .22s ease,
+    backdrop-filter .22s ease,
+    border-color .22s ease,
+    box-shadow .22s ease,
+    padding .22s ease;
+}
+
+.isTop{
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+
+
+.hasGlass{
+  background: linear-gradient(to bottom, rgba(244,245,247,.86), rgba(244,245,247,.55));
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border-soft);
+  box-shadow: 0 12px 30px rgba(10,10,10,.08);
+}
+
+.navInner{
+  max-width: 1240px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 14px;
+}
+
+/* =========================
+   LEFT: Redes
+   ========================= */
+.leftZone{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.socialIcon{
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255,255,255,.90);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+
+  color: rgba(10,10,10,.68);
+  text-decoration: none;
+
+  transition: transform .15s ease, box-shadow .15s ease, color .15s ease, border-color .15s ease;
+}
+
+.socialIcon svg{
+  width: 18px;
+  height: 18px;
+}
+
+.socialIcon:hover{
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+  color: var(--vino);
+  border-color: rgba(159,33,65,.25);
+}
+
+/* =========================
+   CENTER: Pill nav
+   ========================= */
+.pillNav{
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 999px;
+
+  background: rgba(255,255,255,.90);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+
+  transition: padding .18s ease;
+}
+
+.pillLogoFree{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  flex: 0 0 auto;
+  padding-left: 2px;
+}
+
+.logoFree{
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 14px rgba(10,10,10,.12));
+}
+
+.pillLinks{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  overflow: hidden;
+  white-space: nowrap;
+
+  max-width: 520px;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition: max-width .22s ease, opacity .18s ease, transform .22s ease;
+}
+
+.pillLink{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 12px;
+  border-radius: 999px;
+
+  color: rgba(10,10,10,.72);
+  text-decoration: none;
+
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: .12px;
+
+  transition: background .15s ease, color .15s ease, transform .15s ease;
+}
+
+.pillLink:hover{
+  background: rgba(10,10,10,.06);
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+/* =========================
+   RIGHT: CTA + Burger
+   ========================= */
+.rightZone{
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+}
+
+.ctaPill{
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 10px 12px 10px 16px;
+  border-radius: 999px;
+  text-decoration: none;
+
+  background: var(--vino);
+  color: #fff;
+
+  border: 1px solid rgba(10,10,10,.12);
+  box-shadow: 0 14px 28px rgba(10,10,10,.14);
+
+  transition: transform .15s ease, filter .15s ease, box-shadow .15s ease, padding .22s ease;
+}
+
+.ctaPill:hover{
+  transform: translateY(-1px);
+  filter: brightness(1.02);
+  box-shadow: 0 18px 36px rgba(10,10,10,.16);
+}
+
+.ctaPillText{
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: .12px;
+  white-space: nowrap;
+
+  opacity: 1;
+  transform: translateX(0);
+  width: auto;
+  transition: opacity .16s ease, transform .22s ease, width .22s ease;
+}
+
+.ctaPillIcon{
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255,255,255,.18);
+  color: #ffffff;
+
+  font-weight: 900;
+  line-height: 1;
+
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.22),
+    0 10px 22px rgba(10,10,10,.18);
+
+  transition: transform .15s ease, background .15s ease;
+}
+
+.ctaPill:hover .ctaPillIcon{
+  transform: rotate(-10deg) translateY(-1px);
+  background: rgba(255,255,255,.24);
+}
+
+/* Burger */
+.burger{
+  display: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.90);
+  box-shadow: var(--shadow-sm);
+
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.burger span{
+  display: block;
+  width: 12px;
+  height: 2px;
+  background: rgba(10,10,10,.72);
+  border-radius: 10px;
+}
+
+/* =========================
+   ✅ MODO COMPACTO (scroll down)
+   ========================= */
+.isCompact{
+  padding: 10px 16px;
+}
+
+.isCompact .pillNav{
+  padding: 10px 12px;
+}
+
+.isCompact .pillLinks{
+  max-width: 0px;
+  opacity: 0;
+  transform: translateY(-1px) scale(.98);
+}
+
+.isCompact .ctaPill{
+  padding: 10px;
+}
+
+.isCompact .ctaPillText{
+  opacity: 0;
+  transform: translateX(-6px);
+  width: 0;
+  overflow: hidden;
+}
+
+/* =========================
+   Mobile panel
+   ========================= */
+.mobilePanel{
+  display: none;
+  position: relative;
+  max-width: 1240px;
+  margin: 10px auto 0;
+  padding: 0 2px;
+}
+
+.mobilePanelOpen{
+  display: block;
+}
+
+.mobileLinks{
+  background: rgba(255,255,255,.94);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-md);
+  padding: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.mobileLink{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 12px 12px;
+  border-radius: 14px;
+  text-decoration: none;
+
+  color: var(--text);
+  font-weight: 600;
+  background: rgba(10,10,10,.04);
+}
+
+.mobileLink:hover{
+  background: rgba(159,33,65,.10);
+}
+
+.mobileCtaPill{
+  margin-top: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 12px 14px;
+  border-radius: 14px;
+  text-decoration: none;
+
+  font-weight: 700;
+  color: #fff;
+  background: var(--vino);
+}
+
+.mobileSocials{
+  display: flex;
+  gap: 10px;
+  padding: 6px 4px 2px;
+}
+
+.overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(10,10,10,.28);
+  border: 0;
+  cursor: pointer;
+}

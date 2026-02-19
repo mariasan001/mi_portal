@@ -49,7 +49,7 @@ export function useMenu(appCode: string | null): UseMenuResult {
     return {
       data: isCurrent ? state.data : null,
       error: isCurrent ? state.error : null,
-      loading: !isCurrent, // loading derivado: aún no hay respuesta para este appCode
+      loading: !isCurrent, 
     };
   }, [appCode, state]);
 }
