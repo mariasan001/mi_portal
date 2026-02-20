@@ -3,39 +3,35 @@
 .wrap{
   position: relative;
   padding: 56px 16px;
-
-  background: #ffffff;
+  background: rgb(255, 255, 255);
   overflow: hidden;
-
   font-weight: 300;
   color: rgba(10,10,10,.82);
 }
 
+/* base apagado para re-trigger */
+.left, .right, .post{
+  opacity: 0;
+  transform: translateY(10px);
+}
+.isIn   { --_state-in: 1; }
+.dirDown{ --_state-dir: 1; }
+.dirUp  { --_state-dir: -1; }
+
 .inner{
   max-width: 1340px;
   margin: 0 auto;
-
   display: grid;
   grid-template-columns: 1.05fr 1.35fr;
   gap: 26px;
   align-items: center;
-
   position: relative;
   z-index: 1;
-
   padding: 24px;
 }
 
-/* =========================
-   Left
-   ========================= */
-.left{
-  display: grid;
-  gap: 10px;
-  align-content: start;
-
-  animation: fadeUp .55s ease both;
-}
+/* Left */
+.left{ display: grid; gap: 10px; align-content: start; }
 
 .kicker{
   font-size: 13px;
@@ -53,9 +49,7 @@
   font-weight: 900;
 }
 
-.titleStrong{
-  color: var(--oro);
-}
+.titleStrong{ color: var(--accent); }
 
 .subtitle{
   margin: 0;
@@ -66,12 +60,16 @@
   font-weight: 300;
 }
 
-/* =========================
-   Search Bar
-   ========================= */
-.searchBar{
+/* ✅ Search wrap (para dropdown) */
+.searchWrap{
   margin-top: 8px;
   width: min(520px, 100%);
+  position: relative;
+}
+
+/* Search bar */
+.searchBar{
+  width: 100%;
   height: 46px;
 
   display: grid;
@@ -91,10 +89,10 @@
 
 .searchBar:focus-within{
   transform: translateY(-1px);
-  border-color: rgba(159,33,65,.28);
+  border-color: color-mix(in srgb, var(--brand) 28%, transparent);
   box-shadow:
     0 18px 32px rgba(10,10,10,.08),
-    0 0 0 4px rgba(159,33,65,.10);
+    0 0 0 4px color-mix(in srgb, var(--brand) 12%, transparent);
 }
 
 .searchBarIcon{
@@ -106,12 +104,10 @@
   color: rgba(10,10,10,.55);
   transition: transform .18s ease, color .18s ease;
 }
-
 .searchBar:focus-within .searchBarIcon{
   transform: scale(1.06);
-  color: rgba(159,33,65,.85);
+  color: color-mix(in srgb, var(--brand) 86%, rgba(10,10,10,.55));
 }
-
 .searchBarIcon svg{ width: 18px; height: 18px; }
 
 .searchBarInput{
@@ -120,14 +116,11 @@
   border: 0;
   outline: none;
   background: transparent;
-
   padding: 0 10px 0 4px;
-
   color: var(--text);
   font-size: 13.5px;
   font-weight: 300;
 }
-
 .searchBarInput::placeholder{
   color: rgba(10,10,10,.42);
   font-weight: 600;
@@ -138,49 +131,88 @@
   padding: 0 14px;
   border: 1px solid rgba(10,10,10,.10);
   border-radius: 12px;
-
   background: #fff;
   color: rgba(10,10,10,.80);
   font-weight: 900;
   font-size: 12.5px;
-
   cursor: pointer;
   transition: transform .14s ease, border-color .14s ease, box-shadow .14s ease;
 }
-
 .searchBarBtn:hover{
   transform: translateY(-1px);
-  border-color: rgba(188,148,90,.30);
+  border-color: color-mix(in srgb, var(--accent) 32%, rgba(10,10,10,.10));
   box-shadow: 0 10px 18px rgba(10,10,10,.08);
 }
-
 .searchBarBtn:active{ transform: translateY(0); box-shadow: none; }
 
-.helperRow{
-  margin-top: 4px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+/* ✅ dropdown resultados (animación suave) */
+.results{
+  margin-top: 10px;
+  border-radius: 16px;
+  border: 1px solid rgba(10,10,10,.10);
+  background: rgba(255,255,255,.96);
+  box-shadow: 0 16px 36px rgba(10,10,10,.08);
+  overflow: hidden;
+
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+
+  transition: max-height .22s ease, opacity .22s ease, transform .22s ease;
 }
 
-.pill{
-  padding: 7px 10px;
+.results[data-open="1"]{
+  max-height: 360px;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.resultItem{
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  padding: 12px 12px;
+  cursor: pointer;
+  display: grid;
+  gap: 4px;
+
+  transition: background .14s ease, transform .14s ease;
+}
+
+.resultItem:hover{
+  background: rgba(10,10,10,.03);
+  transform: translateY(-1px);
+}
+
+.resultTag{
+  width: fit-content;
+  padding: 4px 9px;
   border-radius: 999px;
   border: 1px solid rgba(10,10,10,.10);
-  background: rgba(255,255,255,.70);
-  color: rgba(10,10,10,.65);
-  font-size: 12px;
+  background: rgba(255,255,255,.9);
+  font-size: 11.5px;
   font-weight: 800;
+  color: rgba(10,10,10,.70);
 }
 
-/* =========================
-   Right (carousel)
-   ========================= */
-.right{
-  position: relative;
-  animation: fadeUp .55s ease both;
-  animation-delay: .06s;
+.resultTitle{
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  color: rgba(10,10,10,.88);
+  font-size: 13px;
 }
+
+.resultDesc{
+  font-size: 12.5px;
+  color: rgba(10,10,10,.62);
+  line-height: 1.55;
+}
+
+/* Right */
+.right{ position: relative; }
 
 .railTop{
   display: flex;
@@ -195,10 +227,7 @@
   color: rgba(10,10,10,.78);
 }
 
-.navBtns{
-  display: inline-flex;
-  gap: 8px;
-}
+.navBtns{ display: inline-flex; gap: 8px; }
 
 .navBtn{
   width: 38px;
@@ -207,44 +236,39 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
   border: 1px solid rgba(10,10,10,.10);
   background: rgba(255,255,255,.92);
   box-shadow: 0 10px 18px rgba(10,10,10,.06);
-
   cursor: pointer;
   transition: transform .14s ease, box-shadow .14s ease;
 }
-
-.navBtn:hover{
-  transform: translateY(-1px);
-  box-shadow: 0 14px 22px rgba(10,10,10,.08);
-}
-
+.navBtn:hover{ transform: translateY(-1px); box-shadow: 0 14px 22px rgba(10,10,10,.08); }
 .navBtn svg{ width: 18px; height: 18px; color: rgba(10,10,10,.72); }
+
+/* rail */
+.rail{ position: relative; }
 
 .scroller{
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: minmax(280px, 1fr);
+  grid-auto-columns: minmax(300px, 1fr);
   gap: 18px;
 
   overflow-x: auto;
-  padding-bottom: 10px;
+  padding: 4px 8px 12px;
   scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
 
   scrollbar-width: none;
 }
 .scroller::-webkit-scrollbar{ display: none; }
-.post{
-  scroll-snap-align: start;
 
+.post{
+  scroll-snap-align: center;
   background:#FBFBFC;
   border: 1px solid rgba(10,10,10,.08);
   border-radius: 18px;
-
-  /* ✅ sombra más fina + elegante */
   box-shadow:
     0 1px 0 rgba(240, 236, 236, 0.04),
     0 10px 24px rgba(202, 201, 201, 0.08),
@@ -254,40 +278,27 @@
   display: grid;
   grid-template-rows: 180px auto;
 
-  transform: translateY(10px);
-  opacity: 0;
-  animation: cardIn .55s ease both;
-  animation-delay: var(--d, 0ms);
-
   transition: transform .18s ease, box-shadow .18s ease;
-}
-
-/* ✅ hover con lift suave (opcional pero recomendado) */
-.post:hover{
-  transform: translateY(-2px);
-  box-shadow:
-    0 1px 0 rgba(143, 143, 143, 0.05),
-    0 14px 34px rgba(10,10,10,.10),
-    0 34px 80px rgba(184, 182, 182, 0.08);
 }
 
 .post:hover{
   transform: translateY(-3px);
-  box-shadow: 0 18px 40px rgba(10,10,10,.10);
+  box-shadow:
+    0 1px 0 rgba(143, 143, 143, 0.05),
+    0 18px 40px rgba(10,10,10,.10),
+    0 34px 80px rgba(184, 182, 182, 0.08);
 }
 
 .postMedia{
   position: relative;
   background: rgba(10,10,10,.03);
-  height: 180px; /* ✅ estable en todos los casos */
+  height: 180px;
 }
 
-.postImg{
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
+/* wrapper para next/image fill */
+.postImgWrap{ position: absolute; inset: 0; }
+
+.postImg{ object-fit: cover; }
 
 /* badge */
 .badge{
@@ -296,11 +307,9 @@
   left: 10px;
   padding: 6px 10px;
   border-radius: 999px;
-
   background: rgba(255,255,255,.92);
   border: 1px solid rgba(10,10,10,.10);
   color: rgba(10,10,10,.72);
-
   font-size: 12px;
   font-weight: 800;
 }
@@ -318,30 +327,35 @@
   width: 36px;
   height: 36px;
   border-radius: 999px;
-
   border: 1px solid rgba(10,10,10,.10);
   background: rgba(255,255,255,.92);
   box-shadow: 0 10px 18px rgba(10,10,10,.08);
-
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
   cursor: pointer;
-  transition: transform .14s ease, box-shadow .14s ease;
+  transition: transform .14s ease, box-shadow .14s ease, background .14s ease, border-color .14s ease;
 }
-
 .actionBtn:hover{
   transform: translateY(-1px) scale(1.02);
   box-shadow: 0 14px 22px rgba(10,10,10,.10);
 }
-
 .actionBtn:active{ transform: translateY(0) scale(.98); }
 
 .actionBtn svg{
   width: 16px;
   height: 16px;
-  color: rgba(10,10,10,.75);
+  color: rgba(10,10,10,.74);
+  transition: color .14s ease;
+}
+
+/* estado visible */
+.actionBtn[data-active="1"]{
+  border-color: color-mix(in srgb, var(--brand) 26%, rgba(10,10,10,.10));
+  background: color-mix(in srgb, var(--brand) 12%, rgba(255,255,255,.92));
+}
+.actionBtn[data-active="1"] svg{
+  color: color-mix(in srgb, var(--brand) 82%, rgba(10,10,10,.74));
 }
 
 .postBody{
@@ -372,7 +386,6 @@
   align-items: center;
   gap: 10px;
   width: fit-content;
-
   color: rgba(10,10,10,.82);
   text-decoration: none;
   font-weight: 800;
@@ -386,42 +399,48 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
-  border: 1px solid rgba(188,148,90,.45);
+  border: 1px solid color-mix(in srgb, var(--accent) 52%, transparent);
   background: rgba(255,255,255,.95);
   transition: transform .16s ease;
 }
+.post:hover .ctaArrow{ transform: translateY(-1px) rotate(-8deg); }
 
-.post:hover .ctaArrow{
-  transform: translateY(-1px) rotate(-8deg);
-}
-
+/* dots */
 .dots{
   margin-top: 10px;
   display: flex;
   justify-content: center;
-  gap: 8px;
-  opacity: .55;
+  gap: 10px;
+  opacity: .9;
 }
 
 .dot{
-  width: 6px;
-  height: 6px;
+  width: 9px;
+  height: 9px;
   border-radius: 999px;
-  background: rgba(10,10,10,.22);
+  border: 0;
+  background: rgba(10,10,10,.20);
+  cursor: pointer;
+  transition: transform .14s ease, background .14s ease;
+}
+.dot[data-active="1"]{
+  background: color-mix(in srgb, var(--brand) 62%, rgba(10,10,10,.20));
+  transform: scale(1.12);
 }
 
-/* =========================
-   Animations
-   ========================= */
-@keyframes fadeUp{
-  from{ opacity: 0; transform: translateY(10px); }
-  to{ opacity: 1; transform: translateY(0); }
-}
+/* animations */
+@keyframes fadeDown{ from{ opacity:0; transform:translateY(12px);} to{ opacity:1; transform:translateY(0);} }
+@keyframes fadeUp{ from{ opacity:0; transform:translateY(-12px);} to{ opacity:1; transform:translateY(0);} }
+@keyframes cardDown{ from{ opacity:0; transform:translateY(12px);} to{ opacity:1; transform:translateY(0);} }
+@keyframes cardUp{ from{ opacity:0; transform:translateY(-12px);} to{ opacity:1; transform:translateY(0);} }
 
-@keyframes cardIn{
-  to{ opacity: 1; transform: translateY(0); }
-}
+.dirDown.isIn .left{ animation: fadeDown .55s ease both; }
+.dirDown.isIn .right{ animation: fadeDown .55s ease both; animation-delay: .06s; }
+.dirDown.isIn .post{ animation: cardDown .55s ease both; animation-delay: var(--d, 0ms); opacity: 1; transform: none; }
+
+.dirUp.isIn .left{ animation: fadeUp .55s ease both; }
+.dirUp.isIn .right{ animation: fadeUp .55s ease both; animation-delay: .06s; }
+.dirUp.isIn .post{ animation: cardUp .55s ease both; animation-delay: var(--d, 0ms); opacity: 1; transform: none; }
 
 @media (prefers-reduced-motion: reduce){
   .left, .right, .post{
@@ -429,66 +448,26 @@
     opacity: 1 !important;
     transform: none !important;
   }
-  .post, .navBtn, .actionBtn{
+  .post, .navBtn, .actionBtn, .searchBar, .ctaArrow, .dot, .results, .resultItem{
     transition: none !important;
   }
 }
 
-/* =========================
-   Responsive
-   ========================= */
+/* responsive */
 @media (max-width: 980px){
-  .inner{
-    grid-template-columns: 1fr;
-    padding: 18px;
-  }
-
-  .title{
-    font-size: 30px;
-  }
-
-  .subtitle{
-    max-width: 70ch;
-  }
-
-  .scroller{
-    grid-auto-columns: minmax(260px, 78%);
-  }
+  .inner{ grid-template-columns: 1fr; padding: 18px; }
+  .title{ font-size: 30px; }
+  .subtitle{ max-width: 70ch; }
+  .scroller{ grid-auto-columns: minmax(260px, 78%); }
 }
 
 @media (max-width: 520px){
   .wrap{ padding: 34px 14px; }
-
-  .inner{
-    padding: 14px;
-  }
-
+  .inner{ padding: 14px; }
   .title{ font-size: 26px; }
 
-  .searchBar{
-    height: 44px;
-    border-radius: 12px;
-  }
-
+  .searchBar{ height: 44px; border-radius: 12px; }
   .searchBarIcon{ height: 44px; }
   .searchBarInput{ height: 44px; }
-
-  .searchBarBtn{
-    height: 34px;
-    border-radius: 11px;
-    padding: 0 12px;
-  }
-}
-.postMedia{
-  position: relative;
-  background: #fff;
-  height: 180px;
-}
-
-.postImg{
-  width: 100%;
-  height: 100%;
-  object-fit: contain; /* 👈 clave para que el ícono NO se recorte */
-  display: block;
-  background: #fff;
+  .searchBarBtn{ height: 34px; border-radius: 11px; padding: 0 12px; }
 }

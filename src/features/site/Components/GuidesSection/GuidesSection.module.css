@@ -238,7 +238,7 @@
 }
 
 /* =========================
-   Row item (el estilo de tu screenshot)
+   Row item
    ========================= */
 .row{
   border: 1px solid var(--border-soft);
@@ -260,7 +260,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--oro)
+  color: var(--accent);
 }
 .rowIcon svg{ width: 18px; height: 18px; }
 
@@ -301,7 +301,7 @@
   align-items: center;
 }
 
-/* ✅ Amarillo SOLO para “Descargar” */
+/* ✅ CTA Descargar (normal institucional) */
 .ctaDownload{
   height: 36px;
   padding: 0 12px;
@@ -314,7 +314,7 @@
   align-items: center;
   gap: 8px;
 
-  font-weight: 6 00;
+  font-weight: 600; /* ✅ FIX */
   font-size: 12px;
   text-decoration: none;
   cursor: pointer;
@@ -328,7 +328,7 @@
 
 .ctaDownload svg{ width: 16px; height: 16px; }
 
-/* “Abrir” para links */
+/* CTA Abrir */
 .ctaOpen{
   height: 36px;
   padding: 0 12px;
@@ -408,4 +408,80 @@
   .searchRow{ height: 44px; }
   .searchIcon{ height: 44px; }
   .searchInput{ height: 44px; }
+}
+
+/* =========================================
+   VEDA ELECTORAL (modo neutro)
+   Activación: html[data-theme="veda"]
+   ========================================= */
+
+:global(html[data-theme="veda"]) .wrap{
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Search focus sin vino */
+:global(html[data-theme="veda"]) .searchRow:focus-within{
+  border-color: rgba(17,24,39,.22);
+  box-shadow: var(--shadow-sm), 0 0 0 4px rgba(17,24,39,.08);
+}
+
+:global(html[data-theme="veda"]) .searchInput::placeholder{
+  color: rgba(17,24,39,.42);
+}
+
+/* Tabs sin oro */
+:global(html[data-theme="veda"]) .panelTab[data-active="1"]{
+  border-color: rgba(17,24,39,.22);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Iconos neutros */
+:global(html[data-theme="veda"]) .rowIcon{
+  color: rgba(17,24,39,.70);
+}
+
+:global(html[data-theme="veda"]) .boxIcon{
+  border-color: rgba(17,24,39,.14);
+  background: rgba(17,24,39,.02);
+  color: rgba(17,24,39,.72);
+}
+
+/* CTA Descargar neutro */
+:global(html[data-theme="veda"]) .ctaDownload{
+  border-color: rgba(17,24,39,.18);
+  background: rgba(17,24,39,.92);
+  color: rgba(255,255,255,.92);
+  box-shadow: none;
+}
+
+:global(html[data-theme="veda"]) .ctaDownload:hover{
+  box-shadow: var(--shadow-sm);
+}
+
+/* CTA Abrir sobrio */
+:global(html[data-theme="veda"]) .ctaOpen{
+  border-color: rgba(17,24,39,.14);
+  background: var(--surface);
+  color: rgba(17,24,39,.86);
+}
+
+/* Chips si se usan */
+:global(html[data-theme="veda"]) .chip[data-active="1"]{
+  border-color: rgba(17,24,39,.22);
+  box-shadow: var(--shadow-sm);
+}
+
+/* sombras más sobrias */
+:global(html[data-theme="veda"]) .searchRow,
+:global(html[data-theme="veda"]) .panelTab,
+:global(html[data-theme="veda"]) .box,
+:global(html[data-theme="veda"]) .row{
+  box-shadow: var(--shadow-sm);
+}
+
+/* empty neutro */
+:global(html[data-theme="veda"]) .empty{
+  border-color: rgba(17,24,39,.18);
+  background: rgba(17,24,39,.02);
 }
