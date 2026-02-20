@@ -1,0 +1,435 @@
+/* src/features/site/Components/DudasSection/DudasSection.module.css */
+
+.wrap{
+  padding: 62px 16px;
+  background:#ffffff;
+  color: var(--text);
+}
+
+.inner{
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.header{
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.kicker{
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(10,10,10,.62);
+  letter-spacing: -0.01em;
+}
+
+.title{
+  margin: 6px 0 0;
+  font-size: var(--h2);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.subtitle{
+  margin: 10px auto 0;
+  max-width: 70ch;
+  font-size: 14px;
+  font-weight: 300; /* ✅ */
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+/* =========================
+   Search
+   ========================= */
+.searchRow{
+  margin: 18px auto 0;
+  width: min(760px, 100%);
+  height: 52px;
+
+  display: grid;
+  grid-template-columns: 46px 1fr 46px;
+  align-items: center;
+
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+
+  transition: box-shadow .16s ease, border-color .16s ease, transform .16s ease;
+}
+
+.searchRow:focus-within{
+  transform: translateY(-1px);
+  border-color: rgba(159,33,65,.28);
+  box-shadow:
+    0 18px 32px rgba(10,10,10,.08),
+    0 0 0 4px rgba(159,33,65,.10);
+}
+
+.searchIcon{
+  width: 46px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  color: rgba(10,10,10,.55);
+}
+
+.searchIcon svg{ width: 18px; height: 18px; }
+
+.searchInput{
+  width: 100%;
+  height: 52px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  padding: 0 10px;
+  color: var(--text);
+  font-size: 13.5px;
+  font-weight: 300; /* ✅ */
+}
+
+.searchInput::placeholder{
+  color: rgba(10,10,10,.45);
+  font-weight: 600;
+}
+
+.clearBtn{
+  width: 46px;
+  height: 52px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  color: rgba(10,10,10,.55);
+  transition: color .14s ease, transform .14s ease;
+}
+
+.clearBtn:hover{ color: var(--vino); transform: scale(1.04); }
+
+.helperLine{
+  margin: 10px auto 0;
+  width: min(760px, 100%);
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  color: rgba(10,10,10,.55);
+}
+
+.helperDot{
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(186, 124, 42, 0.35);
+}
+
+.helperText{
+  font-size: 12.5px;
+  font-weight: 300; /* ✅ */
+}
+
+/* =========================
+   Chips (categorías)
+   ========================= */
+.chips{
+  margin: 18px auto 0;
+  width: min(860px, 100%);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.chip{
+  height: 40px;
+  padding: 0 14px;
+  border-radius:13px;
+  border: 1px solid rgba(10,10,10,.10);
+  background: rgb(255, 255, 255);
+  font-size: 13px;
+  font-weight: 800;
+  color: rgba(10,10,10,.72);
+  box-shadow: var(--shadow-sm);
+
+  cursor: pointer;
+  transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease, background .14s ease;
+}
+
+.chip:hover{
+  transform: translateY(-1px);
+  
+  box-shadow: 0 10px 18px rgba(10,10,10,.06);
+}
+
+.chip[data-active="1"]{
+      background: rgb(255, 255, 255);
+  border-color: rgba(159, 111, 33, 0.28);
+  color: rgba(10,10,10,.86);
+}
+
+/* =========================
+   List / Item
+   ========================= */
+.list{
+  margin: 22px auto 0;
+  width: min(980px, 100%);
+  display: grid;
+  gap: 12px;
+}
+
+.item{
+  border-radius: 18px;
+  border: 1px solid rgba(10,10,10,.08);
+  background: FBFBFC;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+/* pregunta */
+.qRow{
+  width: 100%;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+
+  display: grid;
+  grid-template-columns: 52px 1fr 52px;
+  align-items: center;
+
+  padding: 14px 10px;
+  text-align: left;
+}
+
+.qIcon{
+  width: 40px;
+  height: 40px;
+  margin-left: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(159, 105, 33, 0.12);
+  display: grid;
+  place-items: center;
+  color: var(--oro);
+}
+
+.qIcon svg{ width: 18px; height: 18px; }
+
+.qText{
+  display: grid;
+  gap: 4px;
+  padding: 0 10px;
+}
+
+.qTitle{
+  font-size: 14.5px;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  color: rgba(10,10,10,.92);
+}
+
+.qMeta{
+  font-size: 12px;
+  font-weight: 300; /* ✅ */
+  color: rgba(10,10,10,.56);
+}
+
+.chev{
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 1px solid rgba(10,10,10,.10);
+  background: rgba(255,255,255,.92);
+  display: grid;
+  place-items: center;
+  margin-right: 8px;
+  color: rgba(10,10,10,.70);
+  transition: transform .16s ease, border-color .16s ease, color .16s ease;
+}
+
+.chev[data-open="1"]{
+  transform: rotate(180deg);
+  border-color: rgba(159,33,65,.22);
+  color: var(--vino);
+}
+
+.chev svg{ width: 18px; height: 18px; }
+
+/* respuesta */
+.aWrap{
+  padding: 0 16px 16px;
+  display: none;
+}
+
+.aWrap[data-open="1"]{
+  display: block;
+}
+
+.answer{
+  margin: 2px 0 0;
+  color: rgba(10,10,10,.70);
+  font-size: 13.5px;
+  font-weight: 300; /* ✅ */
+  line-height: 1.75;
+}
+
+/* extra al abrir */
+.extra{
+  margin-top: 12px;
+  display: grid;
+  gap: 12px;
+}
+
+.guideLink{
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px 12px;
+  border-radius: 12px;
+
+  border: 1px solid rgba(188,148,90,.28);
+  background: rgba(255, 255, 255, 0.1);
+
+  text-decoration: none;
+  color: rgba(10,10,10,.86);
+
+  font-size: 13px;
+  font-weight: 800;
+
+  transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease;
+}
+
+.guideLink:hover{
+  transform: translateY(-1px);
+  border-color: rgba(159,33,65,.22);
+  box-shadow: 0 12px 22px rgba(10,10,10,.08);
+}
+
+.guideLink svg{
+  width: 16px;
+  height: 16px;
+}
+
+/* mini cards */
+.metaGrid{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.metaCard{
+  border: 1px solid rgba(10,10,10,.08);
+  background: rgba(255,255,255,.92);
+  border-radius: 14px;
+  padding: 10px 12px;
+
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  align-items: center;
+  gap: 10px;
+}
+
+.metaIcon{
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(153, 92, 17, 0.12);
+  display: grid;
+  place-items: center;
+  color: var(--oro);
+  line-height: 0;
+}
+
+.metaIcon svg{ width: 16px; height: 16px; }
+
+.metaText{
+  display: grid;
+  gap: 2px;
+}
+
+.metaLabel{
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(10,10,10,.70);
+}
+
+.metaValue{
+  font-size: 12.5px;
+  font-weight: 300; /* ✅ */
+  color: rgba(10,10,10,.65);
+  line-height: 1.45;
+}
+
+/* empty */
+.empty{
+  border-radius: 18px;
+  border: 1px dashed rgba(10,10,10,.18);
+  background: rgba(255,255,255,.75);
+  padding: 18px;
+  text-align: center;
+}
+
+.emptyTitle{
+  font-weight: 900;
+  margin-bottom: 4px;
+}
+
+.emptyDesc{
+  font-weight: 300; /* ✅ */
+  color: rgba(10,10,10,.62);
+  font-size: 13px;
+}
+
+/* footer tip */
+.footerNote{
+  margin-top: 14px;
+  text-align: center;
+  font-weight: 300; /* ✅ */
+  color: rgba(10,10,10,.55);
+  font-size: 12.5px;
+}
+
+/* =========================
+   Responsive
+   ========================= */
+@media (max-width: 860px){
+  .metaGrid{
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px){
+  .wrap{ padding: 50px 14px; }
+
+  .title{ font-size: 28px; }
+
+  .searchRow{
+    height: 48px;
+    grid-template-columns: 44px 1fr 44px;
+    border-radius: 14px;
+  }
+
+  .searchIcon{ height: 48px; }
+  .searchInput{ height: 48px; }
+  .clearBtn{ height: 48px; }
+
+  .qRow{
+    grid-template-columns: 48px 1fr 48px;
+    padding: 12px 8px;
+  }
+
+  .qIcon{
+    width: 38px;
+    height: 38px;
+  }
+
+  .chev{
+    width: 34px;
+    height: 34px;
+  }
+}

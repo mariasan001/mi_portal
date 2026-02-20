@@ -65,8 +65,8 @@ const cards: CardItem[] = [
 function shellStyle(c: CardItem): ShellVars {
   const base: ShellVars = {
     ['--flor-url']: `url('${c.bgImage}')`,
-    ['--flor-size']: 'clamp(80px, 10vw, 80px)',
-    ['--flor-x']: '-34px',
+    ['--flor-size']: 'clamp(40px, 10vw, 70px)',
+    ['--flor-x']: '-30px',
     ['--flor-y']: '-25px',
     ['--flor-rot']: '-52deg',
     ['--flor-opacity']: '.95',
@@ -76,8 +76,8 @@ function shellStyle(c: CardItem): ShellVars {
     return {
       ...base,
       ['--flor-rot']: '-40deg',
-      ['--flor-x']: '-33px',
-      ['--flor-y']: '-30px',
+      ['--flor-x']: '-30px',
+      ['--flor-y']: '-25px',
       ['--flor-opacity']: '.93',
     };
   }
@@ -86,7 +86,7 @@ function shellStyle(c: CardItem): ShellVars {
     return {
       ...base,
       ['--flor-rot']: '-40deg',
-      ['--flor-x']: '-33px',
+      ['--flor-x']: '-30px',
       ['--flor-y']: '-30px',
       ['--flor-opacity']: '.92',
     };

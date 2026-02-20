@@ -237,14 +237,18 @@
   scrollbar-width: none;
 }
 .scroller::-webkit-scrollbar{ display: none; }
-
 .post{
   scroll-snap-align: start;
 
-  background: rgba(255,255,255,.92);
+  background:#FBFBFC;
   border: 1px solid rgba(10,10,10,.08);
   border-radius: 18px;
-  box-shadow: 0 14px 30px rgba(10,10,10,.07);
+
+  /* ✅ sombra más fina + elegante */
+  box-shadow:
+    0 1px 0 rgba(240, 236, 236, 0.04),
+    0 10px 24px rgba(202, 201, 201, 0.08),
+    0 24px 10px rgba(178, 176, 176, 0.06);
 
   overflow: hidden;
   display: grid;
@@ -256,6 +260,15 @@
   animation-delay: var(--d, 0ms);
 
   transition: transform .18s ease, box-shadow .18s ease;
+}
+
+/* ✅ hover con lift suave (opcional pero recomendado) */
+.post:hover{
+  transform: translateY(-2px);
+  box-shadow:
+    0 1px 0 rgba(143, 143, 143, 0.05),
+    0 14px 34px rgba(10,10,10,.10),
+    0 34px 80px rgba(184, 182, 182, 0.08);
 }
 
 .post:hover{
