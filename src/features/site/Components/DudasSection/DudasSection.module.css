@@ -4,6 +4,11 @@
   padding: 62px 16px;
   background:#ffffff;
   color: var(--text);
+
+  /* ✅ variables locales: en normal = vino/oro, en veda = neutro por tokens */
+  --dudas-brand: var(--brand);
+  --dudas-accent: var(--accent);
+  --dudas-soft: var(--soft);
 }
 
 .inner{
@@ -62,10 +67,10 @@
 
 .searchRow:focus-within{
   transform: translateY(-1px);
-  border-color: rgba(159,33,65,.28);
+  border-color: color-mix(in oklab, var(--dudas-brand) 28%, transparent);
   box-shadow:
     0 18px 32px rgba(10,10,10,.08),
-    0 0 0 4px rgba(159,33,65,.10);
+    0 0 0 4px color-mix(in oklab, var(--dudas-brand) 12%, transparent);
 }
 
 .searchIcon{
@@ -107,7 +112,14 @@
   transition: color .14s ease, transform .14s ease;
 }
 
-.clearBtn:hover{ color: var(--vino); transform: scale(1.04); }
+.clearBtn:hover{ color: var(--dudas-brand); transform: scale(1.04); }
+
+/* ✅ mantiene el grid estable cuando no hay query */
+.clearBtnGhost{
+  width: 46px;
+  height: 52px;
+  display: block;
+}
 
 .helperLine{
   margin: 10px auto 0;
@@ -123,7 +135,7 @@
   width: 7px;
   height: 7px;
   border-radius: 999px;
-  background: rgba(186, 124, 42, 0.35);
+  background: color-mix(in oklab, var(--dudas-accent) 35%, transparent);
 }
 
 .helperText{
@@ -160,13 +172,12 @@
 
 .chip:hover{
   transform: translateY(-1px);
-  
   box-shadow: 0 10px 18px rgba(10,10,10,.06);
 }
 
 .chip[data-active="1"]{
-      background: rgb(255, 255, 255);
-  border-color: rgba(159, 111, 33, 0.28);
+  background: rgb(255, 255, 255);
+  border-color: color-mix(in oklab, var(--dudas-accent) 30%, transparent);
   color: rgba(10,10,10,.86);
 }
 
@@ -183,7 +194,7 @@
 .item{
   border-radius: 18px;
   border: 1px solid rgba(10,10,10,.08);
-  background: FBFBFC;
+  background: #FBFBFC;
   box-shadow: var(--shadow-sm);
   overflow: hidden;
 }
@@ -209,10 +220,10 @@
   margin-left: 8px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(159, 105, 33, 0.12);
+  border: 1px solid color-mix(in oklab, var(--dudas-accent) 18%, transparent);
   display: grid;
   place-items: center;
-  color: var(--oro);
+  color: var(--dudas-accent);
 }
 
 .qIcon svg{ width: 18px; height: 18px; }
@@ -251,8 +262,8 @@
 
 .chev[data-open="1"]{
   transform: rotate(180deg);
-  border-color: rgba(159,33,65,.22);
-  color: var(--vino);
+  border-color: color-mix(in oklab, var(--dudas-brand) 22%, transparent);
+  color: var(--dudas-brand);
 }
 
 .chev svg{ width: 18px; height: 18px; }
@@ -291,7 +302,7 @@
   padding: 10px 12px;
   border-radius: 12px;
 
-  border: 1px solid rgba(188,148,90,.28);
+  border: 1px solid color-mix(in oklab, var(--dudas-accent) 28%, transparent);
   background: rgba(255, 255, 255, 0.1);
 
   text-decoration: none;
@@ -305,7 +316,7 @@
 
 .guideLink:hover{
   transform: translateY(-1px);
-  border-color: rgba(159,33,65,.22);
+  border-color: color-mix(in oklab, var(--dudas-brand) 22%, transparent);
   box-shadow: 0 12px 22px rgba(10,10,10,.08);
 }
 
@@ -338,10 +349,10 @@
   height: 34px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(153, 92, 17, 0.12);
+  border: 1px solid color-mix(in oklab, var(--dudas-accent) 18%, transparent);
   display: grid;
   place-items: center;
-  color: var(--oro);
+  color: var(--dudas-accent);
   line-height: 0;
 }
 
@@ -395,6 +406,121 @@
 }
 
 /* =========================
+   REVEAL PREMIUM (re-trigger + stagger)
+   ========================= */
+
+/* Estado base de piezas (para que el stagger se note) */
+.header,
+.searchRow,
+.helperLine,
+.chips,
+.list,
+.footerNote{
+  opacity: 0;
+  transform: translateY(10px);
+  will-change: transform, opacity;
+}
+
+/* Items: también salen “apagados” */
+.item{
+  opacity: 0;
+  transform: translateY(10px);
+  will-change: transform, opacity;
+}
+
+/* Down */
+.dirDown.isIn .header{ animation: dudRevealDown .55s ease both; animation-delay: 0ms; }
+.dirDown.isIn .searchRow{ animation: dudRevealDown .55s ease both; animation-delay: 80ms; }
+.dirDown.isIn .helperLine{ animation: dudRevealDown .55s ease both; animation-delay: 140ms; }
+.dirDown.isIn .chips{ animation: dudRevealDown .55s ease both; animation-delay: 200ms; }
+.dirDown.isIn .list{ animation: dudRevealDown .55s ease both; animation-delay: 260ms; }
+.dirDown.isIn .footerNote{ animation: dudRevealDown .55s ease both; animation-delay: 520ms; }
+
+/* Up */
+.dirUp.isIn .header{ animation: dudRevealUp .55s ease both; animation-delay: 0ms; }
+.dirUp.isIn .searchRow{ animation: dudRevealUp .55s ease both; animation-delay: 80ms; }
+.dirUp.isIn .helperLine{ animation: dudRevealUp .55s ease both; animation-delay: 140ms; }
+.dirUp.isIn .chips{ animation: dudRevealUp .55s ease both; animation-delay: 200ms; }
+.dirUp.isIn .list{ animation: dudRevealUp .55s ease both; animation-delay: 260ms; }
+.dirUp.isIn .footerNote{ animation: dudRevealUp .55s ease both; animation-delay: 520ms; }
+
+/* Stagger para cards (solo visual, sin tocar TSX) */
+.dirDown.isIn .item{ animation: dudCardDown .55s ease both; }
+.dirUp.isIn .item{ animation: dudCardUp .55s ease both; }
+
+.dirDown.isIn .item:nth-child(1),
+.dirUp.isIn .item:nth-child(1){ animation-delay: 300ms; }
+.dirDown.isIn .item:nth-child(2),
+.dirUp.isIn .item:nth-child(2){ animation-delay: 360ms; }
+.dirDown.isIn .item:nth-child(3),
+.dirUp.isIn .item:nth-child(3){ animation-delay: 420ms; }
+.dirDown.isIn .item:nth-child(4),
+.dirUp.isIn .item:nth-child(4){ animation-delay: 480ms; }
+.dirDown.isIn .item:nth-child(5),
+.dirUp.isIn .item:nth-child(5){ animation-delay: 540ms; }
+.dirDown.isIn .item:nth-child(6),
+.dirUp.isIn .item:nth-child(6){ animation-delay: 600ms; }
+.dirDown.isIn .item:nth-child(7),
+.dirUp.isIn .item:nth-child(7){ animation-delay: 660ms; }
+
+@keyframes dudRevealDown{
+  from{ opacity: 0; transform: translateY(10px); filter: blur(1.5px); }
+  to{ opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+@keyframes dudRevealUp{
+  from{ opacity: 0; transform: translateY(-10px); filter: blur(1.5px); }
+  to{ opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+@keyframes dudCardDown{
+  from{ opacity: 0; transform: translateY(10px) scale(.995); }
+  to{ opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes dudCardUp{
+  from{ opacity: 0; transform: translateY(-10px) scale(.995); }
+  to{ opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* =========================
+   Veda overrides (toques finales)
+   ========================= */
+
+  
+:global(html[data-theme="veda"]) .chip[data-active="1"]{
+  border-color: rgba(17,24,39,.20);
+}
+
+:global(html[data-theme="veda"]) .searchRow:focus-within{
+  box-shadow:
+    0 16px 30px rgba(10,10,10,.08),
+    0 0 0 4px rgba(107,114,128,.14);
+}
+
+/* =========================
+   Reduce motion (✅ sin selector * suelto)
+   ========================= */
+@media (prefers-reduced-motion: reduce){
+  .header,
+  .searchRow,
+  .helperLine,
+  .chips,
+  .list,
+  .footerNote,
+  .item{
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  .wrap *{
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* =========================
    Responsive
    ========================= */
 @media (max-width: 860px){
@@ -417,6 +543,7 @@
   .searchIcon{ height: 48px; }
   .searchInput{ height: 48px; }
   .clearBtn{ height: 48px; }
+  .clearBtnGhost{ height: 48px; }
 
   .qRow{
     grid-template-columns: 48px 1fr 48px;

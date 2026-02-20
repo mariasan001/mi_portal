@@ -3,8 +3,12 @@
 
 import s from './AppDownloadSection.module.css';
 import { FiSmartphone, FiCheck, FiArrowUpRight } from 'react-icons/fi';
+import { useRevealMotion } from '@/hooks/useRevealMotion';
+import { isExternalHref } from '../DudasSection/utils/dudas.utils';
+import { APP_DOWNLOAD_BENEFITS } from './constants/constants';
 
-type Props = {
+
+export type AppDownloadSectionProps = {
   title?: string;
   subtitle?: string;
   androidHref?: string;
@@ -22,9 +26,21 @@ export default function AppDownloadSection({
   iosHref = '#',
   phoneImg = '/img/app_movil.png',
   phoneAlt = 'Vista previa de la aplicación móvil',
-}: Props) {
+}: AppDownloadSectionProps) {
+  const { ref: sectionRef, className } = useRevealMotion<HTMLElement>({
+    threshold: 0.25,
+    thresholdPx: 2,
+  });
+
+  const androidExternal = isExternalHref(androidHref);
+  const iosExternal = isExternalHref(iosHref);
+
   return (
-    <section className={s.wrap} aria-label="Descargar aplicación móvil">
+    <section
+      ref={sectionRef}
+      className={className(s.wrap, s.isIn, s.dirDown, s.dirUp)}
+      aria-label="Descargar aplicación móvil"
+    >
       <div className={s.inner}>
         <div className={s.left}>
           <div className={s.kicker}>
@@ -38,39 +54,43 @@ export default function AppDownloadSection({
           <p className={s.subtitle}>{subtitle}</p>
 
           <ul className={s.list} aria-label="Beneficios">
-            <li className={s.item}>
-              <span className={s.itemIcon} aria-hidden="true"><FiCheck /></span>
-              <span className={s.itemText}>
-                Consulta tu <strong>límite</strong> y movimientos de <strong>descuento</strong>.
-              </span>
-            </li>
-
-            <li className={s.item}>
-              <span className={s.itemIcon} aria-hidden="true"><FiCheck /></span>
-              <span className={s.itemText}>
-                Accede a <strong>recibos de nómina</strong> y documentos desde el celular.
-              </span>
-            </li>
-
-            <li className={s.item}>
-              <span className={s.itemIcon} aria-hidden="true"><FiCheck /></span>
-              <span className={s.itemText}>
-                Da seguimiento a trámites con <strong>estatus</strong> y fechas claras.
-              </span>
-            </li>
+            {APP_DOWNLOAD_BENEFITS.map((node, idx) => (
+              <li key={idx} className={s.item}>
+                <span className={s.itemIcon} aria-hidden="true">
+                  <FiCheck />
+                </span>
+                <span className={s.itemText}>{node}</span>
+              </li>
+            ))}
           </ul>
 
-          <div className={s.ctas}>
-            <a className={s.btnPrimary} href={androidHref} aria-label="Google Play">
+          <div className={s.ctas} aria-label="Tiendas de descarga">
+            <a
+              className={s.btnPrimary}
+              href={androidHref}
+              aria-label="Abrir Google Play"
+              target={androidExternal ? '_blank' : undefined}
+              rel={androidExternal ? 'noreferrer' : undefined}
+            >
               <span className={s.btnTop}>Disponible en</span>
               <span className={s.btnMain}>Google Play</span>
-              <span className={s.btnIcon} aria-hidden="true"><FiArrowUpRight /></span>
+              <span className={s.btnIcon} aria-hidden="true">
+                <FiArrowUpRight />
+              </span>
             </a>
 
-            <a className={s.btn} href={iosHref} aria-label="App Store">
+            <a
+              className={s.btn}
+              href={iosHref}
+              aria-label="Abrir App Store"
+              target={iosExternal ? '_blank' : undefined}
+              rel={iosExternal ? 'noreferrer' : undefined}
+            >
               <span className={s.btnTop}>Disponible en</span>
               <span className={s.btnMain}>App Store</span>
-              <span className={s.btnIcon} aria-hidden="true"><FiArrowUpRight /></span>
+              <span className={s.btnIcon} aria-hidden="true">
+                <FiArrowUpRight />
+              </span>
             </a>
           </div>
 
@@ -81,7 +101,13 @@ export default function AppDownloadSection({
 
         <div className={s.right}>
           <div className={s.mediaCard}>
-            <img className={s.phoneImg} src={phoneImg} alt={phoneAlt} loading="lazy" />
+            <img
+              className={s.phoneImg}
+              src={phoneImg}
+              alt={phoneAlt}
+              loading="lazy"
+              decoding="async"
+            />
           </div>
         </div>
       </div>

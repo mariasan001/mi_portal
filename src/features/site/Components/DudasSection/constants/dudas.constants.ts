@@ -1,0 +1,85 @@
+// src/features/site/Components/DudasSection/constants/dudas.constants.ts
+
+import type { FaqCategory, FaqItem } from '../types/dudas.types';
+
+export const DUDAS_CATS: FaqCategory[] = [
+  'Más comunes',
+  'Cuenta',
+  'Constancias',
+  'Nómina',
+  'Trámites',
+  'Soporte',
+];
+
+export const DUDAS_FAQS: FaqItem[] = [
+  {
+    id: 'f1',
+    q: '¿Qué hago si olvidé mi contraseña?',
+    a: 'Usa la opción “Recuperar contraseña”. Te llegará un código al correo registrado para restablecer el acceso.',
+    category: 'Más comunes',
+    keywords: ['contraseña', 'recuperación', 'acceso', 'correo', 'token'],
+    guide: { label: 'Guía: Recuperación de contraseña', href: '/docs/guia-recuperacion.pdf' },
+    eta: '3–5 minutos',
+    docs: ['Correo institucional (o registrado)'],
+  },
+  {
+    id: 'f2',
+    q: 'No me llega el correo de verificación, ¿qué hago?',
+    a: 'Revisa Spam/No deseado, confirma que tu correo esté bien escrito y vuelve a solicitar el envío. Si persiste, usa “Soporte”.',
+    category: 'Cuenta',
+    keywords: ['correo', 'verificación', 'token', 'spam'],
+    guide: { label: 'Manual: Acceso y validación de correo', href: '/docs/manual-acceso.pdf' },
+    eta: '2–4 minutos',
+    docs: ['Correo correcto', 'Acceso a bandeja de entrada'],
+  },
+  {
+    id: 'f3',
+    q: '¿Por qué no aparece mi constancia para descargar?',
+    a: 'Puede deberse a que aún no está disponible para tu periodo o falta concluir el proceso. Verifica filtros, periodo y estatus.',
+    category: 'Constancias',
+    keywords: ['constancia', 'descarga', 'periodo', 'estatus'],
+    guide: { label: 'Guía: Descarga de constancias', href: '/docs/guia-constancias.pdf' },
+    eta: '5–10 minutos',
+    docs: ['Periodo correcto', 'Datos actualizados'],
+  },
+  {
+    id: 'f4',
+    q: 'Mi PDF se descarga vacío o no abre, ¿qué hago?',
+    a: 'Intenta con otro navegador, actualiza el lector PDF o vuelve a descargar. Si el archivo sigue vacío, repite el proceso de generación.',
+    category: 'Constancias',
+    keywords: ['pdf', 'vacío', 'descarga', 'abre'],
+    guide: { label: 'Solución: Problemas con PDFs', href: '/docs/solucion-pdf.pdf' },
+    eta: '3–8 minutos',
+    docs: ['Navegador actualizado', 'Lector PDF'],
+  },
+  {
+    id: 'f5',
+    q: '¿Cómo descargo recibos de nómina de meses anteriores?',
+    a: 'En Nómina, selecciona el periodo deseado y descarga el recibo. Si no aparece, puede ser por vigencia o disponibilidad del sistema.',
+    category: 'Nómina',
+    keywords: ['nómina', 'recibo', 'periodo', 'meses anteriores'],
+    guide: { label: 'Manual: Consulta de recibos de nómina', href: '/docs/manual-recibos-nomina.pdf' },
+    eta: '4–6 minutos',
+    docs: ['Periodo/mes a consultar'],
+  },
+  {
+    id: 'f6',
+    q: '¿Puedo corregir datos después de enviar un trámite?',
+    a: 'Depende del proceso. Algunos permiten corrección antes de “Enviar”, otros requieren levantar una solicitud de ajuste con soporte.',
+    category: 'Trámites',
+    keywords: ['corregir', 'datos', 'trámite', 'editar'],
+    guide: { label: 'Guía: Correcciones y ajustes', href: '/docs/guia-ajustes.pdf' },
+    eta: '5–15 minutos',
+    docs: ['Identificación del trámite', 'Datos correctos'],
+  },
+  {
+    id: 'f7',
+    q: '¿Qué hago si el sistema marca error al enviar?',
+    a: 'Revisa tu conexión, valida campos obligatorios y reintenta. Si continúa, guarda captura y repórtalo a soporte con fecha/hora.',
+    category: 'Soporte',
+    keywords: ['error', 'enviar', 'fallo', 'soporte'],
+    guide: { label: 'Directorio de apoyo técnico', href: 'https://example.com/soporte' },
+    eta: '2–10 minutos',
+    docs: ['Captura del error', 'Hora y módulo'],
+  },
+];

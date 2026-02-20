@@ -4,6 +4,11 @@
   padding: 64px 16px;
   background: var(--bg);
   color: var(--text);
+
+  /* ✅ tokens locales (en normal = gem/dgp, en veda = neutro) */
+  --app-brand: var(--brand);
+  --app-accent: var(--accent);
+  --app-soft: var(--soft);
 }
 
 .inner{
@@ -46,9 +51,10 @@
   display: grid;
   place-items: center;
 
-  background: rgba(159,33,65,.10);
-  border: 1px solid rgba(159,33,65,.14);
-  color: var(--vino);
+  /* ✅ antes: vino hardcode */
+  background: color-mix(in oklab, var(--app-brand) 10%, transparent);
+  border: 1px solid color-mix(in oklab, var(--app-brand) 14%, transparent);
+  color: var(--app-brand);
 }
 .kickerIcon svg{ width: 16px; height: 16px; }
 
@@ -96,9 +102,9 @@
   display: grid;
   place-items: center;
 
-  background: rgba(159,33,65,.08);
-  border: 1px solid rgba(159,33,65,.14);
-  color: var(--vino);
+  background: color-mix(in oklab, var(--app-brand) 8%, transparent);
+  border: 1px solid color-mix(in oklab, var(--app-brand) 14%, transparent);
+  color: var(--app-brand);
 }
 .itemIcon svg{ width: 16px; height: 16px; }
 
@@ -134,7 +140,7 @@
 }
 
 .btnPrimary{
-  border-color: rgba(159,33,65,.25);
+  border-color: color-mix(in oklab, var(--app-brand) 25%, transparent);
   background: #fff;
 }
 
@@ -142,7 +148,7 @@
 .btn:hover{
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
-  border-color: rgba(159,33,65,.28);
+  border-color: color-mix(in oklab, var(--app-brand) 28%, transparent);
 }
 
 .btnTop{
@@ -162,7 +168,8 @@
   right: 12px;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--vino);
+
+  color: var(--app-brand);
   opacity: .85;
 }
 .btnIcon svg{ width: 16px; height: 16px; }
@@ -184,6 +191,10 @@
   width: min(420px, 100%);
   border-radius: 22px;
   padding: 14px;
+
+
+
+  overflow: hidden;
 }
 
 .phoneImg{
@@ -191,8 +202,132 @@
   height: auto;
   display: block;
   border-radius: 16px;
-
   object-fit: cover;
+}
+
+/* =========================
+   REVEAL MOTION (re-trigger)
+   ========================= */
+
+/* estado base */
+.left,
+.right{
+  opacity: 0;
+  transform: translateY(10px);
+  will-change: transform, opacity;
+}
+
+.kicker, .title, .subtitle, .list, .ctas, .note{
+  opacity: 0;
+  transform: translateY(10px);
+  will-change: transform, opacity;
+}
+
+.mediaCard{
+  opacity: 0;
+  transform: translateY(10px) scale(.995);
+  will-change: transform, opacity;
+}
+
+/* down (vienes bajando) */
+.dirDown.isIn .left{ animation: appInDown .55s ease both; }
+.dirDown.isIn .right{ animation: appInDown .55s ease both; animation-delay: 140ms; }
+
+.dirDown.isIn .kicker{ animation: appPieceDown .55s ease both; animation-delay: 0ms; }
+.dirDown.isIn .title{ animation: appPieceDown .55s ease both; animation-delay: 90ms; }
+.dirDown.isIn .subtitle{ animation: appPieceDown .55s ease both; animation-delay: 160ms; }
+.dirDown.isIn .list{ animation: appPieceDown .55s ease both; animation-delay: 230ms; }
+.dirDown.isIn .ctas{ animation: appPieceDown .55s ease both; animation-delay: 310ms; }
+.dirDown.isIn .note{ animation: appPieceDown .55s ease both; animation-delay: 390ms; }
+
+.dirDown.isIn .mediaCard{ animation: appMediaDown .60s ease both; animation-delay: 220ms; }
+
+/* up (vienes subiendo) */
+.dirUp.isIn .left{ animation: appInUp .55s ease both; }
+.dirUp.isIn .right{ animation: appInUp .55s ease both; animation-delay: 140ms; }
+
+.dirUp.isIn .kicker{ animation: appPieceUp .55s ease both; animation-delay: 0ms; }
+.dirUp.isIn .title{ animation: appPieceUp .55s ease both; animation-delay: 90ms; }
+.dirUp.isIn .subtitle{ animation: appPieceUp .55s ease both; animation-delay: 160ms; }
+.dirUp.isIn .list{ animation: appPieceUp .55s ease both; animation-delay: 230ms; }
+.dirUp.isIn .ctas{ animation: appPieceUp .55s ease both; animation-delay: 310ms; }
+.dirUp.isIn .note{ animation: appPieceUp .55s ease both; animation-delay: 390ms; }
+
+.dirUp.isIn .mediaCard{ animation: appMediaUp .60s ease both; animation-delay: 220ms; }
+
+@keyframes appInDown{
+  from{ opacity: 0; transform: translateY(10px); }
+  to{ opacity: 1; transform: translateY(0); }
+}
+@keyframes appInUp{
+  from{ opacity: 0; transform: translateY(-10px); }
+  to{ opacity: 1; transform: translateY(0); }
+}
+
+@keyframes appPieceDown{
+  from{ opacity: 0; transform: translateY(10px); filter: blur(1.4px); }
+  to{ opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+@keyframes appPieceUp{
+  from{ opacity: 0; transform: translateY(-10px); filter: blur(1.4px); }
+  to{ opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+@keyframes appMediaDown{
+  from{ opacity: 0; transform: translateY(10px) scale(.995); }
+  to{ opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes appMediaUp{
+  from{ opacity: 0; transform: translateY(-10px) scale(.995); }
+  to{ opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ✅ micro float del teléfono cuando ya está visible */
+.isIn .phoneImg{
+  animation: phoneFloat 3.6s ease-in-out infinite;
+}
+
+@keyframes phoneFloat{
+  0%, 100%{ transform: translateY(0); }
+  50%{ transform: translateY(-6px); }
+}
+
+/* =========================
+   VEDA
+   ========================= */
+:global(html[data-theme="veda"]) .btnPrimary{
+  border-color: rgba(17,24,39,.16);
+}
+
+:global(html[data-theme="veda"]) .btnPrimary:hover,
+:global(html[data-theme="veda"]) .btn:hover{
+  border-color: rgba(17,24,39,.22);
+}
+
+/* =========================
+   Reduce motion (CSS Modules safe)
+   ========================= */
+@media (prefers-reduced-motion: reduce){
+  .left,
+  .right,
+  .kicker, .title, .subtitle, .list, .ctas, .note,
+  .mediaCard{
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  .phoneImg{
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .wrap *{
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Responsive */
