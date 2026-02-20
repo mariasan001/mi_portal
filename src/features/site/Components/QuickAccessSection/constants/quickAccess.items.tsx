@@ -9,6 +9,7 @@ import {
   FiCalendar,
   FiPercent,
   FiFilm,
+  FiFileText, // ✅ nuevo ícono
 } from 'react-icons/fi';
 
 export const QUICK_ACCESS_ITEMS: QuickAccessItem[] = [
@@ -59,5 +60,15 @@ export const QUICK_ACCESS_ITEMS: QuickAccessItem[] = [
     desc: 'Compra y consulta eventos culturales.',
     href: '#',
     icon: <FiCalendar aria-hidden="true" />,
+  },
+
+  // ✅ NUEVO
+  {
+     title: 'Comprobantes de Percepciones y Deducciones',
+    desc: 'Emisión y consulta de comprobantes oficiales.',
+    href: '/login',         
+    appCode: 'PLAT_SERV',       
+    requiresAuth: true,             
+    icon: <FiFileText aria-hidden="true" />,
   },
 ];

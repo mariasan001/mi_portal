@@ -1,22 +1,35 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '@/features/autenticacion/context/autenticacion.context';
 import s from './LoginPage.module.css';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login, loading, error } = useAuth();
+  const sp = useSearchParams();
+
+  const { login, loading, error, appCode: ctxAppCode, setAppCode } = useAuth();
 
   const [username, setUsername] = useState('admin');
   const [password, setPassword] = useState('12345678');
-  const [appCode, setAppCode] = useState('PLAT_SERV');
+
+  const appCodeFromQuery = sp.get('appCode')?.trim() || null;
+  const returnTo = sp.get('returnTo') || '/admin';
+
+  const effectiveAppCode = useMemo(
+    () => appCodeFromQuery ?? ctxAppCode ?? 'PLAT_SERV',
+    [appCodeFromQuery, ctxAppCode]
+  );
+
+  useEffect(() => {
+    if (appCodeFromQuery) setAppCode(appCodeFromQuery);
+  }, [appCodeFromQuery, setAppCode]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const ok = await login({ username, password, appCode });
-    if (ok) router.push('/admin');
+    const ok = await login({ username, password, appCode: effectiveAppCode });
+    if (ok) router.push(returnTo);
   }
 
   return (
@@ -26,7 +39,9 @@ export default function LoginPage() {
           <div className={s.bar} />
           <div>
             <div className={s.title}>Portal de Servicios</div>
-            <div className={s.sub}>Acceso seguro por credenciales</div>
+            <div className={s.sub}>
+              Acceso seguro {effectiveAppCode ? `· ${effectiveAppCode}` : ''}
+            </div>
           </div>
         </div>
 
@@ -51,15 +66,8 @@ export default function LoginPage() {
           />
         </label>
 
-        <label className={s.label}>
-          Código de Aplicación (appCode)
-          <input
-            name="appCode"
-            className={s.input}
-            value={appCode}
-            onChange={(e) => setAppCode(e.target.value)}
-          />
-        </label>
+        {/* ✅ ya no se edita: el appCode lo decide el módulo */}
+        <input type="hidden" name="appCode" value={effectiveAppCode} />
 
         {error ? <div className={s.error}>{error}</div> : null}
 
@@ -67,7 +75,9 @@ export default function LoginPage() {
           {loading ? 'Entrando...' : 'Iniciar sesión'}
         </button>
 
-        <div className={s.tip}>Tip: si esto falla, no eres tú… es el backend jugando a las escondidas 😄</div>
+        <div className={s.tip}>
+          Tip: aquí el que manda es el módulo… tú solo autorizas 😄
+        </div>
       </form>
     </div>
   );

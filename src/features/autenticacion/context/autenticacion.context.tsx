@@ -1,8 +1,15 @@
 'use client';
 
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import type { SesionMe } from '../types/autenticacion.types';
-import type { LoginRequest } from '../types/autenticacion.types';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+
+import type { SesionMe, LoginRequest } from '../types/autenticacion.types';
 import { iniciarSesion } from '../services/inicio-sesion.service';
 import { obtenerSesion } from '../services/sesion.service';
 import { esApiError, toErrorMessage } from '@/lib/api/api.errores';
@@ -14,9 +21,13 @@ type AuthState = {
   loading: boolean;
   error: string | null;
 
+  // acciones
   login: (args: LoginRequest) => Promise<boolean>;
   refresh: () => Promise<void>;
   logout: () => void;
+
+  // ✅ nuevo (para que QuickAccess lo ponga antes del login)
+  setAppCode: (code: string | null) => void;
 
   isAuthenticated: boolean;
 };
@@ -57,10 +68,22 @@ function limpiarAppCode() {
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [sesion, setSesion] = useState<SesionMe | null>(null);
-  const [appCode, setAppCode] = useState<string | null>(null);
+  const [appCode, _setAppCode] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // ✅ setter “oficial” que también persiste
+  const setAppCode = useCallback((code: string | null) => {
+    if (!code) {
+      limpiarAppCode();
+      _setAppCode(null);
+      return;
+    }
+    const clean = code.trim();
+    guardarAppCode(clean);
+    _setAppCode(clean);
+  }, []);
 
   const refresh = useCallback(async () => {
     setLoading(true);
@@ -70,7 +93,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const me = await obtenerSesion();
       setSesion(me);
     } catch (e) {
-      // Si 401/403: sesión no existe => normal
       if (esApiError(e) && (e.status === 401 || e.status === 403)) {
         setSesion(null);
         setError(null);
@@ -97,7 +119,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         await iniciarSesion(payload);
 
-        guardarAppCode(payload.appCode);
+        // ✅ siempre guardamos el appCode con el que se autenticó
         setAppCode(payload.appCode);
 
         await refresh();
@@ -110,19 +132,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setLoading(false);
       }
     },
-    [refresh]
+    [refresh, setAppCode]
   );
 
   const logout = useCallback(() => {
     limpiarAppCode();
-    setAppCode(null);
+    _setAppCode(null);
     setSesion(null);
     setError(null);
   }, []);
 
   useEffect(() => {
     const stored = leerAppCode();
-    if (stored) setAppCode(stored);
+    if (stored) _setAppCode(stored);
   }, []);
 
   useEffect(() => {
@@ -140,9 +162,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       login,
       refresh,
       logout,
+      setAppCode, // ✅
       isAuthenticated,
     }),
-    [sesion, appCode, loading, error, login, refresh, logout, isAuthenticated]
+    [sesion, appCode, loading, error, login, refresh, logout, setAppCode, isAuthenticated]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

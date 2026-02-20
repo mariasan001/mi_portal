@@ -110,7 +110,7 @@ export default function SiteNav() {
 
         {/* Right */}
         <div className={css.rightZone}>
-          <Link className={css.ctaPill} href="/login" aria-label="Iniciar sesión">
+          <Link className={css.ctaPill} href="/" aria-label="Buscar Tramite">
             <span className={css.ctaPillText}>Iniciar sesión</span>
             <span className={css.ctaPillIcon} aria-hidden="true">
               ↗

@@ -6,11 +6,34 @@ import { FiArrowRight } from 'react-icons/fi';
 import { useRevealMotion } from '@/hooks/useRevealMotion';
 import { QUICK_ACCESS_ITEMS } from './constants/quickAccess.items';
 
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/features/autenticacion/context/autenticacion.context';
+
 export default function QuickAccessSection() {
+  const router = useRouter();
+  const { isAuthenticated, setAppCode } = useAuth();
+
   const { ref: sectionRef, className } = useRevealMotion<HTMLElement>({
     threshold: 0.25,
     thresholdPx: 2,
   });
+
+  function onOpen(item: (typeof QUICK_ACCESS_ITEMS)[number]) {
+    // ✅ guardar appCode si el item lo trae
+    if (item.appCode) setAppCode(item.appCode);
+
+    // ✅ gate de login
+    if (item.requiresAuth && !isAuthenticated) {
+      const q = new URLSearchParams();
+      if (item.appCode) q.set('appCode', item.appCode);
+      q.set('returnTo', item.href);
+      router.push(`/login?${q.toString()}`);
+      return;
+    }
+
+    // ✅ directo
+    router.push(item.href);
+  }
 
   return (
     <section
@@ -26,7 +49,12 @@ export default function QuickAccessSection() {
 
         <div className={s.grid}>
           {QUICK_ACCESS_ITEMS.map((item) => (
-            <a key={item.title} href={item.href} className={s.card}>
+            <button
+              key={item.title}
+              type="button"
+              className={s.card}
+              onClick={() => onOpen(item)}
+            >
               <div className={s.icon}>{item.icon}</div>
 
               <div className={s.content}>
@@ -35,7 +63,7 @@ export default function QuickAccessSection() {
               </div>
 
               <FiArrowRight className={s.arrow} aria-hidden="true" />
-            </a>
+            </button>
           ))}
         </div>
       </div>
