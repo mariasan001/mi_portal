@@ -1,79 +1,23 @@
 'use client';
 
 import s from './QuickAccessSection.module.css';
-import {
-  FiBriefcase,
-  FiMonitor,
-  FiActivity,
-  FiAward,
-  FiUser,
-  FiCalendar,
-  FiPercent,
-  FiFilm,
-  FiArrowRight,
-} from 'react-icons/fi';
+import { FiArrowRight } from 'react-icons/fi';
 
-type Item = {
-  title: string;
-  desc: string;
-  href: string;
-  icon: React.ReactNode;
-};
-
-const items: Item[] = [
-  {
-    title: 'Viajes Turísticos',
-    desc: 'Consulta destinos y beneficios disponibles.',
-    href: '#',
-    icon: <FiBriefcase />,
-  },
-  {
-    title: 'DeclaraNET',
-    desc: 'Presenta tu declaración patrimonial en línea.',
-    href: '#',
-    icon: <FiMonitor />,
-  },
-  {
-    title: 'Deportes',
-    desc: 'Registra tu participación en actividades.',
-    href: '#',
-    icon: <FiActivity />,
-  },
-  {
-    title: 'Sistema de Escalafón',
-    desc: 'Consulta tu proceso y resultados.',
-    href: '#',
-    icon: <FiAward />,
-  },
-  {
-    title: 'Prestaciones ISSEMYM',
-    desc: 'Trámites y estado de beneficios.',
-    href: '#',
-    icon: <FiUser />,
-  },
-  {
-    title: 'Cine Club',
-    desc: 'Consulta funciones disponibles.',
-    href: '#',
-    icon: <FiFilm />,
-  },
-  {
-    title: 'Descuentos',
-    desc: 'Beneficios vigentes para servidores.',
-    href: '#',
-    icon: <FiPercent />,
-  },
-  {
-    title: 'Boletos para Festivales',
-    desc: 'Compra y consulta eventos culturales.',
-    href: '#',
-    icon: <FiCalendar />,
-  },
-];
+import { useRevealMotion } from '@/hooks/useRevealMotion';
+import { QUICK_ACCESS_ITEMS } from './constants/quickAccess.items';
 
 export default function QuickAccessSection() {
+  const { ref: sectionRef, className } = useRevealMotion<HTMLElement>({
+    threshold: 0.25,
+    thresholdPx: 2,
+  });
+
   return (
-    <section className={s.wrap}>
+    <section
+      ref={sectionRef}
+      className={className(s.wrap, s.isIn, s.dirDown, s.dirUp)}
+      aria-label="Accesos rápidos"
+    >
       <div className={s.inner}>
         <header className={s.header}>
           <h2>Accesos Rápidos</h2>
@@ -81,7 +25,7 @@ export default function QuickAccessSection() {
         </header>
 
         <div className={s.grid}>
-          {items.map((item) => (
+          {QUICK_ACCESS_ITEMS.map((item) => (
             <a key={item.title} href={item.href} className={s.card}>
               <div className={s.icon}>{item.icon}</div>
 
@@ -90,7 +34,7 @@ export default function QuickAccessSection() {
                 <p>{item.desc}</p>
               </div>
 
-              <FiArrowRight className={s.arrow} />
+              <FiArrowRight className={s.arrow} aria-hidden="true" />
             </a>
           ))}
         </div>

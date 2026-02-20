@@ -9,8 +9,16 @@ import { useGuides } from './hooks/useGuides';
 
 import RowItem from './components/RowItem';
 import SectionBox from './components/SectionBox';
+import { useRevealMotion } from '@/hooks/useRevealMotion';
+
+// ✅ Animación premium (re-trigger + dirección)
 
 export default function GuidesSection() {
+  const { ref: sectionRef, className } = useRevealMotion<HTMLElement>({
+    threshold: 0.25,
+    thresholdPx: 2,
+  });
+
   const {
     query,
     setQuery,
@@ -23,7 +31,11 @@ export default function GuidesSection() {
   } = useGuides({ docs: GUIDES_DOCS });
 
   return (
-    <section className={s.wrap} aria-label="Guías y descargas">
+    <section
+      ref={sectionRef}
+      className={className(s.wrap, s.isIn, s.dirDown, s.dirUp)}
+      aria-label="Guías y descargas"
+    >
       <div className={s.inner}>
         <header className={s.header}>
           <div className={s.kicker}>Centro de Documentos</div>

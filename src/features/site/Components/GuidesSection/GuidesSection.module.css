@@ -13,6 +13,112 @@
   margin: 0 auto;
 }
 
+/* =========================================
+   REVEAL MOTION (base oculto + re-trigger)
+   ========================================= */
+
+.header,
+.panels,
+.box,
+.footerNote{
+  opacity: 0;
+  transform: translateY(10px);
+  will-change: transform, opacity;
+}
+
+.dirDown.isIn .header{ animation: inDown .55s ease both; }
+.dirUp.isIn .header{ animation: inUp .55s ease both; }
+
+.dirDown.isIn .panels{ animation: inDown .55s ease both; animation-delay: 90ms; }
+.dirUp.isIn .panels{ animation: inUp .55s ease both; animation-delay: 90ms; }
+
+.dirDown.isIn .box{ animation: inDown .55s ease both; animation-delay: 110ms; }
+.dirUp.isIn .box{ animation: inUp .55s ease both; animation-delay: 110ms; }
+
+.dirDown.isIn .footerNote{ animation: inDown .55s ease both; animation-delay: 170ms; }
+.dirUp.isIn .footerNote{ animation: inUp .55s ease both; animation-delay: 170ms; }
+
+/* Stagger header interno */
+.kicker,
+.title,
+.subtitle,
+.searchRow{
+  opacity: 0;
+  transform: translateY(10px);
+  will-change: transform, opacity;
+}
+
+.dirDown.isIn .kicker{ animation: inDown .55s ease both; animation-delay: 0ms; }
+.dirUp.isIn .kicker{ animation: inUp .55s ease both; animation-delay: 0ms; }
+
+.dirDown.isIn .title{ animation: inDown .55s ease both; animation-delay: 60ms; }
+.dirUp.isIn .title{ animation: inUp .55s ease both; animation-delay: 60ms; }
+
+.dirDown.isIn .subtitle{ animation: inDown .55s ease both; animation-delay: 110ms; }
+.dirUp.isIn .subtitle{ animation: inUp .55s ease both; animation-delay: 110ms; }
+
+.dirDown.isIn .searchRow{ animation: inDown .55s ease both; animation-delay: 160ms; }
+.dirUp.isIn .searchRow{ animation: inUp .55s ease both; animation-delay: 160ms; }
+
+/* Stagger rows */
+.row{
+  opacity: 0;
+  transform: translateY(10px);
+  will-change: transform, opacity;
+}
+
+.dirDown.isIn .rows .row{ animation: inDown .55s ease both; }
+.dirUp.isIn .rows .row{ animation: inUp .55s ease both; }
+
+.dirDown.isIn .rows .row:nth-child(1),
+.dirUp.isIn .rows .row:nth-child(1){ animation-delay: 0ms; }
+.dirDown.isIn .rows .row:nth-child(2),
+.dirUp.isIn .rows .row:nth-child(2){ animation-delay: 60ms; }
+.dirDown.isIn .rows .row:nth-child(3),
+.dirUp.isIn .rows .row:nth-child(3){ animation-delay: 110ms; }
+.dirDown.isIn .rows .row:nth-child(4),
+.dirUp.isIn .rows .row:nth-child(4){ animation-delay: 160ms; }
+.dirDown.isIn .rows .row:nth-child(5),
+.dirUp.isIn .rows .row:nth-child(5){ animation-delay: 210ms; }
+.dirDown.isIn .rows .row:nth-child(6),
+.dirUp.isIn .rows .row:nth-child(6){ animation-delay: 260ms; }
+.dirDown.isIn .rows .row:nth-child(7),
+.dirUp.isIn .rows .row:nth-child(7){ animation-delay: 310ms; }
+.dirDown.isIn .rows .row:nth-child(8),
+.dirUp.isIn .rows .row:nth-child(8){ animation-delay: 360ms; }
+
+@keyframes inDown{
+  from{ opacity: 0; transform: translateY(12px); }
+  to{ opacity: 1; transform: translateY(0); }
+}
+
+@keyframes inUp{
+  from{ opacity: 0; transform: translateY(-12px); }
+  to{ opacity: 1; transform: translateY(0); }
+}
+
+/* Reduce motion: sin animaciones */
+@media (prefers-reduced-motion: reduce){
+  .header,
+  .panels,
+  .box,
+  .footerNote,
+  .kicker,
+  .title,
+  .subtitle,
+  .searchRow,
+  .row{
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* =========================================
+   UI
+   ========================================= */
+
 .header{
   display: grid;
   gap: 10px;
@@ -106,37 +212,8 @@
 }
 .clearBtn svg{ width: 18px; height: 18px; }
 
-.chips{
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  padding: 10px 2px 0;
-  justify-content: center;
-  scrollbar-width: none;
-}
-.chips::-webkit-scrollbar{ display: none; }
-
-.chip{
-  height: 34px;
-  padding: 0 12px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: rgba(10,10,10,.72);
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease;
-}
-
-.chip[data-active="1"]{
-  border-color: rgba(188,148,90,.45);
-  box-shadow: var(--shadow-sm);
-}
-
 /* =========================
-   Panels tabs (sin acordeón)
+   Panels
    ========================= */
 .panels{
   display: grid;
@@ -301,7 +378,7 @@
   align-items: center;
 }
 
-/* ✅ CTA Descargar (normal institucional) */
+/* CTA Descargar (normal institucional) */
 .ctaDownload{
   height: 36px;
   padding: 0 12px;
@@ -314,7 +391,7 @@
   align-items: center;
   gap: 8px;
 
-  font-weight: 600; /* ✅ FIX */
+  font-weight: 600;
   font-size: 12px;
   text-decoration: none;
   cursor: pointer;
@@ -415,12 +492,6 @@
    Activación: html[data-theme="veda"]
    ========================================= */
 
-:global(html[data-theme="veda"]) .wrap{
-  background: var(--bg);
-  color: var(--text);
-}
-
-/* Search focus sin vino */
 :global(html[data-theme="veda"]) .searchRow:focus-within{
   border-color: rgba(17,24,39,.22);
   box-shadow: var(--shadow-sm), 0 0 0 4px rgba(17,24,39,.08);
@@ -430,13 +501,11 @@
   color: rgba(17,24,39,.42);
 }
 
-/* Tabs sin oro */
 :global(html[data-theme="veda"]) .panelTab[data-active="1"]{
   border-color: rgba(17,24,39,.22);
   box-shadow: var(--shadow-sm);
 }
 
-/* Iconos neutros */
 :global(html[data-theme="veda"]) .rowIcon{
   color: rgba(17,24,39,.70);
 }
@@ -447,7 +516,6 @@
   color: rgba(17,24,39,.72);
 }
 
-/* CTA Descargar neutro */
 :global(html[data-theme="veda"]) .ctaDownload{
   border-color: rgba(17,24,39,.18);
   background: rgba(17,24,39,.92);
@@ -459,20 +527,17 @@
   box-shadow: var(--shadow-sm);
 }
 
-/* CTA Abrir sobrio */
 :global(html[data-theme="veda"]) .ctaOpen{
   border-color: rgba(17,24,39,.14);
   background: var(--surface);
   color: rgba(17,24,39,.86);
 }
 
-/* Chips si se usan */
 :global(html[data-theme="veda"]) .chip[data-active="1"]{
   border-color: rgba(17,24,39,.22);
   box-shadow: var(--shadow-sm);
 }
 
-/* sombras más sobrias */
 :global(html[data-theme="veda"]) .searchRow,
 :global(html[data-theme="veda"]) .panelTab,
 :global(html[data-theme="veda"]) .box,
@@ -480,7 +545,6 @@
   box-shadow: var(--shadow-sm);
 }
 
-/* empty neutro */
 :global(html[data-theme="veda"]) .empty{
   border-color: rgba(17,24,39,.18);
   background: rgba(17,24,39,.02);
