@@ -20,6 +20,7 @@ export default function SiteNav() {
   const [open, setOpen] = useState(false);
   const [compact, setCompact] = useState(false);
   const [isTop, setIsTop] = useState(true);
+
   const lastY = useRef(0);
   const ticking = useRef(false);
 
@@ -34,8 +35,9 @@ export default function SiteNav() {
         const y = window.scrollY || 0;
         const delta = y - lastY.current;
 
-        const THRESH = 10;   
-        const GLASS_AT = 8;      
+        const THRESH = 10;
+        const GLASS_AT = 8;
+
         setIsTop(y < GLASS_AT);
 
         if (y < 20) {
@@ -56,6 +58,24 @@ export default function SiteNav() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+
+    if (open) {
+      document.addEventListener('keydown', onKeyDown);
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [open]);
+
   return (
     <header
       className={[
@@ -67,25 +87,10 @@ export default function SiteNav() {
       <div className={css.navInner}>
         {/* Left */}
         <div className={css.leftZone} aria-label="Redes sociales">
-          <a
-            className={css.socialIcon}
-            href="https://facebook.com"
-            target="_blank"
-            rel="noreferrer"
-            aria-label="Facebook"
-            title="Facebook"
-          >
+          <a className={css.socialIcon} href="https://facebook.com" target="_blank" rel="noreferrer" aria-label="Facebook" title="Facebook">
             <FaFacebookF />
           </a>
-
-          <a
-            className={css.socialIcon}
-            href="https://x.com"
-            target="_blank"
-            rel="noreferrer"
-            aria-label="X"
-            title="X"
-          >
+          <a className={css.socialIcon} href="https://x.com" target="_blank" rel="noreferrer" aria-label="X" title="X">
             <FaXTwitter />
           </a>
         </div>
@@ -93,24 +98,50 @@ export default function SiteNav() {
         {/* Center */}
         <nav className={css.pillNav} aria-label="Navegación principal">
           <Link href="/" className={css.pillLogoFree} aria-label="Inicio">
-            <Image
-              src="/img/logo_principal.png"
-              alt="Portal de Servicios"
-              width={160}
-              height={120}
-              priority
-              className={css.logoFree}
-            />
+            {/* ✅ NO COMPACTO: logo COMPLETO (sin círculo) */}
+            <span className={css.logoFullWrap} aria-hidden="true">
+              <Image
+                src="/img/logo_principal.png"
+                alt=""
+                width={180}
+                height={72}
+                priority
+                className={`${css.logoFull} ${css.fullNormal}`}
+              />
+              <Image
+                src="/img/logo_gob.png"
+                alt=""
+                width={180}
+                height={72}
+                priority
+                className={`${css.logoFull} ${css.fullVeda}`}
+              />
+            </span>
+
+            {/* ✅ COMPACTO: solo ícono en círculo */}
+            <span className={css.logoChip} aria-hidden="true">
+              <Image
+                src="/img/colibri.png"
+                alt=""
+                width={64}
+                height={64}
+                priority
+                className={`${css.logoIcon} ${css.compactNormal}`}
+              />
+              <Image
+                src="/img/escudo.png"
+                alt=""
+                width={64}
+                height={64}
+                priority
+                className={`${css.logoIcon} ${css.compactVeda}`}
+              />
+            </span>
           </Link>
 
           <div className={css.pillLinks}>
             {items.map((it) => (
-              <Link
-                key={it.href}
-                href={it.href}
-                className={css.pillLink}
-                onClick={() => setOpen(false)}
-              >
+              <Link key={it.href} href={it.href} className={css.pillLink} onClick={() => setOpen(false)}>
                 {it.label}
               </Link>
             ))}
@@ -121,9 +152,7 @@ export default function SiteNav() {
         <div className={css.rightZone}>
           <Link className={css.ctaPill} href="/login" aria-label="Iniciar sesión">
             <span className={css.ctaPillText}>Iniciar sesión</span>
-            <span className={css.ctaPillIcon} aria-hidden="true">
-              ↗
-            </span>
+            <span className={css.ctaPillIcon} aria-hidden="true">↗</span>
           </Link>
 
           <button
@@ -131,6 +160,7 @@ export default function SiteNav() {
             type="button"
             aria-label={open ? 'Cerrar menú' : 'Abrir menú'}
             aria-expanded={open}
+            aria-controls="site-mobile-menu"
             onClick={() => setOpen((v) => !v)}
           >
             <span />
@@ -141,15 +171,10 @@ export default function SiteNav() {
       </div>
 
       {/* Mobile panel */}
-      <div className={`${css.mobilePanel} ${open ? css.mobilePanelOpen : ''}`}>
+      <div id="site-mobile-menu" className={`${css.mobilePanel} ${open ? css.mobilePanelOpen : ''}`}>
         <nav className={css.mobileLinks} aria-label="Navegación móvil">
           {items.map((it) => (
-            <Link
-              key={it.href}
-              href={it.href}
-              className={css.mobileLink}
-              onClick={() => setOpen(false)}
-            >
+            <Link key={it.href} href={it.href} className={css.mobileLink} onClick={() => setOpen(false)}>
               {it.label}
             </Link>
           ))}
@@ -168,6 +193,7 @@ export default function SiteNav() {
           </div>
         </nav>
       </div>
+
       {open ? (
         <button className={css.overlay} aria-label="Cerrar menú" onClick={() => setOpen(false)} />
       ) : null}

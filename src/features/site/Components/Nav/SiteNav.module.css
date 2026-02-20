@@ -1,7 +1,7 @@
 /* SiteNav.module.css */
 
 .navWrap{
-  position: fixed;     
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
@@ -24,13 +24,6 @@
   box-shadow: none;
 }
 
-
-.hasGlass{
-  background: linear-gradient(to bottom, rgba(244,245,247,.86), rgba(244,245,247,.55));
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--border-soft);
-  box-shadow: 0 12px 30px rgba(10,10,10,.08);
-}
 
 .navInner{
   max-width: 1240px;
@@ -58,7 +51,7 @@
   align-items: center;
   justify-content: center;
 
-  background: rgba(255,255,255,.90);
+  background: rgba(255,255,255,.92);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-sm);
 
@@ -76,8 +69,13 @@
 .socialIcon:hover{
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
-  color: var(--vino);
-  border-color: rgba(159,33,65,.25);
+  color: var(--brand);
+  border-color: rgba(10,10,10,.16);
+}
+
+.socialIcon:focus-visible{
+  outline: 3px solid rgba(10,10,10,.18);
+  outline-offset: 2px;
 }
 
 /* =========================
@@ -90,11 +88,11 @@
   padding: 10px 14px;
   border-radius: 999px;
 
-  background: rgba(255,255,255,.90);
+  background: rgba(255,255,255,.92);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-sm);
 
-  transition: padding .18s ease;
+  transition: padding .18s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease;
 }
 
 .pillLogoFree{
@@ -106,13 +104,81 @@
   padding-left: 2px;
 }
 
-.logoFree{
-  width: 48px;
-  height: 48px;
-  object-fit: contain;
-  filter: drop-shadow(0 8px 14px rgba(10,10,10,.12));
+/* ===== LOGOS ===== */
+
+/* ✅ NO COMPACTO: logo completo (no círculo, no recorte) */
+.logoFullWrap{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  width: 118px; /* 🔧 ajusta si quieres más grande */
+  height: 46px;
 }
 
+.logoFull{
+  width: 118px;
+  height: 46px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 14px rgba(10,10,10,.12));
+
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  opacity: 0;
+  transition: opacity .16s ease;
+}
+
+.fullNormal{ opacity: 1; }
+.fullVeda{ opacity: 0; }
+
+:global(html[data-theme="veda"]) .fullNormal{ opacity: 0; }
+:global(html[data-theme="veda"]) .fullVeda{ opacity: 1; }
+
+/* ✅ COMPACTO: icono en círculo */
+.logoChip{
+  display: none; /* default hidden */
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+
+  place-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.logoIcon{
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 14px rgba(10,10,10,.12));
+
+  position: absolute;
+
+  opacity: 0;
+  transform: scale(.98);
+  transition: opacity .16s ease, transform .18s ease;
+}
+
+.compactNormal{ opacity: 1; transform: scale(1); }
+.compactVeda{ opacity: 0; }
+
+:global(html[data-theme="veda"]) .compactNormal{ opacity: 0; transform: scale(.98); }
+:global(html[data-theme="veda"]) .compactVeda{ opacity: 1; transform: scale(1); }
+
+/* ✅ Cuando es compacto:
+   - ocultar logo completo
+   - mostrar chip */
+.isCompact .logoFullWrap{ display: none; }
+.isCompact .logoChip{ display: grid; }
+
+/* Links */
 .pillLinks{
   display: inline-flex;
   align-items: center;
@@ -150,6 +216,11 @@
   transform: translateY(-1px);
 }
 
+.pillLink:focus-visible{
+  outline: 3px solid rgba(10,10,10,.18);
+  outline-offset: 2px;
+}
+
 /* =========================
    RIGHT: CTA + Burger
    ========================= */
@@ -169,7 +240,7 @@
   border-radius: 999px;
   text-decoration: none;
 
-  background: var(--vino);
+  background: var(--brand);
   color: #fff;
 
   border: 1px solid rgba(10,10,10,.12);
@@ -184,12 +255,18 @@
   box-shadow: 0 18px 36px rgba(10,10,10,.16);
 }
 
+.ctaPill:focus-visible{
+  outline: 3px solid rgba(10,10,10,.18);
+  outline-offset: 3px;
+}
+
 .ctaPillText{
   font-weight: 600;
   font-size: 13px;
   letter-spacing: .12px;
   white-space: nowrap;
- padding-right: 1PX;
+  padding-right: 1px;
+
   opacity: 1;
   transform: translateX(0);
   width: auto;
@@ -226,26 +303,38 @@
 /* Burger */
 .burger{
   display: none;
-  width: 34px;
-  height: 34px;
+  width: 40px;
+  height: 40px;
   border-radius: 999px;
 
   border: 1px solid var(--border);
-  background: rgba(255,255,255,.90);
+  background: rgba(255,255,255,.92);
   box-shadow: var(--shadow-sm);
 
   align-items: center;
   justify-content: center;
   gap: 4px;
   cursor: pointer;
+
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.burger:hover{
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 
 .burger span{
   display: block;
-  width: 12px;
+  width: 14px;
   height: 2px;
   background: rgba(10,10,10,.72);
   border-radius: 10px;
+}
+
+.burger:focus-visible{
+  outline: 3px solid rgba(10,10,10,.18);
+  outline-offset: 2px;
 }
 
 /* =========================
@@ -255,8 +344,12 @@
   padding: 10px 16px;
 }
 
+/* ✅ se quita el fondo glass del pill, NO el logo */
 .isCompact .pillNav{
-  padding: 10px 12px;
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  padding: 0;
 }
 
 .isCompact .pillLinks{
@@ -277,7 +370,7 @@
 }
 
 /* =========================
-   Mobile panel
+   Mobile panel (animado)
    ========================= */
 .mobilePanel{
   display: none;
@@ -285,14 +378,23 @@
   max-width: 1240px;
   margin: 10px auto 0;
   padding: 0 2px;
+
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+
+  transition: opacity .18s ease, transform .22s ease;
 }
 
 .mobilePanelOpen{
   display: block;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
 .mobileLinks{
-  background: rgba(255,255,255,.94);
+  background: rgba(255,255,255,.95);
   border: 1px solid var(--border);
   border-radius: var(--r-lg);
   box-shadow: var(--shadow-md);
@@ -313,10 +415,13 @@
   color: var(--text);
   font-weight: 600;
   background: rgba(10,10,10,.04);
+
+  transition: background .15s ease, transform .15s ease;
 }
 
 .mobileLink:hover{
-  background: rgba(159,33,65,.10);
+  background: rgba(10,10,10,.06);
+  transform: translateY(-1px);
 }
 
 .mobileCtaPill{
@@ -331,7 +436,7 @@
 
   font-weight: 700;
   color: #fff;
-  background: var(--vino);
+  background: var(--brand);
 }
 
 .mobileSocials{
@@ -340,10 +445,64 @@
   padding: 6px 4px 2px;
 }
 
+/* =========================
+   Overlay
+   ========================= */
 .overlay{
   position: fixed;
   inset: 0;
   background: rgba(10,10,10,.28);
   border: 0;
   cursor: pointer;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .18s ease;
+}
+
+.overlayOpen{
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+@media (max-width: 920px){
+  .pillLinks{
+    max-width: 380px;
+  }
+}
+
+@media (max-width: 768px){
+  .navInner{
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+  }
+
+  .leftZone{
+    display: none;
+  }
+
+  .pillLinks{
+    display: none;
+  }
+
+  .burger{
+    display: inline-flex;
+  }
+
+  .mobilePanel{
+    display: block;
+  }
+}
+
+@media (max-width: 420px){
+  .ctaPill{
+    padding: 10px;
+  }
+
+  .ctaPillText{
+    display: none;
+  }
 }
