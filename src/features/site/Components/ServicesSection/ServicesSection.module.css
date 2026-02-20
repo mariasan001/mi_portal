@@ -1,5 +1,10 @@
 /* src/features/site/Components/ServicesSection/ServicesSection.module.css */
 
+/* Estados (se agregan desde TSX) – noop para evitar warnings del linter */
+.isIn   { --_state-in: 1; }
+.dirDown{ --_state-dir: 1; }
+.dirUp  { --_state-dir: -1; }
+
 .wrap{
   position: relative;
   padding: 54px 16px 64px;
@@ -29,7 +34,7 @@
 }
 
 .titleAccent{
-  color: var(--oro);
+  color: var(--accent);
   font-weight: 800;
 }
 
@@ -70,10 +75,10 @@
 
 .searchBar:focus-within{
   transform: translateY(-1px);
-  border-color: rgba(159,33,65,.28);
+  border-color: color-mix(in srgb, var(--brand) 30%, rgba(10,10,10,.12));
   box-shadow:
     0 18px 32px rgba(10,10,10,.08),
-    0 0 0 4px rgba(159,33,65,.10);
+    0 0 0 4px color-mix(in srgb, var(--brand) 14%, transparent);
 }
 
 .searchBarIcon{
@@ -135,7 +140,7 @@
 
 .searchBarBtn:hover{
   transform: translateY(-1px);
-  border-color: rgba(188,148,90,.30);
+  border-color: color-mix(in srgb, var(--accent) 30%, rgba(10,10,10,.10));
   box-shadow: 0 10px 18px rgba(10,10,10,.08);
 }
 
@@ -145,25 +150,10 @@
 }
 
 @media (max-width: 520px){
-  .searchBar{
-    height: 44px;
-    border-radius: 12px;
-  }
-
-  .searchBarIcon{
-    height: 44px;
-  }
-
-  .searchBarInput{
-    height: 44px;
-    font-size: 13px;
-  }
-
-  .searchBarBtn{
-    height: 34px;
-    border-radius: 11px;
-    padding: 0 12px;
-  }
+  .searchBar{ height: 44px; border-radius: 12px; }
+  .searchBarIcon{ height: 44px; }
+  .searchBarInput{ height: 44px; font-size: 13px; }
+  .searchBarBtn{ height: 34px; border-radius: 11px; padding: 0 12px; }
 }
 
 /* =========================
@@ -208,6 +198,12 @@
   mix-blend-mode: normal;
 }
 
+/* ✅ VEDA: ocultar flores SIEMPRE */
+:global(html[data-theme="veda"]) .cardShell::before{
+  content: none;          /* ✅ desaparece el pseudo-elemento */
+  animation: none !important;
+}
+
 /* Card encima */
 .card{
   position: relative;
@@ -225,13 +221,18 @@
   grid-template-rows: auto auto 1fr auto;
   gap: 8px;
 
-  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  will-change: transform;
 }
 
 .card:hover{
-  transform: translateY(-2px);
+  transform: translateY(-3px);
   box-shadow: var(--shadow-md);
   border-color: rgba(10,10,10,.14);
+}
+
+.card:active{
+  transform: translateY(-1px) scale(.99);
 }
 
 /* Icono */
@@ -247,14 +248,11 @@
 }
 
 .icon{
-  color: var(--oro);
+  color: var(--accent);
   display: inline-flex;
 }
 
-.icon svg{
-  width: 22px;
-  height: 22px;
-}
+.icon svg{ width: 22px; height: 22px; }
 
 .cardTitle{
   margin: 6px 0 0;
@@ -294,85 +292,49 @@
   align-items: center;
   justify-content: center;
 
-  border: 1px solid var(--oro);
+  border: 1px solid var(--accent);
   background: #fff;
   box-shadow: 0 10px 22px rgba(10,10,10,.08);
 
-  transition: transform .16s ease, background .16s ease;
+  transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
 }
 
-.ctaArrow svg{
-  width: 16px;
-  height: 16px;
-}
+.ctaArrow svg{ width: 16px; height: 16px; }
 
 .card:hover .ctaArrow{
-  transform: translateY(-1px) rotate(-6deg);
+  transform: translateY(-2px) rotate(-10deg);
   background: rgba(255,255,255,.95);
 }
 
 @media (max-width: 1100px){
-  .grid{
-    grid-template-columns: 1fr;
-  }
-
-  .title{
-    font-size: 28px;
-  }
-
-  .card{
-    min-height: unset;
-  }
+  .grid{ grid-template-columns: 1fr; }
+  .title{ font-size: 28px; }
+  .card{ min-height: unset; }
 }
 
 @media (max-width: 520px){
-  .wrap{
-    padding: 44px 14px 54px;
-  }
-
-  .title{
-    font-size: 24px;
-  }
-
-  .subtitle{
-    font-size: 13px;
-  }
-
-  .card{
-    border-radius: 16px;
-    padding: 16px 16px 14px;
-  }
+  .wrap{ padding: 44px 14px 54px; }
+  .title{ font-size: 24px; }
+  .subtitle{ font-size: 13px; }
+  .card{ border-radius: 16px; padding: 16px 16px 14px; }
 }
 
 /* =========================
-   Animaciones suaves (entrada / hover)
+   Animaciones (re-trigger + dir)
    ========================= */
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
+/* Base (sin animar) → permite re-trigger al salir/entrar */
+.head,
+.title,
+.subtitle,
+.searchBar,
+.cardShell{
+  opacity: 0;
+  transform: translateY(10px);
+  will-change: transform, opacity;
 }
 
-@keyframes floatSoft {
-  0%   { transform: translateY(0) rotate(var(--flor-rot)); }
-  50%  { transform: translateY(-3px) rotate(var(--flor-rot)); }
-  100% { transform: translateY(0) rotate(var(--flor-rot)); }
-}
-
-@keyframes shine {
-  0%   { transform: translateX(-120%); opacity: 0; }
-  30%  { opacity: .55; }
-  60%  { opacity: .25; }
-  100% { transform: translateX(120%); opacity: 0; }
-}
-
-/* Entrada header */
-.head{ animation: fadeUp .55s ease both; }
-.title{ animation: fadeUp .55s ease both; animation-delay: .03s; }
-.subtitle{ animation: fadeUp .55s ease both; animation-delay: .08s; }
-.searchBar{ animation: fadeUp .55s ease both; animation-delay: .13s; }
-
-/* Shine buscador al cargar */
+/* Shine base (apagado) */
 .searchBar::after{
   content: "";
   position: absolute;
@@ -393,40 +355,69 @@
 
   transform: translateX(-120%);
   opacity: 0;
-
-  animation: shine 1.15s ease .35s 1 both;
 }
 
-/* Entrada cards escalonada */
-.cardShell{
-  opacity: 0;
-  animation: fadeUp .55s ease both;
+/* Keyframes */
+@keyframes fadeDown{
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-.cardShell:nth-child(1){ animation-delay: .18s; }
-.cardShell:nth-child(2){ animation-delay: .26s; }
-.cardShell:nth-child(3){ animation-delay: .34s; }
 
-/* Flor “respira” */
-.cardShell::before{
+@keyframes fadeUp{
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shine{
+  0%   { transform: translateX(-120%); opacity: 0; }
+  30%  { opacity: .55; }
+  60%  { opacity: .25; }
+  100% { transform: translateX(120%); opacity: 0; }
+}
+
+@keyframes floatSoft{
+  0%   { transform: translateY(0) rotate(var(--flor-rot)); }
+  50%  { transform: translateY(-3px) rotate(var(--flor-rot)); }
+  100% { transform: translateY(0) rotate(var(--flor-rot)); }
+}
+
+/* DIR: DOWN */
+.dirDown.isIn .head{      animation: fadeDown .55s ease both; }
+.dirDown.isIn .title{     animation: fadeDown .55s ease both; animation-delay: .03s; }
+.dirDown.isIn .subtitle{  animation: fadeDown .55s ease both; animation-delay: .08s; }
+.dirDown.isIn .searchBar{ animation: fadeDown .55s ease both; animation-delay: .13s; }
+
+.dirDown.isIn .searchBar::after{ animation: shine 1.15s ease .35s 1 both; }
+
+.dirDown.isIn .cardShell{ animation: fadeDown .55s ease both; }
+.dirDown.isIn .cardShell:nth-child(1){ animation-delay: .18s; }
+.dirDown.isIn .cardShell:nth-child(2){ animation-delay: .26s; }
+.dirDown.isIn .cardShell:nth-child(3){ animation-delay: .34s; }
+
+/* DIR: UP */
+.dirUp.isIn .head{      animation: fadeUp .55s ease both; }
+.dirUp.isIn .title{     animation: fadeUp .55s ease both; animation-delay: .03s; }
+.dirUp.isIn .subtitle{  animation: fadeUp .55s ease both; animation-delay: .08s; }
+.dirUp.isIn .searchBar{ animation: fadeUp .55s ease both; animation-delay: .13s; }
+
+.dirUp.isIn .searchBar::after{ animation: shine 1.15s ease .35s 1 both; }
+
+.dirUp.isIn .cardShell{ animation: fadeUp .55s ease both; }
+.dirUp.isIn .cardShell:nth-child(1){ animation-delay: .18s; }
+.dirUp.isIn .cardShell:nth-child(2){ animation-delay: .26s; }
+.dirUp.isIn .cardShell:nth-child(3){ animation-delay: .34s; }
+
+/* Flor “respira” (solo cuando está in-view) */
+.isIn .cardShell::before{
   animation: floatSoft 3.8s ease-in-out .6s infinite;
 }
 
-/* Hover más fino + press */
-.card{
-  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
-  will-change: transform;
-}
-.card:hover{ transform: translateY(-3px); }
-.card:active{ transform: translateY(-1px) scale(.99); }
-
-.ctaArrow{
-  transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
-}
-.card:hover .ctaArrow{
-  transform: translateY(-2px) rotate(-10deg);
+/* ✅ VEDA: por si acaso, asegura que no haya animación de flor */
+:global(html[data-theme="veda"]) .isIn .cardShell::before{
+  animation: none !important;
 }
 
-/* Respeta reduce motion */
+/* Reduce motion */
 @media (prefers-reduced-motion: reduce){
   .head,
   .title,
@@ -436,7 +427,10 @@
   .cardShell::before,
   .searchBar::after{
     animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
+
   .card,
   .ctaArrow,
   .searchBarIcon{

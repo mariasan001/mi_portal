@@ -1,103 +1,28 @@
-// src/features/site/Components/ServicesSection/ServicesSection.tsx
+'use client';
+
 import Link from 'next/link';
-import type { CSSProperties, ReactNode } from 'react';
-import {
-  FiSearch,
-  FiFileText,
-  FiClipboard,
-  FiBookOpen,
-  FiArrowUpRight,
-} from 'react-icons/fi';
+import { FiArrowUpRight, FiSearch } from 'react-icons/fi';
 
 import css from './ServicesSection.module.css';
 
-type Accent = 'vino' | 'oro' | 'arena';
+import { SERVICE_CARDS } from './constants/ServiceConstants';
+import { shellStyle } from './utils/shellStyle';
 
-type CardItem = {
-  title: string;
-  desc: string;
-  href: string;
-  cta: string;
-  icon: ReactNode;
-  accent: Accent;
-  bgImage: string;
-};
-
-type ShellVars = CSSProperties & {
-  ['--flor-url']?: string;
-  ['--flor-size']?: string;
-  ['--flor-x']?: string;
-  ['--flor-y']?: string;
-  ['--flor-rot']?: string;
-  ['--flor-opacity']?: string;
-};
-
-const cards: CardItem[] = [
-  {
-    title: 'Consultas',
-    desc: 'Consulta en un solo lugar tus trámites y documentos personales de forma rápida, segura y sin complicaciones.',
-    href: '/consultas',
-    cta: 'Ir al centro de consultas',
-    icon: <FiFileText />,
-    accent: 'vino',
-    bgImage: '/img/flor_1.png',
-  },
-  {
-    title: 'Trámites',
-    desc: 'Accede a los trámites oficiales disponibles. Consulta, inicia o da seguimiento con seguridad, transparencia y respaldo institucional.',
-    href: '/tramites',
-    cta: 'Explorar trámites',
-    icon: <FiClipboard />,
-    accent: 'oro',
-    bgImage: '/img/flor_2.png',
-  },
-  {
-    title: 'Normativas y Lineamientos',
-    desc: 'Accede a la normativa vigente que regula trámites, procesos y derechos laborales. Encuentra lineamientos, acuerdos y disposiciones oficiales.',
-    href: '/normativas',
-    cta: 'Explorar normatividad',
-    icon: <FiBookOpen />,
-    accent: 'arena',
-    bgImage: '/img/flor_3.png',
-  },
-];
-
-function shellStyle(c: CardItem): ShellVars {
-  const base: ShellVars = {
-    ['--flor-url']: `url('${c.bgImage}')`,
-    ['--flor-size']: 'clamp(40px, 10vw, 70px)',
-    ['--flor-x']: '-30px',
-    ['--flor-y']: '-25px',
-    ['--flor-rot']: '-52deg',
-    ['--flor-opacity']: '.95',
-  };
-
-  if (c.accent === 'oro') {
-    return {
-      ...base,
-      ['--flor-rot']: '-40deg',
-      ['--flor-x']: '-30px',
-      ['--flor-y']: '-25px',
-      ['--flor-opacity']: '.93',
-    };
-  }
-
-  if (c.accent === 'arena') {
-    return {
-      ...base,
-      ['--flor-rot']: '-40deg',
-      ['--flor-x']: '-30px',
-      ['--flor-y']: '-30px',
-      ['--flor-opacity']: '.92',
-    };
-  }
-
-  return base;
-}
+import { useRevealMotion } from '@/hooks/useRevealMotion';
 
 export default function ServicesSection() {
+  // ✅ FIX: desestructuramos para NO usar `motion.ref` en JSX (linter feliz)
+  const { ref: sectionRef, className } = useRevealMotion<HTMLElement>({
+    threshold: 0.25,
+    thresholdPx: 2,
+  });
+
   return (
-    <section className={css.wrap} aria-label="Gestión de información y servicios">
+    <section
+      ref={sectionRef}
+      className={className(css.wrap, css.isIn, css.dirDown, css.dirUp)}
+      aria-label="Gestión de información y servicios"
+    >
       <div className={css.inner}>
         <header className={css.head}>
           <h2 className={css.title}>
@@ -129,7 +54,7 @@ export default function ServicesSection() {
         </header>
 
         <div className={css.grid} role="list">
-          {cards.map((c) => (
+          {SERVICE_CARDS.map((c) => (
             <div
               key={c.href}
               className={css.cardShell}

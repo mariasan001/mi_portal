@@ -1,22 +1,28 @@
 /* src/features/site/Components/Hero/Hero.module.css */
 
+.isIn   { --_state-in: 1; }
+.dirDown{ --_state-dir: 1; }
+.dirUp  { --_state-dir: -1; }
 /* =========================
    HERO WRAP (fondo full)
    ========================= */
 .heroWrap{
   position: relative;
 
-  /* ✅ nav fixed → espacio arriba */
   padding: 140px 16px 72px;
   min-height: 500px;
   overflow: hidden;
 
-  /* ✅ fondo desktop */
   background-image: url('/img/fondo_principal.png');
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
   background-color: var(--bg);
+}
+
+/* ✅ fondo desktop VEDA */
+:global(html[data-theme="veda"]) .heroWrap{
+  background-image: url('/img/fondo_web_veda.png');
 }
 
 /* =========================
@@ -32,8 +38,6 @@
   align-items: center;
 
   padding: 0 6px;
-
-  /* ✅ baja un poquito el contenido */
   padding-top: 28px;
 }
 
@@ -52,6 +56,49 @@
 }
 
 /* =========================
+   ESTADO BASE (SIN ANIMAR)
+   - esto permite “re-trigger”
+   ========================= */
+.heroPill,
+.heroTitle,
+.heroText,
+.heroActions{
+  opacity: 0;
+  transform: translateY(10px);
+  will-change: transform, opacity;
+}
+
+.actionPill{
+  opacity: 0;
+  transform: translateY(10px) scale(.98);
+  will-change: transform, opacity;
+}
+
+/* =========================
+   DIR: DOWN (vienes bajando)
+   ========================= */
+.dirDown.isIn .heroPill{ animation: heroDownIn 720ms cubic-bezier(.2,.9,.2,1) forwards; animation-delay: var(--d, 0ms); }
+.dirDown.isIn .heroTitle{ animation: heroDownIn 720ms cubic-bezier(.2,.9,.2,1) forwards; animation-delay: var(--d, 0ms); }
+.dirDown.isIn .heroText{  animation: heroDownIn 720ms cubic-bezier(.2,.9,.2,1) forwards; animation-delay: var(--d, 0ms); }
+.dirDown.isIn .heroActions{animation: heroDownIn 720ms cubic-bezier(.2,.9,.2,1) forwards; animation-delay: var(--d, 0ms); }
+
+.dirDown.isIn .actionPill{ animation: actionDownIn 640ms cubic-bezier(.2,.9,.2,1) forwards; }
+.dirDown.isIn .heroActions .actionPill:nth-child(1){ animation-delay: calc(var(--d, 260ms) + 80ms); }
+.dirDown.isIn .heroActions .actionPill:nth-child(2){ animation-delay: calc(var(--d, 260ms) + 160ms); }
+
+/* =========================
+   DIR: UP (vienes subiendo)
+   ========================= */
+.dirUp.isIn .heroPill{ animation: heroUpIn 720ms cubic-bezier(.2,.9,.2,1) forwards; animation-delay: var(--d, 0ms); }
+.dirUp.isIn .heroTitle{ animation: heroUpIn 720ms cubic-bezier(.2,.9,.2,1) forwards; animation-delay: var(--d, 0ms); }
+.dirUp.isIn .heroText{  animation: heroUpIn 720ms cubic-bezier(.2,.9,.2,1) forwards; animation-delay: var(--d, 0ms); }
+.dirUp.isIn .heroActions{animation: heroUpIn 720ms cubic-bezier(.2,.9,.2,1) forwards; animation-delay: var(--d, 0ms); }
+
+.dirUp.isIn .actionPill{ animation: actionUpIn 640ms cubic-bezier(.2,.9,.2,1) forwards; }
+.dirUp.isIn .heroActions .actionPill:nth-child(1){ animation-delay: calc(var(--d, 260ms) + 80ms); }
+.dirUp.isIn .heroActions .actionPill:nth-child(2){ animation-delay: calc(var(--d, 260ms) + 160ms); }
+
+/* =========================
    PILL
    ========================= */
 .heroPill{
@@ -64,29 +111,22 @@
   border-radius: 999px;
 
   background: rgba(255,255,255,.75);
-  border: 1px solid rgba(10,10,10,.10);
-  color: rgba(10,10,10,.72);
+  border: 1px solid var(--border);
+  color: var(--muted);
 
-  font-weight: 600;
+  font-weight: 400;
   font-size: 12px;
   letter-spacing: .14px;
-
-  /* ✅ animación entrada */
-  opacity: 0;
-  transform: translateY(10px);
-  animation: heroIn 720ms cubic-bezier(.2,.9,.2,1) forwards;
-  animation-delay: var(--d, 0ms);
-  will-change: transform, opacity;
 }
 
 .pillDot{
   width: 10px;
   height: 10px;
   border-radius: 999px;
-  background: var(--vino);
-  box-shadow: 0 0 0 4px rgba(159,33,65,.12);
 
-  /* ✅ micro pulse */
+  background: var(--brand);
+  box-shadow: 0 0 0 4px rgba(10,10,10,.06);
+
   animation: dotPulse 1800ms ease-in-out infinite;
 }
 
@@ -96,47 +136,33 @@
 .heroTitle{
   margin: 0;
   color: var(--text);
-  font-weight: 900;
+  font-weight: var(--fw-h1);
   letter-spacing: -0.02em;
   line-height: 1.05;
   text-transform: uppercase;
 
   text-shadow: 0 2px 10px rgba(255,255,255,.65);
-
-  /* ✅ entrada */
-  opacity: 0;
-  transform: translateY(10px);
-  animation: heroIn 720ms cubic-bezier(.2,.9,.2,1) forwards;
-  animation-delay: var(--d, 0ms);
-  will-change: transform, opacity;
 }
 
 .heroText{
   margin: 0;
   max-width: 70ch;
 
-  color: rgba(10,10,10,.74);
+  color: var(--muted);
   font-size: 17px;
   line-height: 1.7;
-  font-weight: 300;
+  font-weight: var(--fw-body);
 
   text-shadow: 0 2px 10px rgba(255,255,255,.65);
-
-  /* ✅ entrada */
-  opacity: 0;
-  transform: translateY(10px);
-  animation: heroIn 720ms cubic-bezier(.2,.9,.2,1) forwards;
-  animation-delay: var(--d, 0ms);
-  will-change: transform, opacity;
 }
 
 .heroText b{
-  font-weight: 800;
-  color: rgb(117, 61, 18);
+  font-weight: var(--fw-h2);
+  color: var(--accent);
 }
 
 /* =========================
-   ACTIONS (fila)
+   ACTIONS
    ========================= */
 .heroActions{
   display: flex;
@@ -144,16 +170,8 @@
   margin-top: 10px;
   flex-wrap: wrap;
   justify-content: flex-start;
-
-  /* ✅ entrada container */
-  opacity: 0;
-  transform: translateY(10px);
-  animation: heroIn 720ms cubic-bezier(.2,.9,.2,1) forwards;
-  animation-delay: var(--d, 0ms);
-  will-change: transform, opacity;
 }
 
-/* pills tipo “Get started” */
 .actionPill{
   --pill-bg: rgba(255,255,255,.82);
   --pill-fg: rgba(10,10,10,.84);
@@ -174,17 +192,7 @@
 
   box-shadow: var(--shadow-sm);
   transition: transform .15s ease, box-shadow .15s ease, filter .15s ease, background .15s ease;
-
-  /* ✅ entrada escalonada */
-  opacity: 0;
-  transform: translateY(10px) scale(.98);
-  animation: actionIn 640ms cubic-bezier(.2,.9,.2,1) forwards;
-  will-change: transform, opacity;
 }
-
-.heroActions .actionPill:nth-child(1){ animation-delay: calc(var(--d, 260ms) + 80ms); }
-.heroActions .actionPill:nth-child(2){ animation-delay: calc(var(--d, 260ms) + 160ms); }
-.heroActions .actionPill:nth-child(3){ animation-delay: calc(var(--d, 260ms) + 240ms); }
 
 .actionPill:hover{
   transform: translateY(-1px);
@@ -193,7 +201,7 @@
 }
 
 .actionText{
-  font-weight: 400;
+  font-weight: 500;
   font-size: 13px;
   letter-spacing: .12px;
   white-space: nowrap;
@@ -216,10 +224,7 @@
   transition: transform .15s ease, background .15s ease, border-color .15s ease;
 }
 
-.actionIcon svg{
-  width: 18px;
-  height: 18px;
-}
+.actionIcon svg{ width: 18px; height: 18px; }
 
 .actionPill:hover .actionIcon{
   transform: translateX(2px);
@@ -227,9 +232,8 @@
   border-color: rgba(10,10,10,.14);
 }
 
-/* variante principal */
 .actionPrimary{
-  --pill-bg: var(--vino);
+  --pill-bg: var(--brand);
   --pill-fg: #fff;
   --pill-br: rgba(10,10,10,.12);
   box-shadow: 0 14px 28px rgba(10,10,10,.12);
@@ -246,26 +250,37 @@
 }
 
 /* =========================
-   KEYFRAMES
+   KEYFRAMES (DOWN vs UP)
    ========================= */
-@keyframes heroIn{
-  from { opacity: 0; transform: translateY(10px); }
+@keyframes heroDownIn{
+  from { opacity: 0; transform: translateY(12px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes actionIn{
-  0%   { opacity: 0; transform: translateY(10px) scale(.98); }
+@keyframes heroUpIn{
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes actionDownIn{
+  0%   { opacity: 0; transform: translateY(12px) scale(.98); }
+  70%  { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes actionUpIn{
+  0%   { opacity: 0; transform: translateY(16px) scale(.985); }
   70%  { opacity: 1; transform: translateY(0) scale(1); }
   100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @keyframes dotPulse{
-  0%, 100% { transform: scale(1);   box-shadow: 0 0 0 4px rgba(159,33,65,.12); }
-  50%      { transform: scale(1.1); box-shadow: 0 0 0 7px rgba(159,33,65,.10); }
+  0%, 100% { transform: scale(1);   box-shadow: 0 0 0 4px rgba(10,10,10,.06); }
+  50%      { transform: scale(1.1); box-shadow: 0 0 0 7px rgba(10,10,10,.05); }
 }
 
 /* =========================
-   A11Y: reduce motion
+   Reduce motion
    ========================= */
 @media (prefers-reduced-motion: reduce){
   .heroPill,
@@ -277,17 +292,11 @@
     opacity: 1 !important;
     transform: none !important;
   }
-
-  .pillDot{
-    animation: none !important;
-  }
+  .pillDot{ animation: none !important; }
 }
 
 /* =========================
    MOBILE
-   - textos centrados
-   - botones en fila
-   - fondo cambia
    ========================= */
 @media (max-width: 900px){
   .heroWrap{
@@ -295,8 +304,12 @@
     padding: 118px 14px 48px;
     background-position: center;
 
-    /* ✅ cambia por el fondo móvil (ajusta el nombre si es otro) */
     background-image: url('/img/fondo_movil.png');
+  }
+
+  /* ✅ fondo móvil VEDA */
+  :global(html[data-theme="veda"]) .heroWrap{
+    background-image: url('/img/fondo_movil_veda.png');
   }
 
   .heroInner{
@@ -313,9 +326,7 @@
     align-items: center;
   }
 
-  .heroPill{
-    margin-inline: auto;
-  }
+  .heroPill{ margin-inline: auto; }
 
   .heroTitle{
     font-size: clamp(26px, 6vw, 34px);
@@ -326,40 +337,34 @@
     font-size: clamp(13px, 3.5vw, 15px);
     max-width: 46ch;
     margin-inline: auto;
-    font-size: 13px;
-    font-weight: 300;
+    font-weight: var(--fw-body);
   }
 
   .heroActions{
     justify-content: center;
-    flex-direction: row;   /* ✅ se queda en fila */
-    flex-wrap: wrap;       /* ✅ si no cabe, baja ordenado */
-    gap: 1px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
   }
-   .actionPill{
-    height: 38px;              /* antes 44 */
-    padding: 4px 4px 6px 12px; /* menos “gordito” */
-    gap: 4px;
-    box-shadow: var(--shadow-sm);
+
+  .actionPill{
+    height: 38px;
+    padding: 4px 4px 6px 12px;
+    gap: 8px;
   }
 
   .actionText{
-    font-size: 12px;           /* antes 13 */
+    font-size: 12px;
     letter-spacing: .10px;
   }
 
   .actionIcon{
-    width: 30px;               /* antes 34 */
+    width: 30px;
     height: 30px;
   }
 
   .actionIcon svg{
     width: 16px;
     height: 16px;
-  }
-
-  /* Si quieres que “Buscar mi proceso” no se alargue tanto */
-  .heroActions{
-    gap: 8px;
   }
 }

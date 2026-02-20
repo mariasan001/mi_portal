@@ -3,7 +3,7 @@ import './globals.css';
 import { gotham } from '@/styles/fonts';
 
 async function getUiConfig() {
-  return { isVeda: false }; // ✅ por ahora
+  return { isVeda: true }; // ✅ por ahora
 }
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
