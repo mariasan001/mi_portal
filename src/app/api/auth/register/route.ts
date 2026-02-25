@@ -4,14 +4,21 @@ import { obtenerIamBaseUrl } from '@/lib/config/entorno';
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
-export async function GET(req: Request) {
+export async function POST(req: Request) {
   const base = obtenerIamBaseUrl();
-  const cookie = req.headers.get('cookie') ?? '';
+
+  let payload: unknown;
+  try {
+    payload = await req.json();
+  } catch {
+    return NextResponse.json({ message: 'Body inválido' }, { status: 400 });
+  }
 
   try {
-    const upstream = await fetch(`${base}/auth/me`, {
-      method: 'GET',
-      headers: { accept: 'application/json', cookie },
+    const upstream = await fetch(`${base}/auth/register`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', accept: 'application/json' },
+      body: JSON.stringify(payload),
       cache: 'no-store',
     });
 
@@ -23,7 +30,7 @@ export async function GET(req: Request) {
       headers: { 'content-type': contentType },
     });
 
-    // ✅ Reenvío robusto de cookies (por refresh de sesión)
+    // ✅ Por si register también setea cookies/sesión
     const hdrs = upstream.headers as Headers & { getSetCookie?: () => string[] };
     const cookies = typeof hdrs.getSetCookie === 'function' ? hdrs.getSetCookie() : [];
     if (cookies.length) {

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { obtenerIamBaseUrl } from '@/lib/config/entorno';
 
 export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 type LoginRequest = {
   username: string;
