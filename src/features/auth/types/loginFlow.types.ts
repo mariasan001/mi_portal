@@ -8,9 +8,8 @@ export type UseLoginFlowResult = {
   effectiveAppCode: string;
   returnTo: string;
 
-  onSubmit: (e: React.FormEvent) => Promise<void>;
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
 
-  // ✅ agrega esto
   loading: boolean;
   error: string | null;
 };

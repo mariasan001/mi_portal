@@ -1,17 +1,11 @@
 'use client';
 
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
-import type { SesionMe, LoginRequest } from '../types/autenticacion.types';
-import { iniciarSesion } from '../services/inicio-sesion.service';
-import { obtenerSesion } from '../services/sesion.service';
+import type { SesionMe } from '../types/me.types';
+import type { LoginRequest } from '../types/login.types';
+import { iniciarSesion } from '../services/auth-login.service';
+import { obtenerSesion } from '../services/auth-me.service';
 import { esApiError, toErrorMessage } from '@/lib/api/api.errores';
 
 type AuthState = {
@@ -21,14 +15,11 @@ type AuthState = {
   loading: boolean;
   error: string | null;
 
-  // acciones
   login: (args: LoginRequest) => Promise<boolean>;
   refresh: () => Promise<void>;
   logout: () => void;
 
-  // ✅ nuevo (para que QuickAccess lo ponga antes del login)
   setAppCode: (code: string | null) => void;
-
   isAuthenticated: boolean;
 };
 
@@ -73,7 +64,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // ✅ setter “oficial” que también persiste
   const setAppCode = useCallback((code: string | null) => {
     if (!code) {
       limpiarAppCode();
@@ -93,6 +83,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const me = await obtenerSesion();
       setSesion(me);
     } catch (e) {
+      // 401/403 => no hay sesión, no es “error”
       if (esApiError(e) && (e.status === 401 || e.status === 403)) {
         setSesion(null);
         setError(null);
@@ -119,7 +110,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         await iniciarSesion(payload);
 
-        // ✅ siempre guardamos el appCode con el que se autenticó
+        // ✅ guarda appCode con el que se autenticó
         setAppCode(payload.appCode);
 
         await refresh();
@@ -162,7 +153,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       login,
       refresh,
       logout,
-      setAppCode, // ✅
+      setAppCode,
       isAuthenticated,
     }),
     [sesion, appCode, loading, error, login, refresh, logout, setAppCode, isAuthenticated]

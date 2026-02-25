@@ -1,4 +1,4 @@
-import type { ReadonlyURLSearchParams } from 'next/navigation';
+    import type { ReadonlyURLSearchParams } from 'next/navigation';
 
 export function getLoginFlowParams(sp: ReadonlyURLSearchParams) {
   const appCodeFromQuery = sp.get('appCode')?.trim() || null;

@@ -7,7 +7,7 @@ import { useRevealMotion } from '@/hooks/useRevealMotion';
 import { QUICK_ACCESS_ITEMS } from './constants/quickAccess.items';
 
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/features/autenticacion/context/autenticacion.context';
+import { useAuth } from '@/features/auth';
 
 export default function QuickAccessSection() {
   const router = useRouter();

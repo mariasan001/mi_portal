@@ -1,36 +1,42 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import { toErrorMessage } from '@/lib/api/api.errores';
+import { ApiError, toErrorMessage } from '@/lib/api/api.errores';
 import type { RegisterPayload, RegisterResponse } from '../types/register.types';
-import { registerUser } from '../services/auth.service';
+import { registerUser } from '../services/auth-register.service';
 
-type UseRegisterResult = {
-  submit: (payload: RegisterPayload) => Promise<RegisterResponse | null>;
+type State = {
   loading: boolean;
   error: string | null;
-  clearError: () => void;
+  data: RegisterResponse | null;
 };
 
-export function useRegister(): UseRegisterResult {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+function mapRegisterError(e: unknown): string {
+  if (e instanceof ApiError) {
+    if (e.status === 409) return 'Ese usuario o correo ya está registrado.';
+    if (e.status === 400) return 'Datos inválidos o no elegible. Revisa Clave SP, Plaza y Puesto.';
+  }
+  return toErrorMessage(e, 'No se pudo registrar');
+}
 
-  const clearError = useCallback(() => setError(null), []);
+export function useRegister() {
+  const [state, setState] = useState<State>({ loading: false, error: null, data: null });
+
+  const reset = useCallback(() => {
+    setState({ loading: false, error: null, data: null });
+  }, []);
 
   const submit = useCallback(async (payload: RegisterPayload) => {
-    setLoading(true);
-    setError(null);
+    setState({ loading: true, error: null, data: null });
     try {
       const res = await registerUser(payload);
+      setState({ loading: false, error: null, data: res });
       return res;
     } catch (e) {
-      setError(toErrorMessage(e, 'No se pudo registrar'));
+      setState({ loading: false, error: mapRegisterError(e), data: null });
       return null;
-    } finally {
-      setLoading(false);
     }
   }, []);
 
-  return { submit, loading, error, clearError };
+  return { ...state, submit, reset };
 }

@@ -3,9 +3,9 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
-import { useAuth } from '../context/autenticacion.context';
-import { getLoginFlowParams } from '../utils/authQuery';
+import { useAuth } from '../context/auth.context';
 import type { UseLoginFlowResult } from '../types/loginFlow.types';
+import { getLoginFlowParams } from '../utils/authQuery';
 
 export function useLoginFlow(): UseLoginFlowResult {
   const router = useRouter();
@@ -13,8 +13,8 @@ export function useLoginFlow(): UseLoginFlowResult {
 
   const { login, loading, error, appCode: ctxAppCode, setAppCode } = useAuth();
 
-  const [username, setUsername] = useState('admin');
-  const [password, setPassword] = useState('12345678');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   const { appCodeFromQuery, returnTo } = useMemo(() => getLoginFlowParams(sp), [sp]);
 
@@ -27,7 +27,7 @@ export function useLoginFlow(): UseLoginFlowResult {
     if (appCodeFromQuery) setAppCode(appCodeFromQuery);
   }, [appCodeFromQuery, setAppCode]);
 
-  async function onSubmit(e: React.FormEvent) {
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const ok = await login({ username, password, appCode: effectiveAppCode });
     if (ok) router.push(returnTo);
@@ -41,7 +41,7 @@ export function useLoginFlow(): UseLoginFlowResult {
     effectiveAppCode,
     returnTo,
     onSubmit,
-    loading, 
-    error,   
+    loading,
+    error,
   };
 }

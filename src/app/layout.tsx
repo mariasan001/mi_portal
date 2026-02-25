@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import './globals.css';
 import { gotham } from '@/styles/fonts';
-import Providers from './providers';
+import { Providers } from './providers';
 
 async function getUiConfig() {
   return { isVeda: true };
