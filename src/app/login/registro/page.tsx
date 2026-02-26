@@ -1,11 +1,9 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { AuthSplitLayout, RegisterForm, RegisterPayload, useRegister } from '@/features/auth';
 import Link from 'next/link';
+import { useMemo, useState } from 'react';
 
-import { RegisterForm } from '@/features/auth/ui/RegisterForm/RegisterForm';
-import { useRegister } from '@/features/auth/hooks/useRegister';
-import type { RegisterPayload } from '@/features/auth/types/register.types';
 
 const INITIAL: RegisterPayload = {
   claveSp: '',
@@ -26,28 +24,44 @@ export default function RegisterPage() {
   }, [data]);
 
   function onChange<K extends keyof RegisterPayload>(key: K, v: RegisterPayload[K]) {
-    reset(); // limpia alertas cuando editas
+    reset();
     setValue((p) => ({ ...p, [key]: v }));
   }
 
   async function onSubmit() {
     const res = await submit(value);
     if (!res) return;
-
-    // opcional: limpiar password
     setValue((p) => ({ ...p, password: '' }));
   }
 
   return (
-  
-      <><RegisterForm
-      value={value}
-      onChange={onChange}
-      onSubmit={onSubmit}
-      loading={loading}
-      error={error}
-      success={successMsg} /><div style={{ marginTop: 12, fontSize: 13, opacity: 0.8 }}>
-        ¿Ya tienes cuenta? <Link href="/login">Inicia sesión</Link>
-      </div></>
+    <AuthSplitLayout
+      leftTitle="Crea tu cuenta y activa tu acceso."
+      leftDescription="Regístrate con tu información para habilitar tus servicios en el portal."
+      // Si tu panel izquierdo usa fondo por CSS, puedes quitar esto:
+      leftImageSrc="/img/fondo.png"
+      bottomLeft={
+        <>
+          ¿Ya tienes cuenta?{' '}
+          <Link href="/login">
+            Inicia sesión
+          </Link>
+        </>
+      }
+      bottomRight={
+        <Link href="/privacidad">
+          Aviso de privacidad
+        </Link>
+      }
+    >
+      <RegisterForm
+        value={value}
+        onChange={onChange}
+        onSubmit={onSubmit}
+        loading={loading}
+        error={error}
+        success={successMsg}
+      />
+    </AuthSplitLayout>
   );
 }
