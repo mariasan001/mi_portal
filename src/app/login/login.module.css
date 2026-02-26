@@ -1,0 +1,158 @@
+.page{
+  min-height: 93dvh;          /* ✅ mejor que 93dvh */
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  padding: 12px;               /* menos aire */
+  overflow: hidden;            /* sin scroll fantasma */
+}
+
+.container{
+  width: min(1200px, 100%);
+  min-height: min(84vh, 740px);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-md);
+}
+
+/* ===== LEFT ===== */
+.leftPanel{
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+}
+
+.leftPanel::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("/img/fondo.png") center/cover no-repeat;
+}
+
+/* ✅ overlay SIN degradado (sólido con opacidad) */
+.leftPanel::after{
+  content:"";
+  position:absolute;
+  inset:0;
+}
+
+.leftContent{
+  position: relative;
+  z-index: 1;
+  padding: 28px;
+  color: #fff;
+  max-width: 520px;
+}
+
+.leftTag{
+  font-size: 12px;
+  font-weight: 700;
+  opacity: .95;
+  margin-bottom: 12px;
+  letter-spacing: .2px;
+}
+
+.leftTitle{
+  margin: 0 0 10px;
+  font-size: clamp(30px, 3.4vw, 44px);
+  font-weight: 900;
+  line-height: 1.05;
+}
+
+.leftSub{
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.65;
+  opacity: .92;
+  max-width: 56ch;
+}
+
+/* ✅ fix: era 1px */
+.leftFoot{
+  margin-top: 18px;
+  font-size: 11px;
+  opacity: .86;
+}
+
+/* ===== RIGHT ===== */
+.rightPanel{
+  position: relative;
+  background: var(--surface);
+  border-left: 1px solid var(--border-soft);
+}
+
+.logoBox{
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  z-index: 2;
+}
+
+/* ✅ padding-top grande para que NO choque con el logo */
+.rightCenter{
+  min-height: 100%;
+  padding: 30px 34px 28px; /* 🔥 */
+  display: grid;
+  align-content: center;
+  justify-items: stretch;
+}
+
+/* links bajo el form */
+.metaRow{
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.metaLink{
+  color: var(--oro);
+  font-weight: 900;
+  text-decoration: none;
+}
+.metaLink:hover{ text-decoration: underline; }
+
+.metaMuted{
+  color: var(--muted-2);
+  text-decoration: none;
+  font-weight: 700;
+}
+.metaMuted:hover{ text-decoration: underline; }
+
+/* ===== Responsive ===== */
+@media (max-width: 980px){
+  .container{
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .rightPanel{
+    border-left: none;
+    border-top: 1px solid var(--border-soft);
+  }
+
+  .leftPanel{
+    min-height: 240px;
+  }
+
+  .logoBox{
+    position: static;
+    padding: 18px 18px 0;
+    justify-content: flex-start;
+  }
+
+  .rightCenter{
+    padding: 18px;
+    align-content: start;
+  }
+}

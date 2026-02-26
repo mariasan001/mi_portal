@@ -3,7 +3,9 @@
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 
-import { AuthCard, RegisterForm, RegisterPayload, useRegister } from '@/features/auth';
+import { RegisterForm } from '@/features/auth/ui/RegisterForm/RegisterForm';
+import { useRegister } from '@/features/auth/hooks/useRegister';
+import type { RegisterPayload } from '@/features/auth/types/register.types';
 
 const INITIAL: RegisterPayload = {
   claveSp: '',
@@ -37,22 +39,15 @@ export default function RegisterPage() {
   }
 
   return (
-    <AuthCard
-      title="Autenticación · Registro"
-      subtitle="Crea tu cuenta validando tus datos de servidor público."
-    >
-      <RegisterForm
-        value={value}
-        onChange={onChange}
-        onSubmit={onSubmit}
-        loading={loading}
-        error={error}
-        success={successMsg}
-      />
-
-      <div style={{ marginTop: 12, fontSize: 13, opacity: 0.8 }}>
+  
+      <><RegisterForm
+      value={value}
+      onChange={onChange}
+      onSubmit={onSubmit}
+      loading={loading}
+      error={error}
+      success={successMsg} /><div style={{ marginTop: 12, fontSize: 13, opacity: 0.8 }}>
         ¿Ya tienes cuenta? <Link href="/login">Inicia sesión</Link>
-      </div>
-    </AuthCard>
+      </div></>
   );
 }

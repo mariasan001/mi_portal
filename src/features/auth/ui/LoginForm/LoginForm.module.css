@@ -1,72 +1,191 @@
-.form{ display: grid; gap: 12px; }
+/* src/features/auth/components/LoginForm/LoginForm.module.css */
 
+.form{
+  width: 100%;
+  display: grid;
+  gap: 14px;
+}
+
+.head{
+  display: grid;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.title{
+  margin: 0;
+  font-weight: var(--fw-h2);
+  font-size: clamp(22px, 2.2vw, 30px);
+  letter-spacing: .2px;
+}
+
+.sub{
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* ===== Error ===== */
 .alert{
   display: flex;
+  align-items: flex-start;
   gap: 10px;
-  align-items: center;
-  padding: 10px 12px;
+  padding: 12px;
   border-radius: var(--r-md);
-  border: 1px solid color-mix(in srgb, var(--danger) 30%, var(--border));
-  background: color-mix(in srgb, var(--danger) 10%, var(--surface));
-  box-shadow: var(--shadow-sm);
-  font-size: 13px;
+  border: 1px solid rgba(180,35,24,.25);
+  background: rgba(180,35,24,.06);
+  color: #7a1b14;
+  font-size: 12.5px;
 }
 
-.label{ display: grid; gap: 6px; }
-.labelText{ font-size: 12px; opacity: .75; }
+/* ===== Fields ===== */
+.label{
+  display: grid;
+  gap: 7px;
+}
 
-.inputWrap{
+.labelText{
+  font-size: 12px;
+  color: var(--muted-2);
+  font-weight: 800;
+}
+
+.row{
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  border-radius: var(--r-md);
-  padding: 10px 12px;
-  box-shadow: var(--shadow-sm);
 }
 
-.icon{ opacity: .72; display: grid; place-items: center; }
-.input{
-  width: 100%;
-  border: 0;
-  outline: none;
-  background: transparent;
-  color: var(--text);
-  font-size: 14px;
-}
-
-.eye{
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-  opacity: .75;
-  padding: 2px 4px;
-}
-
-.btn{
-  margin-top: 6px;
-  border: 0;
-  border-radius: var(--r-lg);
-  padding: 12px 14px;
+.forgot{
+  font-size: 12px;
+  color: var(--vino);
+  text-decoration: none;
   font-weight: 900;
-  cursor: pointer;
-  color: #fff;
-  background: linear-gradient(90deg, var(--vino), var(--oro));
-  box-shadow: var(--shadow-md);
-  display: flex;
-  justify-content: center;
+}
+.forgot:hover{ text-decoration: underline; }
+
+/* ===== Input ===== */
+.inputWrap{
+  position: relative;
+  display: grid;
   align-items: center;
+}
+
+.icon{
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(10,10,10,.58);
+}
+
+.input{
+  height: 50px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  padding: 0 46px 0 42px;
+  outline: none;
+  font-size: 14px;
+  color: var(--text);
+  transition: box-shadow .15s ease, border-color .15s ease, background .15s ease;
+}
+
+.input::placeholder{ color: rgba(10,10,10,.42); }
+
+/* Focus con ORO (solo halo, sin degradado) */
+.input:focus{
+  border-color: rgba(188,148,90,.55); /* oro */
+  box-shadow: 0 0 0 4px rgba(188,148,90,.18);
+  background: #fff;
+}
+
+/* ===== Eye ===== */
+.eye{
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  border: 1px solid var(--border-soft);
+  background: var(--surface);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: rgba(10,10,10,.58);
+}
+
+.eye:hover{
+  border-color: rgba(188,148,90,.45); /* oro */
+}
+
+/* ===== Button (VINO sólido) ===== */
+.btn{
+  margin-top: 8px;
+  height: 52px;
+  border-radius: var(--r-md);
+  border: 1px solid rgba(159,33,65,.25);
+  background: var(--vino);
+  color: #fff;
+  font-weight: 900;
+  letter-spacing: .25px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   gap: 10px;
+
+  cursor: pointer;
+  box-shadow: 0 16px 34px rgba(159,33,65,.18);
+  transition: transform .15s ease, filter .15s ease, box-shadow .2s ease;
+}
+
+.btn:not(:disabled):hover{
+  transform: translateY(-1px);
+  filter: brightness(1.03);
+  box-shadow: 0 18px 38px rgba(159,33,65,.22);
+}
+
+.btn:active{
+  transform: translateY(0px);
 }
 
 .btn:disabled{
+  opacity: .62;
   cursor: not-allowed;
-  opacity: .55;
+  box-shadow: none;
 }
 
+/* ===== Hint ===== */
 .small{
-  margin: 0;
+  margin: 6px 0 0;
   font-size: 12px;
-  opacity: .68;
+  color: var(--muted-2);
+  line-height: 1.6;
+  padding-left: 2px;
+}
+
+/* (Opcional) si luego metes aviso privacidad dentro del form */
+.notice{
+  margin-top: 10px;
+  padding: 12px;
+  border-radius: var(--r-md);
+  border: 1px solid rgba(221,199,162,.55); /* arena */
+  background: rgba(221,199,162,.18);       /* arena suave */
+  color: rgba(10,10,10,.85);
+  font-size: 12px;
+}
+.notice a{
+  color: var(--vino);
+  font-weight: 900;
+  text-decoration: none;
+}
+.notice a:hover{ text-decoration: underline; }
+
+@media (prefers-reduced-motion: reduce){
+  .btn, .input{ transition: none !important; }
 }

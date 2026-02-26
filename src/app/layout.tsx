@@ -4,7 +4,7 @@ import { gotham } from '@/styles/fonts';
 import { Providers } from './providers';
 
 async function getUiConfig() {
-  return { isVeda: true };
+  return { isVeda: false };
 }
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
