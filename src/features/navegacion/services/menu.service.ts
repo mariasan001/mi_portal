@@ -3,29 +3,58 @@ import type { MenuResponse } from '../types/menu.types';
 import { normalizarMenu } from '../utils/menu.normalizar';
 import { api } from '@/lib/api/api.cliente';
 
-export async function obtenerMenu(appCode: string, opts?: { signal?: AbortSignal }): Promise<MenuResponse> {
-  const url = API_RUTAS.apps.menu(appCode);
+/**
+ * Cache simple en memoria (por appCode).
+ * - Evita 2 requests en DEV por StrictMode.
+ * - Evita repeticiones si 2 componentes piden el mismo menú.
+ */
+const cache = new Map<string, MenuResponse>();
+const inflight = new Map<string, Promise<MenuResponse>>();
 
-  console.log('[menu.service] GET', url);
+type GetMenuOptions = {
+  force?: boolean; // si quieres reconsultar aunque exista cache
+};
 
-  const raw = await api.get<unknown>(url, { signal: opts?.signal });
+export async function obtenerMenu(appCode: string, opts?: GetMenuOptions): Promise<MenuResponse> {
+  const code = appCode.trim();
+  if (!code) throw new Error('appCode inválido');
 
-  console.log('[menu.service] RAW:', raw);
+  // 1) cache hit
+  if (!opts?.force) {
+    const cached = cache.get(code);
+    if (cached) return cached;
+  }
 
-  const normalized = normalizarMenu(raw);
+  // 2) request en vuelo (dedupe)
+  const existing = inflight.get(code);
+  if (existing) return existing;
 
-  console.log('[menu.service] NORMALIZED.appCode:', normalized.appCode);
-  console.log('[menu.service] NORMALIZED.items.length:', normalized.items.length);
+  const url = API_RUTAS.apps.menu(code);
 
-  console.table(
-    normalized.items.map((it) => ({
-      code: it.code,
-      name: it.name,
-      route: it.route,
-      icon: it.icon,
-      children: it.children?.length ?? 0,
-    }))
-  );
+  const p = (async () => {
+    const raw = await api.get<unknown>(url);
+    const normalized = normalizarMenu(raw);
+    cache.set(code, normalized);
+    return normalized;
+  })();
 
-  return normalized;
+  inflight.set(code, p);
+
+  try {
+    return await p;
+  } finally {
+    inflight.delete(code);
+  }
+}
+
+/** Por si en algún punto quieres “resetear” el menú (logout, cambio de tenant, etc.) */
+export function limpiarMenuCache(appCode?: string) {
+  if (appCode) {
+    const code = appCode.trim();
+    cache.delete(code);
+    inflight.delete(code);
+    return;
+  }
+  cache.clear();
+  inflight.clear();
 }

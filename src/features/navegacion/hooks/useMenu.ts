@@ -1,55 +1,74 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { MenuResponse } from '../types/menu.types';
 import { obtenerMenu } from '../services/menu.service';
 import { toErrorMessage } from '@/lib/api/api.errores';
-
-type MenuInternalState = {
-  appCode: string | null;      // a qué appCode pertenece el último resultado
-  data: MenuResponse | null;   // data sólo válida si appCode coincide
-  error: string | null;        // error sólo válido si appCode coincide
-};
 
 type UseMenuResult = {
   data: MenuResponse | null;
   loading: boolean;
   error: string | null;
+  refresh: () => void; // refresh manual (sin auto)
 };
 
 export function useMenu(appCode: string | null): UseMenuResult {
-  const [state, setState] = useState<MenuInternalState>({
-    appCode: null,
-    data: null,
-    error: null,
-  });
+  const [data, setData] = useState<MenuResponse | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  // para refrescar manualmente sin “auto updates”
+  const refreshTick = useRef(0);
+  const bumpRefresh = () => {
+    refreshTick.current += 1;
+    // setState para disparar effect
+    setData((prev) => prev);
+  };
 
   useEffect(() => {
-    if (!appCode) return;
+    const code = (appCode ?? '').trim();
+    if (!code) {
+      setData(null);
+      setError(null);
+      setLoading(false);
+      return;
+    }
 
-    const ctrl = new AbortController();
+    let alive = true;
+    setLoading(true);
+    setError(null);
 
-    obtenerMenu(appCode, { signal: ctrl.signal })
+    // Dedupe en service => 1 sola request real.
+    obtenerMenu(code)
       .then((res) => {
-        setState({ appCode, data: res, error: null });
+        if (!alive) return;
+        setData(res);
       })
       .catch((e) => {
-        if (ctrl.signal.aborted) return;
-        setState({ appCode, data: null, error: toErrorMessage(e) });
+        if (!alive) return;
+        setData(null);
+        setError(toErrorMessage(e));
+      })
+      .finally(() => {
+        if (!alive) return;
+        setLoading(false);
       });
 
-    return () => ctrl.abort();
-  }, [appCode]);
-
-  return useMemo(() => {
-    if (!appCode) return { data: null, loading: false, error: null };
-
-    const isCurrent = state.appCode === appCode;
-
-    return {
-      data: isCurrent ? state.data : null,
-      error: isCurrent ? state.error : null,
-      loading: !isCurrent, 
+    return () => {
+      // No abortamos: StrictMode desmonta/monta y eso “ensucia” Network.
+      // Solo marcamos que ya no estamos vivos.
+      alive = false;
     };
-  }, [appCode, state]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [appCode, refreshTick.current]);
+
+  return useMemo(
+    () => ({
+      data,
+      loading,
+      error,
+      refresh: bumpRefresh,
+    }),
+    [data, loading, error]
+  );
 }

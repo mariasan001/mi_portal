@@ -1,54 +1,38 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { useEffect } from 'react';
+import { useMemo, useState } from 'react';
 
 import { Sidebar } from '@/features/navegacion/ui/Sidebar';
 import { useMenu } from '@/features/navegacion/hooks/useMenu';
+import { useAuth } from '@/features/auth/context/auth.context';
 
-function safeText(v: string | null | undefined, fallback: string) {
-  const s = (v ?? '').trim();
-  return s ? s : fallback;
-}
+import s from './AdminShell.module.css';
 
-export default function AdminShell({
-  children,
-  appCode,
-}: {
+type Props = {
   children: ReactNode;
   appCode: string | null;
-}) {
+};
+
+export default function AdminShell({ children, appCode }: Props) {
   const menu = useMenu(appCode);
+  const sidebarItems = useMemo(() => menu.data?.items ?? [], [menu.data]);
 
-  // ✅ Ya NO asumimos root wrapper.
-  // data.items ya debe ser la lista final (children a pintar).
-  const sidebarItems = menu.data?.items ?? [];
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
-  // ✅ Título: usa appCode (o un fallback bonito)
-  const sidebarTitle = safeText(menu.data?.appCode, 'Menú');
-
-  // ✅ Debug súper detallado (quítalo cuando ya esté ok)
-  useEffect(() => {
-    console.log('[AdminShell] appCode prop:', appCode);
-    console.log('[AdminShell] loading:', menu.loading);
-    console.log('[AdminShell] error:', menu.error);
-    console.log('[AdminShell] data:', menu.data);
-
-    console.table(
-      sidebarItems.map((it) => ({
-        code: it.code,
-        name: it.name,
-        route: it.route,
-        icon: it.icon,
-        children: it.children?.length ?? 0,
-      }))
-    );
-  }, [appCode, menu.loading, menu.error, menu.data, sidebarItems]);
+  const { logout } = useAuth();
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh' }}>
-      <Sidebar title={sidebarTitle} items={sidebarItems} />
-      <main style={{ flex: 1 }}>{children}</main>
+    <div className={`${s.layout} ${isCollapsed ? s.isCollapsed : ''}`}>
+      <Sidebar
+        items={sidebarItems}
+        userLabel="Usuario"
+        userName={null}
+        onLogout={logout}
+        onCollapsedChange={setIsCollapsed}
+      />
+
+      <main className={s.main}>{children}</main>
     </div>
   );
 }

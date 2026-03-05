@@ -1,6 +1,13 @@
 'use client';
 
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 import type { SesionMe } from '../types/me.types';
 import type { LoginRequest } from '../types/login.types';
@@ -8,10 +15,13 @@ import { iniciarSesion } from '../services/auth-login.service';
 import { obtenerSesion } from '../services/auth-me.service';
 import { esApiError, toErrorMessage } from '@/lib/api/api.errores';
 
+type AuthStatus = 'booting' | 'authenticated' | 'anonymous';
+
 type AuthState = {
   sesion: SesionMe | null;
   appCode: string | null;
 
+  status: AuthStatus;
   loading: boolean;
   error: string | null;
 
@@ -61,6 +71,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [sesion, setSesion] = useState<SesionMe | null>(null);
   const [appCode, _setAppCode] = useState<string | null>(null);
 
+  // booting: al inicio no sabemos si hay sesión
+  const [status, setStatus] = useState<AuthStatus>('booting');
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -82,14 +95,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const me = await obtenerSesion();
       setSesion(me);
+      setStatus('authenticated');
     } catch (e) {
-      // 401/403 => no hay sesión, no es “error”
+      // 401/403 => no hay sesión, NO es “error”
       if (esApiError(e) && (e.status === 401 || e.status === 403)) {
         setSesion(null);
         setError(null);
+        setStatus('anonymous');
       } else {
         setSesion(null);
         setError(toErrorMessage(e));
+        setStatus('anonymous');
       }
     } finally {
       setLoading(false);
@@ -110,13 +126,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         await iniciarSesion(payload);
 
-        // ✅ guarda appCode con el que se autenticó
+        // guarda appCode con el que se autenticó
         setAppCode(payload.appCode);
 
         await refresh();
         return true;
       } catch (e) {
         setSesion(null);
+        setStatus('anonymous');
         setError(toErrorMessage(e, 'No se pudo iniciar sesión'));
         return false;
       } finally {
@@ -131,6 +148,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     _setAppCode(null);
     setSesion(null);
     setError(null);
+    setStatus('anonymous');
   }, []);
 
   useEffect(() => {
@@ -148,15 +166,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     () => ({
       sesion,
       appCode,
+
+      status,
       loading,
       error,
+
       login,
       refresh,
       logout,
+
       setAppCode,
       isAuthenticated,
     }),
-    [sesion, appCode, loading, error, login, refresh, logout, setAppCode, isAuthenticated]
+    [sesion, appCode, status, loading, error, login, refresh, logout, setAppCode, isAuthenticated]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
