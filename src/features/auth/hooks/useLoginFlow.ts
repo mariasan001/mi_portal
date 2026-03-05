@@ -2,10 +2,15 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
+import { toast } from 'sonner';
 
 import { useAuth } from '../context/auth.context';
 import type { UseLoginFlowResult } from '../types/loginFlow.types';
 import { getLoginFlowParams } from '../utils/authQuery';
+
+function safeTrim(v: string) {
+  return (v ?? '').trim();
+}
 
 export function useLoginFlow(): UseLoginFlowResult {
   const router = useRouter();
@@ -29,8 +34,28 @@ export function useLoginFlow(): UseLoginFlowResult {
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const ok = await login({ username, password, appCode: effectiveAppCode });
-    if (ok) router.push(returnTo);
+
+    const u = safeTrim(username);
+    if (!u || !password) {
+      toast.warning('Completa usuario y contraseña.');
+      return;
+    }
+
+    // 🧠 Evita duplicados si el usuario spamea el botón
+    if (loading) return;
+
+    const tId = toast.loading('Validando acceso…');
+
+    const ok = await login({ username: u, password, appCode: effectiveAppCode });
+
+    if (ok) {
+      toast.success('Acceso autorizado.', { id: tId });
+      router.push(returnTo);
+      return;
+    }
+
+    // Si el context ya trae un error, úsalo. Si no, uno genérico.
+    toast.error(error ?? 'No fue posible iniciar sesión. Verifica tus datos.', { id: tId });
   }
 
   return {

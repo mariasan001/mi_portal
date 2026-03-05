@@ -9,8 +9,8 @@ import { useForgotPassword } from '@/features/auth/hooks/useForgotPassword';
 import s from './ForgotPasswordForm.module.css';
 
 type Props = {
-  otpHref?: string;     // a dónde mandar a validar OTP
-  loginHref?: string;   // volver a login
+  otpHref?: string;
+  loginHref?: string;
 };
 
 function safeTrim(v: string) {
@@ -24,7 +24,6 @@ export default function ForgotPasswordForm({
   const [email, setEmail] = useState('');
   const { loading, error, ok, submit } = useForgotPassword();
 
-  // ✅ prefill desde LoginForm: /password/forgot?usernameOrEmail=...
   useEffect(() => {
     try {
       const sp = new URLSearchParams(window.location.search);
@@ -35,7 +34,10 @@ export default function ForgotPasswordForm({
     }
   }, []);
 
-  const canSubmit = useMemo(() => safeTrim(email).length > 3 && !loading, [email, loading]);
+  const canSubmit = useMemo(
+    () => safeTrim(email).length > 3 && !loading,
+    [email, loading]
+  );
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -46,8 +48,10 @@ export default function ForgotPasswordForm({
   return (
     <form className={s.form} onSubmit={onSubmit} aria-describedby="forgot-hint">
       <header className={s.head}>
-        <h1 className={s.title}>Recuperar contraseña</h1>
-        <p className={s.sub}>Escribe tu correo y te enviaremos un OTP para continuar.</p>
+        <h1 className={s.title}>Restablecer contraseña</h1>
+        <p className={s.sub}>
+          Ingresa tu correo para recibir un código de verificación y continuar.
+        </p>
       </header>
 
       {error ? (
@@ -61,17 +65,17 @@ export default function ForgotPasswordForm({
         <div className={s.info} role="status" aria-live="polite">
           <Info size={16} aria-hidden="true" />
           <span>
-            Si el correo existe, te enviamos un OTP. Continúa a{' '}
+            Si el correo está registrado, enviaremos un código de verificación.
+            Continúa a{' '}
             <Link className={s.inlineLink} href={otpHref}>
-              validar OTP
-            </Link>
-            .
+              validar código
+            </Link>.
           </span>
         </div>
       ) : null}
 
       <label className={s.label}>
-        <span className={s.labelText}>Correo</span>
+        <span className={s.labelText}>Correo electrónico</span>
         <div className={s.inputWrap}>
           <span className={s.icon} aria-hidden="true">
             <Mail size={16} />
@@ -81,7 +85,7 @@ export default function ForgotPasswordForm({
             className={s.input}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="tu@correo.com"
+            placeholder="nombre@dominio.gob.mx"
             autoComplete="email"
             inputMode="email"
           />
@@ -89,17 +93,17 @@ export default function ForgotPasswordForm({
       </label>
 
       <button className={s.btn} disabled={!canSubmit} aria-busy={loading}>
-        <span>{loading ? 'Enviando…' : 'Enviar OTP'}</span>
+        <span>{loading ? 'Enviando…' : 'Enviar código'}</span>
         <ArrowRight size={18} aria-hidden="true" />
       </button>
 
       <div className={s.footerRow}>
         <Link className={s.back} href={loginHref}>
-          Volver a iniciar sesión
+          Volver al inicio de sesión
         </Link>
 
         <Link className={s.next} href={otpHref}>
-          Ya tengo OTP
+          Ya tengo código
         </Link>
       </div>
 
@@ -108,13 +112,13 @@ export default function ForgotPasswordForm({
           <ShieldCheck size={16} />
         </span>
         <p className={s.noticeText}>
-          Por seguridad, el sistema puede responder “OK” aunque el correo no exista.
-          Así evitamos que alguien “adivine” usuarios.
+          Por seguridad, la respuesta puede ser la misma aunque el correo no exista.
+          Esto ayuda a proteger la información de las cuentas.
         </p>
       </div>
 
       <p id="forgot-hint" className={s.small}>
-        Tip: revisa spam/promociones. A veces el OTP se va de vacaciones 😄
+        Revisa tu bandeja de entrada y también spam o promociones.
       </p>
     </form>
   );

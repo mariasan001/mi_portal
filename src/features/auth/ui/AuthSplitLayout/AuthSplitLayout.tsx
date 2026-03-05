@@ -8,13 +8,12 @@ type Props = {
   leftTag?: string;
   leftTitle: string;
   leftDescription?: string;
-  leftImageSrc?: string; // opcional (si quieres background image en CSS, puedes ignorarlo)
-
+  leftImageSrc?: string;
   logoSrc?: string;
   logoAlt?: string;
 
-  bottomLeft?: ReactNode;   // ✅ aquí va el Link
-  bottomRight?: ReactNode;  // ✅ aquí va el Link de privacidad u otro
+  bottomLeft?: ReactNode;
+  bottomRight?: ReactNode;
 
   children: ReactNode;
 };
@@ -35,20 +34,16 @@ export default function AuthSplitLayout({
       <div className={s.container}>
         {/* IZQUIERDA */}
         <section className={s.leftPanel}>
+          {leftImageSrc ? (
+            <div className={s.leftImgWrap} aria-hidden="true">
+              <Image src={leftImageSrc} alt="" fill priority className={s.leftImg} />
+            </div>
+          ) : null}
+
           <div className={s.leftContent}>
             <div className={s.leftTag}>{leftTag}</div>
-
             <h1 className={s.leftTitle}>{leftTitle}</h1>
-
             {leftDescription ? <p className={s.leftSub}>{leftDescription}</p> : null}
-
-            {/* opcional: si quieres usar una imagen real dentro */}
-            {leftImageSrc ? (
-              <div className={s.leftImgWrap} aria-hidden="true">
-                <Image src={leftImageSrc} alt="" fill className={s.leftImg} priority />
-              </div>
-            ) : null}
-
             <div className={s.leftFoot}>© 2026 Gobierno del Estado de México</div>
           </div>
         </section>
@@ -62,12 +57,12 @@ export default function AuthSplitLayout({
           <div className={s.rightCenter}>
             {children}
 
-            {(bottomLeft || bottomRight) && (
+            {(bottomLeft || bottomRight) ? (
               <div className={s.metaRow}>
                 <span>{bottomLeft}</span>
                 <span>{bottomRight}</span>
               </div>
-            )}
+            ) : null}
           </div>
         </section>
       </div>

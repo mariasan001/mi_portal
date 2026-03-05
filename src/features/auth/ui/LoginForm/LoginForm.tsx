@@ -32,7 +32,7 @@ export default function LoginForm({
   loading = false,
   error,
   onSubmit,
-  forgotHref = '/login/password/forgot', // ✅ fix
+  forgotHref = '/login/password/forgot', 
 }: Props) {
   const [showPass, setShowPass] = useState(false);
 
@@ -48,8 +48,8 @@ export default function LoginForm({
   return (
     <form className={s.form} onSubmit={onSubmit} aria-describedby="login-hint">
       <header className={s.head}>
-        <h1 className={s.title}>Inicia sesión</h1>
-        <p className={s.sub}>Accede con tu usuario y contraseña para continuar.</p>
+        <h1 className={s.title}>Hola, Inicia sesión</h1>
+        <p className={s.sub}>Ingresa con tu usuario y contraseña para consultar tus comprobantes.</p>
       </header>
 
       {error ? (
@@ -114,7 +114,7 @@ export default function LoginForm({
       </button>
 
       <p id="login-hint" className={s.small}>
-        Si entras desde un acceso rápido, tu app se selecciona automáticamente.
+      “Tu información está protegida bajo estándares de seguridad institucional.”
       </p>
     </form>
   );

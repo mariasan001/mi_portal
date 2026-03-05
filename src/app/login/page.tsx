@@ -8,8 +8,8 @@ export default function LoginPage() {
 
   return (
     <AuthSplitLayout
-      leftTitle="Entra a tu cuenta y gestiona tus servicios."
-      leftDescription="Accede con tu usuario y contraseña. Sin atajos raros: aquí lo importante es que funcione y sea seguro."
+      leftTitle="Consulta y descarga tus comprobantes oficiales."
+      leftDescription="Accede para emitir, consultar y descargar comprobantes de percepciones y deducciones por periodo. Todo en un solo lugar, sin vueltas."
       bottomLeft={
         <>
           ¿Nuevo?{' '}

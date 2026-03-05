@@ -1,6 +1,8 @@
 'use client';
 
 import { useCallback, useState } from 'react';
+import { toast } from 'sonner';
+
 import { ApiError, toErrorMessage } from '@/lib/api/api.errores';
 import type { RegisterPayload, RegisterResponse } from '../types/register.types';
 import { registerUser } from '../services/auth-register.service';
@@ -28,12 +30,20 @@ export function useRegister() {
 
   const submit = useCallback(async (payload: RegisterPayload) => {
     setState({ loading: true, error: null, data: null });
+
+    const tId = toast.loading('Creando cuenta…');
+
     try {
       const res = await registerUser(payload);
       setState({ loading: false, error: null, data: res });
+
+      toast.success('Cuenta creada correctamente. Ya puedes iniciar sesión.', { id: tId });
       return res;
-    } catch (e) {
-      setState({ loading: false, error: mapRegisterError(e), data: null });
+    } catch (err) {
+      const msg = mapRegisterError(err);
+      setState({ loading: false, error: msg, data: null });
+
+      toast.error(msg, { id: tId });
       return null;
     }
   }, []);

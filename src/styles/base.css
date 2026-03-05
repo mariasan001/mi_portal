@@ -25,3 +25,4 @@ input, textarea, select{ font-family: var(--font-body); }
 @media (prefers-reduced-motion: reduce){
   *{ animation:none !important; transition:none !important; scroll-behavior:auto !important; }
 }
+

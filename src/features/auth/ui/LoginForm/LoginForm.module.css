@@ -40,15 +40,16 @@
 }
 
 /* ===== Fields ===== */
+
 .label{
   display: grid;
   gap: 7px;
 }
 
 .labelText{
-  font-size: 12px;
+  font-size: 13px;
   color: var(--muted-2);
-  font-weight: 800;
+  font-weight: 900;
 }
 
 .row{

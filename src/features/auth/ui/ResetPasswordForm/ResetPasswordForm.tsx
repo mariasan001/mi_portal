@@ -25,7 +25,12 @@ export default function ResetPasswordForm({ loginHref = '/login' }: Props) {
   const { loading, error, ok, submit } = useResetPassword();
 
   const canSubmit = useMemo(() => {
-    return !loading && safeTrim(email).length > 3 && safeTrim(otp).length > 0 && newPassword.length >= 8;
+    return (
+      !loading &&
+      safeTrim(email).length > 3 &&
+      safeTrim(otp).length > 0 &&
+      newPassword.length >= 8
+    );
   }, [email, otp, newPassword, loading]);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -37,8 +42,10 @@ export default function ResetPasswordForm({ loginHref = '/login' }: Props) {
   return (
     <form className={s.form} onSubmit={onSubmit} aria-describedby="reset-hint">
       <header className={s.head}>
-        <h1 className={s.title}>Nueva contraseña</h1>
-        <p className={s.sub}>Confirma tu correo, tu OTP y crea una contraseña segura.</p>
+        <h1 className={s.title}>Crear nueva contraseña</h1>
+        <p className={s.sub}>
+          Confirma tu correo, ingresa el código de verificación y define una contraseña segura.
+        </p>
       </header>
 
       {error ? (
@@ -49,16 +56,16 @@ export default function ResetPasswordForm({ loginHref = '/login' }: Props) {
 
       {ok ? (
         <div className={s.ok} role="status" aria-live="polite">
-          Contraseña actualizada.{' '}
+          Contraseña actualizada correctamente.{' '}
           <Link className={s.inlineLink} href={loginHref}>
-            Ir a iniciar sesión
+            Ir al inicio de sesión
           </Link>
           .
         </div>
       ) : null}
 
       <label className={s.label}>
-        <span className={s.labelText}>Correo</span>
+        <span className={s.labelText}>Correo electrónico</span>
         <div className={s.inputWrap}>
           <span className={s.icon} aria-hidden="true">
             <Mail size={16} />
@@ -67,7 +74,7 @@ export default function ResetPasswordForm({ loginHref = '/login' }: Props) {
             className={s.input}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="tu@correo.com"
+            placeholder="nombre@dominio.gob.mx"
             autoComplete="email"
             inputMode="email"
           />
@@ -75,7 +82,7 @@ export default function ResetPasswordForm({ loginHref = '/login' }: Props) {
       </label>
 
       <label className={s.label}>
-        <span className={s.labelText}>OTP</span>
+        <span className={s.labelText}>Código de verificación</span>
         <div className={s.inputWrap}>
           <span className={s.icon} aria-hidden="true">
             <KeyRound size={16} />
@@ -84,8 +91,9 @@ export default function ResetPasswordForm({ loginHref = '/login' }: Props) {
             className={s.input}
             value={otp}
             onChange={(e) => setOtp(e.target.value)}
-            placeholder="123456"
+            placeholder="Ej: 123456"
             inputMode="numeric"
+            autoComplete="one-time-code"
           />
         </div>
       </label>
@@ -108,20 +116,20 @@ export default function ResetPasswordForm({ loginHref = '/login' }: Props) {
       </label>
 
       <button className={s.btn} disabled={!canSubmit} aria-busy={loading}>
-        {loading ? 'Guardando…' : 'Guardar nueva contraseña'}
+        {loading ? 'Guardando…' : 'Guardar cambios'}
       </button>
 
-      <div className={s.notice} role="note" aria-label="Aviso de privacidad">
+      <div className={s.notice} role="note" aria-label="Seguridad">
         <span className={s.noticeIcon} aria-hidden="true">
           <ShieldCheck size={16} />
         </span>
         <p className={s.noticeText}>
-          Tus credenciales se usan solo para autenticar tu acceso y proteger tu información.
+          Tus credenciales se utilizan únicamente para autenticar tu acceso y proteger tu información.
         </p>
       </div>
 
       <p id="reset-hint" className={s.small}>
-        Tip: usa una contraseña única. Tu “12345678” no cuenta como estrategia de seguridad 😄
+        Recomendación: usa una contraseña única y evita compartirla.
       </p>
     </form>
   );
