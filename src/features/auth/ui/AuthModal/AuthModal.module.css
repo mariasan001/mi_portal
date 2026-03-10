@@ -1,0 +1,31 @@
+.overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(10,10,10,.35);
+  backdrop-filter: blur(4px);
+
+  display: grid;
+  place-items: center;
+
+  z-index: 200;
+}
+
+.modal{
+  position: relative;
+
+  width: 420px;
+  max-width: 92vw;
+
+  background: #fff;
+  border-radius: 18px;
+
+  border: 1px solid var(--border);
+
+  box-shadow:
+    0 40px 80px rgba(10,10,10,.18),
+    0 12px 30px rgba(10,10,10,.12);
+
+  padding: 28px;
+
+  z-index: 201;   /* 👈 ESTA ES LA CLAVE */
+}

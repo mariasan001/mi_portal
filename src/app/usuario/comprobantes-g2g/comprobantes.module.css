@@ -1,0 +1,54 @@
+/* src/app/usuario/comprobantes/comprobantes.module.css */
+
+.wrap{
+  display: grid;
+  gap: 14px;
+}
+
+.head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap: 12px;
+}
+
+.title{
+  margin: 0;
+  font-weight: 900;
+  font-size: clamp(20px, 2.4vw, 28px);
+}
+
+.sub{
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.actions{
+  display:flex;
+  gap: 10px;
+}
+
+.link{
+  text-decoration: none;
+  font-weight: 800;
+  color: var(--vino);
+}
+.link:hover{ text-decoration: underline; }
+
+.card{
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 16px;
+}
+
+.placeholder{
+  padding: 22px;
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  border: 1px dashed var(--border);
+  color: var(--muted);
+  font-size: 13px;
+}

@@ -506,3 +506,74 @@
     display: none;
   }
 }
+.overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(10,10,10,.28);
+  z-index: 80;
+}
+.authActions{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.userPill{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px 10px 14px;
+  border-radius: 999px;
+  text-decoration: none;
+  background: rgba(255,255,255,.92);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  color: var(--text);
+}
+
+.userPillText{
+  font-weight: 700;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.userPillIcon{
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10,10,10,.06);
+}
+
+.logoutBtn{
+  height: 42px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.92);
+  color: var(--text);
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+}
+
+.logoutBtn:hover{
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.mobileLogoutBtn{
+  margin-top: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.92);
+  color: var(--text);
+  font-weight: 700;
+  cursor: pointer;
+}

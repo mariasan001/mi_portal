@@ -11,9 +11,51 @@ import React, {
 
 import type { SesionMe } from '../types/me.types';
 import type { LoginRequest } from '../types/login.types';
+
 import { iniciarSesion } from '../services/auth-login.service';
 import { obtenerSesion } from '../services/auth-me.service';
+
 import { esApiError, toErrorMessage } from '@/lib/api/api.errores';
+
+type AuthMode = 'admin' | 'user';
+
+type RouteDecision = {
+  path: string;
+  mode: AuthMode;
+};
+
+function hasRole(roles: readonly string[], role: string) {
+  return roles.includes(role);
+}
+
+function resolvePostLoginRoute(
+  appCode: string | null,
+  roles: readonly string[]
+): RouteDecision {
+  const code = (appCode ?? '').trim();
+
+  /**
+   * Portal de Servicios
+   * - admin -> /admin
+   * - user  -> /
+   */
+  if (!code || code === 'PLAT_SERV') {
+    if (hasRole(roles, 'ROLE_SP_ADMIN')) {
+      return { path: '/admin', mode: 'admin' };
+    }
+
+    if (hasRole(roles, 'ROLE_SP_USER')) {
+      return { path: '/', mode: 'user' };
+    }
+
+    return { path: '/', mode: 'user' };
+  }
+
+  /**
+   * fallback general
+   */
+  return { path: '/', mode: 'user' };
+}
 
 type AuthStatus = 'booting' | 'authenticated' | 'anonymous';
 
@@ -30,7 +72,15 @@ type AuthState = {
   logout: () => void;
 
   setAppCode: (code: string | null) => void;
+
   isAuthenticated: boolean;
+
+  roles: readonly string[];
+  hasRole: (role: string) => boolean;
+
+  mode: AuthMode | null;
+  homePath: string;
+  resolveHome: () => string;
 };
 
 const APP_CODE_KEY = 'portal_app_code';
@@ -67,13 +117,18 @@ function limpiarAppCode() {
   }
 }
 
+type RoleLike =
+  | string
+  | {
+      name?: string;
+      authority?: string;
+    };
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [sesion, setSesion] = useState<SesionMe | null>(null);
   const [appCode, _setAppCode] = useState<string | null>(null);
 
-  // booting: al inicio no sabemos si hay sesión
   const [status, setStatus] = useState<AuthStatus>('booting');
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -83,6 +138,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       _setAppCode(null);
       return;
     }
+
     const clean = code.trim();
     guardarAppCode(clean);
     _setAppCode(clean);
@@ -94,15 +150,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     try {
       const me = await obtenerSesion();
+
+      console.log('🔐 [AuthProvider.refresh] sesión obtenida:', me);
+
       setSesion(me);
       setStatus('authenticated');
     } catch (e) {
-      // 401/403 => no hay sesión, NO es “error”
       if (esApiError(e) && (e.status === 401 || e.status === 403)) {
+        console.log('🟡 [AuthProvider.refresh] sin sesión activa (401/403)');
         setSesion(null);
         setError(null);
         setStatus('anonymous');
       } else {
+        console.log('🔴 [AuthProvider.refresh] error al obtener sesión:', e);
         setSesion(null);
         setError(toErrorMessage(e));
         setStatus('anonymous');
@@ -124,17 +184,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           appCode: args.appCode.trim(),
         };
 
+        console.log('📨 [AuthProvider.login] payload:', payload);
+
         await iniciarSesion(payload);
 
-        // guarda appCode con el que se autenticó
+        console.log('✅ [AuthProvider.login] login exitoso');
+
         setAppCode(payload.appCode);
 
         await refresh();
+
         return true;
       } catch (e) {
+        console.log('🔴 [AuthProvider.login] error login:', e);
         setSesion(null);
         setStatus('anonymous');
         setError(toErrorMessage(e, 'No se pudo iniciar sesión'));
+
         return false;
       } finally {
         setLoading(false);
@@ -144,6 +210,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 
   const logout = useCallback(() => {
+    console.log('🚪 [AuthProvider.logout] cerrando sesión');
+
     limpiarAppCode();
     _setAppCode(null);
     setSesion(null);
@@ -153,7 +221,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const stored = leerAppCode();
-    if (stored) _setAppCode(stored);
+    if (stored) {
+      console.log('💾 [AuthProvider] appCode recuperado de storage:', stored);
+      _setAppCode(stored);
+    }
   }, []);
 
   useEffect(() => {
@@ -161,6 +232,41 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [refresh]);
 
   const isAuthenticated = Boolean(sesion?.userId);
+
+  const roles = useMemo<readonly string[]>(() => {
+    const raw = sesion?.roles as RoleLike[] | undefined;
+
+    if (!Array.isArray(raw)) return [];
+
+    return raw
+      .map((role) => {
+        if (typeof role === 'string') return role;
+        return role.name ?? role.authority ?? '';
+      })
+      .filter((r): r is string => Boolean(r));
+  }, [sesion]);
+
+  const roleCheck = useCallback((role: string) => hasRole(roles, role), [roles]);
+
+  const decision = useMemo(
+    () => resolvePostLoginRoute(appCode, roles),
+    [appCode, roles]
+  );
+
+  const resolveHome = useCallback(
+    () => resolvePostLoginRoute(appCode, roles).path,
+    [appCode, roles]
+  );
+
+  useEffect(() => {
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('🔐 [AuthProvider] sesion completa:', sesion);
+    console.log('🪪 [AuthProvider] appCode actual:', appCode);
+    console.log('🧩 [AuthProvider] roles normalizados:', roles);
+    console.log('🧭 [AuthProvider] decision de ruta:', decision);
+    console.log('🏠 [AuthProvider] resolveHome():', resolveHome());
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  }, [sesion, appCode, roles, decision, resolveHome]);
 
   const value = useMemo<AuthState>(
     () => ({
@@ -176,9 +282,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       logout,
 
       setAppCode,
+
       isAuthenticated,
+
+      roles,
+      hasRole: roleCheck,
+
+      mode: isAuthenticated ? decision.mode : null,
+      homePath: decision.path,
+      resolveHome,
     }),
-    [sesion, appCode, status, loading, error, login, refresh, logout, setAppCode, isAuthenticated]
+    [
+      sesion,
+      appCode,
+      status,
+      loading,
+      error,
+      login,
+      refresh,
+      logout,
+      setAppCode,
+      isAuthenticated,
+      roles,
+      roleCheck,
+      decision.mode,
+      decision.path,
+      resolveHome,
+    ]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

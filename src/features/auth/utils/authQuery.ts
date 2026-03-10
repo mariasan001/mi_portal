@@ -2,6 +2,6 @@
 
 export function getLoginFlowParams(sp: ReadonlyURLSearchParams) {
   const appCodeFromQuery = sp.get('appCode')?.trim() || null;
-  const returnTo = sp.get('returnTo') || '/admin';
+  const returnTo = sp.get('returnTo') || '/';
   return { appCodeFromQuery, returnTo };
 }
