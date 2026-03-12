@@ -32,6 +32,7 @@ export default function VerifyOtpForm({
     try {
       const sp = new URLSearchParams(window.location.search);
       const v = sp.get('usernameOrEmail')?.trim();
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (v) setUsernameOrEmail(v);
     } catch {
       // noop

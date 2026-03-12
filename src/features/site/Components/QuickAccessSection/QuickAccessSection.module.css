@@ -1,8 +1,7 @@
-/* src/features/site/Components/QuickAccessSection/QuickAccessSection.module.css */
-
 .wrap{
   padding: 60px 20px;
   background: var(--bg);
+  scroll-margin-top: 124px;
 }
 
 .inner{
@@ -12,7 +11,7 @@
 
 .header{
   text-align: center;
-  margin-bottom: 36px;
+  margin-bottom: 34px;
 }
 
 .header h2{
@@ -24,15 +23,13 @@
 
 .header p{
   margin: 10px 0 0;
-  font-weight: 300;              /* ✅ textos en 300 */
+  font-weight: 300;
   color: var(--muted);
 }
 
 /* =========================
-   Animaciones (re-trigger)
+   Animaciones reveal
    ========================= */
-
-/* estado base oculto */
 .header,
 .grid{
   opacity: 0;
@@ -40,14 +37,12 @@
   will-change: transform, opacity;
 }
 
-/* entra según dirección */
 .dirDown.isIn .header{ animation: qaDown .55s ease both; }
 .dirUp.isIn .header{ animation: qaUp .55s ease both; }
 
 .dirDown.isIn .grid{ animation: qaDown .55s ease both; animation-delay: 90ms; }
 .dirUp.isIn .grid{ animation: qaUp .55s ease both; animation-delay: 90ms; }
 
-/* cards stagger */
 .card{
   opacity: 0;
   transform: translateY(10px);
@@ -57,7 +52,6 @@
 .dirDown.isIn .card{ animation: qaDown .55s ease both; }
 .dirUp.isIn .card{ animation: qaUp .55s ease both; }
 
-/* 8 items (si agregas más, no se rompe, solo no tendrán delay específico) */
 .dirDown.isIn .card:nth-child(1),
 .dirUp.isIn .card:nth-child(1){ animation-delay: 0ms; }
 .dirDown.isIn .card:nth-child(2),
@@ -74,6 +68,8 @@
 .dirUp.isIn .card:nth-child(7){ animation-delay: 310ms; }
 .dirDown.isIn .card:nth-child(8),
 .dirUp.isIn .card:nth-child(8){ animation-delay: 360ms; }
+.dirDown.isIn .card:nth-child(9),
+.dirUp.isIn .card:nth-child(9){ animation-delay: 410ms; }
 
 @keyframes qaDown{
   from{ opacity: 0; transform: translateY(12px); }
@@ -83,18 +79,6 @@
 @keyframes qaUp{
   from{ opacity: 0; transform: translateY(-12px); }
   to{ opacity: 1; transform: translateY(0); }
-}
-
-/* reduce motion */
-@media (prefers-reduced-motion: reduce){
-  .header,
-  .grid,
-  .card{
-    opacity: 1 !important;
-    transform: none !important;
-    animation: none !important;
-    transition: none !important;
-  }
 }
 
 /* =========================
@@ -111,19 +95,22 @@
    ========================= */
 .card{
   position: relative;
-  display: flex;
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) 28px;
   align-items: center;
-  gap: 14px;
-
+  column-gap: 16px;
   background: var(--surface);
   border: 1px solid var(--border-soft);
   border-radius: 18px;
-  padding: 20px;
-
+  padding: 18px;
   text-decoration: none;
   color: inherit;
-
-  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  text-align: left;
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease,
+    border-color .18s ease,
+    background .18s ease;
   will-change: transform;
 }
 
@@ -133,7 +120,6 @@
   box-shadow: var(--shadow-md);
 }
 
-/* ✅ detalle marca sutil (línea inferior en hover) */
 .card::after{
   content:"";
   position:absolute;
@@ -150,24 +136,113 @@
   background: rgba(159,33,65,.18);
 }
 
-/* =========================
-   Icon bubble (PERFECTAMENTE REDONDO)
-   ========================= */
-.icon{
-  width: 48px;
-  height: 48px;
-  aspect-ratio: 1 / 1;      /* ✅ evita ovalado */
-  flex: 0 0 48px;           /* ✅ evita que flex lo estire */
+.cardLocked{
+  border-color: rgba(10,10,10,.08);
+}
 
+.cardUnlocked{
+  animation: cardUnlockFx .95s ease both;
+}
+
+/* =========================
+   Candado flotante
+   ========================= */
+.lockBadgeFloating{
+  position: absolute;
+  top: -10px;
+  right: 14px;
+  width: 34px;
+  height: 34px;
   border-radius: 999px;
   display: grid;
   place-items: center;
+  border: 1px solid rgba(10,10,10,.08);
+  background: var(--surface);
+  box-shadow: 0 6px 12px rgba(0,0,0,.08);
+  overflow: hidden;
+  z-index: 3;
+  transition:
+    transform .22s ease,
+    background .22s ease,
+    color .22s ease,
+    border-color .22s ease,
+    box-shadow .22s ease;
+}
 
+.miniLockSwap{
+  position: relative;
+  width: 15px;
+  height: 15px;
+  display: block;
+}
+
+.miniLockLayer{
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  transition:
+    opacity .24s ease,
+    transform .28s ease;
+}
+
+.miniLockLayer svg{
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+
+.miniClosed{
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.miniOpen{
+  opacity: 0;
+  transform: translateY(8px) scale(.84);
+}
+
+.miniLockSwapOpen .miniClosed{
+  opacity: 0;
+  transform: translateY(-8px) scale(.84);
+}
+
+.miniLockSwapOpen .miniOpen{
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.locked{
+  color: rgba(10,10,10,.52);
+}
+
+.unlocked{
+  color: #1f8f53;
+  background: rgba(31,143,83,.10);
+  border-color: rgba(31,143,83,.24);
+  animation: badgeUnlock .78s ease both;
+}
+
+/* =========================
+   Left icon
+   ========================= */
+.iconWrap{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon{
+  width: 48px;
+  height: 48px;
+  aspect-ratio: 1 / 1;
+  flex: 0 0 48px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
   background: rgba(236, 236, 236, 0.1);
   border: 1px solid rgba(159,33,65,.12);
-
   color: var(--oro);
-
   padding: 0;
   line-height: 0;
 }
@@ -183,8 +258,10 @@
    ========================= */
 .content{
   display: grid;
-  gap: 4px;
+  gap: 8px;
   min-width: 0;
+  align-self: stretch;
+  align-content: center;
 }
 
 .content h3{
@@ -193,30 +270,38 @@
   margin: 0;
   color: var(--text);
   letter-spacing: -0.01em;
+  line-height: 1.28;
+  text-align: left;
 }
 
 .content p{
   font-size: 13px;
-  font-weight: 300;          /* ✅ textos en 300 */
+  font-weight: 300;
   margin: 0;
   color: var(--muted);
   line-height: 1.5;
-
-  max-width: 36ch;
-
+  max-width: 30ch;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  text-align: left;
 }
 
 /* =========================
    Arrow
    ========================= */
+.arrowWrap{
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
 .arrow{
-  margin-left: auto;
-  opacity: .7;
+  width: 18px;
+  height: 18px;
+  opacity: .92;
   color: rgba(10,10,10,.52);
   transition: transform .18s ease, opacity .18s ease, color .18s ease;
 }
@@ -228,7 +313,7 @@
 }
 
 /* =========================
-   Focus (accesibilidad)
+   Focus
    ========================= */
 .card:focus-visible{
   outline: none;
@@ -239,7 +324,62 @@
 }
 
 /* =========================
-   VEDA (neutraliza acentos duros)
+   Section pulse
+   ========================= */
+.sectionPulse .inner{
+  animation: sectionGlow 1.15s ease;
+}
+
+/* =========================
+   Unlock anims
+   ========================= */
+@keyframes badgeUnlock{
+  0%{
+    transform: scale(.88);
+    opacity: .75;
+  }
+  55%{
+    transform: scale(1.08);
+    opacity: 1;
+  }
+  100%{
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes cardUnlockFx{
+  0%{
+    border-color: rgba(10,10,10,.08);
+    box-shadow: none;
+  }
+  45%{
+    border-color: rgba(31,143,83,.26);
+    box-shadow: 0 12px 28px rgba(31,143,83,.08);
+  }
+  100%{
+    border-color: var(--border-soft);
+    box-shadow: none;
+  }
+}
+
+@keyframes sectionGlow{
+  0%{
+    transform: translateY(0);
+    filter: saturate(1);
+  }
+  40%{
+    transform: translateY(-1px);
+    filter: saturate(1.03);
+  }
+  100%{
+    transform: translateY(0);
+    filter: saturate(1);
+  }
+}
+
+/* =========================
+   VEDA
    ========================= */
 :global(html[data-theme="veda"]) .card:hover{
   border-color: rgba(17,24,39,.18);
@@ -252,7 +392,7 @@
 
 :global(html[data-theme="veda"]) .icon{
   border-color: rgba(17,24,39,.14);
-  color: var(--accent); /* en veda tu --accent ya es gris */
+  color: var(--accent);
 }
 
 :global(html[data-theme="veda"]) .card:hover .arrow{
@@ -267,6 +407,24 @@
 }
 
 /* =========================
+   Reduce motion
+   ========================= */
+@media (prefers-reduced-motion: reduce){
+  .header,
+  .grid,
+  .card,
+  .lockBadgeFloating,
+  .inner,
+  .miniLockLayer{
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* =========================
    Responsive
    ========================= */
 @media (max-width: 1024px){
@@ -278,11 +436,27 @@
 
   .grid{ grid-template-columns: 1fr; }
 
-  .card{ padding: 18px; border-radius: 16px; }
+  .card{
+    grid-template-columns: 46px minmax(0, 1fr) 24px;
+    column-gap: 14px;
+    padding: 18px;
+    border-radius: 16px;
+  }
 
   .icon{
     width: 46px;
     height: 46px;
     flex: 0 0 46px;
+  }
+
+  .content p{
+    max-width: 100%;
+  }
+
+  .lockBadgeFloating{
+    top: -9px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
   }
 }

@@ -2,11 +2,14 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { FaFacebookF, FaXTwitter } from 'react-icons/fa6';
 
 import css from './SiteNav.module.css';
-import { SITE_NAV_ITEMS } from '@/features/site/Components/Nav/constants/nav';
+import {
+  SITE_NAV_ITEMS,
+  AUTH_NAV_ITEMS,
+} from '@/features/site/Components/Nav/constants/nav';
 import { useCompactNav } from '@/features/site/Components/Nav/hooks/useCompactNav';
 import { useOverlayLock } from '@/features/site/Components/Nav/hooks/useOverlayLock';
 
@@ -23,10 +26,12 @@ export default function SiteNav() {
   const closeMenu = useCallback(() => setOpen(false), []);
   useOverlayLock(open, closeMenu);
 
-  const displayName =
+  const displayName = sesion?.username ?? 'Mi cuenta';
 
-    sesion?.username ??
-    'Mi cuenta';
+  const activeNavItems = useMemo(
+    () => (isAuthenticated ? AUTH_NAV_ITEMS : SITE_NAV_ITEMS),
+    [isAuthenticated]
+  );
 
   return (
     <>
@@ -34,6 +39,7 @@ export default function SiteNav() {
         className={[
           css.navWrap,
           compact ? css.isCompact : '',
+          isAuthenticated ? css.authenticated : '',
         ].join(' ')}
       >
         <div className={css.navInner}>
@@ -103,12 +109,13 @@ export default function SiteNav() {
             </Link>
 
             <div className={css.pillLinks}>
-              {SITE_NAV_ITEMS.map((it) => (
+              {activeNavItems.map((it, index) => (
                 <Link
                   key={it.href}
                   href={it.href}
-                  className={css.pillLink}
+                  className={`${css.pillLink} ${isAuthenticated ? css.authPillLink : ''}`}
                   onClick={closeMenu}
+                  style={isAuthenticated ? { animationDelay: `${index * 55}ms` } : undefined}
                 >
                   {it.label}
                 </Link>
@@ -174,7 +181,7 @@ export default function SiteNav() {
           className={`${css.mobilePanel} ${open ? css.mobilePanelOpen : ''}`}
         >
           <nav className={css.mobileLinks} aria-label="Navegación móvil">
-            {SITE_NAV_ITEMS.map((it) => (
+            {activeNavItems.map((it) => (
               <Link
                 key={it.href}
                 href={it.href}

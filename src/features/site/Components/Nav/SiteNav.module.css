@@ -1,14 +1,10 @@
-/* SiteNav.module.css */
-
 .navWrap{
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 80;
-
   padding: 14px 16px;
-
   transition:
     background .22s ease,
     backdrop-filter .22s ease,
@@ -23,7 +19,6 @@
   backdrop-filter: none;
   box-shadow: none;
 }
-
 
 .navInner{
   max-width: 1240px;
@@ -50,14 +45,11 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
   background: rgba(255,255,255,.92);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-sm);
-
   color: rgba(10,10,10,.68);
   text-decoration: none;
-
   transition: transform .15s ease, box-shadow .15s ease, color .15s ease, border-color .15s ease;
 }
 
@@ -87,11 +79,9 @@
   gap: 10px;
   padding: 10px 14px;
   border-radius: 999px;
-
   background: rgba(255,255,255,.92);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-sm);
-
   transition: padding .18s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease;
 }
 
@@ -105,15 +95,12 @@
 }
 
 /* ===== LOGOS ===== */
-
-/* ✅ NO COMPACTO: logo completo (no círculo, no recorte) */
 .logoFullWrap{
   display: inline-flex;
   align-items: center;
   justify-content: center;
   position: relative;
-
-  width: 118px; /* 🔧 ajusta si quieres más grande */
+  width: 118px;
   height: 46px;
 }
 
@@ -122,11 +109,9 @@
   height: 46px;
   object-fit: contain;
   filter: drop-shadow(0 8px 14px rgba(10,10,10,.12));
-
   position: absolute;
   left: 0;
   top: 0;
-
   opacity: 0;
   transition: opacity .16s ease;
 }
@@ -137,17 +122,14 @@
 :global(html[data-theme="veda"]) .fullNormal{ opacity: 0; }
 :global(html[data-theme="veda"]) .fullVeda{ opacity: 1; }
 
-/* ✅ COMPACTO: icono en círculo */
 .logoChip{
-  display: none; /* default hidden */
+  display: none;
   width: 52px;
   height: 52px;
   border-radius: 999px;
-
   background: rgba(255,255,255,.96);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-sm);
-
   place-items: center;
   position: relative;
   overflow: hidden;
@@ -158,9 +140,7 @@
   height: 34px;
   object-fit: contain;
   filter: drop-shadow(0 8px 14px rgba(10,10,10,.12));
-
   position: absolute;
-
   opacity: 0;
   transform: scale(.98);
   transition: opacity .16s ease, transform .18s ease;
@@ -172,9 +152,6 @@
 :global(html[data-theme="veda"]) .compactNormal{ opacity: 0; transform: scale(.98); }
 :global(html[data-theme="veda"]) .compactVeda{ opacity: 1; transform: scale(1); }
 
-/* ✅ Cuando es compacto:
-   - ocultar logo completo
-   - mostrar chip */
 .isCompact .logoFullWrap{ display: none; }
 .isCompact .logoChip{ display: grid; }
 
@@ -183,10 +160,8 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-
   overflow: hidden;
   white-space: nowrap;
-
   max-width: 520px;
   opacity: 1;
   transform: translateY(0) scale(1);
@@ -199,14 +174,11 @@
   justify-content: center;
   padding: 9px 12px;
   border-radius: 999px;
-
   color: rgba(10,10,10,.72);
   text-decoration: none;
-
   font-weight: 500;
   font-size: 13px;
   letter-spacing: .12px;
-
   transition: background .15s ease, color .15s ease, transform .15s ease;
 }
 
@@ -222,7 +194,7 @@
 }
 
 /* =========================
-   RIGHT: CTA + Burger
+   RIGHT
    ========================= */
 .rightZone{
   display: flex;
@@ -231,22 +203,25 @@
   gap: 10px;
 }
 
+/* CTA login */
 .ctaPill{
   display: inline-flex;
   align-items: center;
   gap: 0px;
-
   padding: 10px 12px 10px 16px;
   border-radius: 999px;
   text-decoration: none;
-
   background: var(--brand);
   color: #fff;
-
   border: 1px solid rgba(10,10,10,.12);
   box-shadow: 0 14px 28px rgba(10,10,10,.14);
-
-  transition: transform .15s ease, filter .15s ease, box-shadow .15s ease, padding .22s ease;
+  transition:
+    transform .15s ease,
+    filter .15s ease,
+    box-shadow .15s ease,
+    padding .22s ease,
+    opacity .22s ease,
+    scale .22s ease;
 }
 
 .ctaPill:hover{
@@ -266,7 +241,6 @@
   letter-spacing: .12px;
   white-space: nowrap;
   padding-right: 1px;
-
   opacity: 1;
   transform: translateX(0);
   width: auto;
@@ -277,21 +251,16 @@
   width: 34px;
   height: 34px;
   border-radius: 999px;
-
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
   background: rgba(255,255,255,.18);
   color: #ffffff;
-
   font-weight: 900;
   line-height: 1;
-
   box-shadow:
     inset 0 0 0 1px rgba(255,255,255,.22),
     0 10px 22px rgba(10,10,10,.18);
-
   transition: transform .15s ease, background .15s ease;
 }
 
@@ -300,222 +269,12 @@
   background: rgba(255,255,255,.24);
 }
 
-/* Burger */
-.burger{
-  display: none;
-  width: 40px;
-  height: 40px;
-  border-radius: 999px;
-
-  border: 1px solid var(--border);
-  background: rgba(255,255,255,.92);
-  box-shadow: var(--shadow-sm);
-
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  cursor: pointer;
-
-  transition: transform .15s ease, box-shadow .15s ease;
-}
-
-.burger:hover{
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
-}
-
-.burger span{
-  display: block;
-  width: 14px;
-  height: 2px;
-  background: rgba(10,10,10,.72);
-  border-radius: 10px;
-}
-
-.burger:focus-visible{
-  outline: 3px solid rgba(10,10,10,.18);
-  outline-offset: 2px;
-}
-
-/* =========================
-   ✅ MODO COMPACTO (scroll down)
-   ========================= */
-.isCompact{
-  padding: 10px 16px;
-}
-
-/* ✅ se quita el fondo glass del pill, NO el logo */
-.isCompact .pillNav{
-  background: transparent;
-  border-color: transparent;
-  box-shadow: none;
-  padding: 0;
-}
-
-.isCompact .pillLinks{
-  max-width: 0px;
-  opacity: 0;
-  transform: translateY(-1px) scale(.98);
-}
-
-.isCompact .ctaPill{
-  padding: 10px;
-}
-
-.isCompact .ctaPillText{
-  opacity: 0;
-  transform: translateX(-6px);
-  width: 0;
-  overflow: hidden;
-}
-
-/* =========================
-   Mobile panel (animado)
-   ========================= */
-.mobilePanel{
-  display: none;
-  position: relative;
-  max-width: 1240px;
-  margin: 10px auto 0;
-  padding: 0 2px;
-
-  opacity: 0;
-  transform: translateY(-6px);
-  pointer-events: none;
-
-  transition: opacity .18s ease, transform .22s ease;
-}
-
-.mobilePanelOpen{
-  display: block;
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
-.mobileLinks{
-  background: rgba(255,255,255,.95);
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  box-shadow: var(--shadow-md);
-  padding: 10px;
-  display: grid;
-  gap: 8px;
-}
-
-.mobileLink{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  padding: 12px 12px;
-  border-radius: 14px;
-  text-decoration: none;
-
-  color: var(--text);
-  font-weight: 600;
-  background: rgba(10,10,10,.04);
-
-  transition: background .15s ease, transform .15s ease;
-}
-
-.mobileLink:hover{
-  background: rgba(10,10,10,.06);
-  transform: translateY(-1px);
-}
-
-.mobileCtaPill{
-  margin-top: 2px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: space-between;
-
-  padding: 12px 14px;
-  border-radius: 14px;
-  text-decoration: none;
-
-  font-weight: 700;
-  color: #fff;
-  background: var(--brand);
-}
-
-.mobileSocials{
-  display: flex;
-  gap: 10px;
-  padding: 6px 4px 2px;
-}
-
-/* =========================
-   Overlay
-   ========================= */
-.overlay{
-  position: fixed;
-  inset: 0;
-  background: rgba(10,10,10,.28);
-  border: 0;
-  cursor: pointer;
-
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .18s ease;
-}
-
-.overlayOpen{
-  opacity: 1;
-  pointer-events: auto;
-}
-
-/* =========================
-   RESPONSIVE
-   ========================= */
-@media (max-width: 920px){
-  .pillLinks{
-    max-width: 380px;
-  }
-}
-
-@media (max-width: 768px){
-  .navInner{
-    grid-template-columns: 1fr auto;
-    gap: 10px;
-  }
-
-  .leftZone{
-    display: none;
-  }
-
-  .pillLinks{
-    display: none;
-  }
-
-  .burger{
-    display: inline-flex;
-  }
-
-  .mobilePanel{
-    display: block;
-  }
-}
-
-@media (max-width: 420px){
-  .ctaPill{
-    padding: 10px;
-  }
-
-  .ctaPillText{
-    display: none;
-  }
-}
-.overlay{
-  position: fixed;
-  inset: 0;
-  background: rgba(10,10,10,.28);
-  z-index: 80;
-}
+/* Auth state */
 .authActions{
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  animation: authFadeIn .28s ease;
 }
 
 .userPill{
@@ -529,6 +288,12 @@
   border: 1px solid var(--border);
   box-shadow: var(--shadow-sm);
   color: var(--text);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+.userPill:hover{
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 
 .userPillText{
@@ -557,11 +322,196 @@
   font-weight: 700;
   cursor: pointer;
   box-shadow: var(--shadow-sm);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
 }
 
 .logoutBtn:hover{
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
+}
+
+/* Burger */
+.burger{
+  display: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.92);
+  box-shadow: var(--shadow-sm);
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.burger:hover{
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.burger span{
+  display: block;
+  width: 14px;
+  height: 2px;
+  background: rgba(10,10,10,.72);
+  border-radius: 10px;
+}
+
+.burger:focus-visible{
+  outline: 3px solid rgba(10,10,10,.18);
+  outline-offset: 2px;
+}
+
+/* =========================
+   AUTH BAR
+   ========================= */
+.authBar{
+  max-width: 1240px;
+  margin: 10px auto 0;
+  animation: authBarReveal .32s ease;
+}
+
+.authBarInner{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.88);
+  border: 1px solid rgba(221, 209, 196, .85);
+  box-shadow: 0 12px 30px rgba(10,10,10,.06);
+  backdrop-filter: blur(10px);
+}
+
+.authBarLink{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  border-radius: 999px;
+  text-decoration: none;
+  color: rgba(10,10,10,.76);
+  font-weight: 700;
+  font-size: 13px;
+  background: rgba(255,255,255,.58);
+  border: 1px solid transparent;
+  opacity: 0;
+  transform: translateY(8px);
+  animation: authItemIn .36s ease forwards;
+  transition: transform .18s ease, background .18s ease, border-color .18s ease;
+}
+
+.authBarLink:hover{
+  transform: translateY(-1px);
+  background: rgba(255,255,255,.9);
+  border-color: rgba(188,148,90,.25);
+  color: var(--text);
+}
+
+/* =========================
+   ✅ MODO COMPACTO
+   ========================= */
+.isCompact{
+  padding: 10px 16px;
+}
+
+.isCompact .pillNav{
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  padding: 0;
+}
+
+.isCompact .pillLinks{
+  max-width: 0px;
+  opacity: 0;
+  transform: translateY(-1px) scale(.98);
+}
+
+.isCompact .ctaPill{
+  padding: 10px;
+}
+
+.isCompact .ctaPillText{
+  opacity: 0;
+  transform: translateX(-6px);
+  width: 0;
+  overflow: hidden;
+}
+
+/* =========================
+   Mobile panel
+   ========================= */
+.mobilePanel{
+  display: none;
+  position: relative;
+  max-width: 1240px;
+  margin: 10px auto 0;
+  padding: 0 2px;
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+  transition: opacity .18s ease, transform .22s ease;
+}
+
+.mobilePanelOpen{
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.mobileLinks{
+  background: rgba(255,255,255,.95);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-md);
+  padding: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.mobileGroupTitle{
+  padding: 6px 6px 0;
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(10,10,10,.48);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.mobileLink{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 12px;
+  border-radius: 14px;
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 600;
+  background: rgba(10,10,10,.04);
+  transition: background .15s ease, transform .15s ease;
+}
+
+.mobileLink:hover{
+  background: rgba(10,10,10,.06);
+  transform: translateY(-1px);
+}
+
+.mobileCtaPill{
+  margin-top: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-radius: 14px;
+  text-decoration: none;
+  font-weight: 700;
+  color: #fff;
+  background: var(--brand);
 }
 
 .mobileLogoutBtn{
@@ -576,4 +526,154 @@
   color: var(--text);
   font-weight: 700;
   cursor: pointer;
+}
+
+.mobileSocials{
+  display: flex;
+  gap: 10px;
+  padding: 6px 4px 2px;
+}
+
+/* =========================
+   Overlay
+   ========================= */
+.overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(10,10,10,.28);
+  border: 0;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .18s ease;
+  z-index: 80;
+}
+
+.overlayOpen{
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* =========================
+   ANIMATIONS
+   ========================= */
+@keyframes authFadeIn{
+  from{
+    opacity: 0;
+    transform: translateY(-4px) scale(.98);
+  }
+  to{
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes authBarReveal{
+  from{
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to{
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes authItemIn{
+  from{
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to{
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+@media (max-width: 920px){
+  .pillLinks{
+    max-width: 380px;
+  }
+
+  .authBarInner{
+    flex-wrap: wrap;
+    border-radius: 24px;
+  }
+}
+
+@media (max-width: 768px){
+  .navInner{
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+  }
+
+  .leftZone{
+    display: none;
+  }
+
+  .pillLinks{
+    display: none;
+  }
+
+  .authBar{
+    display: none;
+  }
+
+  .burger{
+    display: inline-flex;
+  }
+
+  .mobilePanel{
+    display: block;
+  }
+}
+
+@media (max-width: 420px){
+  .ctaPill{
+    padding: 10px;
+  }
+
+  .ctaPillText{
+    display: none;
+  }
+
+  .authActions{
+    gap: 8px;
+  }
+
+  .logoutBtn{
+    padding: 0 12px;
+  }
+}
+.authenticated .pillLinks{
+  animation: navSwapFade .28s ease;
+}
+
+.authPillLink{
+  opacity: 0;
+  transform: translateY(8px);
+  animation: authItemSwap .34s ease forwards;
+}
+
+@keyframes navSwapFade{
+  from{
+    opacity: .55;
+  }
+  to{
+    opacity: 1;
+  }
+}
+
+@keyframes authItemSwap{
+  from{
+    opacity: 0;
+    transform: translateY(8px) scale(.98);
+  }
+  to{
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }

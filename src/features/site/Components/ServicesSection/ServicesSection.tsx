@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import { FiArrowUpRight, FiSearch } from 'react-icons/fi';
 
 import css from './ServicesSection.module.css';
@@ -10,15 +11,51 @@ import { shellStyle } from './utils/shellStyle';
 
 import { useRevealMotion } from '@/hooks/useRevealMotion';
 
+type AssistantAction = 'tramite' | 'consulta' | 'password' | null;
+
 export default function ServicesSection() {
-  // ✅ FIX: desestructuramos para NO usar `motion.ref` en JSX (linter feliz)
   const { ref: sectionRef, className } = useRevealMotion<HTMLElement>({
     threshold: 0.25,
     thresholdPx: 2,
   });
 
+  const [assistantHint, setAssistantHint] = useState<string>('');
+
+  useEffect(() => {
+    const handleNavigate = (event: Event) => {
+      const customEvent = event as CustomEvent<{ action: AssistantAction }>;
+      const action = customEvent.detail?.action;
+
+      if (action !== 'tramite' && action !== 'consulta') return;
+
+      const section = document.getElementById('services-section');
+      if (!section) return;
+
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      if (action === 'tramite') {
+        setAssistantHint('Aquí podrás realizar trámites relacionados con lo que buscas.');
+      }
+
+      if (action === 'consulta') {
+        setAssistantHint('Aquí podrás consultar información y acceder al servicio adecuado.');
+      }
+
+      window.setTimeout(() => {
+        setAssistantHint('');
+      }, 5000);
+    };
+
+    window.addEventListener('portal-assistant:navigate', handleNavigate as EventListener);
+
+    return () => {
+      window.removeEventListener('portal-assistant:navigate', handleNavigate as EventListener);
+    };
+  }, []);
+
   return (
     <section
+      id="services-section"
       ref={sectionRef}
       className={className(css.wrap, css.isIn, css.dirDown, css.dirUp)}
       aria-label="Gestión de información y servicios"
@@ -32,6 +69,12 @@ export default function ServicesSection() {
           <p className={css.subtitle}>
             Consulta, tramita o busca directamente lo que necesitas en nuestro portal de servicios.
           </p>
+
+          {assistantHint ? (
+            <div className={css.assistantHint} role="status" aria-live="polite">
+              {assistantHint}
+            </div>
+          ) : null}
 
           <div className={css.searchBar} role="search" aria-label="Buscar en el portal">
             <span className={css.searchBarIcon} aria-hidden="true">

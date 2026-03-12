@@ -1,7 +1,6 @@
-// src/features/site/Components/DudasSection/DudasSection.tsx
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import s from './DudasSection.module.css';
 
 import {
@@ -19,12 +18,11 @@ import type { FaqCategory } from './types/dudas.types';
 import { filterFaqs, isExternalHref } from './utils/dudas.utils';
 import { useRevealMotion } from '@/hooks/useRevealMotion';
 
-// ✅ animación re-trigger (tu hook ya actualizado)
-
 export default function DudasSection() {
   const [query, setQuery] = useState('');
   const [activeCat, setActiveCat] = useState<FaqCategory>('Más comunes');
   const [openId, setOpenId] = useState<string | null>(null);
+  const [assistantHint, setAssistantHint] = useState('');
 
   const hasQuery = query.trim().length > 0;
 
@@ -54,8 +52,37 @@ export default function DudasSection() {
     thresholdPx: 2,
   });
 
+  useEffect(() => {
+    const handleNavigate = (event: Event) => {
+      const customEvent = event as CustomEvent<{ action: 'tramite' | 'consulta' | 'password' }>;
+      const action = customEvent.detail?.action;
+
+      if (action !== 'password') return;
+
+      const section = document.getElementById('dudas-section');
+      if (!section) return;
+
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      setActiveCat('Más comunes');
+      setQuery('contraseña');
+      setAssistantHint('Aquí puedes encontrar ayuda relacionada con recuperación de contraseña.');
+
+      window.setTimeout(() => {
+        setAssistantHint('');
+      }, 5000);
+    };
+
+    window.addEventListener('portal-assistant:navigate', handleNavigate as EventListener);
+
+    return () => {
+      window.removeEventListener('portal-assistant:navigate', handleNavigate as EventListener);
+    };
+  }, []);
+
   return (
     <section
+      id="dudas-section"
       ref={sectionRef}
       className={className(s.wrap, s.isIn, s.dirDown, s.dirUp)}
       aria-label="Resuelve tus dudas"
@@ -67,6 +94,12 @@ export default function DudasSection() {
           <p className={s.subtitle}>
             Preguntas frecuentes sobre procesos, manuales y descargas del portal.
           </p>
+
+          {assistantHint ? (
+            <div className={s.assistantHint} role="status" aria-live="polite">
+              {assistantHint}
+            </div>
+          ) : null}
 
           <div className={s.searchRow} role="search" aria-label="Buscar dudas">
             <span className={s.searchIcon} aria-hidden="true">
