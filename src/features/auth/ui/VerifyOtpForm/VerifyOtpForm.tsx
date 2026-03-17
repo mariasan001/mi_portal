@@ -1,17 +1,30 @@
-// src/features/auth/ui/VerifyOtpForm/VerifyOtpForm.tsx
 'use client';
 
-import Link from 'next/link';
-import { useEffect, useMemo, useState } from 'react';
-import { Mail, KeyRound, ArrowRight, AlertTriangle, Info } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import {
+  Mail,
+  KeyRound,
+  ArrowRight,
+  AlertTriangle,
+  Info,
+  ShieldCheck,
+} from 'lucide-react';
 
 import { useVerifyOtp } from '@/features/auth/hooks/useVerifyOtp';
 
 import s from './VerifyOtpForm.module.css';
 
 type Props = {
-  resetHref?: string;
-  resendHref?: string;
+  /**
+   * Prefill del correo/usuario recibido desde forgot.
+   */
+  initialUsernameOrEmail?: string;
+
+  /**
+   * Navegación interna del modal.
+   */
+  onBackToForgot: () => void;
+  onGoToReset: (identifier: string, otp: string) => void;
 };
 
 function safeTrim(v: string) {
@@ -19,43 +32,55 @@ function safeTrim(v: string) {
 }
 
 export default function VerifyOtpForm({
-  resetHref = '/login/password/reset',
-  resendHref = '/login/password/forgot',
+  initialUsernameOrEmail = '',
+  onBackToForgot,
+  onGoToReset,
 }: Props) {
-  const [usernameOrEmail, setUsernameOrEmail] = useState('');
+  const [usernameOrEmail, setUsernameOrEmail] = useState(initialUsernameOrEmail);
   const [otp, setOtp] = useState('');
 
-  const { loading, error, ok, submit } = useVerifyOtp();
+  const { loading, error, ok, submit, reset } = useVerifyOtp();
 
-  // ✅ prefill desde forgot: ?usernameOrEmail=...
   useEffect(() => {
-    try {
-      const sp = new URLSearchParams(window.location.search);
-      const v = sp.get('usernameOrEmail')?.trim();
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      if (v) setUsernameOrEmail(v);
-    } catch {
-      // noop
-    }
-  }, []);
+    setUsernameOrEmail(initialUsernameOrEmail);
+  }, [initialUsernameOrEmail]);
 
-  const canSubmit = useMemo(() => {
-    return !loading && safeTrim(usernameOrEmail).length > 2 && safeTrim(otp).length > 3;
-  }, [loading, usernameOrEmail, otp]);
+  useEffect(() => {
+    if (!ok) return;
 
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    onGoToReset(safeTrim(usernameOrEmail), safeTrim(otp));
+  }, [ok, usernameOrEmail, otp, onGoToReset]);
+
+  useEffect(() => {
+    reset();
+  }, [usernameOrEmail, otp, reset]);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!canSubmit) return;
     await submit(usernameOrEmail, otp, 'PASSWORD_RESET');
   }
 
+  function handleContinue() {
+    onGoToReset(safeTrim(usernameOrEmail), safeTrim(otp));
+  }
+
   return (
-    <form className={s.form} onSubmit={onSubmit} aria-describedby="otp-hint">
+    <form
+      className={s.form}
+      onSubmit={handleSubmit}
+      aria-describedby="otp-hint"
+      noValidate
+    >
       <header className={s.head}>
-        <h1 className={s.title}>Validar código</h1>
-        <p className={s.sub}>
-          Ingresa el código de verificación enviado a tu correo para continuar.
-        </p>
+        <span className={s.kicker}>Verificación de identidad</span>
+
+        <div className={s.titleBlock}>
+          <h1 className={s.title}>Validar código</h1>
+          <p className={s.sub}>
+            Ingresa el código de verificación enviado a tu correo para continuar
+            con la recuperación de tu acceso.
+          </p>
+        </div>
       </header>
 
       {error ? (
@@ -68,62 +93,96 @@ export default function VerifyOtpForm({
       {ok ? (
         <div className={s.info} role="status" aria-live="polite">
           <Info size={16} aria-hidden="true" />
-          <span>
-            Código válido. Continúa a{' '}
-            <Link className={s.inlineLink} href={resetHref}>
-              restablecer contraseña
-            </Link>
-            .
-          </span>
+          <span>Código válido. Continuando al siguiente paso…</span>
         </div>
       ) : null}
 
-      <label className={s.label}>
-        <span className={s.labelText}>Usuario o correo</span>
-        <div className={s.inputWrap}>
-          <span className={s.icon} aria-hidden="true">
-            <Mail size={16} />
+      <div className={s.fields}>
+        <label className={s.label}>
+          <div className={s.row}>
+            <span className={s.labelText}>Usuario o correo</span>
+
+            <button
+              type="button"
+              className={s.secondaryLink}
+              onClick={onBackToForgot}
+            >
+              Reenviar código
+            </button>
+          </div>
+
+          <div className={s.inputWrap}>
+            <span className={s.icon} aria-hidden="true">
+              <Mail size={16} />
+            </span>
+
+            <input
+              className={s.input}
+              value={usernameOrEmail}
+              onChange={(e) => setUsernameOrEmail(e.target.value)}
+              placeholder="usuario o correo"
+              autoComplete="username"
+            />
+          </div>
+        </label>
+
+        <label className={s.label}>
+          <span className={s.labelText}>Código de verificación</span>
+
+          <div className={s.inputWrap}>
+            <span className={s.icon} aria-hidden="true">
+              <KeyRound size={16} />
+            </span>
+
+            <input
+              className={s.input}
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              placeholder="Ej: 123456"
+              inputMode="numeric"
+              autoComplete="one-time-code"
+            />
+          </div>
+        </label>
+      </div>
+
+      <div className={s.actions}>
+        <button
+          className={s.btnPrimary}
+          type="submit"
+          disabled={loading}
+          aria-busy={loading}
+        >
+          <span className={s.btnText}>
+            {loading ? 'Validando…' : 'Validar código'}
           </span>
-          <input
-            className={s.input}
-            value={usernameOrEmail}
-            onChange={(e) => setUsernameOrEmail(e.target.value)}
-            placeholder="usuario o correo"
-            autoComplete="username"
-          />
-        </div>
-      </label>
 
-      <label className={s.label}>
-        <span className={s.labelText}>Código de verificación</span>
-        <div className={s.inputWrap}>
-          <span className={s.icon} aria-hidden="true">
-            <KeyRound size={16} />
+          <span className={s.btnIconCircle} aria-hidden="true">
+            <ArrowRight size={17} />
           </span>
-          <input
-            className={s.input}
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-            placeholder="Ej: 123456"
-            inputMode="numeric"
-            autoComplete="one-time-code"
-          />
-        </div>
-      </label>
+        </button>
 
-      <button className={s.btn} disabled={!canSubmit} aria-busy={loading}>
-        <span>{loading ? 'Validando…' : 'Validar código'}</span>
-        <ArrowRight size={18} aria-hidden="true" />
-      </button>
+        <p className={s.loginRow}>
+          <span className={s.loginText}>¿Ya lo verificaste?</span>{' '}
+          <button
+            type="button"
+            className={s.loginLink}
+            onClick={handleContinue}
+          >
+            Continuar
+          </button>
+        </p>
+      </div>
 
-      <div className={s.footerRow}>
-        <Link className={s.back} href={resendHref}>
-          Reenviar código
-        </Link>
+      <div className={s.securityNote} role="note" aria-label="Seguridad">
+        <span className={s.securityIcon} aria-hidden="true">
+          <ShieldCheck size={14} />
+        </span>
 
-        <Link className={s.next} href={resetHref}>
-          Continuar
-        </Link>
+        <p>
+          El código es temporal y forma parte del proceso de validación para
+          proteger el acceso a tu cuenta.
+        </p>
       </div>
 
       <p id="otp-hint" className={s.small}>

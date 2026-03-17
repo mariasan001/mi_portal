@@ -19,9 +19,9 @@
   align-items: center;
   padding: 7px 12px;
   border-radius: 999px;
-  background: rgba(159,33,65,.06);
-  border: 1px solid rgba(159,33,65,.10);
-  color: var(--vino);
+  background: color-mix(in srgb, var(--brand) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand) 12%, transparent);
+  color: var(--brand);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: .08em;
@@ -58,9 +58,9 @@
   gap: 10px;
   padding: 12px 14px;
   border-radius: 14px;
-  border: 1px solid rgba(180,35,24,.20);
-  background: rgba(180,35,24,.05);
-  color: #7a1b14;
+  border: 1px solid color-mix(in srgb, var(--danger) 20%, transparent);
+  background: color-mix(in srgb, var(--danger) 5%, var(--surface));
+  color: color-mix(in srgb, var(--danger) 74%, var(--text));
   font-size: 12px;
   line-height: 1.5;
 }
@@ -92,18 +92,74 @@
   gap: 12px;
 }
 
+/* ===== Reset para botones tipo enlace ===== */
+.forgot,
+.registerLink{
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  box-shadow: none;
+  outline: none;
+  font: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  display: inline;
+  width: auto;
+  min-width: 0;
+  min-height: 0;
+  vertical-align: baseline;
+  border-radius: 0;
+}
+
+/* ===== Enlaces de acción ===== */
 .forgot{
   font-size: 12px;
-  color: var(--vino);
-  text-decoration: none;
+  color: var(--brand);
   font-weight: 800;
-  transition: opacity .18s ease, transform .18s ease;
+  transition: opacity .18s ease, color .18s ease;
 }
 
 .forgot:hover{
   opacity: .85;
   text-decoration: underline;
-  transform: translateY(-1px);
+}
+
+.registerRow{
+  margin: 0;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.registerText{
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.registerLink{
+  color: var(--accent);
+  font-weight: 800;
+  transition: opacity .18s ease, color .18s ease;
+}
+
+.registerLink:hover{
+  opacity: .85;
+  text-decoration: underline;
+}
+
+.forgot:focus,
+.forgot:focus-visible,
+.registerLink:focus,
+.registerLink:focus-visible{
+  outline: none;
+  box-shadow: none;
+  background: transparent;
 }
 
 /* ===== Input ===== */
@@ -120,7 +176,7 @@
   left: 15px;
   top: 50%;
   transform: translateY(-50%);
-  color: rgba(10,10,10,.44);
+  color: color-mix(in srgb, var(--text) 44%, transparent);
   z-index: 1;
   pointer-events: none;
 }
@@ -132,8 +188,8 @@
   box-sizing: border-box;
   height: 54px;
   border-radius: 16px;
-  border: 1px solid rgba(10,10,10,.10);
-  background: rgba(255,255,255,.72);
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
   padding: 0 50px 0 46px;
   outline: none;
   font-size: 14px;
@@ -147,20 +203,22 @@
 }
 
 .input::placeholder{
-  color: rgba(10,10,10,.38);
+  color: color-mix(in srgb, var(--text) 38%, transparent);
 }
 
 .input:focus{
-  border-color: rgba(188,148,90,.46);
+  border-color: color-mix(in srgb, var(--accent) 42%, transparent);
   box-shadow:
-    0 0 0 4px rgba(188,148,90,.12),
+    0 0 0 4px color-mix(in srgb, var(--accent) 12%, transparent),
     inset 0 1px 0 rgba(255,255,255,.72);
-  background: rgba(255,255,255,.95);
+  background: color-mix(in srgb, var(--surface) 96%, transparent);
   transform: translateY(-1px);
 }
 
 /* ===== Eye ===== */
 .eye{
+  appearance: none;
+  -webkit-appearance: none;
   position: absolute;
   right: 9px;
   top: 50%;
@@ -168,12 +226,13 @@
   width: 36px;
   height: 36px;
   border-radius: 12px;
-  border: 1px solid rgba(10,10,10,.08);
-  background: rgba(255,255,255,.84);
+  border: 1px solid var(--border-soft);
+  background: color-mix(in srgb, var(--surface) 84%, transparent);
   display: grid;
   place-items: center;
   cursor: pointer;
-  color: rgba(10,10,10,.52);
+  color: color-mix(in srgb, var(--text) 52%, transparent);
+  box-shadow: none;
   transition:
     border-color .18s ease,
     background .18s ease,
@@ -182,10 +241,16 @@
 }
 
 .eye:hover{
-  border-color: rgba(188,148,90,.32);
-  background: rgba(255,255,255,.98);
-  color: rgba(10,10,10,.72);
+  border-color: color-mix(in srgb, var(--accent) 32%, transparent);
+  background: color-mix(in srgb, var(--surface) 98%, transparent);
+  color: color-mix(in srgb, var(--text) 72%, transparent);
   transform: translateY(-50%) scale(1.03);
+}
+
+.eye:focus,
+.eye:focus-visible{
+  outline: none;
+  box-shadow: none;
 }
 
 /* ===== Actions ===== */
@@ -195,6 +260,8 @@
 }
 
 .btnPrimary{
+  appearance: none;
+  -webkit-appearance: none;
   width: 100%;
   box-sizing: border-box;
   min-width: 0;
@@ -207,8 +274,8 @@
 
   padding: 8px 10px 8px 22px;
   border-radius: 999px;
-  border: 1px solid rgba(159,33,65,.20);
-  background: var(--vino);
+  border: 1px solid color-mix(in srgb, var(--brand) 20%, transparent);
+  background: var(--brand);
   color: #fff;
 
   font-weight: 800;
@@ -217,19 +284,20 @@
   cursor: pointer;
 
   box-shadow:
-    0 14px 28px rgba(159,33,65,.16),
+    0 14px 28px color-mix(in srgb, var(--brand) 16%, transparent),
     inset 0 1px 0 rgba(255,255,255,.10);
 
   transition:
     transform .18s ease,
     box-shadow .18s ease,
-    filter .18s ease;
+    filter .18s ease,
+    opacity .18s ease;
 }
 
 .btnPrimary:not(:disabled):hover{
   transform: translateY(-1px);
   box-shadow:
-    0 18px 34px rgba(159,33,65,.20),
+    0 18px 34px color-mix(in srgb, var(--brand) 20%, transparent),
     inset 0 1px 0 rgba(255,255,255,.14);
   filter: brightness(1.02);
 }
@@ -238,6 +306,14 @@
   opacity: .62;
   cursor: not-allowed;
   box-shadow: none;
+}
+
+.btnPrimary:focus,
+.btnPrimary:focus-visible{
+  outline: none;
+  box-shadow:
+    0 14px 28px color-mix(in srgb, var(--brand) 16%, transparent),
+    inset 0 1px 0 rgba(255,255,255,.10);
 }
 
 .btnText{
@@ -274,29 +350,6 @@
   background: rgba(255,255,255,.18);
 }
 
-.registerRow{
-  margin: 0;
-  text-align: center;
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-.registerText{
-  color: var(--muted);
-  font-weight: 400;
-}
-
-.registerLink{
-  color: var(--oro);
-  font-weight: 800;
-  text-decoration: none;
-  transition: opacity .18s ease;
-}
-
-.registerLink:hover{
-  opacity: .85;
-  text-decoration: underline;
-}
 /* ===== Security note ===== */
 .securityNote{
   display: flex;
@@ -312,8 +365,8 @@
   border-radius: 999px;
   display: grid;
   place-items: center;
-  background: rgba(188,148,90,.10);
-  color: rgba(146,108,52,1);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: color-mix(in srgb, var(--accent) 72%, var(--text));
   margin-top: 1px;
 }
 
@@ -355,7 +408,7 @@
     border-radius: 15px;
   }
 
-   .btnPrimary{
+  .btnPrimary{
     min-height: 54px;
     padding: 7px 9px 7px 18px;
     font-size: 14px;
@@ -371,11 +424,6 @@
     font-size: 12.5px;
   }
 
-  .btnSecondary{
-    height: 50px;
-    border-radius: 15px;
-  }
-
   .row{
     align-items: flex-start;
     flex-direction: column;
@@ -386,10 +434,10 @@
 @media (prefers-reduced-motion: reduce){
   .form,
   .btnPrimary,
-  .btnSecondary,
   .input,
   .eye,
-  .forgot{
+  .forgot,
+  .registerLink{
     animation: none !important;
     transition: none !important;
   }

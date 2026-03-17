@@ -1,130 +1,194 @@
 'use client';
 
-import Link from 'next/link';
-import { useMemo, useState } from 'react';
-import { KeyRound, Mail, ShieldCheck } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import {
+  KeyRound,
+  Mail,
+  ShieldCheck,
+  AlertTriangle,
+  CheckCircle2,
+  Eye,
+  EyeOff,
+  ArrowRight,
+} from 'lucide-react';
 
 import { useResetPassword } from '@/features/auth/hooks/useResetPassword';
 
 import s from './ResetPasswordForm.module.css';
 
 type Props = {
-  /** opcional: si quieres mostrar link a login */
-  loginHref?: string;
+  initialEmail?: string;
+  initialOtp?: string;
+  onBackToLogin: () => void;
+  onSuccessToLogin: () => void;
 };
 
-function safeTrim(v: string) {
-  return (v ?? '').trim();
-}
-
-export default function ResetPasswordForm({ loginHref = '/login' }: Props) {
-  const [email, setEmail] = useState('');
-  const [otp, setOtp] = useState('');
+export default function ResetPasswordForm({
+  initialEmail = '',
+  initialOtp = '',
+  onBackToLogin,
+  onSuccessToLogin,
+}: Props) {
+  const [email, setEmail] = useState(initialEmail);
+  const [otp, setOtp] = useState(initialOtp);
   const [newPassword, setNewPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
-  const { loading, error, ok, submit } = useResetPassword();
+  const { loading, error, ok, submit, reset } = useResetPassword();
 
-  const canSubmit = useMemo(() => {
-    return (
-      !loading &&
-      safeTrim(email).length > 3 &&
-      safeTrim(otp).length > 0 &&
-      newPassword.length >= 8
-    );
-  }, [email, otp, newPassword, loading]);
+  useEffect(() => {
+    setEmail(initialEmail);
+  }, [initialEmail]);
 
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  useEffect(() => {
+    setOtp(initialOtp);
+  }, [initialOtp]);
+
+  useEffect(() => {
+    if (!ok) return;
+    onSuccessToLogin();
+  }, [ok, onSuccessToLogin]);
+
+  useEffect(() => {
+    reset();
+  }, [email, otp, newPassword, reset]);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!canSubmit) return;
     await submit(email, otp, newPassword);
   }
 
   return (
-    <form className={s.form} onSubmit={onSubmit} aria-describedby="reset-hint">
+    <form className={s.form} onSubmit={handleSubmit} aria-describedby="reset-hint" noValidate>
       <header className={s.head}>
-        <h1 className={s.title}>Crear nueva contraseña</h1>
-        <p className={s.sub}>
-          Confirma tu correo, ingresa el código de verificación y define una contraseña segura.
-        </p>
+        <span className={s.kicker}>Actualización de acceso</span>
+
+        <div className={s.titleBlock}>
+          <h1 className={s.title}>Crear nueva contraseña</h1>
+          <p className={s.sub}>
+            Confirma tu correo, ingresa el código de verificación y define una
+            contraseña segura para recuperar tu acceso.
+          </p>
+        </div>
       </header>
 
       {error ? (
         <div className={s.alert} role="alert" aria-live="polite">
-          {error}
+          <AlertTriangle size={16} aria-hidden="true" />
+          <span>{error}</span>
         </div>
       ) : null}
 
       {ok ? (
-        <div className={s.ok} role="status" aria-live="polite">
-          Contraseña actualizada correctamente.{' '}
-          <Link className={s.inlineLink} href={loginHref}>
-            Ir al inicio de sesión
-          </Link>
-          .
+        <div className={s.alertOk} role="status" aria-live="polite">
+          <CheckCircle2 size={16} aria-hidden="true" />
+          <span>
+            Contraseña actualizada correctamente. Regresando al inicio de sesión…
+          </span>
         </div>
       ) : null}
 
-      <label className={s.label}>
-        <span className={s.labelText}>Correo electrónico</span>
-        <div className={s.inputWrap}>
-          <span className={s.icon} aria-hidden="true">
-            <Mail size={16} />
+      <div className={s.fields}>
+        <label className={s.label}>
+          <span className={s.labelText}>Correo electrónico</span>
+
+          <div className={s.inputWrap}>
+            <span className={s.icon} aria-hidden="true">
+              <Mail size={16} />
+            </span>
+
+            <input
+              className={s.input}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="nombre@dominio.gob.mx"
+              autoComplete="email"
+              inputMode="email"
+            />
+          </div>
+        </label>
+
+        <label className={s.label}>
+          <span className={s.labelText}>Código de verificación</span>
+
+          <div className={s.inputWrap}>
+            <span className={s.icon} aria-hidden="true">
+              <KeyRound size={16} />
+            </span>
+
+            <input
+              className={s.input}
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              placeholder="Ej: 123456"
+              inputMode="numeric"
+              autoComplete="one-time-code"
+            />
+          </div>
+        </label>
+
+        <label className={s.label}>
+          <span className={s.labelText}>Nueva contraseña</span>
+
+          <div className={s.inputWrap}>
+            <span className={s.icon} aria-hidden="true">
+              <KeyRound size={16} />
+            </span>
+
+            <input
+              className={s.input}
+              type={showPassword ? 'text' : 'password'}
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="Mínimo 8 caracteres"
+              autoComplete="new-password"
+            />
+
+            <button
+              type="button"
+              className={s.eye}
+              onClick={() => setShowPassword((x) => !x)}
+              aria-label={
+                showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'
+              }
+            >
+              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
+          </div>
+        </label>
+      </div>
+
+      <div className={s.actions}>
+        <button className={s.btnPrimary} type="submit" disabled={loading} aria-busy={loading}>
+          <span className={s.btnText}>
+            {loading ? 'Guardando…' : 'Guardar cambios'}
           </span>
-          <input
-            className={s.input}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="nombre@dominio.gob.mx"
-            autoComplete="email"
-            inputMode="email"
-          />
-        </div>
-      </label>
 
-      <label className={s.label}>
-        <span className={s.labelText}>Código de verificación</span>
-        <div className={s.inputWrap}>
-          <span className={s.icon} aria-hidden="true">
-            <KeyRound size={16} />
+          <span className={s.btnIconCircle} aria-hidden="true">
+            <ArrowRight size={17} />
           </span>
-          <input
-            className={s.input}
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-            placeholder="Ej: 123456"
-            inputMode="numeric"
-            autoComplete="one-time-code"
-          />
-        </div>
-      </label>
+        </button>
 
-      <label className={s.label}>
-        <span className={s.labelText}>Nueva contraseña</span>
-        <div className={s.inputWrap}>
-          <span className={s.icon} aria-hidden="true">
-            <KeyRound size={16} />
-          </span>
-          <input
-            className={s.input}
-            type="password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            placeholder="Mínimo 8 caracteres"
-            autoComplete="new-password"
-          />
-        </div>
-      </label>
+        <p className={s.loginRow}>
+          <span className={s.loginText}>¿Quieres regresar?</span>{' '}
+          <button
+            type="button"
+            className={s.loginLink}
+            onClick={onBackToLogin}
+          >
+            Volver al inicio de sesión
+          </button>
+        </p>
+      </div>
 
-      <button className={s.btn} disabled={!canSubmit} aria-busy={loading}>
-        {loading ? 'Guardando…' : 'Guardar cambios'}
-      </button>
-
-      <div className={s.notice} role="note" aria-label="Seguridad">
-        <span className={s.noticeIcon} aria-hidden="true">
-          <ShieldCheck size={16} />
+      <div className={s.securityNote} role="note" aria-label="Seguridad">
+        <span className={s.securityIcon} aria-hidden="true">
+          <ShieldCheck size={14} />
         </span>
-        <p className={s.noticeText}>
-          Tus credenciales se utilizan únicamente para autenticar tu acceso y proteger tu información.
+
+        <p>
+          Tus credenciales se utilizan únicamente para autenticar tu acceso y
+          proteger tu información institucional.
         </p>
       </div>
 

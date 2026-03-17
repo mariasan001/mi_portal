@@ -1,7 +1,6 @@
-// src/features/auth/ui/RegisterForm/RegisterForm.tsx
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import {
   Eye,
   EyeOff,
@@ -12,6 +11,8 @@ import {
   KeyRound,
   AlertTriangle,
   CheckCircle2,
+  ArrowRight,
+  ShieldCheck,
 } from 'lucide-react';
 
 import s from './RegisterForm.module.css';
@@ -19,54 +20,69 @@ import type { RegisterPayload } from '../../types/register.types';
 
 type Props = {
   value: RegisterPayload;
-  onChange: <K extends keyof RegisterPayload>(key: K, value: RegisterPayload[K]) => void;
+  onChange: <K extends keyof RegisterPayload>(
+    key: K,
+    value: RegisterPayload[K]
+  ) => void;
   onSubmit: () => void;
   loading?: boolean;
   error?: string | null;
   success?: string | null;
+  onBackToLogin: () => void;
 };
 
-function isValidEmail(v: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
-}
-
-function safeTrim(v: string) {
-  return (v ?? '').trim();
-}
-
-export function RegisterForm({ value, onChange, onSubmit, loading = false, error, success }: Props) {
+export default function RegisterForm({
+  value,
+  onChange,
+  onSubmit,
+  loading = false,
+  error,
+  success,
+  onBackToLogin,
+}: Props) {
   const [showPass, setShowPass] = useState(false);
 
-  const localError = useMemo(() => {
-    if (!safeTrim(value.plaza)) return 'Ingresa tu Plaza.';
-    if (!safeTrim(value.puesto)) return 'Ingresa tu Puesto.';
-    if (!safeTrim(value.email) || !isValidEmail(value.email)) return 'Ingresa un correo válido.';
-    if ((value.password ?? '').length < 8) return 'La contraseña debe tener al menos 8 caracteres.';
-    if (!safeTrim(value.phone)) return 'Ingresa tu teléfono.';
-    return null;
-  }, [value]);
-
-  const disabled = loading || !!localError;
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    onSubmit();
+  }
 
   return (
-    <div className={s.root}>
-      {/* ✅ HEADER (lo que faltaba) */}
+    <form
+      className={s.form}
+      onSubmit={handleSubmit}
+      aria-describedby="register-hint"
+      noValidate
+    >
       <header className={s.head}>
-        <h1 className={s.title}>Crea tu cuenta</h1>
-        <p className={s.sub}>
-          Registra tus datos para generar tu acceso. La validación se realiza con información institucional.
-        </p>
+        <span className={s.kicker}>Registro institucional</span>
+
+        <div className={s.titleBlock}>
+          <h1 className={s.title}>Crea tu cuenta</h1>
+          <p className={s.sub}>
+            Registra tus datos para habilitar tu acceso al portal. La validación
+            se realiza con información institucional.
+          </p>
+        </div>
       </header>
 
-      {(error || success) ? (
-        <div className={error ? s.alertError : s.alertOk} role="alert" aria-live="polite">
-          {error ? <AlertTriangle size={16} /> : <CheckCircle2 size={16} />}
-          <span><b>{error ? 'Ojo:' : 'Listo:'}</b> {error ?? success}</span>
+      {error || success ? (
+        <div
+          className={error ? s.alertError : s.alertOk}
+          role="alert"
+          aria-live="polite"
+        >
+          {error ? (
+            <AlertTriangle size={16} aria-hidden="true" />
+          ) : (
+            <CheckCircle2 size={16} aria-hidden="true" />
+          )}
+
+          <span>{error ?? success}</span>
         </div>
       ) : null}
 
-      <div className={s.grid}>
-        {/* Row: Clave / Plaza */}
+      <div className={s.fields}>
         <div className={s.row2}>
           <Field
             label="Clave SP"
@@ -89,37 +105,31 @@ export function RegisterForm({ value, onChange, onSubmit, loading = false, error
           />
         </div>
 
-        {/* Full: Puesto */}
-        <div className={s.full}>
-          <Field
-            label="Puesto"
-            icon={<BriefcaseBusiness size={16} />}
-            value={value.puesto}
-            onChange={(v) => onChange('puesto', v)}
-            placeholder="Ej: ANALISTA ESPECIALIZADO B"
-            autoComplete="organization-title"
-          />
-        </div>
+        <Field
+          label="Puesto"
+          icon={<BriefcaseBusiness size={16} />}
+          value={value.puesto}
+          onChange={(v) => onChange('puesto', v)}
+          placeholder="Ej: ANALISTA ESPECIALIZADO B"
+          autoComplete="organization-title"
+        />
 
-        {/* Full: Correo */}
-        <div className={s.full}>
-          <Field
-            label="Correo"
-            icon={<Mail size={16} />}
-            value={value.email}
-            onChange={(v) => onChange('email', v)}
-            placeholder="nombre@dominio.gob.mx"
-            type="email"
-            autoComplete="email"
-          />
-        </div>
+        <Field
+          label="Correo institucional"
+          icon={<Mail size={16} />}
+          value={value.email}
+          onChange={(v) => onChange('email', v)}
+          placeholder="nombre@dominio.gob.mx"
+          type="email"
+          autoComplete="email"
+        />
 
-        {/* Row: Password / Teléfono */}
         <div className={s.row2}>
           <label className={s.label}>
             <span className={s.labelText}>Contraseña</span>
+
             <div className={s.inputWrap}>
-              <span className={s.icon}>
+              <span className={s.icon} aria-hidden="true">
                 <KeyRound size={16} />
               </span>
 
@@ -136,7 +146,9 @@ export function RegisterForm({ value, onChange, onSubmit, loading = false, error
                 type="button"
                 className={s.eye}
                 onClick={() => setShowPass((x) => !x)}
-                aria-label={showPass ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                aria-label={
+                  showPass ? 'Ocultar contraseña' : 'Mostrar contraseña'
+                }
               >
                 {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
@@ -156,18 +168,44 @@ export function RegisterForm({ value, onChange, onSubmit, loading = false, error
         </div>
       </div>
 
-      {localError && !error ? <p className={s.hint}>• {localError}</p> : null}
+      <div className={s.actions}>
+        <button className={s.btnPrimary} type="submit" disabled={loading}>
+          <span className={s.btnText}>
+            {loading ? 'Registrando…' : 'Crear cuenta'}
+          </span>
 
-      <button type="button" className={s.btn} onClick={onSubmit} disabled={disabled}>
-        {loading ? 'Registrando…' : 'Crear cuenta'}
-      </button>
+          <span className={s.btnIconCircle} aria-hidden="true">
+            <ArrowRight size={17} />
+          </span>
+        </button>
 
-   
-    </div>
+        <p className={s.loginRow}>
+          <span className={s.loginText}>¿Ya tienes acceso?</span>{' '}
+          <button
+            type="button"
+            className={s.loginLink}
+            onClick={onBackToLogin}
+          >
+            Volver al inicio de sesión
+          </button>
+        </p>
+      </div>
+
+      <div id="register-hint" className={s.securityNote}>
+        <span className={s.securityIcon} aria-hidden="true">
+          <ShieldCheck size={14} />
+        </span>
+
+        <p>
+          Tus datos se procesan bajo lineamientos de seguridad y validación
+          institucional.
+        </p>
+      </div>
+    </form>
   );
 }
 
-function Field(props: {
+type FieldProps = {
   label: string;
   icon: React.ReactNode;
   value: string;
@@ -176,20 +214,35 @@ function Field(props: {
   type?: string;
   inputMode?: React.HTMLAttributes<HTMLInputElement>['inputMode'];
   autoComplete?: string;
-}) {
+};
+
+function Field({
+  label,
+  icon,
+  value,
+  onChange,
+  placeholder,
+  type = 'text',
+  inputMode,
+  autoComplete,
+}: FieldProps) {
   return (
     <label className={s.label}>
-      <span className={s.labelText}>{props.label}</span>
+      <span className={s.labelText}>{label}</span>
+
       <div className={s.inputWrap}>
-        <span className={s.icon}>{props.icon}</span>
+        <span className={s.icon} aria-hidden="true">
+          {icon}
+        </span>
+
         <input
           className={s.input}
-          type={props.type ?? 'text'}
-          inputMode={props.inputMode}
-          autoComplete={props.autoComplete}
-          value={props.value}
-          onChange={(e) => props.onChange(e.target.value)}
-          placeholder={props.placeholder}
+          type={type}
+          inputMode={inputMode}
+          autoComplete={autoComplete}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
         />
       </div>
     </label>

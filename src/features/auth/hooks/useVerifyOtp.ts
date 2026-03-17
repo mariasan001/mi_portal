@@ -7,29 +7,68 @@ import { toErrorMessage } from '@/lib/api/api.errores';
 import { verificarOtp } from '../services/auth-password.service';
 import type { VerifyOtpPurpose } from '../types/password.types';
 
-type State = { loading: boolean; error: string | null; ok: boolean };
+type State = {
+  loading: boolean;
+  error: string | null;
+  ok: boolean;
+};
 
 function safeTrim(v: string) {
   return (v ?? '').trim();
 }
 
 export function useVerifyOtp() {
-  const [state, setState] = useState<State>({ loading: false, error: null, ok: false });
+  const [state, setState] = useState<State>({
+    loading: false,
+    error: null,
+    ok: false,
+  });
+
+  const reset = useCallback(() => {
+    setState((prev) => {
+      if (!prev.error && !prev.ok) return prev;
+      return {
+        ...prev,
+        error: null,
+        ok: false,
+      };
+    });
+  }, []);
 
   const submit = useCallback(
-    async (usernameOrEmail: string, otp: string, purpose: VerifyOtpPurpose) => {
-      const u = safeTrim(usernameOrEmail);
-      const code = safeTrim(otp);
+    async (
+      usernameOrEmail: string,
+      otp: string,
+      purpose: VerifyOtpPurpose
+    ) => {
+      const normalizedIdentifier = safeTrim(usernameOrEmail);
+      const normalizedOtp = safeTrim(otp);
 
-      if (u.length < 3) {
-        toast.warning('Ingresa tu usuario o correo.');
-        setState((s) => ({ ...s, error: 'Ingresa tu usuario o correo.', ok: false }));
+      if (!normalizedIdentifier) {
+        const msg = 'Ingresa tu usuario o correo.';
+        setState({ loading: false, error: msg, ok: false });
+        toast.warning(msg);
         return false;
       }
 
-      if (code.length < 4) {
-        toast.warning('Ingresa el código de verificación.');
-        setState((s) => ({ ...s, error: 'Ingresa el código de verificación.', ok: false }));
+      if (normalizedIdentifier.length < 3) {
+        const msg = 'Ingresa un usuario o correo válido.';
+        setState({ loading: false, error: msg, ok: false });
+        toast.warning(msg);
+        return false;
+      }
+
+      if (!normalizedOtp) {
+        const msg = 'Ingresa el código de verificación.';
+        setState({ loading: false, error: msg, ok: false });
+        toast.warning(msg);
+        return false;
+      }
+
+      if (normalizedOtp.length < 4) {
+        const msg = 'El código de verificación no es válido.';
+        setState({ loading: false, error: msg, ok: false });
+        toast.warning(msg);
         return false;
       }
 
@@ -38,18 +77,23 @@ export function useVerifyOtp() {
       const tId = toast.loading('Validando código…');
 
       try {
-        const res = await verificarOtp({ usernameOrEmail: u, otp: code, purpose });
+        const res = await verificarOtp({
+          usernameOrEmail: normalizedIdentifier,
+          otp: normalizedOtp,
+          purpose,
+        });
 
         const ok = Boolean(res?.ok);
-        setState({ loading: false, error: null, ok });
 
         if (ok) {
+          setState({ loading: false, error: null, ok: true });
           toast.success('Código validado correctamente.', { id: tId });
           return true;
         }
 
-        // backend respondió ok=false sin throw
-        const msg = 'Código inválido o expirado. Verifica e intenta nuevamente.';
+        const msg =
+          'Código inválido o expirado. Verifica e intenta nuevamente.';
+
         setState({ loading: false, error: msg, ok: false });
         toast.error(msg, { id: tId });
         return false;
@@ -63,5 +107,9 @@ export function useVerifyOtp() {
     []
   );
 
-  return { ...state, submit };
+  return {
+    ...state,
+    submit,
+    reset,
+  };
 }
