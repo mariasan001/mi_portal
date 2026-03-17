@@ -6,13 +6,23 @@ import { FiArrowUpRight, FiSearch } from 'react-icons/fi';
 
 import css from './ServicesSection.module.css';
 
-import { SERVICE_CARDS, SERVICE_CARDS_CONSULTAS } from './constants/ServiceConstants';
+import {
+  SERVICE_CARDS,
+  SERVICE_CARDS_CONSULTAS,
+  SERVICE_CARDS_TRAMITES,
+} from './constants/ServiceConstants';
 import { shellStyle } from './utils/shellStyle';
 
 import { useRevealMotion } from '@/hooks/useRevealMotion';
 
 type AssistantAction = 'tramite' | 'consulta' | 'password' | null;
-type View = 'cards' | 'consultas';
+type View = 'cards' | 'consultas' | 'tramites' | 'normativas';
+
+const viewMap: Record<string, View> = {
+  '/consultas': 'consultas',
+  '/tramites': 'tramites',
+  '/normativas': 'normativas',
+};
 
 export default function ServicesSection() {
   const { ref: sectionRef, className } = useRevealMotion<HTMLElement>({
@@ -21,7 +31,7 @@ export default function ServicesSection() {
   });
 
   const [assistantHint, setAssistantHint] = useState<string>('');
-  const [view, setView] = useState<View>('cards'); // ← NUEVO
+  const [view, setView] = useState<View>('cards');
 
   useEffect(() => {
     const handleNavigate = (event: Event) => {
@@ -54,6 +64,49 @@ export default function ServicesSection() {
       window.removeEventListener('portal-assistant:navigate', handleNavigate as EventListener);
     };
   }, []);
+
+  // ── Botón regresar reutilizable ──
+  const backButton = (
+    <button
+      style={{
+        marginBottom: '1.5rem',
+        width: '200px',
+        borderStyle: 'none',
+        backgroundColor: 'transparent',
+        color: '#bc945a',
+        cursor: 'pointer',
+        fontWeight: 'bold',
+        fontSize: '14px',
+      }}
+      onClick={() => setView('cards')}
+      aria-label="Regresar a servicios"
+    >
+      ← Regresar a servicios
+    </button>
+  );
+
+  // ── Card secundaria reutilizable ──
+  const renderSubCard = (c: (typeof SERVICE_CARDS_CONSULTAS)[0]) => (
+    <div
+      key={c.title}
+      className={css.cardShell}
+      data-accent={c.accent}
+      data-variant="consultas"
+      style={shellStyle(c)}
+      role="listitem"
+      aria-label={c.title}
+    >
+      <article className={css.card}>
+        <div className={css.iconWrap} aria-hidden="true">
+          <span className={css.icon}>{c.icon}</span>
+        </div>
+        <div className={css.cardContent}>
+          <h3 className={css.cardTitle}>{c.title}</h3>
+          <p className={css.cardDesc}>{c.desc}</p>
+        </div>
+      </article>
+    </div>
+  );
 
   return (
     <section
@@ -106,10 +159,13 @@ export default function ServicesSection() {
                 key={c.href}
                 className={css.cardShell}
                 data-accent={c.accent}
-                onClick={() => setView('consultas')}
-                style={shellStyle(c)}
+                style={{ ...shellStyle(c), cursor: 'pointer' }}
                 role="listitem"
                 aria-label={c.title}
+                onClick={() => {
+                  const next = viewMap[c.href];
+                  if (next) setView(next);
+                }}
               >
                 <article className={css.card}>
                   <div className={css.iconWrap} aria-hidden="true">
@@ -119,69 +175,48 @@ export default function ServicesSection() {
                   <h3 className={css.cardTitle}>{c.title}</h3>
                   <p className={css.cardDesc}>{c.desc}</p>
 
-                  {/* Consultas → cambia vista */}
-                  {c.href === '/consultas' ? (
-                    <button
-                      className={css.cardCta}
-                      onClick={() => setView('consultas')}
-                      aria-label={`${c.cta}: ${c.title}`}
-                      style={{ borderStyle: 'none', backgroundColor: 'transparent'}}
-                    >
-                      <span>{c.cta}</span>
-                      <span className={css.ctaArrow} aria-hidden="true">
-                        <FiArrowUpRight />
-                      </span>
-                    </button>
-                  ) : (
-                    <Link className={css.cardCta} href={c.href} aria-label={`${c.cta}: ${c.title}`}>
-                      <span>{c.cta}</span>
-                      <span className={css.ctaArrow} aria-hidden="true">
-                        <FiArrowUpRight />
-                      </span>
-                    </Link>
-                  )}
+                  <button
+                    className={css.cardCta}
+                    aria-label={`${c.cta}: ${c.title}`}
+                    style={{ borderStyle: 'none', backgroundColor: 'transparent' }}
+                  >
+                    <span>{c.cta}</span>
+                    <span className={css.ctaArrow} aria-hidden="true">
+                      <FiArrowUpRight />
+                    </span>
+                  </button>
                 </article>
               </div>
             ))}
           </div>
         )}
 
-        {/* ── Vista: subconsultas ── */}
+        {/* ── Vista: consultas ── */}
         {view === 'consultas' && (
-          <div>
-            <button
-              className={css.backBtn} 
-              style={{ marginBottom: '1.5rem' }}
-              onClick={() => setView('cards')}
-              aria-label="Regresar a servicios"
-            >
-              ← Regresar
-            </button>
-
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            {backButton}
             <div className={css.grid} role="list">
-              {SERVICE_CARDS_CONSULTAS.map((c) => (
-                <div
-                  key={c.title}
-                  className={css.cardShell}
-                  data-accent={c.accent}
-                  data-variant="consultas"
-                  style={shellStyle(c)}
-                  role="listitem"
-                  aria-label={c.title}
-                >
-                  <article className={css.card}>
-                    <div className={css.iconWrap} aria-hidden="true">
-                      <span className={css.icon}>{c.icon}</span>
-                    </div>
+              {SERVICE_CARDS_CONSULTAS.map(renderSubCard)}
+            </div>
+          </div>
+        )}
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginLeft: '1rem' }}>
-                    <h3 className={css.cardTitle}>{c.title}</h3>
-                    <p className={css.cardDesc}>{c.desc}</p>
-                    </div>
+        {/* ── Vista: trámites ── */}
+        {view === 'tramites' && (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            {backButton}
+            <div className={css.grid} role="list">
+              {SERVICE_CARDS_TRAMITES.map(renderSubCard)}
+            </div>
+          </div>
+        )}
 
-                  </article>
-                </div>
-              ))}
+        {/* ── Vista: normativas */}
+        {view === 'normativas' && (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            {backButton}
+            <div className={css.grid} role="list">
+               
             </div>
           </div>
         )}

@@ -114,3 +114,71 @@ export const SERVICE_CARDS_CONSULTAS: CardItem[] = [
   },
 
 ];
+
+
+export const SERVICE_CARDS_TRAMITES: CardItem[] = [
+  {
+    title: 'Trámite de FUMP',
+    desc: 'Accede a tu Formato Único de Movimientos de Personal por altas, bajas, cambios o licencias.',
+    href: '/',
+    cta: 'Explorar normatividad',
+    icon: <FiSearch />,
+    accent: 'vino',
+    bgImage: '',
+  },
+  {
+    title: 'Trámite de Recibo de Nomina',
+    desc: 'Tus pagos, siempre a la mano. Consulta tus recibos cuando los necesites.',
+    href: '/',
+    cta: '',
+    icon: <FiSearch />,
+    accent: 'vino',
+    bgImage: '', 
+  },
+  {
+    title: 'Trámite de Anualizados',
+    desc: 'Consulta tus ingresos y retenciones acumuladas del año, útiles para trámites fiscales o administrativos.',
+    href: '/',
+    cta: '',
+    icon: <FiSearch />,
+    accent: 'vino',
+    bgImage: '', 
+  },
+  {
+    title: 'Trámite de Desglose de Plazas',
+    desc: 'Conoce a detalle las plazas que tienes asignadas: tipo, ubicación, carga horaria y más.',
+    href: '/',
+    cta: 'Explorar normatividad',
+    icon: <FiSearch />,
+    accent: 'vino',
+    bgImage: '',
+  },
+  {
+    title: 'Trámite de Puntualidad y Asistencia',
+    desc: 'Lleva el control de tu tiempo. Consulta aquí tus registros de asistencia y desempeño diario.',
+    href: '/',
+    cta: '',
+    icon: <FiSearch />,
+    accent: 'vino',
+    bgImage: '', 
+  },
+  {
+    title: 'Trámite de Recibo para Jubilados',
+    desc: 'Porque tu servicio merece reconocimiento continuo. Aquí puedes consultar tus pagos mensuales.',
+    href: '/',
+    cta: '',
+    icon: <FiSearch />,
+    accent: 'vino',
+    bgImage: '', 
+  },
+  {
+    title: 'Trámite de CFDI',
+    desc: '¿Necesitas tu comprobante fiscal para trámites? Aquí puedes consultarlo y descargarlo por periodo.',
+    href: '/',
+    cta: 'Explorar normatividad',
+    icon: <FiSearch />,
+    accent: 'vino',
+    bgImage: '',
+  },
+
+];
