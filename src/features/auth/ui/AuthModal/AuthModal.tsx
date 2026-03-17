@@ -65,3 +65,5 @@ export default function AuthModal({ open, onClose }: Props) {
     document.body
   );
 }
+
+/* Este es el modal  */

@@ -1,7 +1,6 @@
 import React from 'react';
 import type { ReactNode } from 'react';
 
-// ✅ ejemplo con lucide-react (ajústalo si tu paquete es otro)
 import { Home, Users, Workflow, CircleHelp } from 'lucide-react';
 import type { LucideIcon, LucideProps } from 'lucide-react';
 

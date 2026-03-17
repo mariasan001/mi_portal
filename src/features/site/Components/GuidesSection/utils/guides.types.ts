@@ -16,7 +16,7 @@ export type DocItem = {
   category: DocCategory;
   kind: DocKind;
   href: string;
-  updatedAt: string; // YYYY-MM-DD
+  updatedAt: string; 
   size?: string;
   isNew?: boolean;
   isTop?: boolean;

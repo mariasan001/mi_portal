@@ -47,7 +47,6 @@ export async function obtenerMenu(appCode: string, opts?: GetMenuOptions): Promi
   }
 }
 
-/** Por si en algún punto quieres “resetear” el menú (logout, cambio de tenant, etc.) */
 export function limpiarMenuCache(appCode?: string) {
   if (appCode) {
     const code = appCode.trim();

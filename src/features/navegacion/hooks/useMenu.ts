@@ -9,7 +9,7 @@ type UseMenuResult = {
   data: MenuResponse | null;
   loading: boolean;
   error: string | null;
-  refresh: () => void; // refresh manual (sin auto)
+  refresh: () => void; 
 };
 
 export function useMenu(appCode: string | null): UseMenuResult {

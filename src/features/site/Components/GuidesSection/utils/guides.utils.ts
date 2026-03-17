@@ -18,7 +18,6 @@ export function kindLabel(k: DocKind) {
 }
 
 export function sortByUpdatedDesc(a: DocItem, b: DocItem) {
-  // string YYYY-MM-DD compara bien lexicográficamente
   return a.updatedAt < b.updatedAt ? 1 : -1;
 }
 

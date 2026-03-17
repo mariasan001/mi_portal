@@ -13,8 +13,6 @@ export type AppDownloadSectionProps = {
   subtitle?: string;
   androidHref?: string;
   iosHref?: string;
-
-  // ✅ imagen real (screenshot/mock)
   phoneImg?: string;
   phoneAlt?: string;
 };

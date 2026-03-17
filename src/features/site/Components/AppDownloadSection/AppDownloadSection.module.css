@@ -5,7 +5,6 @@
   background: var(--bg);
   color: var(--text);
 
-  /* ✅ tokens locales (en normal = gem/dgp, en veda = neutro) */
   --app-brand: var(--brand);
   --app-accent: var(--accent);
   --app-soft: var(--soft);
