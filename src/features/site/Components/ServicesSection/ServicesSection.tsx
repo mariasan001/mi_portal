@@ -6,12 +6,13 @@ import { FiArrowUpRight, FiSearch } from 'react-icons/fi';
 
 import css from './ServicesSection.module.css';
 
-import { SERVICE_CARDS } from './constants/ServiceConstants';
+import { SERVICE_CARDS, SERVICE_CARDS_CONSULTAS } from './constants/ServiceConstants';
 import { shellStyle } from './utils/shellStyle';
 
 import { useRevealMotion } from '@/hooks/useRevealMotion';
 
 type AssistantAction = 'tramite' | 'consulta' | 'password' | null;
+type View = 'cards' | 'consultas';
 
 export default function ServicesSection() {
   const { ref: sectionRef, className } = useRevealMotion<HTMLElement>({
@@ -20,6 +21,7 @@ export default function ServicesSection() {
   });
 
   const [assistantHint, setAssistantHint] = useState<string>('');
+  const [view, setView] = useState<View>('cards'); // ← NUEVO
 
   useEffect(() => {
     const handleNavigate = (event: Event) => {
@@ -96,34 +98,94 @@ export default function ServicesSection() {
           </div>
         </header>
 
-        <div className={css.grid} role="list">
-          {SERVICE_CARDS.map((c) => (
-            <div
-              key={c.href}
-              className={css.cardShell}
-              data-accent={c.accent}
-              style={shellStyle(c)}
-              role="listitem"
-              aria-label={c.title}
+        {/* ── Vista: tarjetas principales ── */}
+        {view === 'cards' && (
+          <div className={css.grid} role="list">
+            {SERVICE_CARDS.map((c) => (
+              <div
+                key={c.href}
+                className={css.cardShell}
+                data-accent={c.accent}
+                onClick={() => setView('consultas')}
+                style={shellStyle(c)}
+                role="listitem"
+                aria-label={c.title}
+              >
+                <article className={css.card}>
+                  <div className={css.iconWrap} aria-hidden="true">
+                    <span className={css.icon}>{c.icon}</span>
+                  </div>
+
+                  <h3 className={css.cardTitle}>{c.title}</h3>
+                  <p className={css.cardDesc}>{c.desc}</p>
+
+                  {/* Consultas → cambia vista */}
+                  {c.href === '/consultas' ? (
+                    <button
+                      className={css.cardCta}
+                      onClick={() => setView('consultas')}
+                      aria-label={`${c.cta}: ${c.title}`}
+                      style={{ borderStyle: 'none', backgroundColor: 'transparent'}}
+                    >
+                      <span>{c.cta}</span>
+                      <span className={css.ctaArrow} aria-hidden="true">
+                        <FiArrowUpRight />
+                      </span>
+                    </button>
+                  ) : (
+                    <Link className={css.cardCta} href={c.href} aria-label={`${c.cta}: ${c.title}`}>
+                      <span>{c.cta}</span>
+                      <span className={css.ctaArrow} aria-hidden="true">
+                        <FiArrowUpRight />
+                      </span>
+                    </Link>
+                  )}
+                </article>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* ── Vista: subconsultas ── */}
+        {view === 'consultas' && (
+          <div>
+            <button
+              className={css.backBtn} 
+              style={{ marginBottom: '1.5rem' }}
+              onClick={() => setView('cards')}
+              aria-label="Regresar a servicios"
             >
-              <article className={css.card}>
-                <div className={css.iconWrap} aria-hidden="true">
-                  <span className={css.icon}>{c.icon}</span>
+              ← Regresar
+            </button>
+
+            <div className={css.grid} role="list">
+              {SERVICE_CARDS_CONSULTAS.map((c) => (
+                <div
+                  key={c.title}
+                  className={css.cardShell}
+                  data-accent={c.accent}
+                  data-variant="consultas"
+                  style={shellStyle(c)}
+                  role="listitem"
+                  aria-label={c.title}
+                >
+                  <article className={css.card}>
+                    <div className={css.iconWrap} aria-hidden="true">
+                      <span className={css.icon}>{c.icon}</span>
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginLeft: '1rem' }}>
+                    <h3 className={css.cardTitle}>{c.title}</h3>
+                    <p className={css.cardDesc}>{c.desc}</p>
+                    </div>
+
+                  </article>
                 </div>
-
-                <h3 className={css.cardTitle}>{c.title}</h3>
-                <p className={css.cardDesc}>{c.desc}</p>
-
-                <Link className={css.cardCta} href={c.href} aria-label={`${c.cta}: ${c.title}`}>
-                  <span>{c.cta}</span>
-                  <span className={css.ctaArrow} aria-hidden="true">
-                    <FiArrowUpRight />
-                  </span>
-                </Link>
-              </article>
+              ))}
             </div>
-          ))}
-        </div>
+          </div>
+        )}
+
       </div>
     </section>
   );

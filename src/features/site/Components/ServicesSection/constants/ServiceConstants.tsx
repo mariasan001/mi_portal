@@ -1,6 +1,6 @@
 // src/features/site/Components/ServicesSection/constants.tsx
 import type { ReactNode } from 'react';
-import { FiFileText, FiClipboard, FiBookOpen } from 'react-icons/fi';
+import { FiFileText, FiClipboard, FiBookOpen, FiSearch } from 'react-icons/fi';
 
 export type Accent = 'vino' | 'oro' | 'arena';
 
@@ -42,4 +42,75 @@ export const SERVICE_CARDS: CardItem[] = [
     accent: 'arena',
     bgImage: '/img/flor_3.png',
   },
+
+
+
+];
+
+
+export const SERVICE_CARDS_CONSULTAS: CardItem[] = [
+  {
+    title: 'Consulta de FUMP',
+    desc: 'Accede a tu Formato Único de Movimientos de Personal por altas, bajas, cambios o licencias.',
+    href: '/',
+    cta: 'Explorar normatividad',
+    icon: <FiSearch />,
+    accent: 'vino',
+    bgImage: '',
+  },
+  {
+    title: 'Consulta de Recibo de Nomina',
+    desc: 'Tus pagos, siempre a la mano. Consulta tus recibos cuando los necesites.',
+    href: '/',
+    cta: '',
+    icon: <FiSearch />,
+    accent: 'vino',
+    bgImage: '', 
+  },
+  {
+    title: 'Consulta de Anualizados',
+    desc: 'Consulta tus ingresos y retenciones acumuladas del año, útiles para trámites fiscales o administrativos.',
+    href: '/',
+    cta: '',
+    icon: <FiSearch />,
+    accent: 'vino',
+    bgImage: '', 
+  },
+  {
+    title: 'Consulta de Desglose de Plazas',
+    desc: 'Conoce a detalle las plazas que tienes asignadas: tipo, ubicación, carga horaria y más.',
+    href: '/',
+    cta: 'Explorar normatividad',
+    icon: <FiSearch />,
+    accent: 'vino',
+    bgImage: '',
+  },
+  {
+    title: 'Consulta de Puntualidad y Asistencia',
+    desc: 'Lleva el control de tu tiempo. Consulta aquí tus registros de asistencia y desempeño diario.',
+    href: '/',
+    cta: '',
+    icon: <FiSearch />,
+    accent: 'vino',
+    bgImage: '', 
+  },
+  {
+    title: 'Consulta de Recibo para Jubilados',
+    desc: 'Porque tu servicio merece reconocimiento continuo. Aquí puedes consultar tus pagos mensuales.',
+    href: '/',
+    cta: '',
+    icon: <FiSearch />,
+    accent: 'vino',
+    bgImage: '', 
+  },
+  {
+    title: 'Consulta de CFDI',
+    desc: '¿Necesitas tu comprobante fiscal para trámites? Aquí puedes consultarlo y descargarlo por periodo.',
+    href: '/',
+    cta: 'Explorar normatividad',
+    icon: <FiSearch />,
+    accent: 'vino',
+    bgImage: '',
+  },
+
 ];
