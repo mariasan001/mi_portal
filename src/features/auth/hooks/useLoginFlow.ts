@@ -1,21 +1,28 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useMemo, useState, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import { useAuth } from '../context/auth.context';
 import type { UseLoginFlowResult } from '../types/loginFlow.types';
-import { getLoginFlowParams } from '../utils/authQuery';
 import { obtenerSesion } from '../services/auth-me.service';
+import type { AuthModalSource } from '../ui/AuthModal/AuthModal';
 
 function safeTrim(v: string) {
   return (v ?? '').trim();
 }
 
-export function useLoginFlow(): UseLoginFlowResult {
+type UseLoginFlowOptions = {
+  source?: AuthModalSource;
+  returnTo?: string | null;
+  appCode?: string | null;
+};
+
+export function useLoginFlow(
+  options?: UseLoginFlowOptions
+): UseLoginFlowResult & { reset: () => void } {
   const router = useRouter();
-  const sp = useSearchParams();
 
   const {
     login,
@@ -29,21 +36,25 @@ export function useLoginFlow(): UseLoginFlowResult {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const { appCodeFromQuery, returnTo } = useMemo(
-    () => getLoginFlowParams(sp),
-    [sp]
-  );
+  const source = options?.source ?? 'nav';
+  const returnTo = options?.returnTo ?? null;
+  const modalAppCode = options?.appCode ?? null;
 
   const effectiveAppCode = useMemo(
-    () => appCodeFromQuery ?? ctxAppCode ?? 'PLAT_SERV',
-    [appCodeFromQuery, ctxAppCode]
+    () => modalAppCode ?? ctxAppCode ?? 'PLAT_SERV',
+    [modalAppCode, ctxAppCode]
   );
 
   useEffect(() => {
-    if (appCodeFromQuery) {
-      setAppCode(appCodeFromQuery);
+    if (modalAppCode) {
+      setAppCode(modalAppCode);
     }
-  }, [appCodeFromQuery, setAppCode]);
+  }, [modalAppCode, setAppCode]);
+
+  const reset = useCallback(() => {
+    setUsername('');
+    setPassword('');
+  }, []);
 
   const onSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
@@ -76,22 +87,28 @@ export function useLoginFlow(): UseLoginFlowResult {
 
       await obtenerSesion();
 
+      const destPath = returnTo ?? resolveHome();
+      const shouldFocusQuickAccess =
+        source === 'nav' && !returnTo && destPath === '/';
+
       try {
-        sessionStorage.setItem('portal_post_login_focus', 'quick-access');
-        sessionStorage.setItem('portal_unlock_fx', '1');
+        if (shouldFocusQuickAccess) {
+          sessionStorage.setItem('portal_post_login_focus', 'quick-access');
+          sessionStorage.setItem('portal_unlock_fx', '1');
+        } else {
+          sessionStorage.removeItem('portal_post_login_focus');
+          sessionStorage.removeItem('portal_unlock_fx');
+        }
       } catch {
         // noop
       }
 
-      const destPath = returnTo ?? resolveHome();
-
       toast.success('Acceso autorizado.', { id: tId });
 
-      if (
-        typeof window !== 'undefined' &&
-        destPath === window.location.pathname
-      ) {
-        window.dispatchEvent(new CustomEvent('portal:focus-quick-access'));
+      if (typeof window !== 'undefined' && destPath === window.location.pathname) {
+        if (shouldFocusQuickAccess) {
+          window.dispatchEvent(new CustomEvent('portal:focus-quick-access'));
+        }
         router.refresh();
         return;
       }
@@ -108,6 +125,7 @@ export function useLoginFlow(): UseLoginFlowResult {
       error,
       returnTo,
       resolveHome,
+      source,
       router,
     ]
   );
@@ -122,5 +140,6 @@ export function useLoginFlow(): UseLoginFlowResult {
     onSubmit,
     loading,
     error,
+    reset,
   };
 }

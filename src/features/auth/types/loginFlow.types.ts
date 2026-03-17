@@ -6,8 +6,7 @@ export type UseLoginFlowResult = {
   setPassword: (v: string) => void;
 
   effectiveAppCode: string;
-  returnTo: string;
-
+  returnTo: string | null;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
 
   loading: boolean;

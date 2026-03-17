@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FaFacebookF, FaXTwitter } from 'react-icons/fa6';
 
 import css from './SiteNav.module.css';
@@ -16,9 +16,24 @@ import { useOverlayLock } from '@/features/site/Components/Nav/hooks/useOverlayL
 import AuthModal from '@/features/auth/ui/AuthModal/AuthModal';
 import { useAuth } from '@/features/auth/context/auth.context';
 
+type AuthModalSource = 'nav' | 'quick-access';
+type AuthModalView = 'login' | 'register' | 'forgot' | 'otp' | 'reset';
+
+type OpenAuthModalDetail = {
+  source?: AuthModalSource;
+  returnTo?: string | null;
+  appCode?: string | null;
+  initialView?: AuthModalView;
+};
+
 export default function SiteNav() {
   const [open, setOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
+
+  const [authSource, setAuthSource] = useState<AuthModalSource>('nav');
+  const [authReturnTo, setAuthReturnTo] = useState<string | null>(null);
+  const [authAppCode, setAuthAppCode] = useState<string | null>(null);
+  const [authInitialView, setAuthInitialView] = useState<AuthModalView>('login');
 
   const { compact } = useCompactNav();
   const { isAuthenticated, logout, sesion, mode } = useAuth();
@@ -32,6 +47,41 @@ export default function SiteNav() {
     () => (isAuthenticated ? AUTH_NAV_ITEMS : SITE_NAV_ITEMS),
     [isAuthenticated]
   );
+
+  const openAuthModal = useCallback((detail?: OpenAuthModalDetail) => {
+    setAuthSource(detail?.source ?? 'nav');
+    setAuthReturnTo(detail?.returnTo ?? null);
+    setAuthAppCode(detail?.appCode ?? null);
+    setAuthInitialView(detail?.initialView ?? 'login');
+    setLoginOpen(true);
+  }, []);
+
+  const handleCloseAuthModal = useCallback(() => {
+    setLoginOpen(false);
+    setAuthSource('nav');
+    setAuthReturnTo(null);
+    setAuthAppCode(null);
+    setAuthInitialView('login');
+  }, []);
+
+  useEffect(() => {
+    const onOpenAuthModal = (event: Event) => {
+      const customEvent = event as CustomEvent<OpenAuthModalDetail>;
+      openAuthModal(customEvent.detail);
+    };
+
+    window.addEventListener(
+      'portal:open-auth-modal',
+      onOpenAuthModal as EventListener
+    );
+
+    return () => {
+      window.removeEventListener(
+        'portal:open-auth-modal',
+        onOpenAuthModal as EventListener
+      );
+    };
+  }, [openAuthModal]);
 
   return (
     <>
@@ -115,7 +165,11 @@ export default function SiteNav() {
                   href={it.href}
                   className={`${css.pillLink} ${isAuthenticated ? css.authPillLink : ''}`}
                   onClick={closeMenu}
-                  style={isAuthenticated ? { animationDelay: `${index * 55}ms` } : undefined}
+                  style={
+                    isAuthenticated
+                      ? { animationDelay: `${index * 55}ms` }
+                      : undefined
+                  }
                 >
                   {it.label}
                 </Link>
@@ -131,7 +185,12 @@ export default function SiteNav() {
                 aria-label="Iniciar sesión"
                 onClick={() => {
                   closeMenu();
-                  setLoginOpen(true);
+                  openAuthModal({
+                    source: 'nav',
+                    returnTo: null,
+                    appCode: null,
+                    initialView: 'login',
+                  });
                 }}
               >
                 <span className={css.ctaPillText}>Iniciar sesión</span>
@@ -198,7 +257,12 @@ export default function SiteNav() {
                 type="button"
                 onClick={() => {
                   closeMenu();
-                  setLoginOpen(true);
+                  openAuthModal({
+                    source: 'nav',
+                    returnTo: null,
+                    appCode: null,
+                    initialView: 'login',
+                  });
                 }}
               >
                 Iniciar sesión <span aria-hidden="true">↗</span>
@@ -263,7 +327,11 @@ export default function SiteNav() {
 
       <AuthModal
         open={loginOpen}
-        onClose={() => setLoginOpen(false)}
+        onClose={handleCloseAuthModal}
+        source={authSource}
+        returnTo={authReturnTo}
+        appCode={authAppCode}
+        initialView={authInitialView}
       />
     </>
   );

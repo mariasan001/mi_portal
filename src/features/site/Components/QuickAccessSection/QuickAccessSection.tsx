@@ -11,12 +11,18 @@ import { useAuth } from '@/features/auth';
 
 const NAV_OFFSET = 118;
 
+type OpenAuthModalDetail = {
+  source?: 'nav' | 'quick-access';
+  returnTo?: string | null;
+  appCode?: string | null;
+  initialView?: 'login' | 'register' | 'forgot' | 'otp' | 'reset';
+};
+
 export default function QuickAccessSection() {
   const router = useRouter();
   const { isAuthenticated, setAppCode } = useAuth();
 
   const [unlockFx, setUnlockFx] = useState(false);
-  const [hasUnlocked, setHasUnlocked] = useState(false);
   const [sectionPulse, setSectionPulse] = useState(false);
 
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -59,7 +65,6 @@ export default function QuickAccessSection() {
     const unlockTimer = window.setTimeout(() => {
       if (unlockMarker === '1') {
         setUnlockFx(true);
-        setHasUnlocked(true);
       }
 
       try {
@@ -113,22 +118,33 @@ export default function QuickAccessSection() {
     window.addEventListener('portal:focus-quick-access', onFocusQuickAccess);
 
     return () => {
-      window.removeEventListener('portal:focus-quick-access', onFocusQuickAccess);
+      window.removeEventListener(
+        'portal:focus-quick-access',
+        onFocusQuickAccess
+      );
       cleanup?.();
     };
   }, [runUnlockExperience]);
 
   function onOpen(item: (typeof QUICK_ACCESS_ITEMS)[number]) {
-    if (item.appCode) setAppCode(item.appCode);
-
     if (item.requiresAuth && !isAuthenticated) {
-      const q = new URLSearchParams();
+      const detail: OpenAuthModalDetail = {
+        source: 'quick-access',
+        returnTo: item.href,
+        appCode: item.appCode ?? 'PLAT_SERV',
+        initialView: 'login',
+      };
 
-      if (item.appCode) q.set('appCode', item.appCode);
-      q.set('returnTo', item.href);
-
-      router.push(`/login?${q.toString()}`);
+      window.dispatchEvent(
+        new CustomEvent<OpenAuthModalDetail>('portal:open-auth-modal', {
+          detail,
+        })
+      );
       return;
+    }
+
+    if (item.appCode) {
+      setAppCode(item.appCode);
     }
 
     router.push(item.href);
@@ -152,9 +168,10 @@ export default function QuickAccessSection() {
 
         <div className={s.grid}>
           {QUICK_ACCESS_ITEMS.map((item) => {
-            const locked = Boolean(item.requiresAuth && !isAuthenticated);
-            const isUnlocked = Boolean(item.requiresAuth && isAuthenticated && hasUnlocked);
-            const playUnlockFx = Boolean(item.requiresAuth && isAuthenticated && unlockFx);
+            const isProtected = Boolean(item.requiresAuth);
+            const isActuallyLocked = Boolean(isProtected && !isAuthenticated);
+            const isActuallyUnlocked = Boolean(isProtected && isAuthenticated);
+            const shouldAnimateUnlock = Boolean(isActuallyUnlocked && unlockFx);
 
             return (
               <button
@@ -162,24 +179,32 @@ export default function QuickAccessSection() {
                 type="button"
                 className={[
                   s.card,
-                  locked ? s.cardLocked : '',
-                  playUnlockFx ? s.cardUnlocked : '',
+                  isActuallyLocked ? s.cardLocked : '',
+                  shouldAnimateUnlock ? s.cardUnlocked : '',
                 ].join(' ')}
                 onClick={() => onOpen(item)}
               >
-                {item.requiresAuth ? (
+                {isProtected ? (
                   <span
                     className={[
                       s.lockBadgeFloating,
-                      locked ? s.locked : '',
-                      isUnlocked ? s.unlocked : '',
+                      isActuallyLocked ? s.locked : '',
+                      isActuallyUnlocked ? s.unlocked : '',
                     ].join(' ')}
-                    aria-label={locked ? 'Acceso bloqueado' : 'Acceso desbloqueado'}
-                    title={locked ? 'Acceso bloqueado' : 'Acceso desbloqueado'}
+                    aria-label={
+                      isActuallyLocked
+                        ? 'Acceso bloqueado'
+                        : 'Acceso desbloqueado'
+                    }
+                    title={
+                      isActuallyLocked
+                        ? 'Acceso bloqueado'
+                        : 'Acceso desbloqueado'
+                    }
                   >
                     <span
                       className={`${s.miniLockSwap} ${
-                        isUnlocked ? s.miniLockSwapOpen : ''
+                        isActuallyUnlocked ? s.miniLockSwapOpen : ''
                       }`}
                     >
                       <span className={`${s.miniLockLayer} ${s.miniClosed}`}>

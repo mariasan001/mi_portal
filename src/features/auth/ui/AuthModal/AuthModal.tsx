@@ -15,12 +15,17 @@ import { useAuth } from '@/features/auth/context/auth.context';
 import type { RegisterPayload } from '@/features/auth/types/register.types';
 import LoginForm from '../LoginForm/LoginForm';
 
+export type AuthModalSource = 'nav' | 'quick-access';
+export type AuthView = 'login' | 'register' | 'forgot' | 'otp' | 'reset';
+
 type Props = {
   open: boolean;
   onClose: () => void;
+  source?: AuthModalSource;
+  returnTo?: string | null;
+  appCode?: string | null;
+  initialView?: AuthView;
 };
-
-type AuthView = 'login' | 'register' | 'forgot' | 'otp' | 'reset';
 
 const INITIAL_REGISTER_VALUE: RegisterPayload = {
   claveSp: '',
@@ -31,11 +36,19 @@ const INITIAL_REGISTER_VALUE: RegisterPayload = {
   phone: '',
 };
 
-export default function AuthModal({ open, onClose }: Props) {
-  const [view, setView] = useState<AuthView>('login');
+export default function AuthModal({
+  open,
+  onClose,
+  source = 'nav',
+  returnTo = null,
+  appCode = null,
+  initialView = 'login',
+}: Props) {
+  const [view, setView] = useState<AuthView>(initialView);
   const [recoveryIdentifier, setRecoveryIdentifier] = useState('');
   const [verifiedOtp, setVerifiedOtp] = useState('');
-  const [registerValue, setRegisterValue] = useState<RegisterPayload>(INITIAL_REGISTER_VALUE);
+  const [registerValue, setRegisterValue] =
+    useState<RegisterPayload>(INITIAL_REGISTER_VALUE);
 
   const {
     username,
@@ -45,7 +58,12 @@ export default function AuthModal({ open, onClose }: Props) {
     onSubmit,
     loading,
     error,
-  } = useLoginFlow();
+    reset: resetLoginFlow,
+  } = useLoginFlow({
+    source,
+    returnTo,
+    appCode,
+  });
 
   const {
     loading: registerLoading,
@@ -62,20 +80,15 @@ export default function AuthModal({ open, onClose }: Props) {
     return registerData.message ?? 'Registro exitoso. Ya puedes iniciar sesión.';
   }, [registerData]);
 
-  /**
-   * Limpia el estado interno del flujo auth.
-   */
   const resetFlowState = useCallback(() => {
-    setView('login');
+    setView(initialView);
     setRecoveryIdentifier('');
     setVerifiedOtp('');
     setRegisterValue(INITIAL_REGISTER_VALUE);
     resetRegisterState();
-  }, [resetRegisterState]);
+    resetLoginFlow();
+  }, [initialView, resetLoginFlow, resetRegisterState]);
 
-  /**
-   * Cierre centralizado del modal.
-   */
   const handleClose = useCallback(() => {
     resetFlowState();
     onClose();
@@ -112,6 +125,7 @@ export default function AuthModal({ open, onClose }: Props) {
     value: RegisterPayload[K]
   ) {
     resetRegisterState();
+
     setRegisterValue((prev) => ({
       ...prev,
       [key]: value,
@@ -128,23 +142,28 @@ export default function AuthModal({ open, onClose }: Props) {
       ...prev,
       password: '',
     }));
+    setView('login');
   }
 
   useEffect(() => {
     if (!open) return;
 
     const esc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') handleClose();
+      if (e.key === 'Escape') {
+        handleClose();
+      }
     };
 
     window.addEventListener('keydown', esc);
     return () => window.removeEventListener('keydown', esc);
   }, [open, handleClose]);
 
-useEffect(() => {
-  if (!open || !isAuthenticated) return;
-  onClose();
-}, [open, isAuthenticated, onClose]);
+  useEffect(() => {
+    if (!open || !isAuthenticated) return;
+
+    onClose();
+  }, [open, isAuthenticated, onClose]);
+
   if (!open) return null;
 
   return createPortal(
