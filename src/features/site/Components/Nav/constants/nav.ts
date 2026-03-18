@@ -1,4 +1,12 @@
-export type NavItem = { label: string; href: string };
+export type NavItem = {
+  label: string;
+  href: string;
+};
+
+export type SocialLink = {
+  label: string;
+  href: string;
+};
 
 export const SITE_NAV_ITEMS: NavItem[] = [
   { label: 'Somos DGP', href: '/somos' },
@@ -9,8 +17,13 @@ export const SITE_NAV_ITEMS: NavItem[] = [
 ];
 
 export const AUTH_NAV_ITEMS: NavItem[] = [
-  { label: 'Mis accesos ', href: '/mis-accesos' },
+  { label: 'Mis accesos', href: '/mis-accesos' },
   { label: 'Consultas', href: '/consultas' },
   { label: 'Trámites', href: '/tramites' },
   { label: 'Buscar proceso', href: '/buscar-proceso' },
+];
+
+export const SOCIAL_LINKS: SocialLink[] = [
+  { label: 'Facebook', href: 'https://facebook.com' },
+  { label: 'X', href: 'https://x.com' },
 ];

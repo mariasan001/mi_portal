@@ -2,6 +2,9 @@
 
 import { useEffect, useRef, useState } from 'react';
 
+const TOP_OFFSET = 20;
+const SCROLL_THRESHOLD = 10;
+
 export function useCompactNav() {
   const [compact, setCompact] = useState(false);
 
@@ -16,25 +19,28 @@ export function useCompactNav() {
       ticking.current = true;
 
       requestAnimationFrame(() => {
-        const y = window.scrollY || 0;
-        const delta = y - lastY.current;
+        const currentY = window.scrollY || 0;
+        const delta = currentY - lastY.current;
 
-        const THRESH = 10;
+        if (currentY < TOP_OFFSET) {
+          setCompact(false);
+        } else if (delta > SCROLL_THRESHOLD) {
+          setCompact(true);
+        } else if (delta < -SCROLL_THRESHOLD) {
+          setCompact(false);
+        }
 
-
-
-        if (y < 20) setCompact(false);
-        else if (delta > THRESH) setCompact(true);
-        else if (delta < -THRESH) setCompact(false);
-
-        lastY.current = y;
+        lastY.current = currentY;
         ticking.current = false;
       });
     };
 
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+    };
   }, []);
 
-  return { compact,  };
+  return { compact };
 }

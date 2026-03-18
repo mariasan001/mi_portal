@@ -1,87 +1,63 @@
 'use client';
 
+import { useCallback, useMemo, useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { FaFacebookF, FaXTwitter } from 'react-icons/fa6';
 
 import css from './SiteNav.module.css';
-import {
-  SITE_NAV_ITEMS,
-  AUTH_NAV_ITEMS,
-} from '@/features/site/Components/Nav/constants/nav';
-import { useCompactNav } from '@/features/site/Components/Nav/hooks/useCompactNav';
-import { useOverlayLock } from '@/features/site/Components/Nav/hooks/useOverlayLock';
 
 import AuthModal from '@/features/auth/ui/AuthModal/AuthModal';
 import { useAuth } from '@/features/auth/context/auth.context';
 
-type AuthModalSource = 'nav' | 'quick-access';
-type AuthModalView = 'login' | 'register' | 'forgot' | 'otp' | 'reset';
+import {
+  AUTH_NAV_ITEMS,
+  SITE_NAV_ITEMS,
+} from '@/features/site/Components/Nav/constants/nav';
 
-type OpenAuthModalDetail = {
-  source?: AuthModalSource;
-  returnTo?: string | null;
-  appCode?: string | null;
-  initialView?: AuthModalView;
-};
+import { useCompactNav } from '@/features/site/Components/Nav/hooks/useCompactNav';
+import { useOverlayLock } from '@/features/site/Components/Nav/hooks/useOverlayLock';
+import { useAuthModal } from '@/features/site/Components/Nav/hooks/useAuthModal';
+import { useAuthModalEvent } from '@/features/site/Components/Nav/hooks/useAuthModalEvent';
+import NavSocials from './ui/NavSocials/NavSocials';
+import NavLogo from './ui/NavLogo/NavLogo';
+import NavLinks from './ui/NavLinks/NavLinks';
+
 
 export default function SiteNav() {
-  const [open, setOpen] = useState(false);
-  const [loginOpen, setLoginOpen] = useState(false);
-
-  const [authSource, setAuthSource] = useState<AuthModalSource>('nav');
-  const [authReturnTo, setAuthReturnTo] = useState<string | null>(null);
-  const [authAppCode, setAuthAppCode] = useState<string | null>(null);
-  const [authInitialView, setAuthInitialView] = useState<AuthModalView>('login');
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const { compact } = useCompactNav();
   const { isAuthenticated, logout, sesion, mode } = useAuth();
 
-  const closeMenu = useCallback(() => setOpen(false), []);
-  useOverlayLock(open, closeMenu);
+  const { authModal, openAuthModal, closeAuthModal } = useAuthModal();
+
+  const closeMenu = useCallback(() => {
+    setMenuOpen(false);
+  }, []);
+
+  const toggleMenu = useCallback(() => {
+    setMenuOpen((prev) => !prev);
+  }, []);
+
+  useOverlayLock(menuOpen, closeMenu);
+  useAuthModalEvent({ onOpen: openAuthModal });
 
   const displayName = sesion?.username ?? 'Mi cuenta';
 
-  const activeNavItems = useMemo(
-    () => (isAuthenticated ? AUTH_NAV_ITEMS : SITE_NAV_ITEMS),
-    [isAuthenticated]
-  );
+  const navItems = useMemo(() => {
+    return isAuthenticated ? AUTH_NAV_ITEMS : SITE_NAV_ITEMS;
+  }, [isAuthenticated]);
 
-  const openAuthModal = useCallback((detail?: OpenAuthModalDetail) => {
-    setAuthSource(detail?.source ?? 'nav');
-    setAuthReturnTo(detail?.returnTo ?? null);
-    setAuthAppCode(detail?.appCode ?? null);
-    setAuthInitialView(detail?.initialView ?? 'login');
-    setLoginOpen(true);
-  }, []);
+  const accountHref = mode === 'admin' ? '/admin' : '/';
 
-  const handleCloseAuthModal = useCallback(() => {
-    setLoginOpen(false);
-    setAuthSource('nav');
-    setAuthReturnTo(null);
-    setAuthAppCode(null);
-    setAuthInitialView('login');
-  }, []);
-
-  useEffect(() => {
-    const onOpenAuthModal = (event: Event) => {
-      const customEvent = event as CustomEvent<OpenAuthModalDetail>;
-      openAuthModal(customEvent.detail);
-    };
-
-    window.addEventListener(
-      'portal:open-auth-modal',
-      onOpenAuthModal as EventListener
-    );
-
-    return () => {
-      window.removeEventListener(
-        'portal:open-auth-modal',
-        onOpenAuthModal as EventListener
-      );
-    };
-  }, [openAuthModal]);
+  const handleOpenLogin = useCallback(() => {
+    closeMenu();
+    openAuthModal({
+      source: 'nav',
+      returnTo: null,
+      appCode: null,
+      initialView: 'login',
+    });
+  }, [closeMenu, openAuthModal]);
 
   return (
     <>
@@ -93,87 +69,17 @@ export default function SiteNav() {
         ].join(' ')}
       >
         <div className={css.navInner}>
-          <div className={css.leftZone} aria-label="Redes sociales">
-            <a
-              className={css.socialIcon}
-              href="https://facebook.com"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Facebook"
-              title="Facebook"
-            >
-              <FaFacebookF />
-            </a>
-
-            <a
-              className={css.socialIcon}
-              href="https://x.com"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="X"
-              title="X"
-            >
-              <FaXTwitter />
-            </a>
-          </div>
+          <NavSocials className={css.leftZone} />
 
           <nav className={css.pillNav} aria-label="Navegación principal">
-            <Link href="/" className={css.pillLogoFree} aria-label="Inicio">
-              <span className={css.logoFullWrap} aria-hidden="true">
-                <Image
-                  src="/img/logo_principal.png"
-                  alt=""
-                  width={180}
-                  height={72}
-                  priority
-                  className={`${css.logoFull} ${css.fullNormal}`}
-                />
-                <Image
-                  src="/img/logo_gob.png"
-                  alt=""
-                  width={180}
-                  height={72}
-                  priority
-                  className={`${css.logoFull} ${css.fullVeda}`}
-                />
-              </span>
-
-              <span className={css.logoChip} aria-hidden="true">
-                <Image
-                  src="/img/colibri.png"
-                  alt=""
-                  width={64}
-                  height={64}
-                  priority
-                  className={`${css.logoIcon} ${css.compactNormal}`}
-                />
-                <Image
-                  src="/img/escudo.png"
-                  alt=""
-                  width={64}
-                  height={64}
-                  priority
-                  className={`${css.logoIcon} ${css.compactVeda}`}
-                />
-              </span>
-            </Link>
+            <NavLogo />
 
             <div className={css.pillLinks}>
-              {activeNavItems.map((it, index) => (
-                <Link
-                  key={it.href}
-                  href={it.href}
-                  className={`${css.pillLink} ${isAuthenticated ? css.authPillLink : ''}`}
-                  onClick={closeMenu}
-                  style={
-                    isAuthenticated
-                      ? { animationDelay: `${index * 55}ms` }
-                      : undefined
-                  }
-                >
-                  {it.label}
-                </Link>
-              ))}
+              <NavLinks
+                items={navItems}
+                authenticated={isAuthenticated}
+                onItemClick={closeMenu}
+              />
             </div>
           </nav>
 
@@ -183,15 +89,7 @@ export default function SiteNav() {
                 className={css.ctaPill}
                 type="button"
                 aria-label="Iniciar sesión"
-                onClick={() => {
-                  closeMenu();
-                  openAuthModal({
-                    source: 'nav',
-                    returnTo: null,
-                    appCode: null,
-                    initialView: 'login',
-                  });
-                }}
+                onClick={handleOpenLogin}
               >
                 <span className={css.ctaPillText}>Iniciar sesión</span>
                 <span className={css.ctaPillIcon} aria-hidden="true">
@@ -200,10 +98,7 @@ export default function SiteNav() {
               </button>
             ) : (
               <div className={css.authActions}>
-                <Link
-                  href={mode === 'admin' ? '/admin' : '/'}
-                  className={css.userPill}
-                >
+                <Link href={accountHref} className={css.userPill}>
                   <span className={css.userPillText}>{displayName}</span>
                   <span className={css.userPillIcon} aria-hidden="true">
                     👤
@@ -223,10 +118,10 @@ export default function SiteNav() {
             <button
               className={css.burger}
               type="button"
-              aria-label={open ? 'Cerrar menú' : 'Abrir menú'}
-              aria-expanded={open}
+              aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'}
+              aria-expanded={menuOpen}
               aria-controls="site-mobile-menu"
-              onClick={() => setOpen((v) => !v)}
+              onClick={toggleMenu}
             >
               <span />
               <span />
@@ -237,33 +132,20 @@ export default function SiteNav() {
 
         <div
           id="site-mobile-menu"
-          className={`${css.mobilePanel} ${open ? css.mobilePanelOpen : ''}`}
+          className={`${css.mobilePanel} ${menuOpen ? css.mobilePanelOpen : ''}`}
         >
           <nav className={css.mobileLinks} aria-label="Navegación móvil">
-            {activeNavItems.map((it) => (
-              <Link
-                key={it.href}
-                href={it.href}
-                className={css.mobileLink}
-                onClick={closeMenu}
-              >
-                {it.label}
-              </Link>
-            ))}
+            <NavLinks
+              items={navItems}
+              mobile
+              onItemClick={closeMenu}
+            />
 
             {!isAuthenticated ? (
               <button
                 className={css.mobileCtaPill}
                 type="button"
-                onClick={() => {
-                  closeMenu();
-                  openAuthModal({
-                    source: 'nav',
-                    returnTo: null,
-                    appCode: null,
-                    initialView: 'login',
-                  });
-                }}
+                onClick={handleOpenLogin}
               >
                 Iniciar sesión <span aria-hidden="true">↗</span>
               </button>
@@ -271,7 +153,7 @@ export default function SiteNav() {
               <>
                 <Link
                   className={css.mobileLink}
-                  href={mode === 'admin' ? '/admin' : '/'}
+                  href={accountHref}
                   onClick={closeMenu}
                 >
                   Mi cuenta
@@ -290,33 +172,14 @@ export default function SiteNav() {
               </>
             )}
 
-            <div className={css.mobileSocials} aria-label="Redes sociales">
-              <a
-                className={css.socialIcon}
-                href="https://facebook.com"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Facebook"
-                title="Facebook"
-              >
-                <FaFacebookF />
-              </a>
-
-              <a
-                className={css.socialIcon}
-                href="https://x.com"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="X"
-                title="X"
-              >
-                <FaXTwitter />
-              </a>
-            </div>
+            <NavSocials
+              className={css.mobileSocials}
+              ariaLabel="Redes sociales"
+            />
           </nav>
         </div>
 
-        {open ? (
+        {menuOpen ? (
           <button
             className={`${css.overlay} ${css.overlayOpen}`}
             aria-label="Cerrar menú"
@@ -326,12 +189,12 @@ export default function SiteNav() {
       </header>
 
       <AuthModal
-        open={loginOpen}
-        onClose={handleCloseAuthModal}
-        source={authSource}
-        returnTo={authReturnTo}
-        appCode={authAppCode}
-        initialView={authInitialView}
+        open={authModal.open}
+        onClose={closeAuthModal}
+        source={authModal.source}
+        returnTo={authModal.returnTo}
+        appCode={authModal.appCode}
+        initialView={authModal.initialView}
       />
     </>
   );
