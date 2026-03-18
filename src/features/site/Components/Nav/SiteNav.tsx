@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 import css from './SiteNav.module.css';
 
@@ -17,18 +18,29 @@ import { useCompactNav } from '@/features/site/Components/Nav/hooks/useCompactNa
 import { useOverlayLock } from '@/features/site/Components/Nav/hooks/useOverlayLock';
 import { useAuthModal } from '@/features/site/Components/Nav/hooks/useAuthModal';
 import { useAuthModalEvent } from '@/features/site/Components/Nav/hooks/useAuthModalEvent';
+
 import NavSocials from './ui/NavSocials/NavSocials';
 import NavLogo from './ui/NavLogo/NavLogo';
 import NavLinks from './ui/NavLinks/NavLinks';
 
-
 export default function SiteNav() {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const pathname = usePathname();
 
   const { compact } = useCompactNav();
   const { isAuthenticated, logout, sesion, mode } = useAuth();
 
   const { authModal, openAuthModal, closeAuthModal } = useAuthModal();
+
+  const isComprobantesSession = pathname.startsWith('/usuario/comprobantes');
+
+  /**
+   * En comprobantes el menú central debe permanecer siempre cerrado/compacto,
+   * aunque la página esté arriba y aunque el usuario no haya hecho scroll.
+   */
+  const forceCompact = isComprobantesSession;
+  const effectiveCompact = forceCompact || compact;
 
   const closeMenu = useCallback(() => {
     setMenuOpen(false);
@@ -64,7 +76,7 @@ export default function SiteNav() {
       <header
         className={[
           css.navWrap,
-          compact ? css.isCompact : '',
+          effectiveCompact ? css.isCompact : '',
           isAuthenticated ? css.authenticated : '',
         ].join(' ')}
       >

@@ -63,7 +63,7 @@ export const QUICK_ACCESS_ITEMS: QuickAccessItem[] = [
   {
     title: 'Comprobantes de Percepciones y Deducciones',
     desc: 'Emisión y consulta de comprobantes oficiales.',
-    href: '/comprobantes',
+    href: 'usuario/comprobantes',
     appCode: 'PLAT_SERV',
     requiresAuth: true,
     icon: <FiFileText aria-hidden="true" />,
