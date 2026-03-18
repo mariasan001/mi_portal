@@ -48,188 +48,66 @@ export const SERVICE_CARDS: CardItem[] = [
 ];
 
 
-export const SERVICE_CARDS_CONSULTAS: CardItem[] = [
-  {
-    title: 'Consulta de FUMP',
-    desc: 'Accede a tu Formato Único de Movimientos de Personal por altas, bajas, cambios o licencias.',
-    href: '/',
-    cta: 'Explorar normatividad',
-    icon: <FiSearch />,
-    accent: 'vino',
-    bgImage: '',
-  },
-  {
-    title: 'Consulta de Recibo de Nomina',
-    desc: 'Tus pagos, siempre a la mano. Consulta tus recibos cuando los necesites.',
-    href: '/',
-    cta: '',
-    icon: <FiSearch />,
-    accent: 'vino',
-    bgImage: '', 
-  },
-  {
-    title: 'Consulta de Anualizados',
-    desc: 'Consulta tus ingresos y retenciones acumuladas del año, útiles para trámites fiscales o administrativos.',
-    href: '/',
-    cta: '',
-    icon: <FiSearch />,
-    accent: 'vino',
-    bgImage: '', 
-  },
-  {
-    title: 'Consulta de Desglose de Plazas',
-    desc: 'Conoce a detalle las plazas que tienes asignadas: tipo, ubicación, carga horaria y más.',
-    href: '/',
-    cta: 'Explorar normatividad',
-    icon: <FiSearch />,
-    accent: 'vino',
-    bgImage: '',
-  },
-  {
-    title: 'Consulta de Puntualidad y Asistencia',
-    desc: 'Lleva el control de tu tiempo. Consulta aquí tus registros de asistencia y desempeño diario.',
-    href: '/',
-    cta: '',
-    icon: <FiSearch />,
-    accent: 'vino',
-    bgImage: '', 
-  },
-  {
-    title: 'Consulta de Recibo para Jubilados',
-    desc: 'Porque tu servicio merece reconocimiento continuo. Aquí puedes consultar tus pagos mensuales.',
-    href: '/',
-    cta: '',
-    icon: <FiSearch />,
-    accent: 'vino',
-    bgImage: '', 
-  },
-  {
-    title: 'Consulta de CFDI',
-    desc: '¿Necesitas tu comprobante fiscal para trámites? Aquí puedes consultarlo y descargarlo por periodo.',
-    href: '/',
-    cta: 'Explorar normatividad',
-    icon: <FiSearch />,
-    accent: 'vino',
-    bgImage: '',
-  },
-
-];
-
-
-export const SERVICE_CARDS_TRAMITES: CardItem[] = [
-  {
-    title: 'Trámite de FUMP',
-    desc: 'Accede a tu Formato Único de Movimientos de Personal por altas, bajas, cambios o licencias.',
-    href: '/',
-    cta: 'Explorar normatividad',
-    icon: <FiSearch />,
-    accent: 'vino',
-    bgImage: '',
-  },
-  {
-    title: 'Trámite de Recibo de Nomina',
-    desc: 'Tus pagos, siempre a la mano. Consulta tus recibos cuando los necesites.',
-    href: '/',
-    cta: '',
-    icon: <FiSearch />,
-    accent: 'vino',
-    bgImage: '', 
-  },
-  {
-    title: 'Trámite de Anualizados',
-    desc: 'Consulta tus ingresos y retenciones acumuladas del año, útiles para trámites fiscales o administrativos.',
-    href: '/',
-    cta: '',
-    icon: <FiSearch />,
-    accent: 'vino',
-    bgImage: '', 
-  },
-  {
-    title: 'Trámite de Desglose de Plazas',
-    desc: 'Conoce a detalle las plazas que tienes asignadas: tipo, ubicación, carga horaria y más.',
-    href: '/',
-    cta: 'Explorar normatividad',
-    icon: <FiSearch />,
-    accent: 'vino',
-    bgImage: '',
-  },
-  {
-    title: 'Trámite de Puntualidad y Asistencia',
-    desc: 'Lleva el control de tu tiempo. Consulta aquí tus registros de asistencia y desempeño diario.',
-    href: '/',
-    cta: '',
-    icon: <FiSearch />,
-    accent: 'vino',
-    bgImage: '', 
-  },
-  {
-    title: 'Trámite de Recibo para Jubilados',
-    desc: 'Porque tu servicio merece reconocimiento continuo. Aquí puedes consultar tus pagos mensuales.',
-    href: '/',
-    cta: '',
-    icon: <FiSearch />,
-    accent: 'vino',
-    bgImage: '', 
-  },
-  {
-    title: 'Trámite de CFDI',
-    desc: '¿Necesitas tu comprobante fiscal para trámites? Aquí puedes consultarlo y descargarlo por periodo.',
-    href: '/',
-    cta: 'Explorar normatividad',
-    icon: <FiSearch />,
-    accent: 'vino',
-    bgImage: '',
-  },
-
-];
-
-/**
- * 
- * 
- * 
- * type ServiceDetailSeed = {
+type ServiceDetailSeed = {
   key: string;
   title: string;
   desc: string;
+  icon?: ReactNode;
 };
 
-const CONSULTA_ITEMS_BASE: ServiceDetailSeed[] = [
+const ITEMS_BASE: ServiceDetailSeed[] = [
   {
     key: 'fump',
     title: 'FUMP',
     desc: 'Accede a tu Formato Único de Movimientos de Personal por altas, bajas, cambios o licencias.',
+    icon: <FiSearch />,
   },
   {
-    key: 'recibo-nomina',
+    key: 'nomina',
     title: 'Recibo de Nómina',
     desc: 'Tus pagos, siempre a la mano. Consulta tus recibos cuando los necesites.',
+    icon: <FiSearch />,
   },
   {
     key: 'anualizados',
     title: 'Anualizados',
     desc: 'Consulta tus ingresos y retenciones acumuladas del año, útiles para trámites fiscales o administrativos.',
+    icon: <FiSearch />,
   },
   {
-    key: 'desglose-plazas',
+    key: 'plazas',
     title: 'Desglose de Plazas',
     desc: 'Conoce a detalle las plazas que tienes asignadas: tipo, ubicación, carga horaria y más.',
+    icon: <FiSearch />,
   },
   {
-    key: 'puntualidad-asistencia',
+    key: 'asistencia',
     title: 'Puntualidad y Asistencia',
     desc: 'Lleva el control de tu tiempo. Consulta aquí tus registros de asistencia y desempeño diario.',
+    icon: <FiSearch />,
   },
   {
-    key: 'recibo-jubilados',
+    key: 'jubilados',
     title: 'Recibo para Jubilados',
     desc: 'Porque tu servicio merece reconocimiento continuo. Aquí puedes consultar tus pagos mensuales.',
+    icon: <FiSearch />,
   },
   {
     key: 'cfdi',
     title: 'CFDI',
     desc: '¿Necesitas tu comprobante fiscal para trámites? Aquí puedes consultarlo y descargarlo por periodo.',
+    icon: <FiSearch />,
   },
 ];
 
+export const SERVICE_CARDS_CONSULTAS = ITEMS_BASE.map((item) => ({
+  ...item,
+  title: `Consulta de ${item.title}`,
+}));
 
- */
+export const SERVICE_CARDS_TRAMITES = ITEMS_BASE.map((item) => ({
+  ...item,
+  title: `Trámite de ${item.title}`,
+}));
+
+

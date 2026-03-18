@@ -1,64 +1,29 @@
 'use client';
-/**
- *  NO USAS LINK 
- */
-import Link from 'next/link';
+
 import { useEffect, useState } from 'react';
 import { FiArrowUpRight, FiSearch } from 'react-icons/fi';
 
 import css from './ServicesSection.module.css';
-/**
- * SERVICE_CARDS_CONSULTAS y SERVICE_CARDS_TRAMITES están súper repetidas. Cambia solo el prefijo del título. Eso se puede generar desde una sola fuente base.
- */
+
 import {
   SERVICE_CARDS,
   SERVICE_CARDS_CONSULTAS,
   SERVICE_CARDS_TRAMITES,
 } from './constants/ServiceConstants';
-import { shellStyle } from './utils/shellStyle';
 
+import { shellStyle } from './utils/shellStyle';
 import { useRevealMotion } from '@/hooks/useRevealMotion';
 
 type AssistantAction = 'tramite' | 'consulta' | 'password' | null;
 type View = 'cards' | 'consultas' | 'tramites' | 'normativas';
 
-/**
- * Ahorita es Record<string, View>, pero realmente solo depende de ciertos href. Mejor dejarlo tipado con los paths válidos.
- */
-const viewMap: Record<string, View> = {
+type ValidHref = '/consultas' | '/tramites' | '/normativas';
+
+const viewMap: Record<ValidHref, View> = {
   '/consultas': 'consultas',
   '/tramites': 'tramites',
   '/normativas': 'normativas',
 };
-
-/*
-
-
-Ahorita ServicesSection hace todo:
-controla vistas
-escucha eventos globales
-arma mensajes del asistente
-renderiza cards principales
-renderiza subcards
-construye botón de regreso
-
-Aquí conviene separar:
-
- - constants
- - utils
- - hooks
-
-
-*/
-
-/**
- * . useEffect con timeout sin cleanup
-    Estás lanzando window.setTimeout pero no limpias timeout anterior. 
-    Si el evento se dispara varias veces, se te pueden encimar. ESTE ES MIO JAJA PERO IGUAL AYUDAME A SOLUCIONARLO 
-    
-
- */
-
 
 export default function ServicesSection() {
   const { ref: sectionRef, className } = useRevealMotion<HTMLElement>({
@@ -70,6 +35,8 @@ export default function ServicesSection() {
   const [view, setView] = useState<View>('cards');
 
   useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout>;
+
     const handleNavigate = (event: Event) => {
       const customEvent = event as CustomEvent<{ action: AssistantAction }>;
       const action = customEvent.detail?.action;
@@ -89,15 +56,18 @@ export default function ServicesSection() {
         setAssistantHint('Aquí podrás consultar información y acceder al servicio adecuado.');
       }
 
-      window.setTimeout(() => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
         setAssistantHint('');
       }, 5000);
+
     };
 
     window.addEventListener('portal-assistant:navigate', handleNavigate as EventListener);
 
     return () => {
       window.removeEventListener('portal-assistant:navigate', handleNavigate as EventListener);
+      clearTimeout(timeoutId);
     };
   }, []);
 
@@ -120,33 +90,27 @@ export default function ServicesSection() {
       ← Regresar a servicios
     </button>
   );
-/**
- * 
- mejor usar CardItem. Así sirve para consultas, trámites y normativas sin andar jugando al favoritismo.
- 
- */
+
   // ── Card secundaria reutilizable ──
   const renderSubCard = (c: (typeof SERVICE_CARDS_CONSULTAS)[0]) => (
-    <div
-      key={c.title}
-      className={css.cardShell}
-      data-accent={c.accent}
-      data-variant="consultas"
-      style={shellStyle(c)}
-      role="listitem"
-      aria-label={c.title}
-    >
-      <article className={css.card}>
-        <div className={css.iconWrap} aria-hidden="true">
-          <span className={css.icon}>{c.icon}</span>
-        </div>
-        <div className={css.cardContent}>
-          <h3 className={css.cardTitle}>{c.title}</h3>
-          <p className={css.cardDesc}>{c.desc}</p>
-        </div>
-      </article>
-    </div>
-  );
+  <div
+    key={c.key}
+    className={css.cardShell}
+    data-variant="consultas"
+    role="listitem"
+    aria-label={c.title}
+  >
+    <article className={css.card}>
+      <div className={css.iconWrap} aria-hidden="true">
+        <span className={css.icon}>{c.icon}</span>
+      </div>
+      <div className={css.cardContent}>
+        <h3 className={css.cardTitle}>{c.title}</h3>
+        <p className={css.cardDesc}>{c.desc}</p>
+      </div>
+    </article>
+  </div>
+);
 
   return (
     <section
@@ -203,11 +167,9 @@ export default function ServicesSection() {
                 role="listitem"
                 aria-label={c.title}
                 onClick={() => {
-                  const next = viewMap[c.href];
+                  const next = viewMap[c.href as ValidHref];
                   if (next) setView(next);
                 }}
-
-
               >
                 <article className={css.card}>
                   <div className={css.iconWrap} aria-hidden="true">
