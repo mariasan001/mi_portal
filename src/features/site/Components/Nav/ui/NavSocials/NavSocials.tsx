@@ -1,7 +1,7 @@
 'use client';
 
 import { FaFacebookF, FaXTwitter } from 'react-icons/fa6';
-import css from './SiteNav.module.css';
+import css from '../../SiteNav.module.css';
 import { SOCIAL_LINKS } from '../../constants/nav';
 
 const SOCIAL_ICONS = {

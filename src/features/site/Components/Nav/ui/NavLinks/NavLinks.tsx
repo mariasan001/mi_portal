@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import css from './SiteNav.module.css';
+import css from '../../SiteNav.module.css';
 import { NavItem } from '../../constants/nav';
 
 type Props = {
