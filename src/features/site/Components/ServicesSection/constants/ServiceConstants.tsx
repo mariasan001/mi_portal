@@ -182,3 +182,54 @@ export const SERVICE_CARDS_TRAMITES: CardItem[] = [
   },
 
 ];
+
+/**
+ * 
+ * 
+ * 
+ * type ServiceDetailSeed = {
+  key: string;
+  title: string;
+  desc: string;
+};
+
+const CONSULTA_ITEMS_BASE: ServiceDetailSeed[] = [
+  {
+    key: 'fump',
+    title: 'FUMP',
+    desc: 'Accede a tu Formato Único de Movimientos de Personal por altas, bajas, cambios o licencias.',
+  },
+  {
+    key: 'recibo-nomina',
+    title: 'Recibo de Nómina',
+    desc: 'Tus pagos, siempre a la mano. Consulta tus recibos cuando los necesites.',
+  },
+  {
+    key: 'anualizados',
+    title: 'Anualizados',
+    desc: 'Consulta tus ingresos y retenciones acumuladas del año, útiles para trámites fiscales o administrativos.',
+  },
+  {
+    key: 'desglose-plazas',
+    title: 'Desglose de Plazas',
+    desc: 'Conoce a detalle las plazas que tienes asignadas: tipo, ubicación, carga horaria y más.',
+  },
+  {
+    key: 'puntualidad-asistencia',
+    title: 'Puntualidad y Asistencia',
+    desc: 'Lleva el control de tu tiempo. Consulta aquí tus registros de asistencia y desempeño diario.',
+  },
+  {
+    key: 'recibo-jubilados',
+    title: 'Recibo para Jubilados',
+    desc: 'Porque tu servicio merece reconocimiento continuo. Aquí puedes consultar tus pagos mensuales.',
+  },
+  {
+    key: 'cfdi',
+    title: 'CFDI',
+    desc: '¿Necesitas tu comprobante fiscal para trámites? Aquí puedes consultarlo y descargarlo por periodo.',
+  },
+];
+
+
+ */

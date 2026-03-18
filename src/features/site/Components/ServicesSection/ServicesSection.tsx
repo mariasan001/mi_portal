@@ -1,11 +1,15 @@
 'use client';
-
+/**
+ *  NO USAS LINK 
+ */
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { FiArrowUpRight, FiSearch } from 'react-icons/fi';
 
 import css from './ServicesSection.module.css';
-
+/**
+ * SERVICE_CARDS_CONSULTAS y SERVICE_CARDS_TRAMITES están súper repetidas. Cambia solo el prefijo del título. Eso se puede generar desde una sola fuente base.
+ */
 import {
   SERVICE_CARDS,
   SERVICE_CARDS_CONSULTAS,
@@ -18,11 +22,43 @@ import { useRevealMotion } from '@/hooks/useRevealMotion';
 type AssistantAction = 'tramite' | 'consulta' | 'password' | null;
 type View = 'cards' | 'consultas' | 'tramites' | 'normativas';
 
+/**
+ * Ahorita es Record<string, View>, pero realmente solo depende de ciertos href. Mejor dejarlo tipado con los paths válidos.
+ */
 const viewMap: Record<string, View> = {
   '/consultas': 'consultas',
   '/tramites': 'tramites',
   '/normativas': 'normativas',
 };
+
+/*
+
+
+Ahorita ServicesSection hace todo:
+controla vistas
+escucha eventos globales
+arma mensajes del asistente
+renderiza cards principales
+renderiza subcards
+construye botón de regreso
+
+Aquí conviene separar:
+
+ - constants
+ - utils
+ - hooks
+
+
+*/
+
+/**
+ * . useEffect con timeout sin cleanup
+    Estás lanzando window.setTimeout pero no limpias timeout anterior. 
+    Si el evento se dispara varias veces, se te pueden encimar. ESTE ES MIO JAJA PERO IGUAL AYUDAME A SOLUCIONARLO 
+    
+
+ */
+
 
 export default function ServicesSection() {
   const { ref: sectionRef, className } = useRevealMotion<HTMLElement>({
@@ -84,7 +120,11 @@ export default function ServicesSection() {
       ← Regresar a servicios
     </button>
   );
-
+/**
+ * 
+ mejor usar CardItem. Así sirve para consultas, trámites y normativas sin andar jugando al favoritismo.
+ 
+ */
   // ── Card secundaria reutilizable ──
   const renderSubCard = (c: (typeof SERVICE_CARDS_CONSULTAS)[0]) => (
     <div
@@ -166,6 +206,8 @@ export default function ServicesSection() {
                   const next = viewMap[c.href];
                   if (next) setView(next);
                 }}
+
+
               >
                 <article className={css.card}>
                   <div className={css.iconWrap} aria-hidden="true">
