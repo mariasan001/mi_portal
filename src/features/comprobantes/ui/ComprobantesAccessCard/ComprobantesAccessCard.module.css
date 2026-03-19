@@ -1,42 +1,54 @@
-.isIn {
-  --_state-in: 1;
-}
-
-.dirDown {
-  --_state-dir: 1;
-}
-
-.dirUp {
-  --_state-dir: -1;
-}
-
 .card {
   background: #fff;
   border: 1px solid rgba(10, 10, 10, 0.12);
-  border-radius: 18px;
+  border-radius: 22px;
   box-shadow: 0 10px 24px rgba(10, 10, 10, 0.05);
-
-  padding: 18px 16px 14px;
   min-height: 174px;
-
-  display: grid;
-  grid-template-rows: auto auto 1fr auto;
-  gap: 8px;
-
-  opacity: 0;
-  transform: translateY(18px) scale(0.985);
-  will-change: transform, opacity;
-
+  overflow: hidden;
+  position: relative;
   transition:
-    transform 0.18s ease,
+    border-color 0.18s ease,
     box-shadow 0.18s ease,
-    border-color 0.18s ease;
+    transform 0.18s ease;
 }
 
 .card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 16px 30px rgba(10, 10, 10, 0.08);
-  border-color: rgba(10, 10, 10, 0.18);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 26px rgba(10, 10, 10, 0.07);
+  border-color: rgba(10, 10, 10, 0.16);
+}
+
+.cardSelected {
+  border-color: rgba(188, 148, 90, 0.24);
+  box-shadow: 0 16px 30px rgba(10, 10, 10, 0.075);
+}
+
+.cardExpanded {
+  border-radius: 26px;
+  border-color: rgba(159, 33, 65, 0.14);
+  box-shadow: 0 14px 32px rgba(10, 10, 10, 0.055);
+}
+
+.cardShell {
+  padding: 18px 16px 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.cardShellSelected {
+  gap: 10px;
+}
+
+.cardShellExpanded {
+  padding: 24px;
+  gap: 16px;
+}
+
+.cardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
 }
 
 .iconWrap {
@@ -47,24 +59,13 @@
   align-items: center;
   justify-content: center;
   background: rgba(255, 255, 255, 0.96);
-  border: 1px solid var(--oro);
+  border: 1px solid rgb(200, 200, 200);
   position: relative;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
-.iconWrap::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(
-    circle,
-    color-mix(in srgb, var(--oro) 18%, transparent) 0%,
-    transparent 72%
-  );
-  opacity: 0;
-  transform: scale(0.9);
-}
+
 
 .icon {
   color: var(--oro);
@@ -78,16 +79,25 @@
   height: 18px;
 }
 
+.copy {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
 .cardTitle {
-  margin: 6px 0 0;
+  margin: 0;
   font-size: 15px;
   line-height: 1.2;
   font-weight: 900;
   letter-spacing: -0.01em;
   color: var(--text);
+}
 
-  opacity: 0;
-  transform: translateY(10px);
+.cardExpanded .cardTitle {
+  font-size: 24px;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
 }
 
 .cardDesc {
@@ -96,13 +106,17 @@
   font-size: 12.5px;
   line-height: 1.45;
   font-weight: 400;
+}
 
-  opacity: 0;
-  transform: translateY(10px);
+.cardExpanded .cardDesc {
+  max-width: 72ch;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--muted);
 }
 
 .cardCta {
-  margin-top: 4px;
+  margin-top: 6px;
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
@@ -113,13 +127,9 @@
   padding: 0;
   color: rgba(10, 10, 10, 0.84);
   text-align: left;
-  text-decoration: none;
   font-weight: 800;
   font-size: 12.5px;
   cursor: pointer;
-
-  opacity: 0;
-  transform: translateY(10px);
 }
 
 .ctaArrow {
@@ -136,6 +146,7 @@
     transform 0.18s ease,
     box-shadow 0.18s ease,
     background 0.18s ease;
+  flex-shrink: 0;
 }
 
 .ctaArrow svg {
@@ -144,114 +155,97 @@
 }
 
 .card:hover .ctaArrow {
-  transform: translateY(-2px) rotate(-10deg);
+  transform: translateY(-1px) rotate(-8deg);
   box-shadow: 0 12px 22px rgba(10, 10, 10, 0.08);
 }
 
-@keyframes cardFadeDown {
-  from {
-    opacity: 0;
-    transform: translateY(18px) scale(0.985);
+.backBtn {
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(159, 33, 65, 0.16);
+  background: #fff;
+  color: var(--vino, #9f2141);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(10, 10, 10, 0.05);
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    border-color 0.16s ease;
+}
+
+.backBtn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(159, 33, 65, 0.24);
+  box-shadow: 0 12px 22px rgba(10, 10, 10, 0.08);
+}
+
+.selectedSpacer {
+  height: 14px;
+}
+
+.expandedArea {
+  overflow: hidden;
+}
+
+.divider {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(10, 10, 10, 0.04),
+    rgba(159, 33, 65, 0.12),
+    rgba(10, 10, 10, 0.04)
+  );
+  margin: 2px 0 4px;
+}
+
+.expandedBody {
+  width: min(100%, 980px);
+  margin: 0 auto;
+}
+
+@media (max-width: 980px) {
+  .cardShellExpanded {
+    padding: 22px 20px;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+
+  .expandedBody {
+    width: 100%;
   }
-}
-
-@keyframes cardFadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(22px) scale(0.985);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes cardInnerFade {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes iconGlowIn {
-  from {
-    opacity: 0;
-    transform: scale(0.88);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.dirDown.isIn.card {
-  animation: cardFadeDown 0.56s ease var(--card-delay, 0ms) both;
-}
-
-.dirDown.isIn .cardTitle {
-  animation: cardInnerFade 0.42s ease calc(var(--card-delay, 0ms) + 90ms) both;
-}
-
-.dirDown.isIn .cardDesc {
-  animation: cardInnerFade 0.42s ease calc(var(--card-delay, 0ms) + 150ms) both;
-}
-
-.dirDown.isIn .cardCta {
-  animation: cardInnerFade 0.42s ease calc(var(--card-delay, 0ms) + 210ms) both;
-}
-
-.dirDown.isIn .iconWrap::after {
-  animation: iconGlowIn 0.5s ease calc(var(--card-delay, 0ms) + 80ms) both;
-}
-
-.dirUp.isIn.card {
-  animation: cardFadeUp 0.58s ease var(--card-delay, 0ms) both;
-}
-
-.dirUp.isIn .cardTitle {
-  animation: cardInnerFade 0.42s ease calc(var(--card-delay, 0ms) + 90ms) both;
-}
-
-.dirUp.isIn .cardDesc {
-  animation: cardInnerFade 0.42s ease calc(var(--card-delay, 0ms) + 150ms) both;
-}
-
-.dirUp.isIn .cardCta {
-  animation: cardInnerFade 0.42s ease calc(var(--card-delay, 0ms) + 210ms) both;
-}
-
-.dirUp.isIn .iconWrap::after {
-  animation: iconGlowIn 0.5s ease calc(var(--card-delay, 0ms) + 80ms) both;
 }
 
 @media (max-width: 720px) {
-  .card {
-    min-height: unset;
+  .cardShell {
     padding: 16px 15px 14px;
+  }
+
+  .cardShellExpanded {
+    padding: 20px 16px;
+  }
+
+  .cardExpanded .cardTitle {
+    font-size: 21px;
+  }
+
+  .cardTop {
+    align-items: flex-start;
+  }
+
+  .backBtn {
+    align-self: flex-start;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .card,
-  .cardTitle,
-  .cardDesc,
-  .cardCta,
-  .iconWrap::after {
-    animation: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-  }
-
-  .card,
-  .ctaArrow {
+  .ctaArrow,
+  .backBtn {
     transition: none !important;
   }
 }

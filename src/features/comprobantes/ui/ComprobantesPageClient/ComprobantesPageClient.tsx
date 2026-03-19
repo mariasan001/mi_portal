@@ -1,30 +1,31 @@
 'use client';
 
-import { useEffect, useMemo, useState, useCallback } from 'react';
+import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { useAuth } from '@/features/auth';
 import SiteNav from '@/features/site/Components/Nav/SiteNav';
 
-import type {
-  ComprobanteAccessKey,
-  ComprobantesView,
-} from '../../types/comprobantes.types';
+import type { ComprobanteAccessKey } from '../../types/comprobantes.types';
 
 import ComprobantesAccessGrid from '../ComprobantesAccessGrid/ComprobantesAccessGrid';
 import ComprobantesHero from '../ComprobantesHero/ComprobantesHero';
-import ComprobantesWorkspace from '../ComprobantesWorkspace/ComprobantesWorkspace';
 
 import s from './ComprobantesPageClient.module.css';
 
+type HeroView = ComprobanteAccessKey | 'menu';
+type TransitionPhase = 'idle' | 'collapsing' | 'expanded';
+
+const COLLAPSE_DURATION_MS = 240;
+const RETURN_DURATION_MS = 320;
 /**
  * Construye el copy del hero según el estado actual del módulo.
  */
-function buildHeroCopy(view: ComprobantesView, displayName: string) {
+function buildHeroCopy(view: HeroView, displayName: string) {
   if (view === 'menu') {
     return {
       title: 'Hola,',
-      accent: `${displayName}.`,
+      accent: `Maria Guadalupe`,
       subtitleStrong: 'Nos da mucho gusto tenerte aquí.',
       subtitle:
         'Desde este portal podrás consultar tus comprobantes, constancias, movimientos de personal y demás servicios digitales disponibles para ti.',
@@ -76,33 +77,59 @@ export default function ComprobantesPageClient() {
   const searchParams = useSearchParams();
 
   const { isAuthenticated, loading, sesion } = useAuth();
-  const [view, setView] = useState<ComprobantesView>('menu');
+
+  const [selectedKey, setSelectedKey] = useState<ComprobanteAccessKey | null>(null);
+  const [phase, setPhase] = useState<TransitionPhase>('idle');
+
+  const selectTimerRef = useRef<number | null>(null);
+  const backTimerRef = useRef<number | null>(null);
 
   const displayName = sesion?.username ?? 'Usuario';
+  const heroView: HeroView = selectedKey ?? 'menu';
 
   const heroCopy = useMemo(
-    () => buildHeroCopy(view, displayName),
-    [view, displayName]
+    () => buildHeroCopy(heroView, displayName),
+    [heroView, displayName]
   );
 
-  /**
-   * Cambia la vista activa al módulo seleccionado.
-   */
+  const clearTimers = useCallback(() => {
+    if (selectTimerRef.current) {
+      window.clearTimeout(selectTimerRef.current);
+      selectTimerRef.current = null;
+    }
+
+    if (backTimerRef.current) {
+      window.clearTimeout(backTimerRef.current);
+      backTimerRef.current = null;
+    }
+  }, []);
+
   const handleSelectView = useCallback((key: ComprobanteAccessKey) => {
-    setView(key);
-  }, []);
+    if (phase !== 'idle') return;
 
-  /**
-   * Regresa a la vista de menú principal.
-   */
+    clearTimers();
+    setSelectedKey(key);
+    setPhase('collapsing');
+
+    selectTimerRef.current = window.setTimeout(() => {
+      setPhase('expanded');
+      selectTimerRef.current = null;
+    }, COLLAPSE_DURATION_MS);
+  }, [clearTimers, phase]);
+
   const handleBack = useCallback(() => {
-    setView('menu');
-  }, []);
+    if (!selectedKey) return;
 
-  /**
-   * Si no existe sesión válida, redirige al login
-   * preservando la ruta actual.
-   */
+    clearTimers();
+    setPhase('collapsing');
+
+    backTimerRef.current = window.setTimeout(() => {
+      setSelectedKey(null);
+      setPhase('idle');
+      backTimerRef.current = null;
+    }, RETURN_DURATION_MS);
+  }, [clearTimers, selectedKey]);
+
   useEffect(() => {
     if (loading) return;
 
@@ -113,6 +140,12 @@ export default function ComprobantesPageClient() {
       router.replace(`/login?redirect=${encodeURIComponent(fullPath)}`);
     }
   }, [isAuthenticated, loading, pathname, router, searchParams]);
+
+  useEffect(() => {
+    return () => {
+      clearTimers();
+    };
+  }, [clearTimers]);
 
   if (loading) {
     return (
@@ -140,11 +173,12 @@ export default function ComprobantesPageClient() {
               subtitle={heroCopy.subtitle}
             />
 
-            {view === 'menu' ? (
-              <ComprobantesAccessGrid onSelect={handleSelectView} />
-            ) : (
-              <ComprobantesWorkspace view={view} onBack={handleBack} />
-            )}
+            <ComprobantesAccessGrid
+              selectedKey={selectedKey}
+              phase={phase}
+              onSelect={handleSelectView}
+              onBack={handleBack}
+            />
           </div>
         </section>
       </main>

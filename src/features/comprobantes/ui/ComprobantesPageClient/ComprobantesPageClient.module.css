@@ -18,9 +18,10 @@
 }
 
 .wrap {
-  min-height: calc(100vh - 120px);
+  min-height: calc(60vh - 120px);
   display: block;
-  padding: 132px 20px 56px;
+  align-items: center;
+  padding: 220px 20px 56px;
   background: transparent;
 }
 
