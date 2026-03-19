@@ -1,18 +1,25 @@
 'use client';
 
-import Link from 'next/link';
 import { FiArrowUpRight } from 'react-icons/fi';
+import { useRevealMotion } from '@/hooks/useRevealMotion';
 
 import type { ComprobanteAccessItem } from '../../constants/comprobantesConstants';
-import { useRevealMotion } from '@/hooks/useRevealMotion';
 import s from './ComprobantesAccessCard.module.css';
 
 type Props = {
   item: ComprobanteAccessItem;
   index?: number;
+  onSelect: (key: ComprobanteAccessItem['key']) => void;
 };
 
-export default function ComprobantesAccessCard({ item, index = 0 }: Props) {
+/**
+ * Card individual del menú de accesos.
+ */
+export default function ComprobantesAccessCard({
+  item,
+  index = 0,
+  onSelect,
+}: Props) {
   const Icon = item.icon;
 
   const { ref, className } = useRevealMotion<HTMLElement>({
@@ -35,13 +42,17 @@ export default function ComprobantesAccessCard({ item, index = 0 }: Props) {
       <h2 className={s.cardTitle}>{item.title}</h2>
       <p className={s.cardDesc}>{item.desc}</p>
 
-      <Link className={s.cardCta} href={item.href}>
+      <button
+        type="button"
+        className={s.cardCta}
+        onClick={() => onSelect(item.key)}
+      >
         <span>{item.cta}</span>
 
         <span className={s.ctaArrow} aria-hidden="true">
           <FiArrowUpRight />
         </span>
-      </Link>
+      </button>
     </article>
   );
 }

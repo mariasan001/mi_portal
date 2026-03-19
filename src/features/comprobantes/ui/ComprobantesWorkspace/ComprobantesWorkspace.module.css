@@ -1,0 +1,167 @@
+.wrap {
+  width: 100%;
+}
+
+/* Panel activo a ancho completo */
+.activePanel {
+  width: 100%;
+  max-width: 1380px;
+  margin: 0 auto;
+  background: #fff;
+  border: 1px solid rgba(10, 10, 10, 0.08);
+  border-radius: 28px;
+  box-shadow: 0 18px 40px rgba(10, 10, 10, 0.05);
+  padding: 28px;
+  display: grid;
+  gap: 24px;
+}
+
+/* Cabecera superior del panel expandido */
+.activeHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* Bloque izquierdo con icono + textos */
+.activeIntro {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  min-width: 0;
+}
+
+.activeIcon {
+  width: 54px;
+  height: 54px;
+  flex-shrink: 0;
+  border-radius: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(159, 33, 65, 0.06);
+  border: 1px solid rgba(159, 33, 65, 0.14);
+  color: var(--vino, #9f2141);
+}
+
+.activeIcon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.activeCopy {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.activeTitle {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.1;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.activeText {
+  margin: 0;
+  max-width: 78ch;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+/* Botón para volver a la vista menú */
+.collapseBtn {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 999px;
+  border: 1px solid rgba(159, 33, 65, 0.16);
+  background: #fff;
+  color: var(--vino, #9f2141);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(10, 10, 10, 0.05);
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    border-color 0.16s ease;
+}
+
+.collapseBtn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(159, 33, 65, 0.26);
+  box-shadow: 0 12px 22px rgba(10, 10, 10, 0.08);
+}
+
+/* Zona inferior donde entra el formulario real */
+.activeBody {
+  width: min(100%, 980px);
+  margin: 0 auto;
+}
+
+/* Placeholder para módulos no implementados aún */
+.placeholder {
+  min-height: 260px;
+  border-radius: 24px;
+  border: 1px dashed rgba(10, 10, 10, 0.14);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.95),
+    rgba(248, 248, 248, 0.96)
+  );
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 28px;
+}
+
+.placeholderTitle {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--text);
+}
+
+.placeholderText {
+  margin: 0;
+  max-width: 52ch;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+@media (max-width: 980px) {
+  .activePanel {
+    padding: 24px 20px;
+    border-radius: 24px;
+  }
+
+  .activeBody {
+    width: 100%;
+  }
+}
+
+@media (max-width: 720px) {
+  .activeHeader {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .activeIntro {
+    gap: 14px;
+  }
+
+  .activeTitle {
+    font-size: 21px;
+  }
+
+  .collapseBtn {
+    align-self: flex-end;
+  }
+}

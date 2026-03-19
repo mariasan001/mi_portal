@@ -47,14 +47,27 @@
   align-items: center;
   justify-content: center;
   background: rgba(255, 255, 255, 0.96);
-  border: 1px solid rgb(197, 197, 197);
+  border: 1px solid var(--oro);
   position: relative;
   overflow: hidden;
 }
 
+.iconWrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--oro) 18%, transparent) 0%,
+    transparent 72%
+  );
+  opacity: 0;
+  transform: scale(0.9);
+}
 
 .icon {
-  color: var(--vino);
+  color: var(--oro);
   display: inline-flex;
   position: relative;
   z-index: 1;
@@ -82,7 +95,7 @@
   color: rgba(10, 10, 10, 0.62);
   font-size: 12.5px;
   line-height: 1.45;
-  font-weight: 300;
+  font-weight: 400;
 
   opacity: 0;
   transform: translateY(10px);
@@ -95,10 +108,15 @@
   justify-content: space-between;
   gap: 12px;
   width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 0;
   color: rgba(10, 10, 10, 0.84);
+  text-align: left;
   text-decoration: none;
   font-weight: 800;
   font-size: 12.5px;
+  cursor: pointer;
 
   opacity: 0;
   transform: translateY(10px);
@@ -111,7 +129,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--vino);
+  border: 1px solid var(--oro);
   background: #fff;
   box-shadow: 0 8px 18px rgba(10, 10, 10, 0.06);
   transition:

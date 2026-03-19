@@ -6,40 +6,48 @@ import {
   FiFolder,
 } from 'react-icons/fi';
 
+import type { ComprobanteAccessKey } from '../types/comprobantes.types';
+
+/**
+ * Define la estructura de cada acceso disponible dentro del módulo.
+ */
 export type ComprobanteAccessItem = {
+  key: ComprobanteAccessKey;
   title: string;
   desc: string;
-  href: string;
   cta: string;
   icon: IconType;
 };
 
+/**
+ * Catálogo principal de opciones que se muestran en la vista menú.
+ */
 export const COMPROBANTES_ACCESS_ITEMS: ComprobanteAccessItem[] = [
   {
+    key: 'comprobante-quincenal',
     title: 'Comprobante quincenal',
     desc: 'Consulta y descarga tu comprobante quincenal en formato digital de forma rápida y segura.',
-    href: '/usuario/comprobantes/quincenal',
     cta: 'Ir al comprobante',
     icon: FiFileText,
   },
   {
+    key: 'constancia-quincenal',
     title: 'Constancia quincenal',
     desc: 'Aquí puedes consultar y descargar tu constancia quincenal en formato digital.',
-    href: '/usuario/comprobantes/constancia-quincenal',
     cta: 'Ir a constancias',
     icon: FiFolder,
   },
   {
+    key: 'constancia-anualizada',
     title: 'Constancia anualizada',
     desc: 'Accede a tu constancia anualizada y obtén el documento digital desde este apartado.',
-    href: '/usuario/comprobantes/constancia-anualizada',
     cta: 'Ir a constancia',
     icon: FiArchive,
   },
   {
+    key: 'cfdi',
     title: 'Comprobantes Fiscales Digitales CFDI',
     desc: 'Descarga tus comprobantes fiscales digitales CFDI desde este módulo.',
-    href: '/usuario/comprobantes/cfdi',
     cta: 'Ir al CFDI',
     icon: FiBriefcase,
   },

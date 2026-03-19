@@ -1,0 +1,74 @@
+'use client';
+
+import { ArrowUpLeft } from 'lucide-react';
+
+import { COMPROBANTES_ACCESS_ITEMS } from '../../constants/comprobantesConstants';
+import type { ComprobantesView } from '../../types/comprobantes.types';
+
+import ComprobanteQuincenalForm from '../ComprobanteQuincenalForm/ComprobanteQuincenalForm';
+import s from './ComprobantesWorkspace.module.css';
+
+type Props = {
+  view: Exclude<ComprobantesView, 'menu'>;
+  onBack: () => void;
+};
+
+/**
+ * Renderiza el panel expandido del módulo seleccionado.
+ *
+ * Nueva lógica UX:
+ * - Ya no existe preview lateral.
+ * - Ya no existen dos columnas para formulario + preview.
+ * - La opción elegida se convierte en un panel activo a ancho completo.
+ */
+export default function ComprobantesWorkspace({ view, onBack }: Props) {
+  const selectedItem = COMPROBANTES_ACCESS_ITEMS.find((item) => item.key === view);
+
+  if (!selectedItem) {
+    return null;
+  }
+
+  const Icon = selectedItem.icon;
+
+  return (
+    <section className={s.wrap}>
+      <article className={s.activePanel}>
+        <header className={s.activeHeader}>
+          <div className={s.activeIntro}>
+            <div className={s.activeIcon} aria-hidden="true">
+              <Icon />
+            </div>
+
+            <div className={s.activeCopy}>
+              <h2 className={s.activeTitle}>{selectedItem.title}</h2>
+              <p className={s.activeText}>{selectedItem.desc}</p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            className={s.collapseBtn}
+            onClick={onBack}
+            aria-label="Volver a las opciones"
+          >
+            <ArrowUpLeft size={18} />
+          </button>
+        </header>
+
+        <div className={s.activeBody}>
+          {view === 'comprobante-quincenal' ? (
+            <ComprobanteQuincenalForm />
+          ) : (
+            <div className={s.placeholder}>
+              <h3 className={s.placeholderTitle}>Módulo en construcción</h3>
+              <p className={s.placeholderText}>
+                Esta sección estará disponible próximamente con su formulario
+                correspondiente.
+              </p>
+            </div>
+          )}
+        </div>
+      </article>
+    </section>
+  );
+}
