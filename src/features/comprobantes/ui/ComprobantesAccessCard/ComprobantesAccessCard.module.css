@@ -3,7 +3,7 @@
   border: 1px solid rgba(10, 10, 10, 0.12);
   border-radius: 22px;
   box-shadow: 0 10px 24px rgba(10, 10, 10, 0.05);
-  min-height: 174px;
+  min-height: 188px;
   overflow: hidden;
   position: relative;
   transition:
@@ -40,8 +40,8 @@
 }
 
 .cardShellExpanded {
-  padding: 24px;
-  gap: 16px;
+  padding: 20px;
+  gap: 1px;
 }
 
 .cardTop {
@@ -64,7 +64,6 @@
   overflow: hidden;
   flex-shrink: 0;
 }
-
 
 
 .icon {
@@ -104,6 +103,7 @@
   margin: 0;
   color: rgba(10, 10, 10, 0.62);
   font-size: 12.5px;
+  min-height: 50px;
   line-height: 1.45;
   font-weight: 400;
 }

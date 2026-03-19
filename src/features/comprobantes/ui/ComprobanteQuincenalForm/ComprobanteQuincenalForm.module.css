@@ -1,28 +1,58 @@
 .formShell {
   display: grid;
-  gap: 24px;
+  gap: 10px;
 }
 
-/* Campos superiores compactos en dos columnas */
-.topFields {
+.section {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+  padding: 18px 20px 20px;
+  border-radius: 22px;
+  background: #fafafa;
+  border: 1px solid rgba(10, 10, 10, 0.06);
+  will-change: transform, opacity, filter;
+}
+
+.sectionHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
   gap: 16px;
 }
 
-/* Estructura base para labels y ayudas */
+.sectionTitle {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.15;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.sectionText {
+  margin: 5px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.topFields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
 .field {
   display: grid;
   gap: 8px;
 }
 
 .label {
-  font-size: 13px;
-  font-weight: 800;
+  font-size: 14px;
+  font-weight: 900;
   color: var(--text);
 }
 
-/* Envolturas para selects e input con icono */
 .controlWrap,
 .searchWrap {
   position: relative;
@@ -33,107 +63,106 @@
 .controlIcon,
 .searchIcon {
   position: absolute;
-  left: 14px;
+  left: 15px;
   z-index: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--vino, #9f2141);
+  color: var(--oro, #9f2141);
   pointer-events: none;
 }
 
-/* Base visual de campos */
 .control,
 .searchInput {
   width: 100%;
-  height: 56px;
-  border: 1px solid rgba(10, 10, 10, 0.12);
+  height: 50px;
+  border: 1px solid rgba(10, 10, 10, 0.1);
   border-radius: 18px;
   background: #fff;
   color: var(--text);
-  font-size: 14px;
+  font-size: 15px;
   outline: none;
   transition:
     border-color 0.16s ease,
     box-shadow 0.16s ease,
-    background-color 0.16s ease,
-    transform 0.16s ease;
+    background-color 0.16s ease;
 }
 
 .control:hover,
 .searchInput:hover {
-  border-color: rgba(159, 33, 65, 0.22);
+  border-color: rgba(10, 10, 10, 0.16);
 }
 
 .control:focus,
 .searchInput:focus {
   border-color: var(--vino, #9f2141);
-  box-shadow: 0 0 0 4px rgba(159, 33, 65, 0.1);
+  box-shadow: 0 0 0 4px rgba(159, 33, 65, 0.08);
 }
 
-/* Select personalizado */
 .control {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  padding: 0 48px 0 46px;
+  padding: 0 50px 0 48px;
   cursor: pointer;
   background-image:
-    linear-gradient(45deg, transparent 50%, rgba(10, 10, 10, 0.72) 50%),
-    linear-gradient(135deg, rgba(10, 10, 10, 0.72) 50%, transparent 50%);
+    linear-gradient(45deg, transparent 50%, rgba(10, 10, 10, 0.68) 50%),
+    linear-gradient(135deg, rgba(10, 10, 10, 0.68) 50%, transparent 50%);
   background-position:
-    calc(100% - 22px) calc(50% - 3px),
-    calc(100% - 16px) calc(50% - 3px);
+    calc(100% - 24px) calc(50% - 3px),
+    calc(100% - 18px) calc(50% - 3px);
   background-size: 6px 6px, 6px 6px;
   background-repeat: no-repeat;
 }
 
-/* Input con icono */
 .searchInput {
-  padding: 0 16px 0 46px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+  padding: 0 74px 0 48px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
 }
 
-/* Caja interna informativa */
 .infoCard {
   display: grid;
   gap: 16px;
-  padding: 20px;
-  border-radius: 22px;
-  border: 1px solid rgba(159, 33, 65, 0.16);
-  background: rgba(255, 255, 255, 0.86);
+  padding: 18px 20px 20px;
+  border-radius: 24px;
+  border: 1px solid rgba(10, 10, 10, 0.07);
+  background: #fafafa;
+  will-change: transform, opacity, filter;
 }
 
 .infoHead {
-  display: flex;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
   gap: 14px;
 }
 
-.infoIcon {
-  width: 44px;
-  height: 44px;
-  flex-shrink: 0;
+.infoBadge {
+  width: 40px;
+  height: 40px;
   border-radius: 14px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba(159, 33, 65, 0.05);
-  border: 1px solid rgba(159, 33, 65, 0.16);
+  background: #fff;
+  border: 1px solid rgba(10, 10, 10, 0.08);
   color: var(--vino, #9f2141);
+  box-shadow: 0 4px 10px rgba(10, 10, 10, 0.03);
+  flex-shrink: 0;
 }
 
 .infoCopy {
   display: grid;
-  gap: 6px;
+  gap: 4px;
+  min-width: 0;
 }
 
 .infoTitle {
   margin: 0;
-  max-width: 32ch;
+  max-width: 36ch;
   font-size: 15px;
-  line-height: 1.3;
+  line-height: 1.28;
   font-weight: 900;
   color: var(--text);
 }
@@ -141,13 +170,32 @@
 .infoText {
   margin: 0;
   font-size: 13px;
-  line-height: 1.55;
+  line-height: 1.45;
   color: var(--muted);
 }
 
-/* Controla el ancho del campo de concepto */
 .infoBody {
-  width: min(100%, 440px);
+  width: 100%;
+  max-width: 920px;
+}
+
+.inlineCounter {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  min-width: 42px;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 10, 10, 0.04);
+  color: rgba(10, 10, 10, 0.62);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.01em;
 }
 
 .helper {
@@ -156,15 +204,15 @@
   color: rgba(10, 10, 10, 0.56);
 }
 
-/* CTA principal */
 .actions {
   display: flex;
   justify-content: center;
-  padding-top: 8px;
+  padding-top: 4px;
+  will-change: transform, opacity, filter;
 }
 
 .primaryBtn {
-  min-width: 290px;
+  min-width: 300px;
   min-height: 56px;
   padding: 8px 10px 8px 24px;
   border: 1px solid rgba(159, 33, 65, 0.14);
@@ -176,23 +224,22 @@
   justify-content: space-between;
   gap: 16px;
   font-size: 14px;
-  font-weight: 800;
+  font-weight: 900;
   cursor: pointer;
-  box-shadow: 0 14px 30px rgba(159, 33, 65, 0.18);
+  box-shadow: 0 14px 28px rgba(159, 33, 65, 0.16);
   transition:
-    transform 0.18s ease,
     box-shadow 0.18s ease,
-    filter 0.18s ease;
+    filter 0.18s ease,
+    border-color 0.18s ease;
 }
 
 .primaryBtn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 18px 34px rgba(159, 33, 65, 0.24);
-  filter: brightness(1.02);
+  box-shadow: 0 16px 32px rgba(159, 33, 65, 0.2);
+  filter: brightness(1.01);
 }
 
 .primaryBtn:active {
-  transform: translateY(0);
+  box-shadow: 0 10px 20px rgba(159, 33, 65, 0.16);
 }
 
 .primaryBtnText {
@@ -207,8 +254,7 @@
   align-items: center;
   justify-content: center;
   background: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   flex-shrink: 0;
 }
 
@@ -223,15 +269,47 @@
   }
 
   .infoBody {
-    width: 100%;
+    max-width: 100%;
   }
 }
 
 @media (max-width: 720px) {
+  .section,
+  .infoCard {
+    padding: 16px;
+    border-radius: 20px;
+  }
+
+  .sectionTitle {
+    font-size: 16px;
+  }
+
   .control,
   .searchInput {
     height: 54px;
     border-radius: 16px;
+  }
+
+  .infoHead {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .infoBadge {
+    width: 38px;
+    height: 38px;
+  }
+
+  .infoTitle {
+    max-width: 100%;
+  }
+
+  .searchInput {
+    padding-right: 70px;
+  }
+
+  .inlineCounter {
+    right: 12px;
   }
 
   .actions {
@@ -242,8 +320,18 @@
     width: 100%;
     min-width: 0;
   }
+}
 
-  .infoTitle {
-    max-width: 100%;
+@media (prefers-reduced-motion: reduce) {
+  .section,
+  .infoCard,
+  .actions {
+    will-change: auto;
+  }
+
+  .control,
+  .searchInput,
+  .primaryBtn {
+    transition: none !important;
   }
 }

@@ -19,11 +19,11 @@
   position: relative;
 }
 
-.title,
-.subtitleStrong,
-.subtitle {
-  opacity: 0;
-  transform: translateY(16px);
+.copy {
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  width: 100%;
   will-change: transform, opacity;
 }
 
@@ -34,6 +34,7 @@
   letter-spacing: -0.03em;
   color: var(--text);
   font-weight: 900;
+  text-wrap: balance;
 }
 
 .titleAccent {
@@ -48,6 +49,7 @@
   line-height: 1.2;
   font-weight: 800;
   color: var(--text);
+  text-wrap: balance;
 }
 
 .subtitle {
@@ -57,12 +59,21 @@
   font-weight: 400;
   font-size: 15px;
   line-height: 1.4;
+  text-wrap: balance;
 }
 
+@keyframes heroRevealDown {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-
-
-@keyframes heroFadeUp {
+@keyframes heroRevealUp {
   from {
     opacity: 0;
     transform: translateY(18px);
@@ -73,77 +84,12 @@
   }
 }
 
-@keyframes heroFadeDown {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.dirDown.isIn.head {
+  animation: heroRevealDown 0.54s ease both;
 }
 
-@keyframes heroGlowIn {
-  from {
-    opacity: 0;
-    transform: translateX(-50%) scale(0.94);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(-50%) scale(1);
-  }
-}
-
-@keyframes accentLift {
-  0% {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.dirDown.isIn .title {
-  animation: heroFadeDown 0.6s ease both;
-}
-
-.dirDown.isIn .titleAccent {
-  animation: accentLift 0.65s ease 0.08s both;
-}
-
-.dirDown.isIn .subtitleStrong {
-  animation: heroFadeDown 0.58s ease 0.1s both;
-}
-
-.dirDown.isIn .subtitle {
-  animation: heroFadeDown 0.58s ease 0.18s both;
-}
-
-.dirDown.isIn.head::after {
-  animation: heroGlowIn 0.7s ease 0.12s both;
-}
-
-.dirUp.isIn .title {
-  animation: heroFadeUp 0.62s ease both;
-}
-
-.dirUp.isIn .titleAccent {
-  animation: accentLift 0.65s ease 0.08s both;
-}
-
-.dirUp.isIn .subtitleStrong {
-  animation: heroFadeUp 0.58s ease 0.1s both;
-}
-
-.dirUp.isIn .subtitle {
-  animation: heroFadeUp 0.58s ease 0.18s both;
-}
-
-.dirUp.isIn.head::after {
-  animation: heroGlowIn 0.72s ease 0.12s both;
+.dirUp.isIn.head {
+  animation: heroRevealUp 0.58s ease both;
 }
 
 @media (max-width: 1180px) {
@@ -156,6 +102,10 @@
   .head {
     gap: 10px;
     margin-bottom: 28px;
+  }
+
+  .copy {
+    gap: 10px;
   }
 
   .title {
@@ -172,21 +122,11 @@
     line-height: 1.45;
     max-width: 34ch;
   }
-
-  .head::after {
-    width: min(260px, 72vw);
-    height: 90px;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .title,
-  .subtitleStrong,
-  .subtitle,
-  .titleAccent,
-  .head::after {
+  .head,
+  .copy {
     animation: none !important;
-    opacity: 1 !important;
-    transform: none !important;
   }
 }
