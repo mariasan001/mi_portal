@@ -1,5 +1,6 @@
 'use client';
 
+import type { ComponentType } from 'react';
 import { ArrowUpLeft } from 'lucide-react';
 
 import { COMPROBANTES_ACCESS_ITEMS } from '../../constants/comprobantesConstants';
@@ -12,6 +13,25 @@ type Props = {
   view: Exclude<ComprobantesView, 'menu'>;
   onBack: () => void;
 };
+
+type WorkspaceRenderableView = Exclude<ComprobantesView, 'menu'>;
+
+const WORKSPACE_COMPONENTS: Partial<
+  Record<WorkspaceRenderableView, ComponentType>
+> = {
+  'comprobante-quincenal': ComprobanteQuincenalForm,
+};
+
+function WorkspacePlaceholder() {
+  return (
+    <div className={s.placeholder}>
+      <h3 className={s.placeholderTitle}>Módulo en construcción</h3>
+      <p className={s.placeholderText}>
+        Esta sección estará disponible próximamente con su formulario correspondiente.
+      </p>
+    </div>
+  );
+}
 
 /**
  * Renderiza el panel expandido del módulo seleccionado.
@@ -29,6 +49,7 @@ export default function ComprobantesWorkspace({ view, onBack }: Props) {
   }
 
   const Icon = selectedItem.icon;
+  const ActiveComponent = WORKSPACE_COMPONENTS[view];
 
   return (
     <section className={s.wrap}>
@@ -56,17 +77,7 @@ export default function ComprobantesWorkspace({ view, onBack }: Props) {
         </header>
 
         <div className={s.activeBody}>
-          {view === 'comprobante-quincenal' ? (
-            <ComprobanteQuincenalForm />
-          ) : (
-            <div className={s.placeholder}>
-              <h3 className={s.placeholderTitle}>Módulo en construcción</h3>
-              <p className={s.placeholderText}>
-                Esta sección estará disponible próximamente con su formulario
-                correspondiente.
-              </p>
-            </div>
-          )}
+          {ActiveComponent ? <ActiveComponent /> : <WorkspacePlaceholder />}
         </div>
       </article>
     </section>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { type ChangeEvent, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   ArrowUpRight,
@@ -11,6 +11,12 @@ import {
 } from 'lucide-react';
 
 import s from './ComprobanteQuincenalForm.module.css';
+
+const QUINCENA_OPTIONS = Array.from({ length: 24 }, (_, index) =>
+  String(index + 1).padStart(2, '0')
+);
+
+const YEAR_OPTIONS = ['2026', '2025', '2024'] as const;
 
 const rootVariants = {
   hidden: {},
@@ -54,15 +60,49 @@ const blockVariants = {
   },
 };
 
+/**
+ * Sanitiza el concepto para aceptar únicamente números
+ * y limitarlo a 4 caracteres.
+ */
+function sanitizeConcept(value: string) {
+  return value.replace(/\D/g, '').slice(0, 4);
+}
+
 export default function ComprobanteQuincenalForm() {
   const [quincena, setQuincena] = useState('');
   const [anio, setAnio] = useState('2026');
+
+  /**
+   * El concepto se almacena ya sanitizado para mantener una sola
+   * fuente de verdad entre estado e input visible.
+   */
   const [concepto, setConcepto] = useState('');
 
-  const conceptoLimpio = useMemo(
-    () => concepto.replace(/\D/g, '').slice(0, 4),
-    [concepto]
-  );
+  const isSubmitDisabled = useMemo(() => {
+    return !quincena || !anio || concepto.length !== 4;
+  }, [quincena, anio, concepto]);
+
+  const handleQuincenaChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    setQuincena(event.target.value);
+  };
+
+  const handleAnioChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    setAnio(event.target.value);
+  };
+
+  const handleConceptoChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setConcepto(sanitizeConcept(event.target.value));
+  };
+
+  const handleConsultar = () => {
+    if (isSubmitDisabled) return;
+
+    console.log('Consultar comprobante con:', {
+      quincena,
+      anio,
+      concepto,
+    });
+  };
 
   return (
     <motion.div
@@ -94,33 +134,15 @@ export default function ComprobanteQuincenalForm() {
               <select
                 className={s.control}
                 value={quincena}
-                onChange={(event) => setQuincena(event.target.value)}
+                onChange={handleQuincenaChange}
               >
                 <option value="">Selecciona la quincena</option>
-                <option value="01">01</option>
-                <option value="02">02</option>
-                <option value="03">03</option>
-                <option value="04">04</option>
-                <option value="05">05</option>
-                <option value="06">06</option>
-                <option value="07">07</option>
-                <option value="08">08</option>
-                <option value="09">09</option>
-                <option value="10">10</option>
-                <option value="11">11</option>
-                <option value="12">12</option>
-                <option value="13">13</option>
-                <option value="14">14</option>
-                <option value="15">15</option>
-                <option value="16">16</option>
-                <option value="17">17</option>
-                <option value="18">18</option>
-                <option value="19">19</option>
-                <option value="20">20</option>
-                <option value="21">21</option>
-                <option value="22">22</option>
-                <option value="23">23</option>
-                <option value="24">24</option>
+
+                {QUINCENA_OPTIONS.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
               </select>
             </div>
           </label>
@@ -136,11 +158,13 @@ export default function ComprobanteQuincenalForm() {
               <select
                 className={s.control}
                 value={anio}
-                onChange={(event) => setAnio(event.target.value)}
+                onChange={handleAnioChange}
               >
-                <option value="2026">2026</option>
-                <option value="2025">2025</option>
-                <option value="2024">2024</option>
+                {YEAR_OPTIONS.map((year) => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                ))}
               </select>
             </div>
           </label>
@@ -183,11 +207,11 @@ export default function ComprobanteQuincenalForm() {
                 maxLength={4}
                 className={s.searchInput}
                 placeholder="Ej. 1024"
-                value={conceptoLimpio}
-                onChange={(event) => setConcepto(event.target.value)}
+                value={concepto}
+                onChange={handleConceptoChange}
               />
 
-              <span className={s.inlineCounter}>{conceptoLimpio.length}/4</span>
+              <span className={s.inlineCounter}>{concepto.length}/4</span>
             </div>
 
             <span className={s.helper}>Ingresa únicamente números.</span>
@@ -196,7 +220,12 @@ export default function ComprobanteQuincenalForm() {
       </motion.section>
 
       <motion.div className={s.actions} variants={blockVariants}>
-        <button type="button" className={s.primaryBtn}>
+        <button
+          type="button"
+          className={s.primaryBtn}
+          onClick={handleConsultar}
+          disabled={isSubmitDisabled}
+        >
           <span className={s.primaryBtnText}>Consultar comprobante</span>
 
           <span className={s.primaryBtnIcon} aria-hidden="true">

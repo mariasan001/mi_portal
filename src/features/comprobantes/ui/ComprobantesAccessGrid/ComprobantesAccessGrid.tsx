@@ -17,7 +17,16 @@ type Props = {
   onBack: () => void;
 };
 
-const cardPresence = {
+function cx(...classes: Array<string | false | null | undefined>) {
+  return classes.filter(Boolean).join(' ');
+}
+
+const gridTransition = {
+  duration: 0.28,
+  ease: [0.22, 1, 0.36, 1] as const,
+};
+
+const gridItemVariants = {
   hidden: { opacity: 0, y: 14, scale: 0.992 },
   show: (index: number) => ({
     opacity: 1,
@@ -48,45 +57,52 @@ export default function ComprobantesAccessGrid({
 }: Props) {
   const isExpanded = phase === 'expanded';
 
+  /**
+   * Cuando no hay selección se muestran todas las tarjetas.
+   * Cuando existe una selección, la grilla conserva únicamente
+   * la tarjeta activa para permitir la transición expandida.
+   */
+  const visibleItems =
+    selectedKey === null
+      ? COMPROBANTES_ACCESS_ITEMS
+      : COMPROBANTES_ACCESS_ITEMS.filter((item) => item.key === selectedKey);
+
   return (
     <motion.div
       layout
-      transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+      transition={gridTransition}
       className={s.grid}
     >
       <AnimatePresence initial={false} mode="popLayout">
-        {COMPROBANTES_ACCESS_ITEMS.map((item, index) => {
+        {visibleItems.map((item, index) => {
           const isSelected = selectedKey === item.key;
-          const shouldRender = selectedKey === null || isSelected;
-          if (!shouldRender) {
-            return null;
-          }
-          
+          const isItemExpanded = isSelected && isExpanded;
+
           return (
             <motion.div
               key={item.key}
               layout
               custom={index}
-              variants={cardPresence}
+              variants={gridItemVariants}
               initial="hidden"
               animate="show"
               exit="exit"
               transition={{
                 layout: {
                   duration: isExpanded ? 0.34 : 0.22,
-                  ease: [0.22, 1, 0.36, 1],
+                  ease: [0.22, 1, 0.36, 1] as const,
                 },
               }}
-              className={[
+              className={cx(
                 s.item,
-                isSelected ? s.itemSelected : '',
-                isSelected && isExpanded ? s.itemExpanded : '',
-              ].join(' ')}
+                isSelected && s.itemSelected,
+                isItemExpanded && s.itemExpanded
+              )}
             >
               <ComprobantesAccessCard
                 item={item}
                 isSelected={isSelected}
-                isExpanded={isSelected && isExpanded}
+                isExpanded={isItemExpanded}
                 onSelect={onSelect}
                 onBack={onBack}
               />

@@ -12,3 +12,7 @@ export type ComprobantesView =
  * Llaves válidas para seleccionar una opción desde el grid.
  */
 export type ComprobanteAccessKey = Exclude<ComprobantesView, 'menu'>;
+
+
+export type ComprobantesHeroView = ComprobanteAccessKey | 'menu';
+export type ComprobantesTransitionPhase = 'idle' | 'collapsing' | 'expanded';
