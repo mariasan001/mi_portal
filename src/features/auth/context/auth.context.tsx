@@ -28,6 +28,14 @@ function hasRole(roles: readonly string[], role: string) {
   return roles.includes(role);
 }
 
+function isAdminRole(roles: readonly string[]) {
+  return (
+    hasRole(roles, 'ROLE_ADMIN') ||
+    hasRole(roles, 'ROLE_SP_ADMIN') ||
+    hasRole(roles, 'ROLE_ADMIN_PLAT_SERV')
+  );
+}
+
 function resolvePostLoginRoute(
   appCode: string | null,
   roles: readonly string[]
@@ -40,12 +48,8 @@ function resolvePostLoginRoute(
    * - user  -> /
    */
   if (!code || code === 'PLAT_SERV') {
-    if (hasRole(roles, 'ROLE_SP_ADMIN')) {
+    if (isAdminRole(roles)) {
       return { path: '/admin', mode: 'admin' };
-    }
-
-    if (hasRole(roles, 'ROLE_SP_USER')) {
-      return { path: '/', mode: 'user' };
     }
 
     return { path: '/', mode: 'user' };

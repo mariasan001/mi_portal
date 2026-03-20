@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { useAuth } from '../context/auth.context';
 import type { UseLoginFlowResult } from '../types/loginFlow.types';
 import { obtenerSesion } from '../services/auth-me.service';
+import { resolveAuthDestination } from '../utils/resolveAuthDestination';
 import type { AuthModalSource } from '../ui/AuthModal/AuthModal';
 
 function safeTrim(v: string) {
@@ -30,7 +31,6 @@ export function useLoginFlow(
     error,
     appCode: ctxAppCode,
     setAppCode,
-    resolveHome,
   } = useAuth();
 
   const [username, setUsername] = useState('');
@@ -71,50 +71,66 @@ export function useLoginFlow(
 
       const tId = toast.loading('Validando acceso…');
 
-      const ok = await login({
-        username: normalizedUsername,
-        password,
-        appCode: effectiveAppCode,
-      });
+      try {
+        const ok = await login({
+          username: normalizedUsername,
+          password,
+          appCode: effectiveAppCode,
+        });
 
-      if (!ok) {
+        if (!ok) {
+          toast.error(
+            error ?? 'No fue posible iniciar sesión. Verifica tus datos.',
+            { id: tId }
+          );
+          return;
+        }
+
+        const sesion = await obtenerSesion();
+
+        const { path: destPath, home } = resolveAuthDestination({
+          sesion,
+          appCode: effectiveAppCode,
+          returnTo,
+        });
+
+        const shouldFocusQuickAccess =
+          source === 'nav' && !returnTo && home === '/' && destPath === '/';
+
+        try {
+          if (shouldFocusQuickAccess) {
+            sessionStorage.setItem('portal_post_login_focus', 'quick-access');
+            sessionStorage.setItem('portal_unlock_fx', '1');
+          } else {
+            sessionStorage.removeItem('portal_post_login_focus');
+            sessionStorage.removeItem('portal_unlock_fx');
+          }
+        } catch {
+          // noop
+        }
+
+        toast.success('Acceso autorizado.', { id: tId });
+
+        if (
+          typeof window !== 'undefined' &&
+          destPath === window.location.pathname
+        ) {
+          if (shouldFocusQuickAccess) {
+            window.dispatchEvent(new CustomEvent('portal:focus-quick-access'));
+          }
+          router.refresh();
+          return;
+        }
+
+        router.replace(destPath);
+        router.refresh();
+      } catch (submitError) {
+        console.error('Error en login flow:', submitError);
         toast.error(
           error ?? 'No fue posible iniciar sesión. Verifica tus datos.',
           { id: tId }
         );
-        return;
       }
-
-      await obtenerSesion();
-
-      const destPath = returnTo ?? resolveHome();
-      const shouldFocusQuickAccess =
-        source === 'nav' && !returnTo && destPath === '/';
-
-      try {
-        if (shouldFocusQuickAccess) {
-          sessionStorage.setItem('portal_post_login_focus', 'quick-access');
-          sessionStorage.setItem('portal_unlock_fx', '1');
-        } else {
-          sessionStorage.removeItem('portal_post_login_focus');
-          sessionStorage.removeItem('portal_unlock_fx');
-        }
-      } catch {
-        // noop
-      }
-
-      toast.success('Acceso autorizado.', { id: tId });
-
-      if (typeof window !== 'undefined' && destPath === window.location.pathname) {
-        if (shouldFocusQuickAccess) {
-          window.dispatchEvent(new CustomEvent('portal:focus-quick-access'));
-        }
-        router.refresh();
-        return;
-      }
-
-      router.replace(destPath);
-      router.refresh();
     },
     [
       username,
@@ -124,7 +140,6 @@ export function useLoginFlow(
       effectiveAppCode,
       error,
       returnTo,
-      resolveHome,
       source,
       router,
     ]

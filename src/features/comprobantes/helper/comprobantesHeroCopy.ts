@@ -14,7 +14,7 @@ export function buildHeroCopy(
   if (view === 'menu') {
     return {
       title: 'Hola,',
-      accent: 'Maria Sndoval ',
+      accent: 'Maria Sandoval',
       subtitleStrong: 'Nos da mucho gusto tenerte aquí.',
       subtitle:
         'Desde este portal podrás consultar tus comprobantes, constancias, movimientos de personal y demás servicios digitales disponibles para ti.',
