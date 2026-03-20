@@ -12,3 +12,13 @@ export function obtenerIamBaseUrl(): string {
 
   return v.replace(/\/+$/, '');
 }
+
+export function obtenerBatchBaseUrl(): string {
+  const v = process.env.BATCH_BASE_URL?.trim();
+
+  if (!v) {
+    throw new Error('Falta BATCH_BASE_URL en .env.local (ej: http://localhost:8091/batch)');
+  }
+
+  return v.replace(/\/+$/, '');
+}

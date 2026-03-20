@@ -3,8 +3,8 @@
 import type { ReactNode } from 'react';
 import { useMemo, useState } from 'react';
 
-import { Sidebar } from '@/features/navegacion/ui/Sidebar';
-import { useMenu } from '@/features/navegacion/hooks/useMenu';
+import { Sidebar } from '@/features/admin/navegacion/ui/Sidebar';
+import { useMenu } from '@/features/admin/navegacion/hooks/useMenu';
 import { useAuth } from '@/features/auth/context/auth.context';
 
 import s from './AdminShell.module.css';

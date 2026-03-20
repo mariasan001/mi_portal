@@ -1,12 +1,11 @@
-// src/lib/api/api.rutas.ts
 export const API_RUTAS = {
   auth: {
     ping: '/api/auth/ping',
     login: '/api/auth/login',
     me: '/api/auth/me',
-    register: '/api/auth/register', 
+    register: '/api/auth/register',
   },
-    password: {
+  password: {
     forgot: '/api/auth/password/forgot',
     reset: '/api/auth/password/reset',
   },
@@ -15,5 +14,12 @@ export const API_RUTAS = {
   },
   apps: {
     menu: (appCode: string) => `/api/apps/${encodeURIComponent(appCode)}/menu`,
+  },
+
+  admin: {
+    dashboardResumen: '/api/admin/dashboard/resumen',
+    usuarios: '/api/admin/usuarios',
+    usuarioDetalle: (userId: string) =>
+      `/api/admin/usuarios/${encodeURIComponent(userId)}`,
   },
 } as const;
