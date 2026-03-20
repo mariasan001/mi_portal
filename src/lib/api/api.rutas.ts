@@ -15,11 +15,20 @@ export const API_RUTAS = {
   apps: {
     menu: (appCode: string) => `/api/apps/${encodeURIComponent(appCode)}/menu`,
   },
+  nomina: {
+    periodos: '/api/admin/nomina/periodos',
+    periodoDetalle: (periodId: number | string) =>
+      `/api/admin/nomina/periodos/${encodeURIComponent(String(periodId))}`,
 
-  admin: {
-    dashboardResumen: '/api/admin/dashboard/resumen',
-    usuarios: '/api/admin/usuarios',
-    usuarioDetalle: (userId: string) =>
-      `/api/admin/usuarios/${encodeURIComponent(userId)}`,
+    versiones: '/api/admin/nomina/versiones',
+    versionDetalle: (versionId: number | string) =>
+      `/api/admin/nomina/versiones/${encodeURIComponent(String(versionId))}`,
+
+    uploadArchivo: '/api/admin/nomina/files/upload',
+    ejecutarCatalogo: (fileId: number | string) =>
+      `/api/admin/nomina/catalog/jobs/run/${encodeURIComponent(String(fileId))}`,
+
+    ejecutarPayrollStaging: (fileId: number | string) =>
+      `/api/admin/nomina/payroll/jobs/run/${encodeURIComponent(String(fileId))}`,
   },
 } as const;
