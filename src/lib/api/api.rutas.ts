@@ -30,5 +30,24 @@ export const API_RUTAS = {
 
     ejecutarPayrollStaging: (fileId: number | string) =>
       `/api/admin/nomina/payroll/jobs/run/${encodeURIComponent(String(fileId))}`,
+
+    payrollSummary: (fileId: number | string) =>
+      `/api/admin/nomina/payroll/summary/${encodeURIComponent(String(fileId))}`,
+
+    payrollPreview: (fileId: number | string, limit?: number) => {
+      const qs =
+        typeof limit === 'number' && Number.isFinite(limit)
+          ? `?limit=${encodeURIComponent(String(limit))}`
+          : '';
+      return `/api/admin/nomina/payroll/preview/${encodeURIComponent(String(fileId))}${qs}`;
+    },
+
+    payrollErrors: (fileId: number | string, limit?: number) => {
+      const qs =
+        typeof limit === 'number' && Number.isFinite(limit)
+          ? `?limit=${encodeURIComponent(String(limit))}`
+          : '';
+      return `/api/admin/nomina/payroll/errors/${encodeURIComponent(String(fileId))}${qs}`;
+    },
   },
 } as const;
