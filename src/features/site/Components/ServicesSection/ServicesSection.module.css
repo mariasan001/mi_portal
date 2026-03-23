@@ -1,452 +1,487 @@
-/* src/features/site/Components/ServicesSection/ServicesSection.module.css */
+  /* src/features/site/Components/ServicesSection/ServicesSection.module.css */
 
-/* Estados (se agregan desde TSX) – noop para evitar warnings del linter */
-.isIn   { --_state-in: 1; }
-.dirDown{ --_state-dir: 1; }
-.dirUp  { --_state-dir: -1; }
+  /* Estados (se agregan desde TSX) – noop para evitar warnings del linter */
+  .isIn   { --_state-in: 1; }
+  .dirDown{ --_state-dir: 1; }
+  .dirUp  { --_state-dir: -1; }
 
-.wrap{
-  position: relative;
-  padding: 54px 16px 64px;
-  background: transparent;
-}
+  .wrap{
+    position: relative;
+    padding: 54px 16px 64px;
+    background: transparent;
+  }
 
-.inner{
-  max-width: 1240px;
-  margin: 0 auto;
-}
+  .inner{
+    max-width: 1240px;
+    margin: 0 auto;
+  }
 
-.head{
-  text-align: center;
-  display: grid;
-  gap: 10px;
-  justify-items: center;
-  margin-bottom: 26px;
-}
+  .head{
+    text-align: center;
+    display: grid;
+    gap: 10px;
+    justify-items: center;
+    margin-bottom: 26px;
+  }
 
-.title{
-  margin: 0;
-  font-size: 36px;
-  line-height: 1.15;
-  letter-spacing: -0.02em;
-  color: var(--text);
-  font-weight: 800;
-}
+  .title{
+    margin: 0;
+    font-size: 36px;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    font-weight: 800;
+  }
 
-.titleAccent{
-  color: var(--accent);
-  font-weight: 800;
-}
+  .titleAccent{
+    color: var(--accent);
+    font-weight: 800;
+  }
 
-.subtitle{
-  margin: 0;
-  max-width: 78ch;
-  color: var(--muted);
-  font-weight: 300;
-  font-size: 16px;
-  line-height: 1;
-  margin-bottom: 30px;
-}
+  .subtitle{
+    margin: 0;
+    max-width: 78ch;
+    color: var(--muted);
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1;
+    margin-bottom: 30px;
+  }
 
-/* =========================
-   Search Bar (institucional pro)
-   ========================= */
-.searchBar{
-  margin-top: 12px;
-  width: min(620px, 100%);
-  height: 46px;
+  /* =========================
+    Search Bar (institucional pro)
+    ========================= */
+  .searchBar{
+    margin-top: 12px;
+    width: min(620px, 100%);
+    height: 46px;
 
-  display: grid;
-  grid-template-columns: 44px 1fr auto;
-  align-items: center;
+    display: grid;
+    grid-template-columns: 44px 1fr auto;
+    align-items: center;
 
-  background: rgba(255,255,255,.96);
-  border: 1px solid rgba(10,10,10,.12);
-  border-radius: 14px;
-  box-shadow: 0 10px 22px rgba(10,10,10,.06);
+    background: rgba(255,255,255,.96);
+    border: 1px solid rgba(10,10,10,.12);
+    border-radius: 14px;
+    box-shadow: 0 10px 22px rgba(10,10,10,.06);
 
-  padding-right: 6px;
-  overflow: hidden;
-  margin-bottom: 30px;
+    padding-right: 6px;
+    overflow: hidden;
+    margin-bottom: 30px;
 
-  transition: box-shadow .16s ease, border-color .16s ease, transform .16s ease;
-  position: relative;
-}
+    transition: box-shadow .16s ease, border-color .16s ease, transform .16s ease;
+    position: relative;
+  }
 
-.searchBar:focus-within{
-  transform: translateY(-1px);
-  border-color: color-mix(in srgb, var(--brand) 30%, rgba(10,10,10,.12));
-  box-shadow:
-    0 18px 32px rgba(10,10,10,.08),
-    0 0 0 4px color-mix(in srgb, var(--brand) 14%, transparent);
-}
+  .searchBar:focus-within{
+    transform: translateY(-1px);
+    border-color: color-mix(in srgb, var(--brand) 30%, rgba(10,10,10,.12));
+    box-shadow:
+      0 18px 32px rgba(10,10,10,.08),
+      0 0 0 4px color-mix(in srgb, var(--brand) 14%, transparent);
+  }
 
-.searchBarIcon{
-  width: 44px;
-  height: 46px;
-  display: inline-flex;
-  align-items: center;
+  .searchBarIcon{
+    width: 44px;
+    height: 46px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(10,10,10,.55);
+    transition: transform .18s ease, color .18s ease;
+  }
+
+  .searchBar:focus-within .searchBarIcon{
+    transform: scale(1.06);
+  }
+
+  .searchBarIcon svg{
+    width: 18px;
+    height: 18px;
+  }
+
+  .searchBarInput{
+    width: 100%;
+    height: 46px;
+    border: 0;
+    outline: none;
+    background: transparent;
+
+    padding: 0 10px 0 4px;
+
+    color: var(--text);
+    font-size: 13.5px;
+    font-weight: 300;
+  }
+
+  .searchBarInput::placeholder{
+    color: rgba(10,10,10,.42);
+    font-weight: 600;
+  }
+
+  .searchBarBtn{
+    height: 36px;
+    padding: 0 14px;
+    border: 1px solid rgba(10,10,10,.10);
+    border-radius: 12px;
+
+    background: #fff;
+    color: rgba(10,10,10,.80);
+    font-weight: 800;
+    font-size: 12.5px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    cursor: pointer;
+    transition: transform .14s ease, background .14s ease, border-color .14s ease, box-shadow .14s ease;
+  }
+
+  .searchBarBtn:hover{
+    transform: translateY(-1px);
+    border-color: color-mix(in srgb, var(--accent) 30%, rgba(10,10,10,.10));
+    box-shadow: 0 10px 18px rgba(10,10,10,.08);
+  }
+
+  .searchBarBtn:active{
+    transform: translateY(0px);
+    box-shadow: none;
+  }
+
+  @media (max-width: 520px){
+    .searchBar{ height: 44px; border-radius: 12px; }
+    .searchBarIcon{ height: 44px; }
+    .searchBarInput{ height: 44px; font-size: 13px; }
+    .searchBarBtn{ height: 34px; border-radius: 11px; padding: 0 12px; }
+  }
+
+  /* =========================
+    Cards
+    ========================= */
+  .grid{
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 35px;
+    align-items: stretch;
+  }
+
+  .cardShell{
+    position: relative;
+    overflow: visible;
+    isolation: isolate;
+  }
+
+  /* Flor atrás del card */
+  .cardShell::before{
+    content: "";
+    position: absolute;
+
+    width: var(--flor-size);
+    height: var(--flor-size);
+
+    left: var(--flor-x);
+    top: var(--flor-y);
+
+    pointer-events: none;
+    z-index: 0;
+
+    background-image: var(--flor-url);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+
+    transform: rotate(var(--flor-rot));
+    opacity: var(--flor-opacity);
+
+    filter: none;
+    mix-blend-mode: normal;
+  }
+
+  /* ✅ VEDA: ocultar flores SIEMPRE */
+  :global(html[data-theme="veda"]) .cardShell::before{
+    content: none;          /* ✅ desaparece el pseudo-elemento */
+    animation: none !important;
+  }
+
+  /* Card encima */
+  .card{
+    position: relative;
+    z-index: 1;
+
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: var(--shadow-sm);
+
+    padding: 18px 18px 16px;
+    min-height: 210px;
+
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    gap: 8px;
+
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    will-change: transform;
+  }
+
+  .cardContent {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+.cardShell[data-variant="consultas"] .cardContent {
   justify-content: center;
-  color: rgba(10,10,10,.55);
-  transition: transform .18s ease, color .18s ease;
 }
 
-.searchBar:focus-within .searchBarIcon{
-  transform: scale(1.06);
-}
+  .cardShell[data-variant="consultas"] .card{
+    min-height: 80px;
+    height: 110px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 16px 12px;
+  }
 
-.searchBarIcon svg{
-  width: 18px;
-  height: 18px;
-}
+  .cardShell[data-variant="consultas"] .cardTitle{
+    font-size: 13px;
+  }
 
-.searchBarInput{
-  width: 100%;
-  height: 46px;
-  border: 0;
-  outline: none;
-  background: transparent;
+  .cardShell[data-variant="consultas"] .cardDesc{
+    font-size: 12px;
+  }
 
-  padding: 0 10px 0 4px;
+ .cardShell[data-variant="consultas"] .iconWrap{
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+    align-self: center;
+  }
 
-  color: var(--text);
-  font-size: 13.5px;
-  font-weight: 300;
-}
+  .card:hover{
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: rgba(10,10,10,.14);
+  }
 
-.searchBarInput::placeholder{
-  color: rgba(10,10,10,.42);
-  font-weight: 600;
-}
+  .card:active{
+    transform: translateY(-1px) scale(.99);
+  }
 
-.searchBarBtn{
-  height: 36px;
-  padding: 0 14px;
-  border: 1px solid rgba(10,10,10,.10);
-  border-radius: 12px;
+  /* Icono */
+  .iconWrap{
+    width: 56px;
+    height: 56px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,.95);
+    border: 1px solid rgba(10,10,10,.10);
+  }
 
-  background: #fff;
-  color: rgba(10,10,10,.80);
-  font-weight: 800;
-  font-size: 12.5px;
+  .icon{
+    color: var(--accent);
+    display: inline-flex;
+  }
 
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+  .icon svg{ width: 22px; height: 22px; }
 
-  cursor: pointer;
-  transition: transform .14s ease, background .14s ease, border-color .14s ease, box-shadow .14s ease;
-}
+  .cardTitle{
+    margin: 6px 0 0;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
 
-.searchBarBtn:hover{
-  transform: translateY(-1px);
-  border-color: color-mix(in srgb, var(--accent) 30%, rgba(10,10,10,.10));
-  box-shadow: 0 10px 18px rgba(10,10,10,.08);
-}
+  .cardDesc{
+    margin: 0;
+    color: rgba(10,10,10,.65);
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 1.65;
+    max-width: 56ch;
+  }
 
-.searchBarBtn:active{
-  transform: translateY(0px);
-  box-shadow: none;
-}
+  .cardCta{
+    margin-top: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    width: fit-content;
 
-@media (max-width: 520px){
-  .searchBar{ height: 44px; border-radius: 12px; }
-  .searchBarIcon{ height: 44px; }
-  .searchBarInput{ height: 44px; font-size: 13px; }
-  .searchBarBtn{ height: 34px; border-radius: 11px; padding: 0 12px; }
-}
+    color: rgba(10,10,10,.82);
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 12px;
+  }
 
-/* =========================
-   Cards
-   ========================= */
-.grid{
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 35px;
-  align-items: stretch;
-}
+  .ctaArrow{
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 
-.cardShell{
-  position: relative;
-  overflow: visible;
-  isolation: isolate;
-}
+    border: 1px solid var(--accent);
+    background: #fff;
+    box-shadow: 0 10px 22px rgba(10,10,10,.08);
 
-/* Flor atrás del card */
-.cardShell::before{
-  content: "";
-  position: absolute;
+    transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
+  }
 
-  width: var(--flor-size);
-  height: var(--flor-size);
+  .ctaArrow svg{ width: 16px; height: 16px; }
 
-  left: var(--flor-x);
-  top: var(--flor-y);
+  .card:hover .ctaArrow{
+    transform: translateY(-2px) rotate(-10deg);
+    background: rgba(255,255,255,.95);
+  }
 
-  pointer-events: none;
-  z-index: 0;
+  @media (max-width: 1100px){
+    .grid{ grid-template-columns: 1fr; }
+    .title{ font-size: 28px; }
+    .card{ min-height: unset; }
+  }
 
-  background-image: var(--flor-url);
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
+  @media (max-width: 520px){
+    .wrap{ padding: 44px 14px 54px; }
+    .title{ font-size: 24px; }
+    .subtitle{ font-size: 13px; }
+    .card{ border-radius: 16px; padding: 16px 16px 14px; }
+  }
 
-  transform: rotate(var(--flor-rot));
-  opacity: var(--flor-opacity);
+  /* =========================
+    Animaciones (re-trigger + dir)
+    ========================= */
 
-  filter: none;
-  mix-blend-mode: normal;
-}
-
-/* ✅ VEDA: ocultar flores SIEMPRE */
-:global(html[data-theme="veda"]) .cardShell::before{
-  content: none;          /* ✅ desaparece el pseudo-elemento */
-  animation: none !important;
-}
-
-/* Card encima */
-.card{
-  position: relative;
-  z-index: 1;
-
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  box-shadow: var(--shadow-sm);
-
-  padding: 18px 18px 16px;
-  min-height: 210px;
-
-  display: grid;
-  grid-template-rows: auto auto 1fr auto;
-  gap: 8px;
-
-  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
-  will-change: transform;
-}
-
-.card:hover{
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-md);
-  border-color: rgba(10,10,10,.14);
-}
-
-.card:active{
-  transform: translateY(-1px) scale(.99);
-}
-
-/* Icono */
-.iconWrap{
-  width: 56px;
-  height: 56px;
-  border-radius: 999px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255,255,255,.95);
-  border: 1px solid rgba(10,10,10,.10);
-}
-
-.icon{
-  color: var(--accent);
-  display: inline-flex;
-}
-
-.icon svg{ width: 22px; height: 22px; }
-
-.cardTitle{
-  margin: 6px 0 0;
-  font-size: 14px;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  color: var(--text);
-}
-
-.cardDesc{
-  margin: 0;
-  color: rgba(10,10,10,.65);
-  font-size: 13px;
-  font-weight: 300;
-  line-height: 1.65;
-  max-width: 56ch;
-}
-
-.cardCta{
-  margin-top: 4px;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  width: fit-content;
-
-  color: rgba(10,10,10,.82);
-  text-decoration: none;
-  font-weight: 800;
-  font-size: 12px;
-}
-
-.ctaArrow{
-  width: 28px;
-  height: 28px;
-  border-radius: 999px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  border: 1px solid var(--accent);
-  background: #fff;
-  box-shadow: 0 10px 22px rgba(10,10,10,.08);
-
-  transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
-}
-
-.ctaArrow svg{ width: 16px; height: 16px; }
-
-.card:hover .ctaArrow{
-  transform: translateY(-2px) rotate(-10deg);
-  background: rgba(255,255,255,.95);
-}
-
-@media (max-width: 1100px){
-  .grid{ grid-template-columns: 1fr; }
-  .title{ font-size: 28px; }
-  .card{ min-height: unset; }
-}
-
-@media (max-width: 520px){
-  .wrap{ padding: 44px 14px 54px; }
-  .title{ font-size: 24px; }
-  .subtitle{ font-size: 13px; }
-  .card{ border-radius: 16px; padding: 16px 16px 14px; }
-}
-
-/* =========================
-   Animaciones (re-trigger + dir)
-   ========================= */
-
-/* Base (sin animar) → permite re-trigger al salir/entrar */
-.head,
-.title,
-.subtitle,
-.searchBar,
-.cardShell{
-  opacity: 0;
-  transform: translateY(10px);
-  will-change: transform, opacity;
-}
-
-/* Shine base (apagado) */
-.searchBar::after{
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-
-  width: 42%;
-  height: 140%;
-  top: -20%;
-  left: -50%;
-
-  background: linear-gradient(
-    90deg,
-    rgba(255,255,255,0) 0%,
-    rgba(255,255,255,.55) 35%,
-    rgba(255,255,255,0) 70%
-  );
-
-  transform: translateX(-120%);
-  opacity: 0;
-}
-
-/* Keyframes */
-@keyframes fadeDown{
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeUp{
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes shine{
-  0%   { transform: translateX(-120%); opacity: 0; }
-  30%  { opacity: .55; }
-  60%  { opacity: .25; }
-  100% { transform: translateX(120%); opacity: 0; }
-}
-
-@keyframes floatSoft{
-  0%   { transform: translateY(0) rotate(var(--flor-rot)); }
-  50%  { transform: translateY(-3px) rotate(var(--flor-rot)); }
-  100% { transform: translateY(0) rotate(var(--flor-rot)); }
-}
-
-/* DIR: DOWN */
-.dirDown.isIn .head{      animation: fadeDown .55s ease both; }
-.dirDown.isIn .title{     animation: fadeDown .55s ease both; animation-delay: .03s; }
-.dirDown.isIn .subtitle{  animation: fadeDown .55s ease both; animation-delay: .08s; }
-.dirDown.isIn .searchBar{ animation: fadeDown .55s ease both; animation-delay: .13s; }
-
-.dirDown.isIn .searchBar::after{ animation: shine 1.15s ease .35s 1 both; }
-
-.dirDown.isIn .cardShell{ animation: fadeDown .55s ease both; }
-.dirDown.isIn .cardShell:nth-child(1){ animation-delay: .18s; }
-.dirDown.isIn .cardShell:nth-child(2){ animation-delay: .26s; }
-.dirDown.isIn .cardShell:nth-child(3){ animation-delay: .34s; }
-
-/* DIR: UP */
-.dirUp.isIn .head{      animation: fadeUp .55s ease both; }
-.dirUp.isIn .title{     animation: fadeUp .55s ease both; animation-delay: .03s; }
-.dirUp.isIn .subtitle{  animation: fadeUp .55s ease both; animation-delay: .08s; }
-.dirUp.isIn .searchBar{ animation: fadeUp .55s ease both; animation-delay: .13s; }
-
-.dirUp.isIn .searchBar::after{ animation: shine 1.15s ease .35s 1 both; }
-
-.dirUp.isIn .cardShell{ animation: fadeUp .55s ease both; }
-.dirUp.isIn .cardShell:nth-child(1){ animation-delay: .18s; }
-.dirUp.isIn .cardShell:nth-child(2){ animation-delay: .26s; }
-.dirUp.isIn .cardShell:nth-child(3){ animation-delay: .34s; }
-
-/* Flor “respira” (solo cuando está in-view) */
-.isIn .cardShell::before{
-  animation: floatSoft 3.8s ease-in-out .6s infinite;
-}
-
-/* ✅ VEDA: por si acaso, asegura que no haya animación de flor */
-:global(html[data-theme="veda"]) .isIn .cardShell::before{
-  animation: none !important;
-}
-
-/* Reduce motion */
-@media (prefers-reduced-motion: reduce){
+  /* Base (sin animar) → permite re-trigger al salir/entrar */
   .head,
   .title,
   .subtitle,
   .searchBar,
-  .cardShell,
-  .cardShell::before,
-  .searchBar::after{
-    animation: none !important;
-    opacity: 1 !important;
-    transform: none !important;
+  .cardShell{
+    opacity: 0;
+    transform: translateY(10px);
+    will-change: transform, opacity;
   }
 
-  .card,
-  .ctaArrow,
-  .searchBarIcon{
-    transition: none !important;
+  /* Shine base (apagado) */
+  .searchBar::after{
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+
+    width: 42%;
+    height: 140%;
+    top: -20%;
+    left: -50%;
+
+    background: linear-gradient(
+      90deg,
+      rgba(255,255,255,0) 0%,
+      rgba(255,255,255,.55) 35%,
+      rgba(255,255,255,0) 70%
+    );
+
+    transform: translateX(-120%);
+    opacity: 0;
   }
-}
-.assistantHint {
-  margin-top: 10px;
-  display: inline-flex;
-  align-items: center;
-  min-height: 34px;
-  padding: 0 12px;
-  border-radius: 999px;
-  background: rgba(255, 46, 161, 0.08);
-  border: 1px solid rgba(255, 46, 161, 0.14);
-  color: rgba(0, 0, 0, 0.96);
-  font-size: 13px;
-  font-weight: 700;
-}
+
+  /* Keyframes */
+  @keyframes fadeDown{
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeUp{
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes shine{
+    0%   { transform: translateX(-120%); opacity: 0; }
+    30%  { opacity: .55; }
+    60%  { opacity: .25; }
+    100% { transform: translateX(120%); opacity: 0; }
+  }
+
+  @keyframes floatSoft{
+    0%   { transform: translateY(0) rotate(var(--flor-rot)); }
+    50%  { transform: translateY(-3px) rotate(var(--flor-rot)); }
+    100% { transform: translateY(0) rotate(var(--flor-rot)); }
+  }
+
+  /* DIR: DOWN */
+  .dirDown.isIn .head{      animation: fadeDown .55s ease both; }
+  .dirDown.isIn .title{     animation: fadeDown .55s ease both; animation-delay: .03s; }
+  .dirDown.isIn .subtitle{  animation: fadeDown .55s ease both; animation-delay: .08s; }
+  .dirDown.isIn .searchBar{ animation: fadeDown .55s ease both; animation-delay: .13s; }
+
+  .dirDown.isIn .searchBar::after{ animation: shine 1.15s ease .35s 1 both; }
+
+  .dirDown.isIn .cardShell{ animation: fadeDown .55s ease both; }
+  .dirDown.isIn .cardShell:nth-child(1){ animation-delay: .18s; }
+  .dirDown.isIn .cardShell:nth-child(2){ animation-delay: .26s; }
+  .dirDown.isIn .cardShell:nth-child(3){ animation-delay: .34s; }
+
+  /* DIR: UP */
+  .dirUp.isIn .head{      animation: fadeUp .55s ease both; }
+  .dirUp.isIn .title{     animation: fadeUp .55s ease both; animation-delay: .03s; }
+  .dirUp.isIn .subtitle{  animation: fadeUp .55s ease both; animation-delay: .08s; }
+  .dirUp.isIn .searchBar{ animation: fadeUp .55s ease both; animation-delay: .13s; }
+
+  .dirUp.isIn .searchBar::after{ animation: shine 1.15s ease .35s 1 both; }
+
+  .dirUp.isIn .cardShell{ animation: fadeUp .55s ease both; }
+  .dirUp.isIn .cardShell:nth-child(1){ animation-delay: .18s; }
+  .dirUp.isIn .cardShell:nth-child(2){ animation-delay: .26s; }
+  .dirUp.isIn .cardShell:nth-child(3){ animation-delay: .34s; }
+
+  /* Flor “respira” (solo cuando está in-view) */
+  .isIn .cardShell::before{
+    animation: floatSoft 3.8s ease-in-out .6s infinite;
+  }
+
+  /* ✅ VEDA: por si acaso, asegura que no haya animación de flor */
+  :global(html[data-theme="veda"]) .isIn .cardShell::before{
+    animation: none !important;
+  }
+
+  /* Reduce motion */
+  @media (prefers-reduced-motion: reduce){
+    .head,
+    .title,
+    .subtitle,
+    .searchBar,
+    .cardShell,
+    .cardShell::before,
+    .searchBar::after{
+      animation: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+
+    .card,
+    .ctaArrow,
+    .searchBarIcon{
+      transition: none !important;
+    }
+  }
+  .assistantHint {
+    margin-top: 10px;
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 0 12px;
+    border-radius: 999px;
+    background: rgba(255, 46, 161, 0.08);
+    border: 1px solid rgba(255, 46, 161, 0.14);
+    color: rgba(0, 0, 0, 0.96);
+    font-size: 13px;
+    font-weight: 700;
+  }
