@@ -25,6 +25,7 @@ export const API_RUTAS = {
       `/api/admin/nomina/versiones/${encodeURIComponent(String(versionId))}`,
 
     uploadArchivo: '/api/admin/nomina/files/upload',
+
     ejecutarCatalogo: (fileId: number | string) =>
       `/api/admin/nomina/catalog/jobs/run/${encodeURIComponent(String(fileId))}`,
 
@@ -49,5 +50,11 @@ export const API_RUTAS = {
           : '';
       return `/api/admin/nomina/payroll/errors/${encodeURIComponent(String(fileId))}${qs}`;
     },
+
+    monitoreoPeriodo: (payPeriodId: number | string) =>
+      `/api/admin/nomina/state/periodo/${encodeURIComponent(String(payPeriodId))}`,
+
+    
   },
+  
 } as const;

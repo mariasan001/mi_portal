@@ -130,7 +130,7 @@ export default function NominaCatalogoView() {
         <article className={s.card}>
           <div className={s.cardHead}>
             <h2>Upload de archivo</h2>
-            <span className={s.badgeCreate}>POST</span>
+            <span className={s.badgeCreate}>1</span>
           </div>
 
           <form className={s.form} onSubmit={handleUpload}>
@@ -240,7 +240,7 @@ export default function NominaCatalogoView() {
         <article className={s.card}>
           <div className={s.cardHead}>
             <h2>Ejecutar carga de catálogo</h2>
-            <span className={s.badgeCreate}>POST</span>
+            <span className={s.badgeCreate}>2</span>
           </div>
 
           <form className={s.form} onSubmit={handleRun}>

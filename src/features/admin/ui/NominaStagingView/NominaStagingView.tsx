@@ -50,7 +50,7 @@ export default function NominaStagingView() {
       <article className={s.card}>
         <div className={s.cardHead}>
           <h2>Ejecutar staging de nómina</h2>
-          <span className={s.badgeCreate}>POST</span>
+          <span className={s.badgeCreate}>1</span>
         </div>
 
         <form className={s.form} onSubmit={handleRun}>

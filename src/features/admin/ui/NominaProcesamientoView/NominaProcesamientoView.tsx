@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 
 
 import s from './NominaProcesamientoView.module.css';
-import { useNominaProcesamiento } from '../hook/useNominaProcesamiento';
+import { useNominaProcesamiento } from '../../hook/useNominaProcesamiento';
 
 export default function NominaProcesamientoView() {
   const {
@@ -133,7 +133,7 @@ export default function NominaProcesamientoView() {
         <article className={s.card}>
           <div className={s.cardHead}>
             <h2>Resumen de staging</h2>
-            <span className={s.badge}>GET</span>
+            <span className={s.badge}>1</span>
           </div>
 
           <form className={s.inlineForm} onSubmit={handleSummary}>
@@ -183,7 +183,7 @@ export default function NominaProcesamientoView() {
         <article className={s.card}>
           <div className={s.cardHead}>
             <h2>Preview de staging</h2>
-            <span className={s.badge}>GET</span>
+            <span className={s.badge}>2</span>
           </div>
 
           <form className={s.inlineForm2} onSubmit={handlePreview}>
@@ -263,7 +263,7 @@ export default function NominaProcesamientoView() {
         <article className={s.card}>
           <div className={s.cardHead}>
             <h2>Filas con error</h2>
-            <span className={s.badge}>GET</span>
+            <span className={s.badge}>3</span>
           </div>
 
           <form className={s.inlineForm2} onSubmit={handleErrors}>
