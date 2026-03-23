@@ -239,18 +239,7 @@ export function Sidebar({
         ) : null}
 
         <div className={s.utility} aria-label="Acciones secundarias">
-          <Link
-            href="/admin/configuracion"
-            className={s.utilityBtn}
-            title={collapsed ? 'Configuración' : undefined}
-          >
-            <span className={s.utilityIcon}>
-              <Settings size={18} />
-            </span>
-            {!collapsed ? (
-              <span className={s.utilityLabel}>Configuración</span>
-            ) : null}
-          </Link>
+        
 
           <Link
             href="/admin/soporte"

@@ -2,7 +2,7 @@
   min-height: 100vh;
   display: grid;
   grid-template-columns: 280px 1fr;
-  background: var(--bg);
+  background: rgb(255, 255, 255);
 }
 
 .isCollapsed{

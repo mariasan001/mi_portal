@@ -27,73 +27,80 @@ export default function NominaConfiguracionView() {
 
   return (
     <section className={s.page}>
-      <NominaConfigHero />
+      <div className={s.stack}>
+        <NominaConfigHero />
 
-      <NominaEntityCards
-        activeEntity={vm.activeEntity}
-        onSelect={vm.handleSelectEntity}
-      />
-
-      <NominaConfigToolbar
-        searchLabel={getSearchLabel(vm.activeEntity)}
-        searchPlaceholder={getSearchPlaceholder(vm.activeEntity)}
-        searchButtonLabel={getSearchButtonLabel(vm.activeEntity)}
-        searchId={vm.searchId}
-        loading={vm.currentLoadingSearch}
-        canSearch={vm.canSearch}
-        onSearchIdChange={vm.setSearchId}
-        onSearch={vm.handleSearch}
-        onCreate={() => vm.setMode('crear')}
-      />
-
-      {vm.activeError ? <p className={s.errorBanner}>{vm.activeError}</p> : null}
-
-      <section className={s.contentShell}>
-        <NominaContentHeader
-          eyebrow={getContentEyebrow(vm.activeEntity)}
-          title={getContentTitle(vm.activeEntity, vm.mode)}
-          showBackButton={vm.mode === 'crear'}
-          onBack={() => vm.setMode('resultados')}
+        <NominaEntityCards
+          activeEntity={vm.activeEntity}
+          onSelect={vm.handleSelectEntity}
         />
 
-        {vm.activeEntity === 'periodo' && vm.mode === 'resultados' ? (
-          vm.periodos.detalle ? (
-            <PeriodoResultadoPanel detalle={vm.periodos.detalle} />
-          ) : (
-            <EmptyState
-              title="Sin consulta todavía"
-              description="Usa la barra superior para buscar un periodo por ID o crea uno nuevo desde esta misma sesión."
-            />
-          )
+        <NominaConfigToolbar
+          searchLabel={getSearchLabel(vm.activeEntity)}
+          searchPlaceholder={getSearchPlaceholder(vm.activeEntity)}
+          searchButtonLabel={getSearchButtonLabel(vm.activeEntity)}
+          searchId={vm.searchId}
+          loading={vm.currentLoadingSearch}
+          canSearch={vm.canSearch}
+          onSearchIdChange={vm.setSearchId}
+          onSearch={vm.handleSearch}
+          onCreate={() => vm.setMode('crear')}
+        />
+
+        {vm.activeError ? (
+          <div className={s.errorBanner} role="alert">
+            <span className={s.errorTitle}>Ocurrió un problema</span>
+            <p>{vm.activeError}</p>
+          </div>
         ) : null}
 
-        {vm.activeEntity === 'version' && vm.mode === 'resultados' ? (
-          vm.versiones.detalle ? (
-            <VersionResultadoPanel detalle={vm.versiones.detalle} />
-          ) : (
-            <EmptyState
-              title="Sin consulta todavía"
-              description="Consulta una versión por ID o crea una nueva versión asociada a un periodo existente."
-            />
-          )
-        ) : null}
-
-        {vm.activeEntity === 'periodo' && vm.mode === 'crear' ? (
-          <PeriodoCreateForm
-            loading={vm.periodos.loadingCreate}
-            ultimoCreado={vm.periodos.ultimoCreado}
-            onSubmit={vm.handleCreatePeriodo}
+        <section className={s.contentShell}>
+          <NominaContentHeader
+            eyebrow={getContentEyebrow(vm.activeEntity)}
+            title={getContentTitle(vm.activeEntity, vm.mode)}
+            showBackButton={vm.mode === 'crear'}
+            onBack={() => vm.setMode('resultados')}
           />
-        ) : null}
 
-        {vm.activeEntity === 'version' && vm.mode === 'crear' ? (
-          <VersionCreateForm
-            loading={vm.versiones.loadingCreate}
-            ultimaCreada={vm.versiones.ultimaCreada}
-            onSubmit={vm.handleCreateVersion}
-          />
-        ) : null}
-      </section>
+          {vm.activeEntity === 'periodo' && vm.mode === 'resultados' ? (
+            vm.periodos.detalle ? (
+              <PeriodoResultadoPanel detalle={vm.periodos.detalle} />
+            ) : (
+              <EmptyState
+                title="Sin consulta todavía"
+                description="Usa la barra superior para buscar un periodo por ID o crea uno nuevo desde esta misma sesión."
+              />
+            )
+          ) : null}
+
+          {vm.activeEntity === 'version' && vm.mode === 'resultados' ? (
+            vm.versiones.detalle ? (
+              <VersionResultadoPanel detalle={vm.versiones.detalle} />
+            ) : (
+              <EmptyState
+                title="Sin consulta todavía"
+                description="Consulta una versión por ID o crea una nueva versión asociada a un periodo existente."
+              />
+            )
+          ) : null}
+
+          {vm.activeEntity === 'periodo' && vm.mode === 'crear' ? (
+            <PeriodoCreateForm
+              loading={vm.periodos.loadingCreate}
+              ultimoCreado={vm.periodos.ultimoCreado}
+              onSubmit={vm.handleCreatePeriodo}
+            />
+          ) : null}
+
+          {vm.activeEntity === 'version' && vm.mode === 'crear' ? (
+            <VersionCreateForm
+              loading={vm.versiones.loadingCreate}
+              ultimaCreada={vm.versiones.ultimaCreada}
+              onSubmit={vm.handleCreateVersion}
+            />
+          ) : null}
+        </section>
+      </div>
     </section>
   );
 }

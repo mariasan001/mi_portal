@@ -1,3 +1,5 @@
+import { FileSearch } from 'lucide-react';
+
 import s from './EmptyState.module.css';
 
 type Props = {
@@ -8,8 +10,14 @@ type Props = {
 export default function EmptyState({ title, description }: Props) {
   return (
     <div className={s.empty}>
-      <h4>{title}</h4>
-      <p>{description}</p>
+      <div className={s.iconWrap}>
+        <FileSearch size={20} />
+      </div>
+
+      <div className={s.copy}>
+        <h4>{title}</h4>
+        <p>{description}</p>
+      </div>
     </div>
   );
 }

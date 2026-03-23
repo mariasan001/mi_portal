@@ -1,3 +1,4 @@
+import { ArrowLeft } from 'lucide-react';
 import s from './NominaContentHeader.module.css';
 
 type Props = {
@@ -15,13 +16,14 @@ export default function NominaContentHeader({
 }: Props) {
   return (
     <div className={s.header}>
-      <div>
-        <p className={s.eyebrow}>{eyebrow}</p>
+      <div className={s.copy}>
+        <span className={s.eyebrow}>{eyebrow}</span>
         <h3 className={s.title}>{title}</h3>
       </div>
 
       {showBackButton ? (
         <button type="button" className={s.button} onClick={onBack}>
+          <ArrowLeft size={16} />
           Ver resultados
         </button>
       ) : null}

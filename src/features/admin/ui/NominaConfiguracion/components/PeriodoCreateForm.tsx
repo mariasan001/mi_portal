@@ -1,12 +1,15 @@
 'use client';
 
+import { CalendarDays, CalendarRange, Clock3, FileText, Hash } from 'lucide-react';
 import { FormEvent, useMemo, useState } from 'react';
+
 import type {
   CrearPeriodoNominaPayload,
   PeriodoNominaDto,
 } from '../../../types/nomina-periodos.types';
-import s from './PeriodoCreateForm.module.css';
+
 import { formatNominaDate } from '../utils/nomina-configuracion.utils';
+import s from './PeriodoCreateForm.module.css';
 
 type Props = {
   loading: boolean;
@@ -51,9 +54,28 @@ export default function PeriodoCreateForm({
   return (
     <div className={s.layout}>
       <form className={s.formCard} onSubmit={handleSubmit}>
+        <div className={s.formIntro}>
+          <div className={s.formBadge}>
+            <CalendarRange size={14} />
+            Configuración de periodo
+          </div>
+
+          <div className={s.formCopy}>
+            <h4>Crear o recuperar periodo</h4>
+            <p>
+              Captura la información base del periodo de nómina para dejarlo listo
+              dentro del flujo de procesamiento.
+            </p>
+          </div>
+        </div>
+
         <div className={s.grid2}>
           <label className={s.field}>
-            <span>Año</span>
+            <span className={s.fieldLabel}>
+              <Hash size={14} />
+              Año
+            </span>
+
             <input
               type="number"
               min="2000"
@@ -69,7 +91,11 @@ export default function PeriodoCreateForm({
           </label>
 
           <label className={s.field}>
-            <span>Quincena</span>
+            <span className={s.fieldLabel}>
+              <CalendarRange size={14} />
+              Quincena
+            </span>
+
             <input
               type="number"
               min="1"
@@ -87,7 +113,11 @@ export default function PeriodoCreateForm({
         </div>
 
         <label className={s.field}>
-          <span>Fecha de inicio</span>
+          <span className={s.fieldLabel}>
+            <CalendarDays size={14} />
+            Fecha de inicio
+          </span>
+
           <input
             type="date"
             value={form.fechaInicio}
@@ -101,7 +131,11 @@ export default function PeriodoCreateForm({
         </label>
 
         <label className={s.field}>
-          <span>Fecha de fin</span>
+          <span className={s.fieldLabel}>
+            <CalendarDays size={14} />
+            Fecha de fin
+          </span>
+
           <input
             type="date"
             value={form.fechaFin}
@@ -115,7 +149,11 @@ export default function PeriodoCreateForm({
         </label>
 
         <label className={s.field}>
-          <span>Fecha de pago estimada</span>
+          <span className={s.fieldLabel}>
+            <Clock3 size={14} />
+            Fecha de pago estimada
+          </span>
+
           <input
             type="date"
             value={form.fechaPagoEstimada}
@@ -137,8 +175,15 @@ export default function PeriodoCreateForm({
 
       <aside className={s.resultCard}>
         <div className={s.resultHead}>
-          <h4>Último resultado</h4>
-          <span className={s.badge}>Periodo</span>
+          <div className={s.resultTitleGroup}>
+            <div className={s.resultBadge}>
+              <FileText size={14} />
+              Resultado
+            </div>
+            <h4>Último registro generado</h4>
+          </div>
+
+          <span className={s.typeBadge}>Periodo</span>
         </div>
 
         {ultimoCreado ? (
@@ -180,6 +225,9 @@ export default function PeriodoCreateForm({
           </dl>
         ) : (
           <div className={s.empty}>
+            <div className={s.emptyIcon}>
+              <CalendarRange size={18} />
+            </div>
             <p>Todavía no se ha creado ni recuperado ningún periodo.</p>
           </div>
         )}

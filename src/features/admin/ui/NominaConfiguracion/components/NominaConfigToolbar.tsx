@@ -26,33 +26,42 @@ export default function NominaConfigToolbar({
 }: Props) {
   return (
     <section className={s.toolbar}>
-      <div className={s.searchBox}>
+      <div className={s.left}>
         <label className={s.label} htmlFor="nomina-search-id">
           {searchLabel}
         </label>
 
-        <div className={s.control}>
-          <Search size={18} className={s.icon} />
+        <div className={s.searchSurface}>
+          <div className={s.inputWrap}>
+            <Search size={17} className={s.icon} />
 
-          <input
-            id="nomina-search-id"
-            type="number"
-            min="1"
-            value={searchId}
-            onChange={(e) => onSearchIdChange(e.target.value)}
-            placeholder={searchPlaceholder}
-          />
+            <input
+              id="nomina-search-id"
+              type="number"
+              min="1"
+              value={searchId}
+              onChange={(e) => onSearchIdChange(e.target.value)}
+              placeholder={searchPlaceholder}
+            />
+          </div>
 
-          <button type="button" className={s.searchBtn} onClick={onSearch} disabled={!canSearch}>
+          <button
+            type="button"
+            className={s.searchBtn}
+            onClick={onSearch}
+            disabled={!canSearch}
+          >
             {loading ? 'Consultando...' : searchButtonLabel}
           </button>
         </div>
       </div>
 
-      <button type="button" className={s.createBtn} onClick={onCreate}>
-        <Plus size={18} />
-        Crear nuevo
-      </button>
+      <div className={s.right}>
+        <button type="button" className={s.createBtn} onClick={onCreate}>
+          <Plus size={17} />
+          <span>Crear nuevo</span>
+        </button>
+      </div>
     </section>
   );
 }
