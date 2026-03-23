@@ -1,0 +1,25 @@
+.empty {
+  min-height: 220px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 24px;
+  border: 1px dashed var(--border);
+  border-radius: var(--r-lg);
+  background: var(--surface-2);
+}
+
+.empty h4 {
+  margin: 0 0 8px;
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.empty p {
+  margin: 0;
+  max-width: 48ch;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+}

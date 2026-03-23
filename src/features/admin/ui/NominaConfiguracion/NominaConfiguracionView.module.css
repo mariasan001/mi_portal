@@ -1,0 +1,36 @@
+.page {
+  display: grid;
+  gap: 24px;
+  padding: 24px;
+}
+
+.contentShell {
+  display: grid;
+  gap: 18px;
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.errorBanner {
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(180, 35, 24, 0.14);
+  background: rgba(180, 35, 24, 0.06);
+  color: var(--danger);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+@media (max-width: 840px) {
+  .page {
+    padding: 16px;
+  }
+
+  .contentShell {
+    padding: 18px;
+  }
+}

@@ -24,9 +24,6 @@ type SidebarProps = {
   onCollapsedChange?: (collapsed: boolean) => void;
 };
 
-/**
- * Determina si una ruta está activa.
- */
 function isActiveRoute(pathname: string, route: string): boolean {
   const cleanRoute = route.trim();
 
@@ -36,9 +33,6 @@ function isActiveRoute(pathname: string, route: string): boolean {
   return pathname === cleanRoute || pathname.startsWith(`${cleanRoute}/`);
 }
 
-/**
- * Revisa si el item actual o alguno de sus hijos coincide con la ruta activa.
- */
 function itemMatchesPath(item: MenuItem, pathname: string): boolean {
   const selfMatches = item.route ? isActiveRoute(pathname, item.route) : false;
   if (selfMatches) return true;
@@ -50,9 +44,6 @@ function itemMatchesPath(item: MenuItem, pathname: string): boolean {
   return false;
 }
 
-/**
- * Regresa una ruta segura para Link.
- */
 function safeHref(route?: string): string {
   const cleanRoute = (route ?? '').trim();
   return cleanRoute || '#';
@@ -75,10 +66,6 @@ export function Sidebar({
     onCollapsedChange?.(collapsed);
   }, [collapsed, onCollapsedChange]);
 
-  /**
-   * Hay casos donde IAM devuelve un wrapper root con children.
-   * Aquí lo aplanamos para trabajar directo con los items reales.
-   */
   const finalItems = useMemo(() => {
     const maybeRoot = items[0];
 
@@ -94,6 +81,10 @@ export function Sidebar({
   const displayName = useMemo(() => {
     return (userName ?? '').trim() || 'Usuario';
   }, [userName]);
+
+  const displayInitial = useMemo(() => {
+    return displayName.slice(0, 1).toUpperCase() || 'U';
+  }, [displayName]);
 
   const canLogout = typeof onLogout === 'function';
 
@@ -206,6 +197,13 @@ export function Sidebar({
       <div className={s.header}>
         <div className={s.brand}>
           <div className={s.logo} aria-hidden="true" />
+
+          {!collapsed ? (
+            <div className={s.brandText}>
+              <span className={s.brandEyebrow}>Panel administrativo</span>
+              <strong className={s.brandTitle}>Portal de servicios</strong>
+            </div>
+          ) : null}
         </div>
 
         <button
@@ -219,6 +217,12 @@ export function Sidebar({
         </button>
       </div>
 
+      {!collapsed ? (
+        <div className={s.sectionHeader}>
+          <span className={s.sectionLabel}>Navegación</span>
+        </div>
+      ) : null}
+
       <nav className={s.nav} aria-label="Navegación principal">
         {finalItems.map((item) => (
           <SidebarItem key={item.code} item={item} />
@@ -227,54 +231,66 @@ export function Sidebar({
 
       <div className={s.divider} />
 
-      <div className={s.utility} aria-label="Acciones secundarias">
-        <Link
-          href="/admin/configuracion"
-          className={s.utilityBtn}
-          title={collapsed ? 'Configuración' : undefined}
-        >
-          <span className={s.utilityIcon}>
-            <Settings size={18} />
-          </span>
-          {!collapsed ? (
-            <span className={s.utilityLabel}>Configuración</span>
-          ) : null}
-        </Link>
+      <div className={s.utilityWrap}>
+        {!collapsed ? (
+          <div className={s.sectionHeaderAlt}>
+            <span className={s.sectionLabel}>Acciones</span>
+          </div>
+        ) : null}
 
-        <Link
-          href="/admin/soporte"
-          className={s.utilityBtn}
-          title={collapsed ? 'Soporte' : undefined}
-        >
-          <span className={s.utilityIcon}>
-            <HelpCircle size={18} />
-          </span>
-          {!collapsed ? <span className={s.utilityLabel}>Soporte</span> : null}
-        </Link>
+        <div className={s.utility} aria-label="Acciones secundarias">
+          <Link
+            href="/admin/configuracion"
+            className={s.utilityBtn}
+            title={collapsed ? 'Configuración' : undefined}
+          >
+            <span className={s.utilityIcon}>
+              <Settings size={18} />
+            </span>
+            {!collapsed ? (
+              <span className={s.utilityLabel}>Configuración</span>
+            ) : null}
+          </Link>
 
-        <button
-          type="button"
-          className={`${s.utilityBtn} ${s.utilityDanger}`}
-          onClick={() => onLogout?.()}
-          disabled={!canLogout}
-          title={collapsed ? 'Salir' : undefined}
-        >
-          <span className={s.utilityIcon}>
-            <LogOut size={18} />
-          </span>
-          {!collapsed ? <span className={s.utilityLabel}>Salir</span> : null}
-        </button>
+          <Link
+            href="/admin/soporte"
+            className={s.utilityBtn}
+            title={collapsed ? 'Soporte' : undefined}
+          >
+            <span className={s.utilityIcon}>
+              <HelpCircle size={18} />
+            </span>
+            {!collapsed ? <span className={s.utilityLabel}>Soporte</span> : null}
+          </Link>
+          <button
+            type="button"
+            className={`${s.utilityBtn} ${s.logoutBtn}`}
+            onClick={() => onLogout?.()}
+            disabled={!canLogout}
+            title={collapsed ? 'Salir' : undefined}
+          >
+            <span className={s.utilityIcon}>
+              <LogOut size={18} />
+            </span>
+            {!collapsed ? <span className={s.utilityLabel}>Salir</span> : null}
+          </button>    
+        </div>
       </div>
 
       <div className={s.footer}>
-        <div className={s.user}>
-          <div className={s.avatar} aria-hidden="true" />
-          {!collapsed ? (
-            <div className={s.userText}>
-              <div className={s.userName}>{displayName}</div>
-              <div className={s.userMeta}>{userLabel}</div>
+        <div className={s.userCard}>
+          <div className={s.user}>
+            <div className={s.avatar} aria-hidden="true">
+              <span>{displayInitial}</span>
             </div>
-          ) : null}
+
+            {!collapsed ? (
+              <div className={s.userText}>
+                <div className={s.userName}>{displayName}</div>
+                <div className={s.userMeta}>{userLabel}</div>
+              </div>
+            ) : null}
+          </div>
         </div>
       </div>
     </aside>
