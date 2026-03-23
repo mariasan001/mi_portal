@@ -1,11 +1,10 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
-import { Sidebar } from '@/features/navegacion/ui/Sidebar';
-import { useMenu } from '@/features/navegacion/hooks/useMenu';
 import { useAuth } from '@/features/auth/context/auth.context';
+import { SidebarMenu } from '@/features/navegacion/ui/SidebarMenu';
 
 import s from './AdminShell.module.css';
 
@@ -15,17 +14,14 @@ type Props = {
 };
 
 export default function AdminShell({ children, appCode }: Props) {
-  const menu = useMenu(appCode);
-  const sidebarItems = useMemo(() => menu.data?.items ?? [], [menu.data]);
-
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const { logout } = useAuth();
 
   return (
     <div className={`${s.layout} ${isCollapsed ? s.isCollapsed : ''}`}>
-      <Sidebar
-        items={sidebarItems}
+      <SidebarMenu
+        appCode={appCode}
         userLabel="Usuario"
         userName={null}
         onLogout={logout}

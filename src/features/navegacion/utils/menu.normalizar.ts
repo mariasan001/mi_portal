@@ -1,54 +1,151 @@
 import type { MenuItem, MenuResponse } from '../types/menu.types';
 
-type MenuItemRaw = {
-  id?: number;
-  code?: unknown;
-  name?: unknown;
-  route?: unknown;
-  icon?: unknown;
-  children?: unknown;
-};
-
-type MenuResponseRaw = {
-  appCode?: unknown;
-  items?: unknown;
-};
-
-function isObject(v: unknown): v is Record<string, unknown> {
-  return typeof v === 'object' && v !== null;
+/**
+ * Convierte cualquier valor a string seguro.
+ */
+function toSafeString(value: unknown, fallback = ''): string {
+  if (typeof value === 'string') return value.trim();
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+  return fallback;
 }
 
-function asString(v: unknown, fallback = ''): string {
-  return typeof v === 'string' ? v : v == null ? fallback : String(v);
+/**
+ * Convierte cualquier valor a boolean opcional.
+ */
+function toOptionalBoolean(value: unknown): boolean | undefined {
+  if (typeof value === 'boolean') return value;
+  return undefined;
 }
 
-function asArray<T>(v: unknown): T[] {
-  return Array.isArray(v) ? (v as T[]) : [];
+/**
+ * Convierte cualquier valor numérico a number opcional.
+ */
+function toOptionalNumber(value: unknown): number | undefined {
+  if (typeof value === 'number' && Number.isFinite(value)) return value;
+
+  if (typeof value === 'string') {
+    const parsed = Number(value);
+    if (Number.isFinite(parsed)) return parsed;
+  }
+
+  return undefined;
 }
 
-function normalizarItem(raw: MenuItemRaw): MenuItem {
-  const childrenRaw = asArray<MenuItemRaw>(raw.children);
+/**
+ * Verifica si el valor es un objeto.
+ */
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+/**
+ * Busca un arreglo dentro de varias posibles llaves.
+ */
+function getArrayFromRecord(
+  input: Record<string, unknown>,
+  keys: string[]
+): unknown[] {
+  for (const key of keys) {
+    const value = input[key];
+    if (Array.isArray(value)) return value;
+  }
+
+  return [];
+}
+
+/**
+ * Normaliza un item individual del menú.
+ */
+function normalizarItem(raw: unknown, index = 0): MenuItem | null {
+  if (!isRecord(raw)) return null;
+
+  const code =
+    toSafeString(raw.code) ||
+    toSafeString(raw.key) ||
+    toSafeString(raw.id) ||
+    `item-${index}`;
+
+  const name =
+    toSafeString(raw.name) ||
+    toSafeString(raw.label) ||
+    toSafeString(raw.title) ||
+    'Sin nombre';
+
+  const route =
+    toSafeString(raw.route) ||
+    toSafeString(raw.path) ||
+    toSafeString(raw.href) ||
+    '#';
+
+  const icon =
+    toSafeString(raw.icon) ||
+    toSafeString(raw.iconName) ||
+    'CircleHelp';
+
+  const description =
+    toSafeString(raw.description) ||
+    toSafeString(raw.desc) ||
+    undefined;
+
+  const orderIndex =
+    toOptionalNumber(raw.orderIndex) ??
+    toOptionalNumber(raw.order_index) ??
+    toOptionalNumber(raw.order);
+
+  const active =
+    toOptionalBoolean(raw.active) ??
+    toOptionalBoolean(raw.enabled) ??
+    true;
+
+  const rawChildren = getArrayFromRecord(raw, [
+    'children',
+    'items',
+    'subItems',
+    'sub_items',
+  ]);
+
+  const children = rawChildren
+    .map((child, childIndex) => normalizarItem(child, childIndex))
+    .filter((item): item is MenuItem => item !== null)
+    .filter((item) => item.active !== false)
+    .sort((a, b) => (a.orderIndex ?? 9999) - (b.orderIndex ?? 9999));
 
   return {
-    code: asString(raw.code),
-    name: asString(raw.name),
-    route: asString(raw.route),
-    icon: asString(raw.icon).toLowerCase(),
-    children: childrenRaw.length ? childrenRaw.map(normalizarItem) : [],
+    code,
+    name,
+    route,
+    icon,
+    description,
+    orderIndex,
+    active,
+    children: children.length ? children : undefined,
   };
 }
 
+/**
+ * Normaliza la respuesta completa del backend.
+ */
 export function normalizarMenu(raw: unknown): MenuResponse {
-  const r: MenuResponseRaw = isObject(raw) ? (raw as MenuResponseRaw) : {};
+  if (!isRecord(raw)) {
+    throw new Error('La respuesta del menú no tiene un formato válido.');
+  }
 
-  const items = asArray<MenuItemRaw>(r.items).map(normalizarItem);
+  const appCode =
+    toSafeString(raw.appCode) ||
+    toSafeString(raw.app_code) ||
+    toSafeString(raw.code) ||
+    '';
 
-  // 👇 Si IAM manda un wrapper root, pintamos sus children
-  const root = items[0];
-  const finalItems = root?.children?.length ? root.children : items;
+  const rawItems = getArrayFromRecord(raw, ['items', 'menu', 'data', 'modules']);
+
+  const items = rawItems
+    .map((item, index) => normalizarItem(item, index))
+    .filter((item): item is MenuItem => item !== null)
+    .filter((item) => item.active !== false)
+    .sort((a, b) => (a.orderIndex ?? 9999) - (b.orderIndex ?? 9999));
 
   return {
-    appCode: asString(r.appCode),
-    items: finalItems,
+    appCode,
+    items,
   };
 }

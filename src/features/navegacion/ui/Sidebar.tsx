@@ -2,51 +2,60 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  ChevronLeft,
+  ChevronRight,
+  HelpCircle,
+  LogOut,
+  Settings,
+} from 'lucide-react';
 
 import type { MenuItem } from '../types/menu.types';
 import { renderIcon } from '../utils/menu.iconos';
-
-import { ChevronLeft, ChevronRight, Settings, HelpCircle, LogOut } from 'lucide-react';
 import s from './Sidebar.module.css';
 
 type SidebarProps = {
   items: MenuItem[];
   defaultCollapsed?: boolean;
-
   userLabel?: string;
   userName?: string | null;
-
   onLogout?: () => void;
-
-  /** ✅ Notifica al layout (AdminShell) */
   onCollapsedChange?: (collapsed: boolean) => void;
 };
 
-function isActiveRoute(pathname: string, route: string) {
-  const r = route.trim();
-  if (!r) return false;
-  if (r === '/') return pathname === '/';
-  return pathname === r || pathname.startsWith(`${r}/`);
+/**
+ * Determina si una ruta está activa.
+ */
+function isActiveRoute(pathname: string, route: string): boolean {
+  const cleanRoute = route.trim();
+
+  if (!cleanRoute) return false;
+  if (cleanRoute === '/') return pathname === '/';
+
+  return pathname === cleanRoute || pathname.startsWith(`${cleanRoute}/`);
 }
 
+/**
+ * Revisa si el item actual o alguno de sus hijos coincide con la ruta activa.
+ */
 function itemMatchesPath(item: MenuItem, pathname: string): boolean {
-  const self = item.route ? isActiveRoute(pathname, item.route) : false;
-  if (self) return true;
+  const selfMatches = item.route ? isActiveRoute(pathname, item.route) : false;
+  if (selfMatches) return true;
 
-  for (const c of item.children ?? []) {
-    if (itemMatchesPath(c, pathname)) return true;
+  for (const child of item.children ?? []) {
+    if (itemMatchesPath(child, pathname)) return true;
   }
+
   return false;
 }
 
-function normalizeIconName(icon: string) {
-  return (icon ?? '').trim().toLowerCase();
-}
-
-function safeHref(route: string | undefined) {
-  const r = (route ?? '').trim();
-  return r || '#';
+/**
+ * Regresa una ruta segura para Link.
+ */
+function safeHref(route?: string): string {
+  const cleanRoute = (route ?? '').trim();
+  return cleanRoute || '#';
 }
 
 export function Sidebar({
@@ -59,17 +68,20 @@ export function Sidebar({
 }: SidebarProps) {
   const pathname = usePathname();
 
-  // ✅ 1) Sidebar controla su estado
   const [collapsed, setCollapsed] = useState<boolean>(defaultCollapsed);
+  const [openMap, setOpenMap] = useState<Record<string, boolean>>({});
 
-  // ✅ 2) Notifica al padre DESPUÉS del render (evita el error)
   useEffect(() => {
     onCollapsedChange?.(collapsed);
   }, [collapsed, onCollapsedChange]);
 
-  // ✅ IAM típico: items = [ROOT] con children reales
+  /**
+   * Hay casos donde IAM devuelve un wrapper root con children.
+   * Aquí lo aplanamos para trabajar directo con los items reales.
+   */
   const finalItems = useMemo(() => {
     const maybeRoot = items[0];
+
     const isRootWrapper =
       items.length === 1 &&
       Boolean(maybeRoot) &&
@@ -79,38 +91,66 @@ export function Sidebar({
     return isRootWrapper ? (maybeRoot.children ?? []) : items;
   }, [items]);
 
-  const [openMap, setOpenMap] = useState<Record<string, boolean>>({});
+  const displayName = useMemo(() => {
+    return (userName ?? '').trim() || 'Usuario';
+  }, [userName]);
 
-  function isOpen(code: string) {
-    return Boolean(openMap[code]);
-  }
-
-  function toggleOpen(code: string) {
-    setOpenMap((prev) => ({ ...prev, [code]: !prev[code] }));
-  }
-
-  const displayName = (userName ?? '').trim() || 'Usuario';
   const canLogout = typeof onLogout === 'function';
 
-  function SidebarItem({ item, level = 0 }: { item: MenuItem; level?: number }) {
-    const href = safeHref(item.route);
-    const isExact = href !== '#' && pathname === href;
-    const isActive = href !== '#' && itemMatchesPath(item, pathname);
+  const isOpen = useCallback(
+    (code: string) => Boolean(openMap[code]),
+    [openMap]
+  );
 
+  const toggleOpen = useCallback((code: string) => {
+    setOpenMap((prev) => ({
+      ...prev,
+      [code]: !prev[code],
+    }));
+  }, []);
+
+  const handleToggleCollapsed = useCallback(() => {
+    setCollapsed((prev) => !prev);
+  }, []);
+
+  function SidebarItem({
+    item,
+    level = 0,
+  }: {
+    item: MenuItem;
+    level?: number;
+  }) {
+    const href = safeHref(item.route);
     const hasChildren = (item.children?.length ?? 0) > 0;
+
+    const isExact = href !== '#' && pathname === href;
+    const isActive = itemMatchesPath(item, pathname);
+
     const autoOpen = hasChildren && itemMatchesPath(item, pathname);
     const open = !collapsed && (autoOpen || isOpen(item.code));
 
-    const iconName = normalizeIconName(item.icon);
-    const iconNode = renderIcon(iconName, { size: 18, strokeWidth: 2 });
+    const iconNode = renderIcon(item.icon, {
+      size: 18,
+      strokeWidth: 2,
+    });
+
+    const handleGroupClick = () => {
+      if (hasChildren && !collapsed) {
+        toggleOpen(item.code);
+      }
+    };
 
     return (
-      <div className={s.item} data-level={level} data-collapsed={collapsed ? '1' : '0'}>
+      <div
+        className={s.item}
+        data-level={level}
+        data-collapsed={collapsed ? '1' : '0'}
+      >
         <div className={s.row}>
           {href !== '#' ? (
             <Link
-              className={`${s.link} ${isActive ? s.active : ''}`}
               href={href}
+              className={`${s.link} ${isActive ? s.active : ''}`}
               aria-current={isExact ? 'page' : undefined}
               title={collapsed ? item.name : undefined}
             >
@@ -122,7 +162,7 @@ export function Sidebar({
               type="button"
               className={`${s.link} ${isActive ? s.active : ''}`}
               aria-current={isExact ? 'page' : undefined}
-              onClick={() => (hasChildren && !collapsed ? toggleOpen(item.code) : undefined)}
+              onClick={handleGroupClick}
               title={collapsed ? item.name : undefined}
             >
               <span className={s.icon}>{iconNode}</span>
@@ -134,7 +174,7 @@ export function Sidebar({
             <button
               type="button"
               className={s.caret}
-              aria-label={open ? 'Contraer' : 'Expandir'}
+              aria-label={open ? 'Contraer submenú' : 'Expandir submenú'}
               aria-expanded={open}
               onClick={() => toggleOpen(item.code)}
             >
@@ -145,8 +185,12 @@ export function Sidebar({
 
         {!collapsed && hasChildren && open ? (
           <div className={s.children}>
-            {(item.children ?? []).map((c) => (
-              <SidebarItem key={c.code} item={c} level={level + 1} />
+            {(item.children ?? []).map((child) => (
+              <SidebarItem
+                key={child.code}
+                item={child}
+                level={level + 1}
+              />
             ))}
           </div>
         ) : null}
@@ -155,7 +199,10 @@ export function Sidebar({
   }
 
   return (
-    <aside className={`${s.sidebar} ${collapsed ? s.collapsed : ''}`} aria-label="Menú lateral">
+    <aside
+      className={`${s.sidebar} ${collapsed ? s.collapsed : ''}`}
+      aria-label="Menú lateral"
+    >
       <div className={s.header}>
         <div className={s.brand}>
           <div className={s.logo} aria-hidden="true" />
@@ -164,30 +211,44 @@ export function Sidebar({
         <button
           type="button"
           className={s.collapseBtn}
-          onClick={() => setCollapsed((v) => !v)}
+          onClick={handleToggleCollapsed}
           aria-label={collapsed ? 'Expandir menú' : 'Contraer menú'}
-          title={collapsed ? 'Expandir' : 'Contraer'}
+          title={collapsed ? 'Expandir menú' : 'Contraer menú'}
         >
           {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
         </button>
       </div>
 
-      <nav className={s.nav} aria-label="Navegación">
-        {finalItems.map((it) => (
-          <SidebarItem key={it.code} item={it} />
+      <nav className={s.nav} aria-label="Navegación principal">
+        {finalItems.map((item) => (
+          <SidebarItem key={item.code} item={item} />
         ))}
       </nav>
 
       <div className={s.divider} />
 
-      <div className={s.utility} aria-label="Acciones">
-        <Link href="/admin/configuracion" className={s.utilityBtn} title={collapsed ? 'Configuración' : undefined}>
-          <span className={s.utilityIcon}><Settings size={18} /></span>
-          {!collapsed ? <span className={s.utilityLabel}>Configuración</span> : null}
+      <div className={s.utility} aria-label="Acciones secundarias">
+        <Link
+          href="/admin/configuracion"
+          className={s.utilityBtn}
+          title={collapsed ? 'Configuración' : undefined}
+        >
+          <span className={s.utilityIcon}>
+            <Settings size={18} />
+          </span>
+          {!collapsed ? (
+            <span className={s.utilityLabel}>Configuración</span>
+          ) : null}
         </Link>
 
-        <Link href="/admin/soporte" className={s.utilityBtn} title={collapsed ? 'Soporte' : undefined}>
-          <span className={s.utilityIcon}><HelpCircle size={18} /></span>
+        <Link
+          href="/admin/soporte"
+          className={s.utilityBtn}
+          title={collapsed ? 'Soporte' : undefined}
+        >
+          <span className={s.utilityIcon}>
+            <HelpCircle size={18} />
+          </span>
           {!collapsed ? <span className={s.utilityLabel}>Soporte</span> : null}
         </Link>
 
@@ -198,7 +259,9 @@ export function Sidebar({
           disabled={!canLogout}
           title={collapsed ? 'Salir' : undefined}
         >
-          <span className={s.utilityIcon}><LogOut size={18} /></span>
+          <span className={s.utilityIcon}>
+            <LogOut size={18} />
+          </span>
           {!collapsed ? <span className={s.utilityLabel}>Salir</span> : null}
         </button>
       </div>

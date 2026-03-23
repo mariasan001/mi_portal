@@ -1,15 +1,15 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
-import type { MenuResponse } from '../types/menu.types';
-import { obtenerMenu } from '../services/menu.service';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toErrorMessage } from '@/lib/api/api.errores';
+import { obtenerMenu } from '../services/menu.service';
+import type { MenuResponse } from '../types/menu.types';
 
 type UseMenuResult = {
   data: MenuResponse | null;
   loading: boolean;
   error: string | null;
-  refresh: () => void; // refresh manual (sin auto)
+  refresh: (force?: boolean) => Promise<void>;
 };
 
 export function useMenu(appCode: string | null): UseMenuResult {
@@ -17,16 +17,36 @@ export function useMenu(appCode: string | null): UseMenuResult {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // para refrescar manualmente sin “auto updates”
-  const refreshTick = useRef(0);
-  const bumpRefresh = () => {
-    refreshTick.current += 1;
-    // setState para disparar effect
-    setData((prev) => prev);
-  };
+  const code = useMemo(() => (appCode ?? '').trim(), [appCode]);
+
+  const cargarMenu = useCallback(
+    async (force = false) => {
+      if (!code) {
+        setData(null);
+        setError(null);
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
+      setError(null);
+
+      try {
+        const response = await obtenerMenu(code, { force });
+        setData(response);
+      } catch (e) {
+        setData(null);
+        setError(toErrorMessage(e, 'No se pudo cargar el menú.'));
+      } finally {
+        setLoading(false);
+      }
+    },
+    [code]
+  );
 
   useEffect(() => {
-    const code = (appCode ?? '').trim();
+    let alive = true;
+
     if (!code) {
       setData(null);
       setError(null);
@@ -34,20 +54,18 @@ export function useMenu(appCode: string | null): UseMenuResult {
       return;
     }
 
-    let alive = true;
     setLoading(true);
     setError(null);
 
-    // Dedupe en service => 1 sola request real.
     obtenerMenu(code)
-      .then((res) => {
+      .then((response) => {
         if (!alive) return;
-        setData(res);
+        setData(response);
       })
       .catch((e) => {
         if (!alive) return;
         setData(null);
-        setError(toErrorMessage(e));
+        setError(toErrorMessage(e, 'No se pudo cargar el menú.'));
       })
       .finally(() => {
         if (!alive) return;
@@ -55,20 +73,24 @@ export function useMenu(appCode: string | null): UseMenuResult {
       });
 
     return () => {
-      // No abortamos: StrictMode desmonta/monta y eso “ensucia” Network.
-      // Solo marcamos que ya no estamos vivos.
       alive = false;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [appCode, refreshTick.current]);
+  }, [code]);
+
+  const refresh = useCallback(
+    async (force = true) => {
+      await cargarMenu(force);
+    },
+    [cargarMenu]
+  );
 
   return useMemo(
     () => ({
       data,
       loading,
       error,
-      refresh: bumpRefresh,
+      refresh,
     }),
-    [data, loading, error]
+    [data, loading, error, refresh]
   );
 }

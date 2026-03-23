@@ -3,6 +3,9 @@ export type MenuItem = {
   name: string;
   route: string;
   icon: string;
+  description?: string;
+  orderIndex?: number;
+  active?: boolean;
   children?: MenuItem[];
 };
 
