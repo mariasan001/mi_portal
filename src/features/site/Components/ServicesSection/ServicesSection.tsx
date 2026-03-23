@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FiArrowUpRight, FiSearch } from 'react-icons/fi';
 
 import css from './ServicesSection.module.css';
@@ -13,17 +13,10 @@ import {
 
 import { shellStyle } from './utils/shellStyle';
 import { useRevealMotion } from '@/hooks/useRevealMotion';
+import { useAssistantHint } from './hooks/useAssistantHint';
+import { getViewFromHref } from './utils/getViewFromHref';
 
-type AssistantAction = 'tramite' | 'consulta' | 'password' | null;
 type View = 'cards' | 'consultas' | 'tramites' | 'normativas';
-
-type ValidHref = '/consultas' | '/tramites' | '/normativas';
-
-const viewMap: Record<ValidHref, View> = {
-  '/consultas': 'consultas',
-  '/tramites': 'tramites',
-  '/normativas': 'normativas',
-};
 
 export default function ServicesSection() {
   const { ref: sectionRef, className } = useRevealMotion<HTMLElement>({
@@ -31,45 +24,9 @@ export default function ServicesSection() {
     thresholdPx: 2,
   });
 
-  const [assistantHint, setAssistantHint] = useState<string>('');
+  const { assistantHint } = useAssistantHint();
+
   const [view, setView] = useState<View>('cards');
-
-  useEffect(() => {
-    let timeoutId: ReturnType<typeof setTimeout>;
-
-    const handleNavigate = (event: Event) => {
-      const customEvent = event as CustomEvent<{ action: AssistantAction }>;
-      const action = customEvent.detail?.action;
-
-      if (action !== 'tramite' && action !== 'consulta') return;
-
-      const section = document.getElementById('services-section');
-      if (!section) return;
-
-      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-      if (action === 'tramite') {
-        setAssistantHint('Aquí podrás realizar trámites relacionados con lo que buscas.');
-      }
-
-      if (action === 'consulta') {
-        setAssistantHint('Aquí podrás consultar información y acceder al servicio adecuado.');
-      }
-
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        setAssistantHint('');
-      }, 5000);
-
-    };
-
-    window.addEventListener('portal-assistant:navigate', handleNavigate as EventListener);
-
-    return () => {
-      window.removeEventListener('portal-assistant:navigate', handleNavigate as EventListener);
-      clearTimeout(timeoutId);
-    };
-  }, []);
 
   // ── Botón regresar reutilizable ──
   const backButton = (
@@ -167,7 +124,7 @@ export default function ServicesSection() {
                 role="listitem"
                 aria-label={c.title}
                 onClick={() => {
-                  const next = viewMap[c.href as ValidHref];
+                  const next = getViewFromHref(c.href);
                   if (next) setView(next);
                 }}
               >
