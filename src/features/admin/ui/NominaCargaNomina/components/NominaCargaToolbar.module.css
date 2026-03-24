@@ -1,0 +1,130 @@
+.toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: end;
+  padding: 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.searchBlock {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.searchLabel {
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.searchRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 10px;
+  min-width: 0;
+}
+
+.inputWrap {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 44px;
+  padding: 0 14px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  color: var(--muted);
+}
+
+.inputWrap input {
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  font-family: var(--font-body);
+}
+
+.secondaryBtn,
+.ghostBtn,
+.primaryBtn {
+  min-height: 44px;
+  border: 0;
+  border-radius: 14px;
+  padding: 0 16px;
+  font-size: 13px;
+  font-weight: 800;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    opacity 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.secondaryBtn {
+  background: rgba(10, 10, 10, 0.06);
+  color: var(--text);
+}
+
+.ghostBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(159, 33, 65, 0.08);
+  color: var(--vino);
+}
+
+.primaryBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--vino);
+  color: #fff;
+  box-shadow: 0 10px 20px rgba(159, 33, 65, 0.14);
+}
+
+.secondaryBtn:hover:not(:disabled),
+.ghostBtn:hover:not(:disabled),
+.primaryBtn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.secondaryBtn:disabled,
+.ghostBtn:disabled,
+.primaryBtn:disabled {
+  opacity: 0.58;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+@media (max-width: 960px) {
+  .toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .primaryBtn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 720px) {
+  .searchRow {
+    grid-template-columns: 1fr;
+  }
+
+  .secondaryBtn,
+  .ghostBtn {
+    width: 100%;
+  }
+}

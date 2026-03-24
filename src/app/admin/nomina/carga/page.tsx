@@ -1,5 +1,5 @@
-import NominaStagingView from '@/features/admin/ui/NominaStagingView/NominaStagingView';
+import NominaCargasView from "@/features/admin/ui/NominaCargaNomina/NominaCargasView";
 
-export default function CargaPage() {
-  return <NominaStagingView />;
+export default function Page() {
+  return <NominaCargasView />;
 }

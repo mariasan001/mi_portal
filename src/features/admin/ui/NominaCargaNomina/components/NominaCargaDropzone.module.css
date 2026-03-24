@@ -1,0 +1,46 @@
+.dropzone {
+  display: grid;
+  place-items: center;
+  gap: 12px;
+  min-height: 180px;
+  padding: 20px;
+  border: 1px dashed var(--border);
+  border-radius: 20px;
+  background: var(--surface-2);
+  text-align: center;
+  cursor: pointer;
+}
+
+.input {
+  display: none;
+}
+
+.iconWrap {
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(159, 33, 65, 0.06);
+  color: var(--vino);
+}
+
+.copy {
+  display: grid;
+  gap: 6px;
+}
+
+.copy h4 {
+  margin: 0;
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.copy p {
+  margin: 0;
+  max-width: 34ch;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
