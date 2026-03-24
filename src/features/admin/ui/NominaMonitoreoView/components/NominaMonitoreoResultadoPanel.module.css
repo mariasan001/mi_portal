@@ -103,8 +103,93 @@
   word-break: break-word;
 }
 
+.flagsSection {
+  display: grid;
+  gap: 14px;
+}
+
+.flagsHeader {
+  display: grid;
+  gap: 4px;
+}
+
+.flagsHeader h5 {
+  margin: 0;
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.flagsHeader p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.flagsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.flagOk,
+.flagWarn,
+.flagOff {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.flagHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.flagOk {
+  border-color: rgba(31, 122, 77, 0.16);
+  background: rgba(31, 122, 77, 0.04);
+}
+
+.flagOk .flagHead,
+.flagOk strong {
+  color: #1f7a4d;
+}
+
+.flagWarn {
+  border-color: rgba(188, 148, 90, 0.22);
+  background: rgba(188, 148, 90, 0.08);
+}
+
+.flagWarn .flagHead,
+.flagWarn strong {
+  color: #8a6a3d;
+}
+
+.flagOff .flagHead,
+.flagOff strong {
+  color: rgba(10, 10, 10, 0.62);
+}
+
+.flagOk strong,
+.flagWarn strong,
+.flagOff strong {
+  font-size: 15px;
+  font-weight: 800;
+}
+
 @media (max-width: 1080px) {
-  .grid {
+  .grid,
+  .flagsGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -114,11 +199,15 @@
 }
 
 @media (max-width: 640px) {
-  .grid {
+  .grid,
+  .flagsGrid {
     grid-template-columns: 1fr;
   }
 
-  .item {
+  .item,
+  .flagOk,
+  .flagWarn,
+  .flagOff {
     min-height: unset;
     padding: 14px;
     border-radius: 16px;

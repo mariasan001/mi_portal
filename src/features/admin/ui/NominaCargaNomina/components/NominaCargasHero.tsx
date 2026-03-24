@@ -1,9 +1,7 @@
+import { Database, FileArchive, PlayCircle } from 'lucide-react';
+import s from './NominaCargasHero.module.css';
 
-
-import { CalendarRange, Layers3 } from 'lucide-react';
-import s from './NominaCargaContentHeader.module.css';
-
-export default function NominaCargaContentHeader() {
+export default function NominaCargasHero() {
   return (
     <header className={s.hero}>
       <div className={s.headerTop}>
@@ -11,22 +9,28 @@ export default function NominaCargaContentHeader() {
 
         <div className={s.metaBadges}>
           <span className={s.metaBadge}>
-            <CalendarRange size={14} />
-            Catalogos
+            <FileArchive size={14} />
+            Catálogo
           </span>
 
           <span className={s.metaBadge}>
-            <Layers3 size={14} />
-            Nomina
+            <Database size={14} />
+            Nómina
+          </span>
+
+          <span className={s.metaBadge}>
+            <PlayCircle size={14} />
+            Procesamiento
           </span>
         </div>
       </div>
 
       <div className={s.content}>
-        <h1 className={s.title}>Carga de Nomina</h1>
+        <h1 className={s.title}>Carga de catálogo y nómina</h1>
 
         <p className={s.subtitle}>
-          Consulta, crea y organiza catálogos de la subida de archivos de nomina 
+          Sube, ejecuta y da seguimiento a archivos operativos del flujo de
+          catálogo y staging de nómina desde una sola sesión.
         </p>
       </div>
     </header>

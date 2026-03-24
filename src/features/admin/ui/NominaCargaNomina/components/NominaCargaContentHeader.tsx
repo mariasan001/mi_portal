@@ -1,5 +1,4 @@
-import { ChevronLeft } from 'lucide-react';
-
+import { ArrowLeft } from 'lucide-react';
 import s from './NominaCargaContentHeader.module.css';
 
 type Props = {
@@ -19,13 +18,13 @@ export default function NominaCargaContentHeader({
     <div className={s.header}>
       <div className={s.copy}>
         <span className={s.eyebrow}>{eyebrow}</span>
-        <h3>{title}</h3>
+        <h3 className={s.title}>{title}</h3>
       </div>
 
-      {showBackButton ? (
-        <button type="button" className={s.backBtn} onClick={onBack}>
-          <ChevronLeft size={16} />
-          Regresar
+      {showBackButton && onBack ? (
+        <button type="button" className={s.button} onClick={onBack}>
+          <ArrowLeft size={16} />
+          Ver resultados
         </button>
       ) : null}
     </div>

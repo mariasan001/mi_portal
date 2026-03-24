@@ -1,14 +1,15 @@
 'use client';
 
-import { FormEvent, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import s from './NominaMonitoreoView.module.css';
 import { useNominaMonitoreo } from '../../hook/useNominaMonitoreo';
-
-function boolLabel(value: boolean) {
-  return value ? 'Sí' : 'No';
-}
+import NominaMonitoreoHero from './components/NominaMonitoreoHero';
+import NominaMonitoreoToolbar from './components/NominaMonitoreoToolbar';
+import NominaMonitoreoResultadoPanel from './components/NominaMonitoreoResultadoPanel';
+import NominaMonitoreoContentHeader from './components/NominaMonitoreoContentHeader';
+import EmptyState from './components/EmptyState';
 
 export default function NominaMonitoreoView() {
   const {
@@ -26,9 +27,7 @@ export default function NominaMonitoreoView() {
     [payPeriodId, loadingEstado]
   );
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const handleConsult = async () => {
     const periodoId = Number(payPeriodId);
 
     if (!Number.isFinite(periodoId) || periodoId <= 0) {
@@ -51,159 +50,45 @@ export default function NominaMonitoreoView() {
 
   return (
     <section className={s.page}>
-      <header className={s.hero}>
-        <div>
-          <p className={s.kicker}>Nómina</p>
-          <h1 className={s.title}>Monitoreo del periodo</h1>
-          <p className={s.subtitle}>
-            Consulta el estado resumido del periodo de nómina, incluyendo
-            banderas de carga, validación, liberación y versiones actuales.
-          </p>
-        </div>
-      </header>
+      <div className={s.stack}>
+        <NominaMonitoreoHero />
 
-      <article className={s.card}>
-        <div className={s.cardHead}>
-          <div>
-            <h2>Estado del periodo</h2>
-            <p className={s.cardText}>
-              Endpoint de monitoreo para revisar si el periodo ya tiene previa,
-              integrada, catálogo, validación, liberación y banderas
-              complementarias.
-            </p>
-          </div>
-
-          <span className={s.badge}>1</span>
-        </div>
-
-        <form className={s.inlineForm} onSubmit={handleSubmit}>
-          <label className={s.field}>
-            <span>payPeriodId</span>
-            <input
-              type="number"
-              min="1"
-              value={payPeriodId}
-              onChange={(e) => setPayPeriodId(e.target.value)}
-              placeholder="Ej. 202601"
-            />
-          </label>
-
-          <div className={s.actions}>
-            <button className={s.primaryBtn} type="submit" disabled={!canSubmit}>
-              {loadingEstado ? 'Consultando...' : 'Consultar estado'}
-            </button>
-
-            <button
-              className={s.secondaryBtn}
-              type="button"
-              onClick={handleReset}
-              disabled={loadingEstado}
-            >
-              Limpiar
-            </button>
-          </div>
-        </form>
+        <NominaMonitoreoToolbar
+          payPeriodId={payPeriodId}
+          loading={loadingEstado}
+          canSubmit={canSubmit}
+          onChange={setPayPeriodId}
+          onSubmit={handleConsult}
+          onReset={handleReset}
+        />
 
         {errorEstado ? <p className={s.error}>{errorEstado}</p> : null}
 
-        <div className={s.resultBlock}>
-          <h3>Resultado</h3>
+        <div className={s.resultCard}>
+          <NominaMonitoreoContentHeader
+            eyebrow="Resultado"
+            title={
+              estadoPeriodo
+                ? 'Estado del periodo consultado'
+                : 'Resultado del monitoreo'
+            }
+            description={
+              estadoPeriodo
+                ? 'Revisa el estado consolidado, versiones activas y banderas operativas del periodo.'
+                : 'Aquí se mostrará el resumen general del periodo una vez que realices una consulta.'
+            }
+          />
 
           {estadoPeriodo ? (
-            <>
-              <dl className={s.detailGrid}>
-                <div>
-                  <dt>periodStateId</dt>
-                  <dd>{estadoPeriodo.periodStateId}</dd>
-                </div>
-                <div>
-                  <dt>payPeriodId</dt>
-                  <dd>{estadoPeriodo.payPeriodId}</dd>
-                </div>
-                <div>
-                  <dt>periodCode</dt>
-                  <dd>{estadoPeriodo.periodCode}</dd>
-                </div>
-                <div>
-                  <dt>Año</dt>
-                  <dd>{estadoPeriodo.anio}</dd>
-                </div>
-                <div>
-                  <dt>Quincena</dt>
-                  <dd>{estadoPeriodo.quincena}</dd>
-                </div>
-                <div>
-                  <dt>Versión previa actual</dt>
-                  <dd>{estadoPeriodo.currentPreviaVersionId}</dd>
-                </div>
-                <div>
-                  <dt>Versión integrada actual</dt>
-                  <dd>{estadoPeriodo.currentIntegradaVersionId}</dd>
-                </div>
-                <div>
-                  <dt>releasedAt</dt>
-                  <dd>{estadoPeriodo.releasedAt ?? 'Sin fecha'}</dd>
-                </div>
-                <div>
-                  <dt>releasedByUserId</dt>
-                  <dd>{estadoPeriodo.releasedByUserId ?? 'Sin dato'}</dd>
-                </div>
-              </dl>
-
-              <div className={s.flagsGrid}>
-                <div className={estadoPeriodo.previaLoaded ? s.flagOk : s.flagOff}>
-                  <span>Previa cargada</span>
-                  <strong>{boolLabel(estadoPeriodo.previaLoaded)}</strong>
-                </div>
-
-                <div
-                  className={estadoPeriodo.integradaLoaded ? s.flagOk : s.flagOff}
-                >
-                  <span>Integrada cargada</span>
-                  <strong>{boolLabel(estadoPeriodo.integradaLoaded)}</strong>
-                </div>
-
-                <div className={estadoPeriodo.catalogLoaded ? s.flagOk : s.flagOff}>
-                  <span>Catálogo cargado</span>
-                  <strong>{boolLabel(estadoPeriodo.catalogLoaded)}</strong>
-                </div>
-
-                <div className={estadoPeriodo.validated ? s.flagOk : s.flagOff}>
-                  <span>Validado</span>
-                  <strong>{boolLabel(estadoPeriodo.validated)}</strong>
-                </div>
-
-                <div className={estadoPeriodo.released ? s.flagOk : s.flagOff}>
-                  <span>Liberado</span>
-                  <strong>{boolLabel(estadoPeriodo.released)}</strong>
-                </div>
-
-                <div
-                  className={
-                    estadoPeriodo.hasCancellations ? s.flagWarn : s.flagOff
-                  }
-                >
-                  <span>Tiene cancelaciones</span>
-                  <strong>{boolLabel(estadoPeriodo.hasCancellations)}</strong>
-                </div>
-
-                <div
-                  className={
-                    estadoPeriodo.hasReexpeditions ? s.flagWarn : s.flagOff
-                  }
-                >
-                  <span>Tiene reexpediciones</span>
-                  <strong>{boolLabel(estadoPeriodo.hasReexpeditions)}</strong>
-                </div>
-              </div>
-            </>
+            <NominaMonitoreoResultadoPanel detalle={estadoPeriodo} />
           ) : (
-            <p className={s.empty}>
-              Aún no has consultado el estado de ningún periodo.
-            </p>
+            <EmptyState
+              title="Aún no has consultado ningún periodo"
+              description="Captura un payPeriodId válido para revisar el estado general del proceso de nómina."
+            />
           )}
         </div>
-      </article>
+      </div>
     </section>
   );
 }

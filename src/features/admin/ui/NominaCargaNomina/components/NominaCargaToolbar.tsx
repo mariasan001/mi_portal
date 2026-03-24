@@ -1,9 +1,11 @@
 import { Play, Plus, Search } from 'lucide-react';
 
-
-
 import s from './NominaCargaToolbar.module.css';
-import { getToolbarPrimaryLabel, getToolbarSearchLabel, getToolbarSearchPlaceholder } from '../utils/nomina-cargas.utils';
+import {
+  getToolbarPrimaryLabel,
+  getToolbarSearchLabel,
+  getToolbarSearchPlaceholder,
+} from '../utils/nomina-cargas.utils';
 import { NominaCargaEntity } from '../types/nomina-cargas.types';
 
 type Props = {
@@ -31,13 +33,17 @@ export default function NominaCargaToolbar({
 }: Props) {
   return (
     <section className={s.toolbar}>
-      <div className={s.searchBlock}>
-        <label className={s.searchLabel}>{getToolbarSearchLabel(activeEntity)}</label>
+      <div className={s.left}>
+        <label className={s.label} htmlFor="nomina-carga-search-id">
+          {getToolbarSearchLabel(activeEntity)}
+        </label>
 
-        <div className={s.searchRow}>
+        <div className={s.searchSurface}>
           <div className={s.inputWrap}>
-            <Search size={16} />
+            <Search size={17} className={s.icon} />
+
             <input
+              id="nomina-carga-search-id"
               type="number"
               min="1"
               value={searchFileId}
@@ -48,34 +54,36 @@ export default function NominaCargaToolbar({
 
           <button
             type="button"
-            className={s.secondaryBtn}
+            className={s.searchBtn}
             disabled={!canSearch || loading}
             onClick={onConsult}
           >
-            Consultar
+            {loading ? 'Consultando...' : 'Consultar'}
           </button>
 
           <button
             type="button"
-            className={s.ghostBtn}
+            className={s.executeBtn}
             disabled={!canExecute || loading}
             onClick={onExecute}
           >
-            <Play size={15} />
-            Ejecutar
+            <Play size={16} />
+            <span>{loading ? 'Ejecutando...' : 'Ejecutar'}</span>
           </button>
         </div>
       </div>
 
-      <button
-        type="button"
-        className={s.primaryBtn}
-        onClick={onPrimaryAction}
-        disabled={loading}
-      >
-        {activeEntity === 'catalogo' ? <Plus size={16} /> : <Play size={16} />}
-        {getToolbarPrimaryLabel(activeEntity)}
-      </button>
+      <div className={s.right}>
+        <button
+          type="button"
+          className={s.createBtn}
+          onClick={onPrimaryAction}
+          disabled={loading}
+        >
+          {activeEntity === 'catalogo' ? <Plus size={17} /> : <Play size={17} />}
+          <span>{getToolbarPrimaryLabel(activeEntity)}</span>
+        </button>
+      </div>
     </section>
   );
 }

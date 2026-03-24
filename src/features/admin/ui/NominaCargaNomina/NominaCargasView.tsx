@@ -1,15 +1,15 @@
 'use client';
 
 import s from './NominaCargasView.module.css';
+
 import CatalogoResultadoPanel from './components/CatalogoResultadoPanel';
 import EmptyState from './components/EmptyState';
+import NominaCargaContentHeader from './components/NominaCargaContentHeader';
 import NominaCargaEntityCards from './components/NominaCargaEntityCards';
 import NominaCargaToolbar from './components/NominaCargaToolbar';
 import NominaCargaUploadModal from './components/NominaCargaUploadModal';
-import NominaCargaContentHeader from './components/NominaCargasHero';
 import NominaCargasHero from './components/NominaCargasHero';
 import NominaResultadoPanel from './components/NominaResultadoPanel';
-
 
 import { useNominaCargasView } from './hooks/useNominaCargasView';
 
@@ -64,10 +64,13 @@ export default function NominaCargasView() {
         ) : null}
 
         <section
-          className={`${s.contentShell} ${vm.shouldDimContent ? s.contentShellIdle : ''}`}
+          className={`${s.contentShell} ${
+            vm.shouldDimContent ? s.contentShellIdle : ''
+          }`}
         >
           <NominaCargaContentHeader
-        
+            eyebrow={getContentEyebrow(vm.activeEntity)}
+            title={getContentTitle(vm.activeEntity)}
           />
 
           {vm.activeEntity === 'catalogo' ? (
