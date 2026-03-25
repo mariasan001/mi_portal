@@ -30,7 +30,7 @@ import {
 } from 'lucide-react';
 
 const ICONOS: Record<string, LucideIcon> = {
-  // aliases simples
+
   home: Home,
   users: Users,
   workflow: Workflow,
@@ -48,20 +48,13 @@ const ICONOS: Record<string, LucideIcon> = {
   scansearch: ScanSearch,
   eye: Eye,
   badgecheck: BadgeCheck,
-
-  // monitoreo
   activity: Activity,
   chartnoaxescolumn: ChartNoAxesColumn,
   radar: Radar,
   scaneye: ScanEye,
   timerreset: TimerReset,
-
-  // liberación
   rocket: Rocket,
-
   shieldcheck: ShieldCheck,
-
-  // nombres exactos que puede mandar el backend
   Home,
   Users,
   Workflow,
@@ -79,14 +72,12 @@ const ICONOS: Record<string, LucideIcon> = {
   ScanSearch,
   Eye,
   BadgeCheck,
-
   Activity,
   ChartNoAxesColumn,
   Radar,
   ScanEye,
   TimerReset,
   Rocket,
-
   ShieldCheck,
 };
 

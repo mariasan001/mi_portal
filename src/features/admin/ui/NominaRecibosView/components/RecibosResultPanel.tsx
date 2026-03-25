@@ -1,30 +1,20 @@
-import s from '../NominaRecibosView.module.css';
+import { formatUnknownValue } from '../utils/nomina-recibos-view.utils';
+import s from './RecibosResultPanel.module.css';
 
 type Props = {
   title: string;
   data: Record<string, unknown> | null;
 };
 
-function formatValue(value: unknown): string {
-  if (typeof value === 'boolean') {
-    return value ? 'Sí' : 'No';
-  }
-
-  if (value === null || value === undefined) {
-    return '—';
-  }
-
-  return String(value);
-}
-
 export default function RecibosResultPanel({ title, data }: Props) {
   if (!data) {
     return (
-      <section className={s.resultPanel}>
-        <header className={s.resultPanelHeader}>
+      <section className={s.panel}>
+        <header className={s.header}>
           <h3>{title}</h3>
         </header>
-        <div className={s.emptyResult}>
+
+        <div className={s.empty}>
           Aún no hay resultado disponible para esta acción.
         </div>
       </section>
@@ -32,16 +22,16 @@ export default function RecibosResultPanel({ title, data }: Props) {
   }
 
   return (
-    <section className={s.resultPanel}>
-      <header className={s.resultPanelHeader}>
+    <section className={s.panel}>
+      <header className={s.header}>
         <h3>{title}</h3>
       </header>
 
-      <dl className={s.resultGrid}>
+      <dl className={s.grid}>
         {Object.entries(data).map(([key, value]) => (
-          <div className={s.resultItem} key={key}>
+          <div className={s.item} key={key}>
             <dt>{key}</dt>
-            <dd>{formatValue(value)}</dd>
+            <dd>{formatUnknownValue(value)}</dd>
           </div>
         ))}
       </dl>
