@@ -1,11 +1,21 @@
 'use client';
 
-import { FormEvent, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
-
 
 import s from './NominaProcesamientoView.module.css';
 import { useNominaProcesamiento } from '../../hook/useNominaProcesamiento';
+
+import EmptyState from './components/EmptyState';
+import NominaProcesamientoHero from './components/NominaProcesamientoHero';
+import NominaProcesamientoEntityCards from './components/NominaProcesamientoEntityCards';
+import NominaProcesamientoToolbar from './components/NominaProcesamientoToolbar';
+import NominaProcesamientoContentHeader from './components/NominaProcesamientoContentHeader';
+import NominaProcesamientoSummaryPanel from './components/NominaProcesamientoSummaryPanel';
+import NominaProcesamientoPreviewTable from './components/NominaProcesamientoPreviewTable';
+import NominaProcesamientoErrorsTable from './components/NominaProcesamientoErrorsTable';
+
+type ProcesamientoView = 'summary' | 'preview' | 'errors';
 
 export default function NominaProcesamientoView() {
   const {
@@ -23,320 +33,184 @@ export default function NominaProcesamientoView() {
     consultarErrors,
   } = useNominaProcesamiento();
 
-  const [summaryFileId, setSummaryFileId] = useState('');
-  const [previewFileId, setPreviewFileId] = useState('');
-  const [previewLimit, setPreviewLimit] = useState('20');
-  const [errorsFileId, setErrorsFileId] = useState('');
-  const [errorsLimit, setErrorsLimit] = useState('50');
+  const [activeView, setActiveView] = useState<ProcesamientoView>('summary');
 
-  const canSummary = useMemo(
-    () => Number(summaryFileId) > 0 && !loadingSummary,
-    [summaryFileId, loadingSummary]
-  );
+  const [fileId, setFileId] = useState('');
+  const [limit, setLimit] = useState('20');
 
-  const canPreview = useMemo(
-    () =>
-      Number(previewFileId) > 0 &&
-      Number(previewLimit) > 0 &&
-      !loadingPreview,
-    [previewFileId, previewLimit, loadingPreview]
-  );
+  const loading = useMemo(() => {
+    if (activeView === 'summary') return loadingSummary;
+    if (activeView === 'preview') return loadingPreview;
+    return loadingErrors;
+  }, [activeView, loadingSummary, loadingPreview, loadingErrors]);
 
-  const canErrors = useMemo(
-    () =>
-      Number(errorsFileId) > 0 &&
-      Number(errorsLimit) > 0 &&
-      !loadingErrors,
-    [errorsFileId, errorsLimit, loadingErrors]
-  );
+  const currentError = useMemo(() => {
+    if (activeView === 'summary') return errorSummary;
+    if (activeView === 'preview') return errorPreview;
+    return errorErrors;
+  }, [activeView, errorSummary, errorPreview, errorErrors]);
 
-  const handleSummary = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const canSubmit = useMemo(() => {
+    const numericFileId = Number(fileId);
+    const numericLimit = Number(limit);
 
-    const fileId = Number(summaryFileId);
+    if (activeView === 'summary') {
+      return numericFileId > 0 && !loading;
+    }
 
-    if (!Number.isFinite(fileId) || fileId <= 0) {
-      toast.warning('Captura un fileId válido para resumen.');
+    return numericFileId > 0 && numericLimit > 0 && !loading;
+  }, [activeView, fileId, limit, loading]);
+
+  const handleConsult = async () => {
+    const numericFileId = Number(fileId);
+    const numericLimit = Number(limit);
+
+    if (!Number.isFinite(numericFileId) || numericFileId <= 0) {
+      toast.warning('Captura un fileId válido.');
+      return;
+    }
+
+    if (
+      (activeView === 'preview' || activeView === 'errors') &&
+      (!Number.isFinite(numericLimit) || numericLimit <= 0)
+    ) {
+      toast.warning('Captura un límite válido.');
       return;
     }
 
     try {
-      await consultarSummary(fileId);
-      toast.success('Resumen consultado correctamente.');
-    } catch {
-      toast.error('No se pudo consultar el resumen.');
-    }
-  };
+      if (activeView === 'summary') {
+        await consultarSummary(numericFileId);
+        toast.success('Resumen consultado correctamente.');
+        return;
+      }
 
-  const handlePreview = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+      if (activeView === 'preview') {
+        await consultarPreview(numericFileId, numericLimit);
+        toast.success('Preview consultado correctamente.');
+        return;
+      }
 
-    const fileId = Number(previewFileId);
-    const limit = Number(previewLimit);
-
-    if (!Number.isFinite(fileId) || fileId <= 0) {
-      toast.warning('Captura un fileId válido para preview.');
-      return;
-    }
-
-    if (!Number.isFinite(limit) || limit <= 0) {
-      toast.warning('Captura un límite válido para preview.');
-      return;
-    }
-
-    try {
-      await consultarPreview(fileId, limit);
-      toast.success('Preview consultado correctamente.');
-    } catch {
-      toast.error('No se pudo consultar el preview.');
-    }
-  };
-
-  const handleErrors = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const fileId = Number(errorsFileId);
-    const limit = Number(errorsLimit);
-
-    if (!Number.isFinite(fileId) || fileId <= 0) {
-      toast.warning('Captura un fileId válido para errores.');
-      return;
-    }
-
-    if (!Number.isFinite(limit) || limit <= 0) {
-      toast.warning('Captura un límite válido para errores.');
-      return;
-    }
-
-    try {
-      await consultarErrors(fileId, limit);
+      await consultarErrors(numericFileId, numericLimit);
       toast.success('Errores consultados correctamente.');
     } catch {
+      if (activeView === 'summary') {
+        toast.error('No se pudo consultar el resumen.');
+        return;
+      }
+
+      if (activeView === 'preview') {
+        toast.error('No se pudo consultar el preview.');
+        return;
+      }
+
       toast.error('No se pudo consultar el detalle de errores.');
     }
   };
 
+  const handleReset = () => {
+    setFileId('');
+    setLimit(activeView === 'errors' ? '50' : '20');
+  };
+
+  const resultHeader = useMemo(() => {
+    if (activeView === 'summary') {
+      return {
+        eyebrow: 'Resultado',
+        title: summary
+          ? 'Resumen del procesamiento consultado'
+          : 'Resumen del procesamiento',
+        description: summary
+          ? 'Aquí se muestran los indicadores principales y el estado general del archivo procesado.'
+          : 'Consulta un fileId para visualizar métricas generales, estatus y conteos clave del procesamiento.',
+      };
+    }
+
+    if (activeView === 'preview') {
+      return {
+        eyebrow: 'Resultado',
+        title: previewRows.length
+          ? 'Vista previa del archivo consultado'
+          : 'Preview del archivo',
+        description:
+          'Revisa una muestra de filas procesadas para validar la información operativa del archivo.',
+      };
+    }
+
+    return {
+      eyebrow: 'Resultado',
+      title: errorRows.length
+        ? 'Detalle de errores consultados'
+        : 'Filas con error',
+      description:
+        'Consulta filas con incidencias detectadas durante el procesamiento para revisar el motivo del error.',
+    };
+  }, [activeView, summary, previewRows.length, errorRows.length]);
+
   return (
     <section className={s.page}>
-      <header className={s.hero}>
-        <div>
-          <p className={s.kicker}>Nómina</p>
-          <h1 className={s.title}>Revisión del procesamiento</h1>
-          <p className={s.subtitle}>
-            Consulta el resumen del staging, una muestra de filas procesadas y
-            el detalle de filas con error por archivo.
-          </p>
-        </div>
-      </header>
-
       <div className={s.stack}>
-        <article className={s.card}>
-          <div className={s.cardHead}>
-            <h2>Resumen de staging</h2>
-            <span className={s.badge}>1</span>
-          </div>
+        <NominaProcesamientoHero />
 
-          <form className={s.inlineForm} onSubmit={handleSummary}>
-            <label className={s.field}>
-              <span>fileId</span>
-              <input
-                type="number"
-                min="1"
-                value={summaryFileId}
-                onChange={(e) => setSummaryFileId(e.target.value)}
-                placeholder="Ej. 40"
-              />
-            </label>
+        <NominaProcesamientoEntityCards
+          activeView={activeView}
+          onSelect={setActiveView}
+        />
 
-            <button className={s.primaryBtn} type="submit" disabled={!canSummary}>
-              {loadingSummary ? 'Consultando...' : 'Consultar resumen'}
-            </button>
-          </form>
+        <NominaProcesamientoToolbar
+          activeView={activeView}
+          fileId={fileId}
+          limit={limit}
+          loading={loading}
+          canSubmit={canSubmit}
+          onFileIdChange={setFileId}
+          onLimitChange={setLimit}
+          onConsult={handleConsult}
+          onReset={handleReset}
+        />
 
-          {errorSummary ? <p className={s.error}>{errorSummary}</p> : null}
+        {currentError ? <p className={s.error}>{currentError}</p> : null}
 
-          <div className={s.resultBlock}>
-            <h3>Resultado</h3>
+        <div className={s.resultCard}>
+          <NominaProcesamientoContentHeader
+            eyebrow={resultHeader.eyebrow}
+            title={resultHeader.title}
+            description={resultHeader.description}
+          />
 
-            {summary ? (
-              <dl className={s.detailGrid}>
-                <div><dt>fileId</dt><dd>{summary.fileId}</dd></div>
-                <div><dt>fileType</dt><dd>{summary.fileType}</dd></div>
-                <div><dt>fileStatus</dt><dd>{summary.fileStatus}</dd></div>
-                <div><dt>fileName</dt><dd>{summary.fileName}</dd></div>
-                <div><dt>filePath</dt><dd>{summary.filePath}</dd></div>
-                <div><dt>versionId</dt><dd>{summary.versionId}</dd></div>
-                <div><dt>stage</dt><dd>{summary.stage}</dd></div>
-                <div><dt>versionStatus</dt><dd>{summary.versionStatus}</dd></div>
-                <div><dt>payPeriodId</dt><dd>{summary.payPeriodId}</dd></div>
-                <div><dt>periodCode</dt><dd>{summary.periodCode}</dd></div>
-                <div><dt>Total filas</dt><dd>{summary.totalRowsInFile}</dd></div>
-                <div><dt>Procesadas</dt><dd>{summary.processedRows}</dd></div>
-                <div><dt>Con error</dt><dd>{summary.errorRows}</dd></div>
-              </dl>
+          {activeView === 'summary' ? (
+            summary ? (
+              <NominaProcesamientoSummaryPanel detalle={summary} />
             ) : (
-              <p className={s.empty}>Aún no has consultado ningún resumen.</p>
-            )}
-          </div>
-        </article>
-
-        <article className={s.card}>
-          <div className={s.cardHead}>
-            <h2>Preview de staging</h2>
-            <span className={s.badge}>2</span>
-          </div>
-
-          <form className={s.inlineForm2} onSubmit={handlePreview}>
-            <label className={s.field}>
-              <span>fileId</span>
-              <input
-                type="number"
-                min="1"
-                value={previewFileId}
-                onChange={(e) => setPreviewFileId(e.target.value)}
-                placeholder="Ej. 40"
+              <EmptyState
+                title="Aún no has consultado ningún resumen"
+                description="Captura un fileId válido para revisar las métricas generales del archivo procesado."
               />
-            </label>
+            )
+          ) : null}
 
-            <label className={s.field}>
-              <span>limit</span>
-              <input
-                type="number"
-                min="1"
-                value={previewLimit}
-                onChange={(e) => setPreviewLimit(e.target.value)}
-                placeholder="20"
+          {activeView === 'preview' ? (
+            previewRows.length ? (
+              <NominaProcesamientoPreviewTable rows={previewRows} />
+            ) : (
+              <EmptyState
+                title="Aún no has cargado una vista previa"
+                description="Consulta un fileId y un límite para visualizar una muestra de filas procesadas."
               />
-            </label>
+            )
+          ) : null}
 
-            <button className={s.primaryBtn} type="submit" disabled={!canPreview}>
-              {loadingPreview ? 'Consultando...' : 'Consultar preview'}
-            </button>
-          </form>
-
-          {errorPreview ? <p className={s.error}>{errorPreview}</p> : null}
-
-          <div className={s.tableWrap}>
-            <table className={s.table}>
-              <thead>
-                <tr>
-                  <th>rowNum</th>
-                  <th>fileType</th>
-                  <th>payPeriodCode</th>
-                  <th>receiptPeriodCode</th>
-                  <th>neyemp</th>
-                  <th>neyrfc</th>
-                  <th>negnom</th>
-                  <th>necpza</th>
-                  <th>nominaTipo</th>
-                  <th>loadStatus</th>
-                </tr>
-              </thead>
-              <tbody>
-                {previewRows.length ? (
-                  previewRows.map((row) => (
-                    <tr key={`${row.fileId}-${row.rowNum}`}>
-                      <td>{row.rowNum}</td>
-                      <td>{row.fileType}</td>
-                      <td>{row.payPeriodCode}</td>
-                      <td>{row.receiptPeriodCode}</td>
-                      <td>{row.neyemp}</td>
-                      <td>{row.neyrfc}</td>
-                      <td>{row.negnom}</td>
-                      <td>{row.necpza}</td>
-                      <td>{row.nominaTipo}</td>
-                      <td>{row.loadStatus}</td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={10} className={s.emptyCell}>
-                      Aún no hay preview cargado.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </article>
-
-        <article className={s.card}>
-          <div className={s.cardHead}>
-            <h2>Filas con error</h2>
-            <span className={s.badge}>3</span>
-          </div>
-
-          <form className={s.inlineForm2} onSubmit={handleErrors}>
-            <label className={s.field}>
-              <span>fileId</span>
-              <input
-                type="number"
-                min="1"
-                value={errorsFileId}
-                onChange={(e) => setErrorsFileId(e.target.value)}
-                placeholder="Ej. 40"
+          {activeView === 'errors' ? (
+            errorRows.length ? (
+              <NominaProcesamientoErrorsTable rows={errorRows} />
+            ) : (
+              <EmptyState
+                title="Aún no has consultado filas con error"
+                description="Consulta un fileId y un límite para revisar las incidencias detectadas en el procesamiento."
               />
-            </label>
-
-            <label className={s.field}>
-              <span>limit</span>
-              <input
-                type="number"
-                min="1"
-                value={errorsLimit}
-                onChange={(e) => setErrorsLimit(e.target.value)}
-                placeholder="50"
-              />
-            </label>
-
-            <button className={s.primaryBtn} type="submit" disabled={!canErrors}>
-              {loadingErrors ? 'Consultando...' : 'Consultar errores'}
-            </button>
-          </form>
-
-          {errorErrors ? <p className={s.error}>{errorErrors}</p> : null}
-
-          <div className={s.tableWrap}>
-            <table className={s.table}>
-              <thead>
-                <tr>
-                  <th>rowNum</th>
-                  <th>fileType</th>
-                  <th>payPeriodCode</th>
-                  <th>receiptPeriodCode</th>
-                  <th>neyemp</th>
-                  <th>necpza</th>
-                  <th>nominaTipo</th>
-                  <th>isReexpedition</th>
-                  <th>errorDetail</th>
-                </tr>
-              </thead>
-              <tbody>
-                {errorRows.length ? (
-                  errorRows.map((row) => (
-                    <tr key={`${row.fileId}-${row.rowNum}`}>
-                      <td>{row.rowNum}</td>
-                      <td>{row.fileType}</td>
-                      <td>{row.payPeriodCode}</td>
-                      <td>{row.receiptPeriodCode}</td>
-                      <td>{row.neyemp}</td>
-                      <td>{row.necpza}</td>
-                      <td>{row.nominaTipo}</td>
-                      <td>{row.isReexpedition ? 'Sí' : 'No'}</td>
-                      <td>{row.errorDetail}</td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={9} className={s.emptyCell}>
-                      Aún no hay errores cargados.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </article>
+            )
+          ) : null}
+        </div>
       </div>
     </section>
   );

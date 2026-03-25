@@ -1,5 +1,5 @@
-import NominaCatalogoView from '@/features/admin/ui/NominaCatalogoView/NominaCatalogoView';
+import NominaProcesamientoView from "@/features/admin/ui/NominaProcesamientoView/NominaProcesamientoView";
 
-export default function CatalogoPage() {
-  return <NominaCatalogoView />;
+export default function RevicionPage() {
+  return <NominaProcesamientoView />;
 }

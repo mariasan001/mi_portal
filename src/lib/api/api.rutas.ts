@@ -54,7 +54,18 @@ export const API_RUTAS = {
     monitoreoPeriodo: (payPeriodId: number | string) =>
       `/api/admin/nomina/state/periodo/${encodeURIComponent(String(payPeriodId))}`,
 
-    
+    liberarVersion: (versionId: number | string) =>
+      `/api/admin/nomina/releases/versions/${encodeURIComponent(String(versionId))}`,
+
+    generarSnapshots: (versionId: number | string) =>
+      `/api/admin/nomina/snapshots/generate/${encodeURIComponent(String(versionId))}`,
+
+    generarRecibos: (versionId: number | string) =>
+      `/api/admin/nomina/receipts/generate/${encodeURIComponent(String(versionId))}`,
+
+    syncVersionCore: (versionId: number | string) =>
+      `/api/admin/nomina/core-sync/versions/${encodeURIComponent(String(versionId))}`,
+
   },
   
 } as const;
