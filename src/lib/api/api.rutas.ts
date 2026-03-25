@@ -65,5 +65,10 @@ export const API_RUTAS = {
 
     coreSyncVersion: (versionId: number | string) =>
       `/api/admin/nomina/core-sync/versions/${encodeURIComponent(String(versionId))}`,
+
+    auditReleases: '/api/admin/nomina/audit/releases',
+    auditCancellations: '/api/admin/nomina/audit/cancellations',
+
+    receiptsBySpPeriod: '/api/admin/nomina/receipts/by-sp-period',
   },
 } as const;
