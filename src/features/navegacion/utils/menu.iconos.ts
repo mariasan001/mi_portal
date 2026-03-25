@@ -2,18 +2,28 @@ import React from 'react';
 import type { ReactNode } from 'react';
 import type { LucideIcon, LucideProps } from 'lucide-react';
 import {
+  Activity,
+  BadgeCheck,
   BookCopy,
   CalendarRange,
+  ChartNoAxesColumn,
   CircleHelp,
+  ClipboardCheck,
   ClipboardList,
+  Eye,
   FileSearch,
   FolderSearch,
   GitBranch,
   Home,
+  Radar,
   Receipt,
+  Rocket,
+  ScanEye,
+  ScanSearch,
   Search,
   Settings,
   ShieldCheck,
+  TimerReset,
   Upload,
   Users,
   Workflow,
@@ -34,6 +44,21 @@ const ICONOS: Record<string, LucideIcon> = {
   filesearch: FileSearch,
   foldersearch: FolderSearch,
   clipboardlist: ClipboardList,
+  clipboardcheck: ClipboardCheck,
+  scansearch: ScanSearch,
+  eye: Eye,
+  badgecheck: BadgeCheck,
+
+  // monitoreo
+  activity: Activity,
+  chartnoaxescolumn: ChartNoAxesColumn,
+  radar: Radar,
+  scaneye: ScanEye,
+  timerreset: TimerReset,
+
+  // liberación
+  rocket: Rocket,
+
   shieldcheck: ShieldCheck,
 
   // nombres exactos que puede mandar el backend
@@ -50,6 +75,18 @@ const ICONOS: Record<string, LucideIcon> = {
   FileSearch,
   FolderSearch,
   ClipboardList,
+  ClipboardCheck,
+  ScanSearch,
+  Eye,
+  BadgeCheck,
+
+  Activity,
+  ChartNoAxesColumn,
+  Radar,
+  ScanEye,
+  TimerReset,
+  Rocket,
+
   ShieldCheck,
 };
 
