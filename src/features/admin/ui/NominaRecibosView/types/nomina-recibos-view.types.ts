@@ -1,28 +1,8 @@
-export type NominaRecibosStepStatus =
-  | 'idle'
-  | 'ready'
-  | 'success'
-  | 'blocked'
-  | 'running';
-
-export type NominaRecibosStepId =
+export type NominaRecibosAction =
   | 'snapshots'
-  | 'receipts'
-  | 'release'
-  | 'coreSync';
-
-export type NominaRecibosFlowItem = {
-  id: NominaRecibosStepId;
-  step: string;
-  title: string;
-  description: string;
-  helper?: string;
-  status: NominaRecibosStepStatus;
-  disabled: boolean;
-  loading: boolean;
-  error: string | null;
-  onRun: () => void;
-};
+  | 'recibos'
+  | 'liberacion'
+  | 'sincronizacion';
 
 export type NominaRecibosFormState = {
   versionId: string;

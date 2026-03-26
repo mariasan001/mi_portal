@@ -1,0 +1,75 @@
+.subsection {
+  display: grid;
+  gap: 12px;
+}
+
+.subsectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.subsectionHeader h3 {
+  margin: 0;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.subsectionHeader span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: rgba(188, 148, 90, 0.14);
+  color: #7b5a2f;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.tableWrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--border-soft);
+  border-radius: 18px;
+  background: var(--surface);
+}
+
+.table {
+  width: 100%;
+  min-width: 980px;
+  border-collapse: collapse;
+}
+
+.table thead th {
+  padding: 14px 16px;
+  text-align: left;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  border-bottom: 1px solid var(--border-soft);
+  background: var(--surface-2);
+  white-space: nowrap;
+}
+
+.table tbody td {
+  padding: 14px 16px;
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.5;
+  border-bottom: 1px solid var(--border-soft);
+  vertical-align: top;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.emptyCell {
+  text-align: center;
+  color: var(--muted);
+  padding: 24px 16px;
+}

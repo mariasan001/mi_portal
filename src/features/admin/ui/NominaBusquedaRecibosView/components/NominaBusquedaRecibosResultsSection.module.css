@@ -22,3 +22,8 @@
   font-size: 12px;
   line-height: 1.55;
 }
+
+.stack {
+  display: grid;
+  gap: 18px;
+}

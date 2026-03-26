@@ -1,17 +1,34 @@
+import { FileText, RefreshCw } from 'lucide-react';
 import s from './NominaRecibosHero.module.css';
 
 export default function NominaRecibosHero() {
   return (
-    <section className={s.hero}>
+    <header className={s.hero}>
+      <div className={s.headerTop}>
+        <span className={s.kicker}>Nómina</span>
+
+        <div className={s.metaBadges}>
+          <span className={s.metaBadge}>
+            <FileText size={14} />
+            Recibos
+          </span>
+
+          <span className={s.metaBadge}>
+            <RefreshCw size={14} />
+            Liberación y sincronización
+          </span>
+        </div>
+      </div>
+
       <div className={s.content}>
-        <p className={s.eyebrow}>Administración de nómina</p>
-        <h1>Recibos, liberación y sincronización</h1>
-        <p className={s.description}>
-          Ejecuta el flujo operativo sobre una versión: snapshots, generación de
-          recibos, liberación y sincronización complementaria a core, dentro de
-          una misma sesión visual y administrativa.
+        <h1 className={s.title}>Recibos, liberación y sincronización</h1>
+
+        <p className={s.subtitle}>
+          Ejecuta el flujo operativo sobre una versión para generar snapshots,
+          construir recibos, liberar la publicación y realizar la sincronización
+          complementaria a core.
         </p>
       </div>
-    </section>
+    </header>
   );
 }

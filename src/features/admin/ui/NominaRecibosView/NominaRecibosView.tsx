@@ -1,8 +1,8 @@
 'use client';
 
 import EmptyState from './components/EmptyState';
+import NominaRecibosActionCards from './components/NominaRecibosActionCards';
 import NominaRecibosContentHeader from './components/NominaRecibosContentHeader';
-import NominaRecibosFlowSection from './components/NominaRecibosFlowSection';
 import NominaRecibosHero from './components/NominaRecibosHero';
 import NominaRecibosResultsSection from './components/NominaRecibosResultsSection';
 import NominaRecibosToolbar from './components/NominaRecibosToolbar';
@@ -17,47 +17,51 @@ export default function NominaRecibosView() {
       <div className={s.stack}>
         <NominaRecibosHero />
 
+        <NominaRecibosActionCards
+          activeAction={vm.activeAction}
+          onSelect={vm.setActiveAction}
+        />
+
         <NominaRecibosToolbar
+          activeAction={vm.activeAction}
           versionId={vm.form.versionId}
           releasedByUserId={vm.form.releasedByUserId}
           comments={vm.form.comments}
+          loading={vm.currentLoading}
+          canExecute={vm.canExecute}
           onChangeVersionId={(value) => vm.updateField('versionId', value)}
           onChangeReleasedByUserId={(value) =>
             vm.updateField('releasedByUserId', value)
           }
           onChangeComments={(value) => vm.updateField('comments', value)}
+          onExecute={vm.executeActiveAction}
         />
 
-        <div className={s.contentShell}>
+        <section className={s.resultContainer}>
           <NominaRecibosContentHeader
-            title="Publicación de recibos por versión"
-            description="Esta sesión concentra el flujo principal de generación, liberación y sincronización complementaria de recibos sobre una misma versión operativa."
+            eyebrow="Resultado"
+            title={vm.currentTitle}
+            description={vm.currentDescription}
             status={vm.generalStatus}
             summaryItems={vm.summaryItems}
+            showSummary={vm.hasAnyResult}
           />
 
-          <div className={s.contentGrid}>
-            <div className={s.leftColumn}>
-              <NominaRecibosFlowSection items={vm.flowItems} />
-            </div>
-
-            <div className={s.rightColumn}>
-              {vm.hasAnyResult ? (
-                <NominaRecibosResultsSection
-                  snapshots={vm.results.snapshots}
-                  receipts={vm.results.receipts}
-                  release={vm.results.release}
-                  coreSync={vm.results.coreSync}
-                />
+          {vm.hasAnyResult ? (
+              <NominaRecibosResultsSection
+              activeAction={vm.activeAction}
+              snapshots={vm.results.snapshots}
+              receipts={vm.results.receipts}
+              release={vm.results.release}
+              coreSync={vm.results.coreSync}
+            />
               ) : (
-                <EmptyState
-                  title="Aún no hay resultados para mostrar"
-                  description="Captura una versión válida y ejecuta el flujo paso a paso para visualizar aquí los resultados de snapshots, recibos, liberación y sincronización."
-                />
-              )}
-            </div>
-          </div>
-        </div>
+            <EmptyState
+              title="Aún no has ejecutado ninguna acción"
+              description="Selecciona una opción, captura una versión válida y ejecuta la operación correspondiente."
+            />
+          )}
+        </section>
       </div>
     </section>
   );

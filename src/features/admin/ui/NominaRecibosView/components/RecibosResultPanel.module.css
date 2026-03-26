@@ -1,50 +1,91 @@
 .panel {
-  background: #ffffff;
-  border: 1px solid rgba(10, 10, 10, 0.08);
-  border-radius: 22px;
-  padding: 18px;
   display: grid;
-  gap: 16px;
-  box-shadow: 0 12px 28px rgba(10, 10, 10, 0.04);
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid var(--border-soft);
+  border-radius: 18px;
+  background: var(--surface);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-soft);
 }
 
 .header h3 {
   margin: 0;
-  font-size: 1rem;
-  color: #0f172a;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.2;
 }
 
 .empty {
-  border-radius: 16px;
+  min-height: 140px;
+  display: grid;
+  place-items: center;
   padding: 18px;
-  background: #f8fafc;
-  color: #64748b;
-  border: 1px dashed rgba(100, 116, 139, 0.24);
+  border: 1px dashed var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  text-align: center;
+}
+
+.empty p {
+  margin: 0;
+  max-width: 40ch;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
 }
 
 .grid {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
 }
 
 .item {
   display: grid;
-  gap: 4px;
-  border-radius: 14px;
-  padding: 12px 14px;
-  background: #f8fafc;
-  border: 1px solid rgba(15, 23, 42, 0.06);
+  gap: 6px;
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px solid var(--border-soft);
+  background: var(--surface-2);
 }
 
 .item dt {
-  font-size: 0.8rem;
-  color: #64748b;
-  text-transform: capitalize;
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  word-break: break-word;
 }
 
 .item dd {
   margin: 0;
-  color: #0f172a;
-  font-weight: 600;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.45;
   word-break: break-word;
+}
+
+@media (max-width: 840px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .panel {
+    padding: 16px;
+  }
+
+  .empty {
+    min-height: 120px;
+  }
 }

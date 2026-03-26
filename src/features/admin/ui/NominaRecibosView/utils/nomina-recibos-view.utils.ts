@@ -1,7 +1,4 @@
-import type {
-  NominaRecibosStepStatus,
-  NominaRecibosSummaryItem,
-} from '../types/nomina-recibos-view.types';
+import type { NominaRecibosSummaryItem } from '../types/nomina-recibos-view.types';
 
 export function parsePositiveInt(value: string): number | null {
   const parsed = Number(value);
@@ -33,21 +30,6 @@ export function formatUnknownValue(value: unknown): string {
   return String(value);
 }
 
-export function getStepStatusLabel(status: NominaRecibosStepStatus): string {
-  switch (status) {
-    case 'success':
-      return 'Completado';
-    case 'ready':
-      return 'Listo';
-    case 'blocked':
-      return 'Bloqueado';
-    case 'running':
-      return 'Procesando';
-    default:
-      return 'Pendiente';
-  }
-}
-
 export function getGeneralFlowStatus(params: {
   snapshotsDone: boolean;
   receiptsDone: boolean;
@@ -57,18 +39,26 @@ export function getGeneralFlowStatus(params: {
   const { snapshotsDone, receiptsDone, releaseDone, coreSyncDone } = params;
 
   if (releaseDone && coreSyncDone) {
-    return 'Flujo principal completado y sincronización complementaria ejecutada.';
+    return 'Liberación completada y sincronización ejecutada.';
   }
 
   if (releaseDone) {
-    return 'Flujo principal completado.';
+    return 'La versión ya fue liberada.';
   }
 
-  if (snapshotsDone || receiptsDone || coreSyncDone) {
-    return 'Hay avance parcial en la sesión.';
+  if (receiptsDone) {
+    return 'Los recibos ya fueron generados para la versión seleccionada.';
   }
 
-  return 'Aún no se han ejecutado acciones.';
+  if (snapshotsDone) {
+    return 'Los snapshots ya fueron generados para la versión seleccionada.';
+  }
+
+  if (coreSyncDone) {
+    return 'La sincronización a core ya fue ejecutada.';
+  }
+
+  return 'Aún no se han ejecutado acciones para esta versión.';
 }
 
 export function buildSummary(params: {
@@ -103,7 +93,7 @@ export function buildSummary(params: {
       value: params.releaseDone ? 'Completada' : 'Pendiente',
     },
     {
-      label: 'Sync core',
+      label: 'Sincronización',
       value: params.coreSyncDone ? 'Ejecutada' : 'Pendiente',
     },
   ];

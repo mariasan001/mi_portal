@@ -10,7 +10,7 @@ import {
   parsePositiveInt,
 } from '../utils/nomina-recibos-view.utils';
 import type {
-  NominaRecibosFlowItem,
+  NominaRecibosAction,
   NominaRecibosFormState,
 } from '../types/nomina-recibos-view.types';
 
@@ -22,6 +22,9 @@ export function useNominaRecibosView() {
     releasedByUserId: '',
     comments: '',
   });
+
+  const [activeAction, setActiveAction] =
+    useState<NominaRecibosAction>('snapshots');
 
   const versionIdParsed = useMemo(
     () => parsePositiveInt(form.versionId),
@@ -57,7 +60,7 @@ export function useNominaRecibosView() {
 
   const runSnapshots = useCallback(async (): Promise<void> => {
     if (!versionIdParsed) {
-      toast.error('Debes capturar un versionId válido.');
+      toast.error('Debes capturar un Version ID válido.');
       return;
     }
 
@@ -71,7 +74,12 @@ export function useNominaRecibosView() {
 
   const runReceipts = useCallback(async (): Promise<void> => {
     if (!versionIdParsed) {
-      toast.error('Debes capturar un versionId válido.');
+      toast.error('Debes capturar un Version ID válido.');
+      return;
+    }
+
+    if (!snapshotsDone) {
+      toast.error('Primero debes generar los snapshots.');
       return;
     }
 
@@ -81,16 +89,21 @@ export function useNominaRecibosView() {
     } catch {
       toast.error('No se pudieron generar los recibos.');
     }
-  }, [domain, versionIdParsed]);
+  }, [domain, snapshotsDone, versionIdParsed]);
 
   const runRelease = useCallback(async (): Promise<void> => {
     if (!versionIdParsed) {
-      toast.error('Debes capturar un versionId válido.');
+      toast.error('Debes capturar un Version ID válido.');
+      return;
+    }
+
+    if (!receiptsDone) {
+      toast.error('Primero debes generar los recibos.');
       return;
     }
 
     if (!releasedByUserIdParsed) {
-      toast.error('Debes capturar un releasedByUserId válido.');
+      toast.error('Debes capturar un Released By User ID válido.');
       return;
     }
 
@@ -103,11 +116,11 @@ export function useNominaRecibosView() {
     } catch {
       toast.error('No se pudo liberar la versión.');
     }
-  }, [domain, form.comments, releasedByUserIdParsed, versionIdParsed]);
+  }, [domain, form.comments, receiptsDone, releasedByUserIdParsed, versionIdParsed]);
 
   const runCoreSync = useCallback(async (): Promise<void> => {
     if (!versionIdParsed) {
-      toast.error('Debes capturar un versionId válido.');
+      toast.error('Debes capturar un Version ID válido.');
       return;
     }
 
@@ -119,87 +132,136 @@ export function useNominaRecibosView() {
     }
   }, [domain, versionIdParsed]);
 
-  const flowItems: NominaRecibosFlowItem[] = [
-    {
-      id: 'snapshots',
-      step: '01',
-      title: 'Generar snapshots',
-      description:
-        'Construye snapshots consolidados desde staging para la versión indicada.',
-      helper: 'Debe existir una versión válida y staging procesado.',
-      status: domain.snapshots.loading
-        ? 'running'
-        : domain.snapshots.data
-          ? 'success'
-          : canRunSnapshots
-            ? 'ready'
-            : 'idle',
-      disabled: !canRunSnapshots,
-      loading: domain.snapshots.loading,
-      error: domain.snapshots.error,
-      onRun: runSnapshots,
-    },
-    {
-      id: 'receipts',
-      step: '02',
-      title: 'Generar recibos',
-      description:
-        'Crea recibos y detalle de impuestos o conceptos a partir de snapshots previos.',
-      helper:
-        'Este paso se habilita después de generar snapshots en esta sesión.',
-      status: domain.receipts.loading
-        ? 'running'
-        : domain.receipts.data
-          ? 'success'
-          : canRunReceipts
-            ? 'ready'
-            : 'blocked',
-      disabled: !canRunReceipts,
-      loading: domain.receipts.loading,
-      error: domain.receipts.error,
-      onRun: runReceipts,
-    },
-    {
-      id: 'release',
-      step: '03',
-      title: 'Liberar versión',
-      description:
-        'Marca como liberadas las revisiones de recibo y actualiza el estado del periodo.',
-      helper:
-        'Se habilita cuando ya se generaron recibos y se capturó el usuario que libera.',
-      status: domain.release.loading
-        ? 'running'
-        : domain.release.data
-          ? 'success'
-          : canRunRelease
-            ? 'ready'
-            : 'blocked',
-      disabled: !canRunRelease,
-      loading: domain.release.loading,
-      error: domain.release.error,
-      onRun: runRelease,
-    },
-    {
-      id: 'coreSync',
-      step: '04',
-      title: 'Sincronizar a core',
-      description:
-        'Sincroniza información vigente del servidor público y la plaza principal a core.',
-      helper:
-        'Acción complementaria para la sesión administrativa relacionada.',
-      status: domain.coreSync.loading
-        ? 'running'
-        : domain.coreSync.data
-          ? 'success'
-          : canRunCoreSync
-            ? 'ready'
-            : 'idle',
-      disabled: !canRunCoreSync,
-      loading: domain.coreSync.loading,
-      error: domain.coreSync.error,
-      onRun: runCoreSync,
-    },
-  ];
+  const executeActiveAction = useCallback(async (): Promise<void> => {
+    switch (activeAction) {
+      case 'snapshots':
+        await runSnapshots();
+        break;
+      case 'recibos':
+        await runReceipts();
+        break;
+      case 'liberacion':
+        await runRelease();
+        break;
+      case 'sincronizacion':
+        await runCoreSync();
+        break;
+    }
+  }, [activeAction, runSnapshots, runReceipts, runRelease, runCoreSync]);
+
+  const currentResult = useMemo(() => {
+    switch (activeAction) {
+      case 'snapshots':
+        return domain.snapshots.data;
+      case 'recibos':
+        return domain.receipts.data;
+      case 'liberacion':
+        return domain.release.data;
+      case 'sincronizacion':
+        return domain.coreSync.data;
+      default:
+        return null;
+    }
+  }, [
+    activeAction,
+    domain.snapshots.data,
+    domain.receipts.data,
+    domain.release.data,
+    domain.coreSync.data,
+  ]);
+
+  const currentLoading = useMemo(() => {
+    switch (activeAction) {
+      case 'snapshots':
+        return domain.snapshots.loading;
+      case 'recibos':
+        return domain.receipts.loading;
+      case 'liberacion':
+        return domain.release.loading;
+      case 'sincronizacion':
+        return domain.coreSync.loading;
+      default:
+        return false;
+    }
+  }, [
+    activeAction,
+    domain.snapshots.loading,
+    domain.receipts.loading,
+    domain.release.loading,
+    domain.coreSync.loading,
+  ]);
+
+  const currentError = useMemo(() => {
+    switch (activeAction) {
+      case 'snapshots':
+        return domain.snapshots.error;
+      case 'recibos':
+        return domain.receipts.error;
+      case 'liberacion':
+        return domain.release.error;
+      case 'sincronizacion':
+        return domain.coreSync.error;
+      default:
+        return null;
+    }
+  }, [
+    activeAction,
+    domain.snapshots.error,
+    domain.receipts.error,
+    domain.release.error,
+    domain.coreSync.error,
+  ]);
+
+  const currentTitle = useMemo(() => {
+    switch (activeAction) {
+      case 'snapshots':
+        return 'Generación de snapshots';
+      case 'recibos':
+        return 'Generación de recibos';
+      case 'liberacion':
+        return 'Liberación de versión';
+      case 'sincronizacion':
+        return 'Sincronización a core';
+      default:
+        return 'Operación';
+    }
+  }, [activeAction]);
+
+  const currentDescription = useMemo(() => {
+    switch (activeAction) {
+      case 'snapshots':
+        return 'Construye snapshots consolidados desde staging para la versión seleccionada.';
+      case 'recibos':
+        return 'Genera recibos y su detalle asociado a partir de snapshots previos.';
+      case 'liberacion':
+        return 'Libera la versión procesada usando el usuario responsable y comentarios operativos.';
+      case 'sincronizacion':
+        return 'Ejecuta la sincronización complementaria a core para la versión activa.';
+      default:
+        return '';
+    }
+  }, [activeAction]);
+
+  const canExecute = useMemo(() => {
+    switch (activeAction) {
+      case 'snapshots':
+        return canRunSnapshots;
+      case 'recibos':
+        return canRunReceipts;
+      case 'liberacion':
+        return canRunRelease;
+      case 'sincronizacion':
+        return canRunCoreSync;
+      default:
+        return false;
+    }
+  }, [
+    activeAction,
+    canRunSnapshots,
+    canRunReceipts,
+    canRunRelease,
+    canRunCoreSync,
+  ]);
 
   const summaryItems = useMemo(
     () =>
@@ -242,12 +304,26 @@ export function useNominaRecibosView() {
   return {
     form,
     updateField,
+
+    activeAction,
+    setActiveAction,
+
     versionIdParsed,
     releasedByUserIdParsed,
-    flowItems,
+
+    currentTitle,
+    currentDescription,
+    currentResult,
+    currentLoading,
+    currentError,
+
+    canExecute,
+    executeActiveAction,
+
     summaryItems,
     generalStatus,
     hasAnyResult,
+
     results: {
       snapshots: domain.snapshots.data,
       receipts: domain.receipts.data,

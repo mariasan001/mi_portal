@@ -53,25 +53,9 @@
   line-height: 1.6;
 }
 
-.summaryBlock {
-  display: grid;
-  gap: 14px;
-}
-
-.statusBox {
-  padding: 14px 16px;
-  border-radius: 16px;
-  border: 1px solid var(--border-soft);
-  background: var(--surface-2);
-  color: var(--text);
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.5;
-}
-
 .summaryGrid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
 }
 
@@ -96,19 +80,11 @@
 }
 
 @media (max-width: 840px) {
-  .header {
-    padding-bottom: 12px;
-  }
-
-  .copy {
-    gap: 6px;
+  .summaryGrid {
+    grid-template-columns: 1fr;
   }
 
   .title {
     font-size: 18px;
-  }
-
-  .summaryGrid {
-    grid-template-columns: 1fr;
   }
 }

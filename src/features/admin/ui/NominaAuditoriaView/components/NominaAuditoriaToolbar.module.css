@@ -1,0 +1,144 @@
+.toolbar {
+  display: grid;
+  gap: 18px;
+  padding: 20px 22px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  box-shadow: var(--shadow-sm);
+}
+
+.fieldsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.field span {
+  display: inline-block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.inputWrap {
+  min-width: 0;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  background: #ffffff;
+  border: 1px solid rgba(10, 10, 10, 0.08);
+  border-radius: 14px;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease;
+}
+
+.inputWrap:focus-within {
+  border-color: rgba(159, 33, 65, 0.16);
+  box-shadow: 0 0 0 4px rgba(159, 33, 65, 0.06);
+  background: #ffffff;
+}
+
+.icon {
+  color: rgba(10, 10, 10, 0.44);
+  flex-shrink: 0;
+}
+
+.inputWrap input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+  font-family: var(--font-body);
+}
+
+.inputWrap input::placeholder {
+  color: rgba(10, 10, 10, 0.42);
+  font-weight: 400;
+}
+
+.inputWrap input::-webkit-outer-spin-button,
+.inputWrap input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.inputWrap input[type='number'] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.executeBtn {
+  height: 50px;
+  padding: 0 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 18px;
+  border: 1px solid rgba(159, 33, 65, 0.18);
+  background: var(--vino);
+  color: #fffdfb;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 10px 18px rgba(159, 33, 65, 0.08);
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    opacity 0.18s ease,
+    background 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.executeBtn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(159, 33, 65, 0.26);
+}
+
+@media (max-width: 1100px) {
+  .fieldsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .toolbar {
+    padding: 16px;
+    border-radius: 18px;
+  }
+
+  .fieldsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .actions {
+    justify-content: stretch;
+  }
+
+  .executeBtn {
+    width: 100%;
+    justify-content: center;
+  }
+}
