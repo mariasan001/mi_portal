@@ -8,8 +8,8 @@ import type {
   ContentMode,
   NominaEntity,
 } from '../types/nomina-configuracion.types';
-import { useNominaPeriodos } from '@/features/admin/hook/useNominaPeriodos';
-import { useNominaVersiones } from '@/features/admin/hook/useNominaVersiones';
+import { useNominaPeriodos } from '@/features/admin/hooks/useNominaPeriodos';
+import { useNominaVersiones } from '@/features/admin/hooks/useNominaVersiones';
 
 export function useNominaConfiguracionView() {
   const [activeEntity, setActiveEntity] = useState<NominaEntity>('periodo');

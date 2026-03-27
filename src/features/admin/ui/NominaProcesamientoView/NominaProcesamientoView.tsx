@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import s from './NominaProcesamientoView.module.css';
-import { useNominaProcesamiento } from '../../hook/useNominaProcesamiento';
+import { useNominaProcesamiento } from '../../hooks/useNominaProcesamiento';
 
 import EmptyState from './components/EmptyState';
 import NominaProcesamientoHero from './components/NominaProcesamientoHero';

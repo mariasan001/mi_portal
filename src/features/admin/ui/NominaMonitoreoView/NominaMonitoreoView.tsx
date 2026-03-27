@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import s from './NominaMonitoreoView.module.css';
-import { useNominaMonitoreo } from '../../hook/useNominaMonitoreo';
+import { useNominaMonitoreo } from '../../hooks/useNominaMonitoreo';
 import NominaMonitoreoHero from './components/NominaMonitoreoHero';
 import NominaMonitoreoToolbar from './components/NominaMonitoreoToolbar';
 import NominaMonitoreoResultadoPanel from './components/NominaMonitoreoResultadoPanel';

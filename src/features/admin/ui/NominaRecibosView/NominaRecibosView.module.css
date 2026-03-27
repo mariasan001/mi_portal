@@ -1,7 +1,6 @@
 .page {
   width: 100%;
-  margin: 20px;
-}
+ }
 
 .stack {
   display: grid;
@@ -12,7 +11,7 @@
   display: grid;
   gap: 18px;
   padding: 22px;
-  border-radius: var(--r-xl);
+  border-radius:  20px;
   border: 1px solid var(--border);
   background: var(--surface);
   box-shadow: var(--shadow-sm);

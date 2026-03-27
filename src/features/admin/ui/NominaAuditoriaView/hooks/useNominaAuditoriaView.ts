@@ -3,7 +3,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { useNominaAuditoria } from '../../../hook/useNominaAuditoria';
+import { useNominaAuditoria } from '../../../hooks/useNominaAuditoria';
 import { buildAuditSummary, parseOptionalNumber } from '../utils/nomina-auditoria-view.utils';
 import type {
   NominaAuditoriaAction,

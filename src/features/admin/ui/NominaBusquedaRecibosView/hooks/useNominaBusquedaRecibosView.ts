@@ -3,7 +3,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { useNominaBusquedaRecibos } from '../../../hook/useNominaBusquedaRecibos';
+import { useNominaBusquedaRecibos } from '../../../hooks/useNominaBusquedaRecibos';
 import { buildSummary } from '../utils/nomina-busqueda-recibos-view.utils';
 import type { NominaBusquedaRecibosFormState } from '../types/nomina-busqueda-recibos-view.types';
 

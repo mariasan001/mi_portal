@@ -9,8 +9,8 @@ import type {
   NominaCargaEntity,
   NominaCargaModalStatus,
 } from '../types/nomina-cargas.types';
-import { useNominaStaging } from '@/features/admin/hook/useNominaStaging';
-import { useNominaCatalogo } from '@/features/admin/hook/useNominaCatalogo';
+import { useNominaStaging } from '@/features/admin/hooks/useNominaStaging';
+import { useNominaCatalogo } from '@/features/admin/hooks/useNominaCatalogo';
 import { NominaFileType } from '@/features/admin/types/nomina-catalogo.types';
 
 const INITIAL_MODAL_FORM: CatalogoModalForm = {

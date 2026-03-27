@@ -3,7 +3,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { useNominaRecibos } from '../../../hook/useNominaRecibos';
+import { useNominaRecibos } from '../../../hooks/useNominaRecibos';
 import {
   buildSummary,
   getGeneralFlowStatus,
