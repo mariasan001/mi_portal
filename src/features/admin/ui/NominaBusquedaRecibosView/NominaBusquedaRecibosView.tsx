@@ -52,3 +52,11 @@ export default function NominaBusquedaRecibosView() {
     </section>
   );
 }
+
+
+/**
+ * 
+ * AQUI VAMOS AQUI  EN BUSQUEDA BUS QUEDA }
+ * BUD QUE 
+ */
+

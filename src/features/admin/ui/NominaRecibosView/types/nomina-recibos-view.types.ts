@@ -1,7 +1,6 @@
 export type NominaRecibosAction =
   | 'snapshots'
   | 'recibos'
-  | 'liberacion'
   | 'sincronizacion';
 
 export type NominaRecibosFormState = {

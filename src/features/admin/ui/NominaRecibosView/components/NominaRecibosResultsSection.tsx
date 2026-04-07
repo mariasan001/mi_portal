@@ -17,39 +17,55 @@ export default function NominaRecibosResultsSection({
   release,
   coreSync,
 }: Props) {
-  const panelConfig = getPanelConfig({
+  const mainPanelConfig = getMainPanelConfig({
     activeAction,
     snapshots,
     receipts,
-    release,
     coreSync,
   });
 
   return (
     <section className={s.section}>
-      <div className={s.header}>
-        <h3>{panelConfig.heading}</h3>
-        <p>{panelConfig.description}</p>
-      </div>
+      <div className={s.stack}>
+        <div className={s.header}>
+          <h3>{mainPanelConfig.heading}</h3>
+          <p>{mainPanelConfig.description}</p>
+        </div>
 
-      <RecibosResultPanel title={panelConfig.title} data={panelConfig.data} />
+        <RecibosResultPanel
+          title={mainPanelConfig.title}
+          data={mainPanelConfig.data}
+        />
+
+        <div className={s.header}>
+          <h3>Resultado de liberación</h3>
+          <p>
+            Consulta aquí la respuesta técnica registrada cuando se ejecute la
+            liberación de la versión.
+          </p>
+        </div>
+
+        <RecibosResultPanel
+          title="Resultado de liberación"
+          data={release}
+        />
+      </div>
     </section>
   );
 }
 
-function getPanelConfig(params: {
+function getMainPanelConfig(params: {
   activeAction: NominaRecibosAction;
   snapshots: Record<string, unknown> | null;
   receipts: Record<string, unknown> | null;
-  release: Record<string, unknown> | null;
   coreSync: Record<string, unknown> | null;
 }) {
-  const { activeAction, snapshots, receipts, release, coreSync } = params;
+  const { activeAction, snapshots, receipts, coreSync } = params;
 
   switch (activeAction) {
     case 'snapshots':
       return {
-        heading: 'Resultado de la operación',
+        heading: 'Resultado del flujo principal',
         description:
           'Consulta la respuesta técnica obtenida al generar snapshots para la versión seleccionada.',
         title: 'Resultado de snapshots',
@@ -58,25 +74,16 @@ function getPanelConfig(params: {
 
     case 'recibos':
       return {
-        heading: 'Resultado de la operación',
+        heading: 'Resultado del flujo principal',
         description:
           'Consulta la respuesta técnica obtenida al generar recibos para la versión seleccionada.',
         title: 'Resultado de recibos',
         data: receipts,
       };
 
-    case 'liberacion':
-      return {
-        heading: 'Resultado de la operación',
-        description:
-          'Consulta la respuesta técnica obtenida al liberar la versión seleccionada.',
-        title: 'Resultado de liberación',
-        data: release,
-      };
-
     case 'sincronizacion':
       return {
-        heading: 'Resultado de la operación',
+        heading: 'Resultado del flujo principal',
         description:
           'Consulta la respuesta técnica obtenida al ejecutar la sincronización a core.',
         title: 'Resultado de sincronización',
@@ -85,7 +92,7 @@ function getPanelConfig(params: {
 
     default:
       return {
-        heading: 'Resultado de la operación',
+        heading: 'Resultado del flujo principal',
         description: 'Consulta el resultado de la acción ejecutada.',
         title: 'Resultado',
         data: null,

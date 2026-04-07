@@ -68,7 +68,16 @@ export const API_RUTAS = {
 
     auditReleases: '/api/admin/nomina/audit/releases',
     auditCancellations: '/api/admin/nomina/audit/cancellations',
-
     receiptsBySpPeriod: '/api/admin/nomina/receipts/by-sp-period',
+  },
+
+  firmaElectronica: {
+    solicitudes: '/api/v1/signature-requests',
+
+    detalleSolicitud: (requestId: string) =>
+      `/api/v1/signature-requests/${encodeURIComponent(requestId)}`,
+
+    detalleFirma: (requestId: string) =>
+      `/api/v1/signature-requests/${encodeURIComponent(requestId)}/signature-details`,
   },
 } as const;

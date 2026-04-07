@@ -1,33 +1,36 @@
-import {  Search, ShieldCheck } from 'lucide-react';
+import { Search } from 'lucide-react';
+import type { NominaRecibosAction } from '../types/nomina-recibos-view.types';
 import s from './NominaRecibosToolbar.module.css';
-import { NominaRecibosAction } from './NominaRecibosActionCards';
 
 type Props = {
   activeAction: NominaRecibosAction;
   versionId: string;
-  releasedByUserId: string;
-  comments: string;
   loading: boolean;
   canExecute: boolean;
   onChangeVersionId: (value: string) => void;
-  onChangeReleasedByUserId: (value: string) => void;
-  onChangeComments: (value: string) => void;
   onExecute: () => void;
 };
 
 export default function NominaRecibosToolbar({
   activeAction,
   versionId,
-  releasedByUserId,
-  comments,
   loading,
   canExecute,
   onChangeVersionId,
-  onChangeReleasedByUserId,
-  onChangeComments,
   onExecute,
 }: Props) {
-  const isLiberacion = activeAction === 'liberacion';
+  const getButtonLabel = (): string => {
+    switch (activeAction) {
+      case 'snapshots':
+        return loading ? 'Generando...' : 'Generar snapshots';
+      case 'recibos':
+        return loading ? 'Generando...' : 'Generar recibos';
+      case 'sincronizacion':
+        return loading ? 'Sincronizando...' : 'Ejecutar sincronización';
+      default:
+        return loading ? 'Procesando...' : 'Ejecutar';
+    }
+  };
 
   return (
     <section className={s.toolbar}>
@@ -56,45 +59,10 @@ export default function NominaRecibosToolbar({
             onClick={onExecute}
             disabled={!canExecute || loading}
           >
-            {loading ? 'Procesando...' : 'Ejecutar'}
+            {getButtonLabel()}
           </button>
         </div>
       </div>
-
-      {isLiberacion ? (
-        <div className={s.extraFields}>
-          <label className={s.label} htmlFor="nomina-released-by-user-id">
-            Released By User ID
-          </label>
-
-          <div className={s.inputWrap}>
-            <ShieldCheck size={17} className={s.icon} />
-
-            <input
-              id="nomina-released-by-user-id"
-              type="number"
-              min="1"
-              value={releasedByUserId}
-              onChange={(e) => onChangeReleasedByUserId(e.target.value)}
-              placeholder="Ej. 18"
-            />
-          </div>
-
-          <label className={s.label} htmlFor="nomina-release-comments">
-            Comentarios de liberación
-          </label>
-
-          <div className={s.textareaWrap}>
-            <textarea
-              id="nomina-release-comments"
-              rows={4}
-              value={comments}
-              onChange={(e) => onChangeComments(e.target.value)}
-              placeholder="Comentario opcional o referencia operativa."
-            />
-          </div>
-        </div>
-      ) : null}
     </section>
   );
 }

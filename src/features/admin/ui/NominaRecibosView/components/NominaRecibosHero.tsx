@@ -25,8 +25,7 @@ export default function NominaRecibosHero() {
 
         <p className={s.subtitle}>
           Ejecuta el flujo operativo sobre una versión para generar snapshots,
-          construir recibos, liberar la publicación y realizar la sincronización
-          complementaria a core.
+          construir recibos.
         </p>
       </div>
     </header>

@@ -16,6 +16,7 @@ function buildHeaders(h?: HeadersInit): Headers {
 async function readJsonSafe(res: Response): Promise<unknown> {
   const ct = res.headers.get('content-type') ?? '';
   if (!ct.includes('application/json')) return undefined;
+
   try {
     return await res.json();
   } catch {
@@ -23,13 +24,32 @@ async function readJsonSafe(res: Response): Promise<unknown> {
   }
 }
 
-export async function request<T>(url: string, opts: ApiRequestOptions = {}): Promise<T> {
+export async function request<T>(
+  url: string,
+  opts: ApiRequestOptions = {}
+): Promise<T> {
   const method: HttpMethod = opts.method ?? 'GET';
   const headers = buildHeaders(opts.headers);
 
   let body: BodyInit | undefined;
-  if (opts.body !== undefined) {
-    if (!headers.has('content-type')) headers.set('content-type', 'application/json');
+
+  /**
+   * Si el body viene como FormData:
+   * - se manda tal cual
+   * - NO se fija content-type manualmente
+   *   porque el navegador agrega el boundary correcto.
+   */
+  if (opts.body instanceof FormData) {
+    body = opts.body;
+
+    if (headers.has('content-type')) {
+      headers.delete('content-type');
+    }
+  } else if (opts.body !== undefined) {
+    if (!headers.has('content-type')) {
+      headers.set('content-type', 'application/json');
+    }
+
     body = JSON.stringify(opts.body);
   }
 
@@ -56,6 +76,9 @@ export const api = {
   get: <T>(url: string, opts?: Omit<ApiRequestOptions, 'method'>) =>
     request<T>(url, { ...opts, method: 'GET' }),
 
-  post: <T>(url: string, body?: unknown, opts?: Omit<ApiRequestOptions, 'method' | 'body'>) =>
-    request<T>(url, { ...opts, method: 'POST', body }),
+  post: <T>(
+    url: string,
+    body?: unknown,
+    opts?: Omit<ApiRequestOptions, 'method' | 'body'>
+  ) => request<T>(url, { ...opts, method: 'POST', body }),
 };

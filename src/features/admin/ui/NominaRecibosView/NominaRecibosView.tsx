@@ -4,6 +4,7 @@ import EmptyState from './components/EmptyState';
 import NominaRecibosActionCards from './components/NominaRecibosActionCards';
 import NominaRecibosContentHeader from './components/NominaRecibosContentHeader';
 import NominaRecibosHero from './components/NominaRecibosHero';
+import NominaRecibosReleasePanel from './components/NominaRecibosReleasePanel';
 import NominaRecibosResultsSection from './components/NominaRecibosResultsSection';
 import NominaRecibosToolbar from './components/NominaRecibosToolbar';
 import { useNominaRecibosView } from './hooks/useNominaRecibosView';
@@ -25,16 +26,24 @@ export default function NominaRecibosView() {
         <NominaRecibosToolbar
           activeAction={vm.activeAction}
           versionId={vm.form.versionId}
-          releasedByUserId={vm.form.releasedByUserId}
-          comments={vm.form.comments}
           loading={vm.currentLoading}
           canExecute={vm.canExecute}
+          onChangeVersionId={(value) => vm.updateField('versionId', value)}
+          onExecute={vm.executeActiveAction}
+        />
+
+        <NominaRecibosReleasePanel
+          versionId={vm.form.versionId}
+          releasedByUserId={vm.form.releasedByUserId}
+          comments={vm.form.comments}
+          loading={vm.releaseLoading}
+          canExecute={vm.canRelease}
           onChangeVersionId={(value) => vm.updateField('versionId', value)}
           onChangeReleasedByUserId={(value) =>
             vm.updateField('releasedByUserId', value)
           }
           onChangeComments={(value) => vm.updateField('comments', value)}
-          onExecute={vm.executeActiveAction}
+          onExecute={vm.executeRelease}
         />
 
         <section className={s.resultContainer}>
@@ -48,17 +57,17 @@ export default function NominaRecibosView() {
           />
 
           {vm.hasAnyResult ? (
-              <NominaRecibosResultsSection
+            <NominaRecibosResultsSection
               activeAction={vm.activeAction}
               snapshots={vm.results.snapshots}
               receipts={vm.results.receipts}
               release={vm.results.release}
               coreSync={vm.results.coreSync}
             />
-              ) : (
+          ) : (
             <EmptyState
               title="Aún no has ejecutado ninguna acción"
-              description="Selecciona una opción, captura una versión válida y ejecuta la operación correspondiente."
+              description="Selecciona una opción del flujo principal o ejecuta la liberación cuando corresponda."
             />
           )}
         </section>

@@ -10,9 +10,7 @@ import NominaCargaToolbar from './components/NominaCargaToolbar';
 import NominaCargaUploadModal from './components/NominaCargaUploadModal';
 import NominaCargasHero from './components/NominaCargasHero';
 import NominaResultadoPanel from './components/NominaResultadoPanel';
-
 import { useNominaCargasView } from './hooks/useNominaCargasView';
-
 import {
   getContentEyebrow,
   getContentTitle,

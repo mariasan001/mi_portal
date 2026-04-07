@@ -1,14 +1,29 @@
+/* 
+  Grid principal:
+  - En desktop muestra 3 tarjetas en una sola fila
+  - En tablet baja a 2 columnas
+  - En móvil se apilan a 1 columna
+*/
 .grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
+  align-items: stretch;
 }
 
+/* 
+  Estilo base de cada tarjeta:
+  - Layout horizontal con ícono a la izquierda
+  - Altura mínima para que todas se vean parejas
+  - Transiciones suaves para hover/estado activo
+*/
 .card {
   display: flex;
   align-items: flex-start;
   gap: 16px;
-  padding: 15px;
+  min-height: 132px;
+  width: 100%;
+  padding: 16px;
   text-align: left;
   border-radius: var(--r-lg);
   border: 1px solid var(--border);
@@ -23,42 +38,62 @@
     opacity 0.18s ease;
 }
 
+/* Efecto ligero al pasar el mouse */
 .card:hover {
   transform: translateY(-2px);
 }
 
+/* 
+  Estado activo:
+  - Resalta la tarjeta seleccionada
+  - Mantiene fondo claro y sombra más marcada
+*/
 .active {
   border-color: rgba(159, 33, 65, 0.18);
   background: #fff;
   box-shadow: 0 10px 24px rgba(10, 10, 10, 0.08);
 }
 
+/* 
+  Estado inactivo:
+  - Menor énfasis visual
+  - Se baja ligeramente la opacidad para que la activa domine
+*/
 .inactive {
   border-color: var(--border-soft);
   background: #fcfcfc;
   box-shadow: none;
-  opacity: 0.82;
+  opacity: 0.86;
 }
 
+/* Ajustes visuales del ícono cuando la card está inactiva */
 .inactive .icon {
   color: rgba(10, 10, 10, 0.42);
   border-color: rgba(10, 10, 10, 0.08);
   background: #ffffff;
 }
 
+/* Título más tenue en estado inactivo */
 .inactive .body h2 {
   color: rgba(10, 10, 10, 0.62);
 }
 
+/* Texto descriptivo más tenue en estado inactivo */
 .inactive .body p {
   color: rgba(10, 10, 10, 0.5);
 }
 
+/* Pequeño wrapper del icono para controlar separación */
 .iconWrap {
   flex-shrink: 0;
   padding-top: 2px;
 }
 
+/* 
+  Contenedor circular del ícono:
+  - Da identidad visual a la acción
+  - Mantiene color vino del sistema
+*/
 .icon {
   width: 48px;
   height: 48px;
@@ -74,19 +109,33 @@
     background 0.18s ease;
 }
 
+/* 
+  Cuerpo de la tarjeta:
+  - Ocupa el resto del ancho
+  - Centra mejor el contenido verticalmente
+*/
 .body {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
+/* 
+  Fila superior:
+  - Título a la izquierda
+  - Badge "Activo" a la derecha
+*/
 .headRow {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 8px;
 }
 
+/* Título principal de la card */
 .body h2 {
   margin: 0;
   font-size: 14px;
@@ -96,15 +145,21 @@
   transition: color 0.18s ease;
 }
 
+/* Texto descriptivo */
 .body p {
   margin: 0;
-  max-width: 46ch;
+  max-width: 34ch;
   font-size: 12px;
   line-height: 1.55;
   color: var(--muted);
   transition: color 0.18s ease;
 }
 
+/* 
+  Badge de estado activo:
+  - Pequeño pill visual
+  - Usa tono dorado suave para destacar
+*/
 .stateBadge {
   display: inline-flex;
   align-items: center;
@@ -119,14 +174,31 @@
   letter-spacing: 0.04em;
   text-transform: uppercase;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
+/* 
+  Tablet grande:
+  - Baja de 3 columnas a 2
+*/
+@media (max-width: 1080px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* 
+  Tablet / móvil:
+  - Todo en una sola columna
+  - Se relaja la altura fija de las tarjetas
+*/
 @media (max-width: 840px) {
   .grid {
     grid-template-columns: 1fr;
   }
 
   .card {
+    min-height: unset;
     padding: 18px;
   }
 
@@ -134,5 +206,9 @@
     align-items: flex-start;
     flex-direction: column;
     gap: 8px;
+  }
+
+  .body p {
+    max-width: 100%;
   }
 }

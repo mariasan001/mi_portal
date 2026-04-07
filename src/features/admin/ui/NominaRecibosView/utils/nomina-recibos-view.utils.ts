@@ -39,11 +39,11 @@ export function getGeneralFlowStatus(params: {
   const { snapshotsDone, receiptsDone, releaseDone, coreSyncDone } = params;
 
   if (releaseDone && coreSyncDone) {
-    return 'Liberación completada y sincronización ejecutada.';
+    return 'La versión ya fue sincronizada y además cuenta con liberación registrada.';
   }
 
-  if (releaseDone) {
-    return 'La versión ya fue liberada.';
+  if (coreSyncDone) {
+    return 'La sincronización a core ya fue ejecutada para esta versión.';
   }
 
   if (receiptsDone) {
@@ -54,8 +54,8 @@ export function getGeneralFlowStatus(params: {
     return 'Los snapshots ya fueron generados para la versión seleccionada.';
   }
 
-  if (coreSyncDone) {
-    return 'La sincronización a core ya fue ejecutada.';
+  if (releaseDone) {
+    return 'La versión ya fue liberada.';
   }
 
   return 'Aún no se han ejecutado acciones para esta versión.';
@@ -89,12 +89,12 @@ export function buildSummary(params: {
       value: params.receiptsDone ? 'Generados' : 'Pendientes',
     },
     {
-      label: 'Liberación',
-      value: params.releaseDone ? 'Completada' : 'Pendiente',
-    },
-    {
       label: 'Sincronización',
       value: params.coreSyncDone ? 'Ejecutada' : 'Pendiente',
+    },
+    {
+      label: 'Liberación',
+      value: params.releaseDone ? 'Completada' : 'Pendiente',
     },
   ];
 }

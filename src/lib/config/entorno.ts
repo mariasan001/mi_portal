@@ -22,3 +22,15 @@ export function obtenerBatchBaseUrl(): string {
 
   return v.replace(/\/+$/, '');
 }
+
+export function obtenerSignatureBaseUrl(): string {
+  const v = process.env.SIGNATURE_BASE_URL?.trim();
+
+  if (!v) {
+    throw new Error(
+      'Falta SIGNATURE_BASE_URL en .env.local (ej: http://localhost:8092/signature)'
+    );
+  }
+
+  return v.replace(/\/+$/, '');
+}

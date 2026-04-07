@@ -1,19 +1,12 @@
-import {
-  FileStack,
-  ReceiptText,
-  ShieldCheck,
-  RefreshCw,
-} from 'lucide-react';
+import { FileStack, ReceiptText, RefreshCw } from 'lucide-react';
+import type { NominaRecibosAction } from '../types/nomina-recibos-view.types';
 import s from './NominaRecibosActionCards.module.css';
 
-export type NominaRecibosAction =
-  | 'snapshots'
-  | 'recibos'
-  | 'liberacion'
-  | 'sincronizacion';
-
 type Props = {
+  // Acción actualmente seleccionada dentro del flujo principal
   activeAction: NominaRecibosAction;
+
+  // Callback para cambiar la acción activa
   onSelect: (action: NominaRecibosAction) => void;
 };
 
@@ -22,7 +15,9 @@ export default function NominaRecibosActionCards({
   onSelect,
 }: Props) {
   return (
+    // Contenedor general de las 3 tarjetas del flujo principal
     <section className={s.grid}>
+      {/* Card: Snapshots */}
       <button
         type="button"
         className={`${s.card} ${
@@ -30,15 +25,19 @@ export default function NominaRecibosActionCards({
         }`}
         onClick={() => onSelect('snapshots')}
       >
+        {/* Ícono principal de la tarjeta */}
         <div className={s.iconWrap}>
           <div className={s.icon}>
             <FileStack size={20} />
           </div>
         </div>
 
+        {/* Contenido textual */}
         <div className={s.body}>
           <div className={s.headRow}>
             <h2>Snapshots</h2>
+
+            {/* Badge visible solo si esta acción está seleccionada */}
             {activeAction === 'snapshots' ? (
               <span className={s.stateBadge}>Activo</span>
             ) : null}
@@ -51,6 +50,7 @@ export default function NominaRecibosActionCards({
         </div>
       </button>
 
+      {/* Card: Recibos */}
       <button
         type="button"
         className={`${s.card} ${
@@ -67,6 +67,7 @@ export default function NominaRecibosActionCards({
         <div className={s.body}>
           <div className={s.headRow}>
             <h2>Recibos</h2>
+
             {activeAction === 'recibos' ? (
               <span className={s.stateBadge}>Activo</span>
             ) : null}
@@ -79,34 +80,7 @@ export default function NominaRecibosActionCards({
         </div>
       </button>
 
-      <button
-        type="button"
-        className={`${s.card} ${
-          activeAction === 'liberacion' ? s.active : s.inactive
-        }`}
-        onClick={() => onSelect('liberacion')}
-      >
-        <div className={s.iconWrap}>
-          <div className={s.icon}>
-            <ShieldCheck size={20} />
-          </div>
-        </div>
-
-        <div className={s.body}>
-          <div className={s.headRow}>
-            <h2>Liberación</h2>
-            {activeAction === 'liberacion' ? (
-              <span className={s.stateBadge}>Activo</span>
-            ) : null}
-          </div>
-
-          <p>
-            Libera la versión procesada y actualiza el estado operativo
-            correspondiente.
-          </p>
-        </div>
-      </button>
-
+      {/* Card: Sincronización */}
       <button
         type="button"
         className={`${s.card} ${
@@ -123,6 +97,7 @@ export default function NominaRecibosActionCards({
         <div className={s.body}>
           <div className={s.headRow}>
             <h2>Sincronización</h2>
+
             {activeAction === 'sincronizacion' ? (
               <span className={s.stateBadge}>Activo</span>
             ) : null}

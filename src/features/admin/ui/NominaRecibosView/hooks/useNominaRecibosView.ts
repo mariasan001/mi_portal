@@ -43,10 +43,8 @@ export function useNominaRecibosView() {
 
   const canRunSnapshots = Boolean(versionIdParsed);
   const canRunReceipts = Boolean(versionIdParsed && snapshotsDone);
-  const canRunRelease = Boolean(
-    versionIdParsed && receiptsDone && releasedByUserIdParsed
-  );
-  const canRunCoreSync = Boolean(versionIdParsed);
+  const canRunCoreSync = Boolean(versionIdParsed && receiptsDone);
+  const canRunRelease = Boolean(versionIdParsed && releasedByUserIdParsed);
 
   const updateField = useCallback(
     (key: keyof NominaRecibosFormState, value: string): void => {
@@ -91,7 +89,7 @@ export function useNominaRecibosView() {
     }
   }, [domain, snapshotsDone, versionIdParsed]);
 
-  const runRelease = useCallback(async (): Promise<void> => {
+  const runCoreSync = useCallback(async (): Promise<void> => {
     if (!versionIdParsed) {
       toast.error('Debes capturar un Version ID válido.');
       return;
@@ -99,6 +97,20 @@ export function useNominaRecibosView() {
 
     if (!receiptsDone) {
       toast.error('Primero debes generar los recibos.');
+      return;
+    }
+
+    try {
+      await domain.ejecutarCoreSync(versionIdParsed);
+      toast.success('Sincronización a core completada.');
+    } catch {
+      toast.error('No se pudo sincronizar a core.');
+    }
+  }, [domain, receiptsDone, versionIdParsed]);
+
+  const runRelease = useCallback(async (): Promise<void> => {
+    if (!versionIdParsed) {
+      toast.error('Debes capturar un Version ID válido.');
       return;
     }
 
@@ -116,21 +128,7 @@ export function useNominaRecibosView() {
     } catch {
       toast.error('No se pudo liberar la versión.');
     }
-  }, [domain, form.comments, receiptsDone, releasedByUserIdParsed, versionIdParsed]);
-
-  const runCoreSync = useCallback(async (): Promise<void> => {
-    if (!versionIdParsed) {
-      toast.error('Debes capturar un Version ID válido.');
-      return;
-    }
-
-    try {
-      await domain.ejecutarCoreSync(versionIdParsed);
-      toast.success('Sincronización a core completada.');
-    } catch {
-      toast.error('No se pudo sincronizar a core.');
-    }
-  }, [domain, versionIdParsed]);
+  }, [domain, form.comments, releasedByUserIdParsed, versionIdParsed]);
 
   const executeActiveAction = useCallback(async (): Promise<void> => {
     switch (activeAction) {
@@ -140,35 +138,11 @@ export function useNominaRecibosView() {
       case 'recibos':
         await runReceipts();
         break;
-      case 'liberacion':
-        await runRelease();
-        break;
       case 'sincronizacion':
         await runCoreSync();
         break;
     }
-  }, [activeAction, runSnapshots, runReceipts, runRelease, runCoreSync]);
-
-  const currentResult = useMemo(() => {
-    switch (activeAction) {
-      case 'snapshots':
-        return domain.snapshots.data;
-      case 'recibos':
-        return domain.receipts.data;
-      case 'liberacion':
-        return domain.release.data;
-      case 'sincronizacion':
-        return domain.coreSync.data;
-      default:
-        return null;
-    }
-  }, [
-    activeAction,
-    domain.snapshots.data,
-    domain.receipts.data,
-    domain.release.data,
-    domain.coreSync.data,
-  ]);
+  }, [activeAction, runSnapshots, runReceipts, runCoreSync]);
 
   const currentLoading = useMemo(() => {
     switch (activeAction) {
@@ -176,40 +150,14 @@ export function useNominaRecibosView() {
         return domain.snapshots.loading;
       case 'recibos':
         return domain.receipts.loading;
-      case 'liberacion':
-        return domain.release.loading;
       case 'sincronizacion':
         return domain.coreSync.loading;
-      default:
-        return false;
     }
   }, [
     activeAction,
     domain.snapshots.loading,
     domain.receipts.loading,
-    domain.release.loading,
     domain.coreSync.loading,
-  ]);
-
-  const currentError = useMemo(() => {
-    switch (activeAction) {
-      case 'snapshots':
-        return domain.snapshots.error;
-      case 'recibos':
-        return domain.receipts.error;
-      case 'liberacion':
-        return domain.release.error;
-      case 'sincronizacion':
-        return domain.coreSync.error;
-      default:
-        return null;
-    }
-  }, [
-    activeAction,
-    domain.snapshots.error,
-    domain.receipts.error,
-    domain.release.error,
-    domain.coreSync.error,
   ]);
 
   const currentTitle = useMemo(() => {
@@ -218,12 +166,8 @@ export function useNominaRecibosView() {
         return 'Generación de snapshots';
       case 'recibos':
         return 'Generación de recibos';
-      case 'liberacion':
-        return 'Liberación de versión';
       case 'sincronizacion':
         return 'Sincronización a core';
-      default:
-        return 'Operación';
     }
   }, [activeAction]);
 
@@ -233,12 +177,8 @@ export function useNominaRecibosView() {
         return 'Construye snapshots consolidados desde staging para la versión seleccionada.';
       case 'recibos':
         return 'Genera recibos y su detalle asociado a partir de snapshots previos.';
-      case 'liberacion':
-        return 'Libera la versión procesada usando el usuario responsable y comentarios operativos.';
       case 'sincronizacion':
         return 'Ejecuta la sincronización complementaria a core para la versión activa.';
-      default:
-        return '';
     }
   }, [activeAction]);
 
@@ -248,20 +188,10 @@ export function useNominaRecibosView() {
         return canRunSnapshots;
       case 'recibos':
         return canRunReceipts;
-      case 'liberacion':
-        return canRunRelease;
       case 'sincronizacion':
         return canRunCoreSync;
-      default:
-        return false;
     }
-  }, [
-    activeAction,
-    canRunSnapshots,
-    canRunReceipts,
-    canRunRelease,
-    canRunCoreSync,
-  ]);
+  }, [activeAction, canRunSnapshots, canRunReceipts, canRunCoreSync]);
 
   const summaryItems = useMemo(
     () =>
@@ -313,12 +243,14 @@ export function useNominaRecibosView() {
 
     currentTitle,
     currentDescription,
-    currentResult,
     currentLoading,
-    currentError,
 
     canExecute,
     executeActiveAction,
+
+    releaseLoading: domain.release.loading,
+    canRelease: canRunRelease,
+    executeRelease: runRelease,
 
     summaryItems,
     generalStatus,
