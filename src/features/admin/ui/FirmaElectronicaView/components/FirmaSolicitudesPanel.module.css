@@ -1,0 +1,41 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.header {
+  display: grid;
+  gap: 6px;
+}
+
+.header h2 {
+  margin: 0;
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.subtitle {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.feedback {
+  margin: 0;
+  color: #8f2c2c;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.emptyWrap {
+  padding-top: 4px;
+}

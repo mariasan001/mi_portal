@@ -2,28 +2,19 @@ import type {
   SignatureRequestStatus,
   SolicitudFirmaListItemDto,
 } from '../../../types/firma-electronica.types';
-import { formatDateTime } from '../utils/firma-electronica-view.utils';
+import EmptyFirmaState from './EmptyFirmaState';
+import FirmaSolicitudesToolbar from './FirmaSolicitudesToolbar';
+import FirmaSolicitudesTable from './FirmaSolicitudesTable';
+import s from './FirmaSolicitudesPanel.module.css';
 
 type Props = {
-  // Estatus actualmente seleccionado en el filtro
   status: SignatureRequestStatus | '';
-
-  // Estado de carga de la consulta del listado
   loading: boolean;
-
-  // Elementos devueltos por la API
   items: SolicitudFirmaListItemDto[];
-
-  // Error de la consulta, si existe
   error: string | null;
-
-  // Cambia el filtro de estatus
+  selectedRequestId: string;
   onChangeStatus: (value: SignatureRequestStatus | '') => void;
-
-  // Ejecuta la consulta del listado
   onLoad: () => void;
-
-  // Permite seleccionar un requestId desde la tabla
   onSelectRequest: (requestId: string) => void;
 };
 
@@ -32,82 +23,48 @@ export default function FirmaSolicitudesPanel({
   loading,
   items,
   error,
+  selectedRequestId,
   onChangeStatus,
   onLoad,
   onSelectRequest,
 }: Props) {
   return (
-    <section>
-      {/* Encabezado del bloque */}
-      <header>
-        <h2>Listado de solicitudes</h2>
-        <p>Consulta solicitudes registradas y filtra por estatus.</p>
+    <section className={s.panel}>
+      <header className={s.header}>
+        <h2>Solicitudes registradas</h2>
+
+        <p className={s.subtitle}>
+          Da clic en una fila para consultar el detalle operativo y la evidencia
+          técnica de la firma.
+        </p>
       </header>
 
-      {/* Barra de filtros */}
-      <div>
-        <label htmlFor="firma-status-filter">Estatus</label>
+      <FirmaSolicitudesToolbar
+        status={status}
+        loading={loading}
+        onChangeStatus={onChangeStatus}
+        onLoad={onLoad}
+      />
 
-        <select
-          id="firma-status-filter"
-          value={status}
-          onChange={(e) =>
-            onChangeStatus((e.target.value as SignatureRequestStatus | '') ?? '')
-          }
-        >
-          <option value="">Todos</option>
-          <option value="PENDING">PENDING</option>
-          <option value="PROCESSING">PROCESSING</option>
-          <option value="SIGNED">SIGNED</option>
-          <option value="FAILED">FAILED</option>
-        </select>
+      {error ? <p className={s.feedback}>{error}</p> : null}
 
-        <button type="button" onClick={onLoad} disabled={loading}>
-          {loading ? 'Consultando...' : 'Consultar listado'}
-        </button>
-      </div>
-
-      {/* Mensaje de error */}
-      {error ? <p>{error}</p> : null}
-
-      {/* Estado vacío */}
+      {/* 
+        El empty state solo vive aquí adentro.
+        Ya no existe duplicado en otro panel lateral.
+      */}
       {!items.length ? (
-        <p>No hay solicitudes para mostrar.</p>
+        <div className={s.emptyWrap}>
+          <EmptyFirmaState
+            title="Sin solicitudes registradas"
+            description="No hay resultados para el filtro seleccionado. Ajusta el estatus o crea una nueva solicitud."
+          />
+        </div>
       ) : (
-        <table>
-          <thead>
-            <tr>
-              <th>Request ID</th>
-              <th>Archivo</th>
-              <th>Estatus</th>
-              <th>Provider Signature ID</th>
-              <th>Solicitado</th>
-              <th>Completado</th>
-              <th>Acción</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {items.map((item) => (
-              <tr key={item.requestId}>
-                <td>{item.requestId}</td>
-                <td>{item.originalFileName}</td>
-                <td>{item.status}</td>
-                <td>{item.providerSignatureId}</td>
-                <td>{formatDateTime(item.requestedAt)}</td>
-                <td>{formatDateTime(item.completedAt)}</td>
-                <td>
-                  <button
-                    type="button"
-                    onClick={() => onSelectRequest(item.requestId)}
-                  >
-                    Usar requestId
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <FirmaSolicitudesTable
+          items={items}
+          selectedRequestId={selectedRequestId}
+          onSelectRequest={onSelectRequest}
+        />
       )}
     </section>
   );

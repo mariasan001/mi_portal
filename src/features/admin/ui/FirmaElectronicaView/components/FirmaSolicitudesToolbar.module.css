@@ -20,10 +20,10 @@
 }
 
 .select {
-  min-height: 42px;
+  min-height: 46px;
   padding: 0 14px;
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 16px;
   background: #fff;
   color: var(--text);
   font: inherit;
@@ -35,10 +35,10 @@
 }
 
 .refreshBtn {
-  min-height: 42px;
-  padding: 0 16px;
+  min-height: 46px;
+  padding: 0 18px;
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 16px;
   background: #fff;
   color: var(--text);
   font-size: 13px;

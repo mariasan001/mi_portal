@@ -1,4 +1,4 @@
-import { FileSignature, Plus } from 'lucide-react';
+import { FileSignature, Plus, ShieldCheck } from 'lucide-react';
 import s from './FirmaElectronicaHero.module.css';
 
 type Props = {
@@ -10,33 +10,31 @@ export default function FirmaElectronicaHero({
 }: Props) {
   return (
     <header className={s.hero}>
-      <div className={s.content}>
-        <div className={s.kickerRow}>
+      <div className={s.topRow}>
+        <div className={s.leftBlock}>
           <span className={s.kicker}>Firma electrónica</span>
-          <span className={s.badge}>
-            <FileSignature size={14} />
-            Solicitudes de firma
-          </span>
+
         </div>
 
-        <div className={s.copy}>
-          <h1>Gestión de solicitudes de firma</h1>
-          <p>
-            Consulta solicitudes, filtra por estatus y revisa el detalle
-            operativo y técnico de cada documento firmado.
-          </p>
+        <div className={s.rightBlock}>
+          <button
+            type="button"
+            className={s.primaryBtn}
+            onClick={onOpenCreateModal}
+          >
+            <Plus size={16} />
+            Nueva solicitud
+          </button>
         </div>
       </div>
 
-      <div className={s.actions}>
-        <button
-          type="button"
-          className={s.primaryBtn}
-          onClick={onOpenCreateModal}
-        >
-          <Plus size={16} />
-          Nueva solicitud
-        </button>
+      <div className={s.textBlock}>
+        <h1 className={s.title}>Firma electrónica</h1>
+
+        <p className={s.subtitle}>
+          Gestiona solicitudes de firma, consulta su estatus y revisa el detalle
+          técnico de cada documento firmado.
+        </p>
       </div>
     </header>
   );

@@ -1,12 +1,10 @@
 'use client';
 
 import FirmaElectronicaHero from './components/FirmaElectronicaHero';
-import FirmaSolicitudesToolbar from './components/FirmaSolicitudesToolbar';
-import FirmaSolicitudesTable from './components/FirmaSolicitudesTable';
+import FirmaSolicitudesPanel from './components/FirmaSolicitudesPanel';
 import FirmaSolicitudDetalleCard from './components/FirmaSolicitudDetalleCard';
 import FirmaDetalleTecnicoCard from './components/FirmaDetalleTecnicoCard';
 import FirmaCrearSolicitudModal from './components/FirmaCrearSolicitudModal';
-import EmptyFirmaState from './components/EmptyFirmaState';
 import s from './FirmaElectronicaView.module.css';
 import { useFirmaElectronicaView } from './hook/useFirmaElectronicaView';
 
@@ -19,67 +17,46 @@ export default function FirmaElectronicaView() {
   return (
     <section className={s.page}>
       <div className={s.stack}>
-        <FirmaElectronicaHero
-          onOpenCreateModal={vm.handleOpenCreateModal}
-        />
+        <FirmaElectronicaHero onOpenCreateModal={vm.handleOpenCreateModal} />
 
+        {/* 
+          Workspace principal:
+          - arriba: tabla/listado a todo el ancho
+          - abajo: detalle operativo y técnico
+        */}
         <div className={s.workspace}>
           <section className={s.tableSection}>
-            <div className={s.sectionCard}>
-              <div className={s.sectionHeader}>
-                <div>
-                  <h2>Solicitudes registradas</h2>
-                  <p>
-                    Consulta el flujo principal de solicitudes y da clic sobre
-                    una fila para revisar su detalle.
-                  </p>
-                </div>
-              </div>
-
-              <FirmaSolicitudesToolbar
-                status={vm.statusFilter}
-                loading={vm.listado.loading}
-                onChangeStatus={vm.setStatusFilter}
-                onLoad={vm.handleLoadList}
-              />
-
-              {vm.listado.error ? (
-                <p className={s.feedback}>{vm.listado.error}</p>
-              ) : null}
-
-              {!vm.listado.data?.data?.length ? (
-                <div className={s.emptyTableWrap}>
-                  <EmptyFirmaState />
-                </div>
-              ) : (
-                <FirmaSolicitudesTable
-                  items={vm.listado.data.data}
-                  selectedRequestId={vm.requestId}
-                  onSelectRequest={vm.handleSelectRequest}
-                />
-              )}
-            </div>
+            <FirmaSolicitudesPanel
+              status={vm.statusFilter}
+              loading={vm.listado.loading}
+              error={vm.listado.error}
+              items={vm.listado.data?.data ?? []}
+              selectedRequestId={vm.requestId}
+              onChangeStatus={vm.setStatusFilter}
+              onLoad={vm.handleLoadList}
+              onSelectRequest={vm.handleSelectRequest}
+            />
           </section>
 
-          <aside className={s.detailSection}>
-            {hasSelection ? (
-              <>
-                <FirmaSolicitudDetalleCard
-                  loading={vm.detalle.loading}
-                  error={vm.detalle.error}
-                  data={vm.detalle.data?.data ?? null}
-                />
+          {/* 
+            El detalle ya no vive como panel lateral vacío.
+            Solo aparece abajo cuando realmente hay selección.
+          */}
+          {hasSelection ? (
+            <section className={s.detailsSection}>
+              <FirmaSolicitudDetalleCard
+                loading={vm.detalle.loading}
+                error={vm.detalle.error}
+                data={vm.detalle.data?.data ?? null}
+              />
 
-                <FirmaDetalleTecnicoCard
-                  loading={vm.detalleTecnico.loading}
-                  error={vm.detalleTecnico.error}
-                  data={vm.detalleTecnico.data?.data ?? null}
-                />
-              </>
-            ) : (
-              <EmptyFirmaState />
-            )}
-          </aside>
+              <FirmaDetalleTecnicoCard
+                loading={vm.detalleTecnico.loading}
+                error={vm.detalleTecnico.error}
+                data={vm.detalleTecnico.data?.data ?? null}
+              />
+            </section>
+          ) : null}
         </div>
 
         <FirmaCrearSolicitudModal
