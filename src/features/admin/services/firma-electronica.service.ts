@@ -201,3 +201,42 @@ export async function obtenerDetalleTecnicoFirma(
     response
   );
 }
+
+
+/**
+ * Descarga el PDF firmado en binario.
+ *
+ * Regresa el archivo como ArrayBuffer para poder
+ * modificarlo en frontend con pdf-lib.
+ */
+export async function descargarPdfFirmado(
+  requestId: string,
+  opts?: { signal?: AbortSignal }
+): Promise<ArrayBuffer> {
+  const response = await fetch(API_RUTAS.firmaElectronica.signedPdf(requestId), {
+    method: 'GET',
+    signal: opts?.signal,
+    headers: {
+      Accept: 'application/pdf',
+    },
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    let detail = '';
+
+    try {
+      detail = await response.text();
+    } catch {
+      detail = '';
+    }
+
+    throw new Error(
+      detail?.trim()
+        ? `No se pudo descargar el PDF firmado. ${detail}`
+        : `No se pudo descargar el PDF firmado. Código ${response.status}.`
+    );
+  }
+
+  return response.arrayBuffer();
+}

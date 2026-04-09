@@ -1,3 +1,4 @@
+import { Plus } from 'lucide-react';
 import type {
   SignatureRequestStatus,
   SolicitudFirmaListItemDto,
@@ -14,8 +15,10 @@ type Props = {
   error: string | null;
   selectedRequestId: string;
   onChangeStatus: (value: SignatureRequestStatus | '') => void;
-  onLoad: () => void;
   onSelectRequest: (requestId: string) => void;
+  onViewSignedPdf: (requestId: string) => void;
+  onDownloadSignedPdf: (requestId: string) => void;
+  onOpenCreateModal: () => void;
 };
 
 export default function FirmaSolicitudesPanel({
@@ -25,33 +28,42 @@ export default function FirmaSolicitudesPanel({
   error,
   selectedRequestId,
   onChangeStatus,
-  onLoad,
   onSelectRequest,
+  onViewSignedPdf,
+  onDownloadSignedPdf,
+  onOpenCreateModal,
 }: Props) {
   return (
     <section className={s.panel}>
       <header className={s.header}>
-        <h2>Solicitudes registradas</h2>
+        <div className={s.headerRow}>
+          <div className={s.titleBlock}>
+            <h2>Solicitudes registradas</h2>
+            <p className={s.subtitle}>
+              Filtra por estatus y selecciona una solicitud para revisar su
+              detalle o descargar el PDF firmado.
+            </p>
+          </div>
 
-        <p className={s.subtitle}>
-          Da clic en una fila para consultar el detalle operativo y la evidencia
-          técnica de la firma.
-        </p>
+          <button
+            type="button"
+            className={s.primaryBtn}
+            onClick={onOpenCreateModal}
+          >
+            <Plus size={16} />
+            Nueva solicitud
+          </button>
+        </div>
       </header>
 
       <FirmaSolicitudesToolbar
         status={status}
         loading={loading}
         onChangeStatus={onChangeStatus}
-        onLoad={onLoad}
       />
 
       {error ? <p className={s.feedback}>{error}</p> : null}
 
-      {/* 
-        El empty state solo vive aquí adentro.
-        Ya no existe duplicado en otro panel lateral.
-      */}
       {!items.length ? (
         <div className={s.emptyWrap}>
           <EmptyFirmaState
@@ -64,6 +76,8 @@ export default function FirmaSolicitudesPanel({
           items={items}
           selectedRequestId={selectedRequestId}
           onSelectRequest={onSelectRequest}
+          onViewSignedPdf={onViewSignedPdf}
+          onDownloadSignedPdf={onDownloadSignedPdf}
         />
       )}
     </section>

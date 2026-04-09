@@ -1,14 +1,13 @@
 .hero {
   display: grid;
-  gap: 14px; /* aquí sí se marca más la separación */
+  gap: 14px;
 }
 
 .topRow {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  display: flex;
   align-items: center;
-  column-gap: 20px;
-  row-gap: 12px;
+  justify-content: flex-start;
+  min-width: 0;
 }
 
 .leftBlock {
@@ -19,49 +18,55 @@
   min-width: 0;
 }
 
-.rightBlock {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .kicker {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 30px;
-  padding: 0 12px;
+  min-height: 28px;
+  padding: 0 11px;
   border-radius: 999px;
   background: rgba(188, 148, 90, 0.14);
   border: 1px solid rgba(188, 148, 90, 0.2);
   color: var(--oro);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   white-space: nowrap;
 }
 
-.metaBadges {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
+.textBlock {
+  display: grid;
+  gap: 6px;
+  max-width: 680px;
 }
 
-.metaBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 34px;
-  padding: 0 12px;
-  border-radius: 999px;
-  background: var(--surface-2);
-  border: 1px solid var(--border-soft);
+.title {
+  margin: 0;
+  color: var(--text);
+  font-size: clamp(20px, 2.4vw, 24px);
+  font-weight: 800;
+  letter-spacing: -0.015em;
+}
+
+.subtitle {
+  margin: 0;
+  max-width: 65ch;
   color: var(--muted);
-  font-size: 12px;
-  font-weight: 700;
-  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+/*
+  Se conservan estilos del botón para reutilizarlos después
+  en otro header o barra de acciones.
+*/
+.rightBlock {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-top: 5px;
 }
 
 .primaryBtn {
@@ -69,15 +74,14 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin-top: 10px;
-    min-height: 44px;
+  min-height: 42px;
   padding: 0 18px;
   border: none;
   border-radius: 14px;
   background: var(--vino);
   color: #fff;
-  font-size: 13px;
-  font-weight: 800;
+  font-size: 12.5px;
+  font-weight: 700;
   white-space: nowrap;
   cursor: pointer;
   transition:
@@ -90,43 +94,7 @@
   transform: translateY(-1px);
 }
 
-.textBlock {
-  display: grid;
-  gap: 8px;
-  max-width: 760px;
-}
-
-.title {
-  margin: 0;
-  color: var(--text);
-  font-size: clamp(18px, 2.6vw, 25px);
-  font-weight: var(--fw-h2);
-  letter-spacing: -0.02em;
-}
-
-.subtitle {
-  margin: 0;
-  max-width: 70ch;
-  color: var(--text);
-  font-size: 14px;
-  font-weight: 300;
-  line-height: 1.55;
-}
-
 @media (max-width: 840px) {
-  .topRow {
-    grid-template-columns: 1fr;
-  }
-
-  .rightBlock {
-    width: 100%;
-    justify-content: flex-start;
-  }
-
-  .primaryBtn {
-    width: 100%;
-  }
-
   .title {
     font-size: clamp(22px, 6vw, 28px);
   }

@@ -1,30 +1,61 @@
 'use client';
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import { useNominaFirmaElectronica } from '../../../hooks/useNominaFirmaElectronica';
+import { descargarPdfFirmado } from '../../../services/firma-electronica.service';
 import type {
   CrearSolicitudFirmaPayload,
+  FirmaDetalleTecnicoDto,
   SignatureRequestStatus,
+  SolicitudFirmaDetalleDto,
 } from '../../../types/firma-electronica.types';
 import type { FirmaCreateFormState } from '../types/firma-electronica-view.types';
+import { buildSignedPdfWithTechnicalAppendix } from '../utils/buildSignedPdfWithTechnicalAppendix';
+
+function normalizeStatus(status?: string | null): string {
+  return status?.trim() ?? '';
+}
+
+function buildSignedPdfFileName(
+  documentName?: string | null,
+  originalFileName?: string | null
+): string {
+  const baseName =
+    documentName?.trim() || originalFileName?.trim() || 'documento_firmado';
+
+  return `${baseName.replace(/\.pdf$/i, '')}_con_detalle_tecnico.pdf`;
+}
+
+function toPdfBlob(bytes: Uint8Array): Blob {
+  const safeBytes = new Uint8Array(bytes);
+
+  return new Blob([safeBytes.buffer], {
+    type: 'application/pdf',
+  });
+}
+
+type BuildSignedPdfInput = {
+  requestId: string;
+  detalle: SolicitudFirmaDetalleDto | null;
+  detalleTecnico: FirmaDetalleTecnicoDto | null;
+};
 
 export function useFirmaElectronicaView() {
-  /**
-   * Hook de dominio:
-   * aquí vive la conexión real con services/API.
-   */
-  const domain = useNominaFirmaElectronica();
+  const {
+    consultarListado,
+    consultarDetalle,
+    consultarDetalleTecnico,
+    ejecutarCreacion,
+    creacion,
+    listado,
+    detalle,
+    detalleTecnico,
+  } = useNominaFirmaElectronica();
 
-  /**
-   * Estado del modal de creación.
-   */
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-  /**
-   * Formulario visual para crear una nueva solicitud.
-   */
   const [createForm, setCreateForm] = useState<FirmaCreateFormState>({
     file: null,
     cuts: '',
@@ -33,21 +64,12 @@ export function useFirmaElectronicaView() {
     descripcion: '',
   });
 
-  /**
-   * Filtro visual del listado por estatus.
-   */
   const [statusFilter, setStatusFilter] = useState<
     SignatureRequestStatus | ''
   >('');
 
-  /**
-   * Request ID actualmente seleccionado.
-   */
   const [requestId, setRequestId] = useState('');
 
-  /**
-   * Actualiza cualquier campo del formulario.
-   */
   const updateCreateField = useCallback(
     <K extends keyof FirmaCreateFormState>(
       key: K,
@@ -61,9 +83,6 @@ export function useFirmaElectronicaView() {
     []
   );
 
-  /**
-   * Determina si ya se puede crear la solicitud.
-   */
   const canCreate = useMemo(() => {
     return Boolean(
       createForm.file &&
@@ -72,9 +91,6 @@ export function useFirmaElectronicaView() {
     );
   }, [createForm]);
 
-  /**
-   * Payload listo para enviar al dominio.
-   */
   const createPayload = useMemo<CrearSolicitudFirmaPayload | null>(() => {
     if (
       !createForm.file ||
@@ -93,23 +109,42 @@ export function useFirmaElectronicaView() {
     };
   }, [createForm]);
 
-  /**
-   * Abre el modal.
-   */
+  const selectedStatus = useMemo(() => {
+    return normalizeStatus(detalle.data?.status);
+  }, [detalle.data?.status]);
+
+  const hasTechnicalDetail = useMemo(() => {
+    return Boolean(detalleTecnico.data);
+  }, [detalleTecnico.data]);
+
+  const canGenerateSignedPdf = useMemo(() => {
+    return (
+      Boolean(requestId.trim()) &&
+      selectedStatus === 'SIGNED' &&
+      hasTechnicalDetail
+    );
+  }, [requestId, selectedStatus, hasTechnicalDetail]);
+
+  useEffect(() => {
+    void consultarListado(statusFilter || undefined);
+  }, [consultarListado, statusFilter]);
+
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      void consultarListado(statusFilter || undefined);
+    }, 30000);
+
+    return () => window.clearInterval(interval);
+  }, [consultarListado, statusFilter]);
+
   const handleOpenCreateModal = useCallback(() => {
     setIsCreateModalOpen(true);
   }, []);
 
-  /**
-   * Cierra el modal.
-   */
   const handleCloseCreateModal = useCallback(() => {
     setIsCreateModalOpen(false);
   }, []);
 
-  /**
-   * Limpia el formulario.
-   */
   const resetCreateForm = useCallback(() => {
     setCreateForm({
       file: null,
@@ -120,55 +155,31 @@ export function useFirmaElectronicaView() {
     });
   }, []);
 
-  /**
-   * Consulta el listado según el filtro actual.
-   */
   const handleLoadList = useCallback(async () => {
     try {
-      await domain.consultarListado(statusFilter || undefined);
+      await consultarListado(statusFilter || undefined);
       toast.success('Listado consultado correctamente.');
     } catch {
       toast.error('No se pudo consultar el listado.');
     }
-  }, [domain, statusFilter]);
+  }, [consultarListado, statusFilter]);
 
-  /**
-   * Selecciona una solicitud y carga:
-   * - detalle operativo
-   * - detalle técnico
-   */
   const handleSelectRequest = useCallback(
     async (selectedRequestId: string) => {
       setRequestId(selectedRequestId);
 
-      /**
-       * Logs temporales de depuración:
-       * confirman qué requestId se seleccionó realmente.
-       */
-      console.log('Firma seleccionada:', selectedRequestId);
-
       try {
         await Promise.all([
-          domain.consultarDetalle(selectedRequestId),
-          domain.consultarDetalleTecnico(selectedRequestId),
+          consultarDetalle(selectedRequestId),
+          consultarDetalleTecnico(selectedRequestId),
         ]);
-
-        /**
-         * Log temporal para validar qué quedó cargado
-         * en memoria después de consultar.
-         */
-        console.log('Detalle operativo solicitado para:', selectedRequestId);
-        console.log('Detalle técnico solicitado para:', selectedRequestId);
       } catch {
         toast.error('No se pudo cargar el detalle de la solicitud.');
       }
     },
-    [domain]
+    [consultarDetalle, consultarDetalleTecnico]
   );
 
-  /**
-   * Consulta manual del detalle operativo.
-   */
   const handleLoadDetail = useCallback(async () => {
     const id = requestId.trim();
 
@@ -178,18 +189,13 @@ export function useFirmaElectronicaView() {
     }
 
     try {
-      console.log('Consulta manual detalle:', id);
-
-      await domain.consultarDetalle(id);
+      await consultarDetalle(id);
       toast.success('Detalle consultado correctamente.');
     } catch {
       toast.error('No se pudo consultar el detalle.');
     }
-  }, [domain, requestId]);
+  }, [consultarDetalle, requestId]);
 
-  /**
-   * Consulta manual del detalle técnico.
-   */
   const handleLoadTechnicalDetail = useCallback(async () => {
     const id = requestId.trim();
 
@@ -199,18 +205,13 @@ export function useFirmaElectronicaView() {
     }
 
     try {
-      console.log('Consulta manual detalle técnico:', id);
-
-      await domain.consultarDetalleTecnico(id);
+      await consultarDetalleTecnico(id);
       toast.success('Detalle técnico consultado correctamente.');
     } catch {
       toast.error('No se pudo consultar el detalle técnico.');
     }
-  }, [domain, requestId]);
+  }, [consultarDetalleTecnico, requestId]);
 
-  /**
-   * Crea una nueva solicitud.
-   */
   const handleCreate = useCallback(async () => {
     if (!createPayload) {
       toast.error('Debes capturar archivo, CUTS y contraseña.');
@@ -218,23 +219,15 @@ export function useFirmaElectronicaView() {
     }
 
     try {
-      const response = await domain.ejecutarCreacion(createPayload);
-
-      /**
-       * Como el dominio ya regresa DTO limpio,
-       * aquí usamos response.requestId
-       * y no response.data.requestId
-       */
+      const response = await ejecutarCreacion(createPayload);
       const nuevoRequestId = response.requestId;
-
-      console.log('Nueva solicitud creada:', nuevoRequestId);
 
       setRequestId(nuevoRequestId);
 
       await Promise.all([
-        domain.consultarListado(statusFilter || undefined),
-        domain.consultarDetalle(nuevoRequestId),
-        domain.consultarDetalleTecnico(nuevoRequestId),
+        consultarListado(statusFilter || undefined),
+        consultarDetalle(nuevoRequestId),
+        consultarDetalleTecnico(nuevoRequestId),
       ]);
 
       setIsCreateModalOpen(false);
@@ -244,7 +237,175 @@ export function useFirmaElectronicaView() {
     } catch {
       toast.error('No se pudo crear la solicitud de firma.');
     }
-  }, [createPayload, domain, resetCreateForm, statusFilter]);
+  }, [
+    consultarDetalle,
+    consultarDetalleTecnico,
+    consultarListado,
+    createPayload,
+    ejecutarCreacion,
+    resetCreateForm,
+    statusFilter,
+  ]);
+
+  const resolvePdfData = useCallback(
+    async (selectedRequestId: string): Promise<BuildSignedPdfInput> => {
+      const trimmedId = selectedRequestId.trim();
+
+      if (!trimmedId) {
+        throw new Error('No hay una solicitud seleccionada.');
+      }
+
+      const isCurrentRequest = requestId.trim() === trimmedId;
+
+      const detallePromise: Promise<SolicitudFirmaDetalleDto | null> =
+        isCurrentRequest && detalle.data
+          ? Promise.resolve(detalle.data)
+          : consultarDetalle(trimmedId);
+
+      const detalleTecnicoPromise: Promise<FirmaDetalleTecnicoDto | null> =
+        isCurrentRequest && detalleTecnico.data
+          ? Promise.resolve(detalleTecnico.data)
+          : consultarDetalleTecnico(trimmedId);
+
+      const [resolvedDetalle, resolvedDetalleTecnico] = await Promise.all([
+        detallePromise,
+        detalleTecnicoPromise,
+      ]);
+
+      return {
+        requestId: trimmedId,
+        detalle: resolvedDetalle,
+        detalleTecnico: resolvedDetalleTecnico,
+      };
+    },
+    [
+      consultarDetalle,
+      consultarDetalleTecnico,
+      detalle.data,
+      detalleTecnico.data,
+      requestId,
+    ]
+  );
+
+  const generateSignedPdfBlobByRequestId = useCallback(
+    async (selectedRequestId: string): Promise<Blob> => {
+      const { requestId: resolvedRequestId, detalleTecnico } =
+        await resolvePdfData(selectedRequestId);
+
+      if (!detalleTecnico) {
+        throw new Error(
+          'No hay detalle técnico disponible para generar el PDF.'
+        );
+      }
+
+      const signedPdfBytes = await descargarPdfFirmado(resolvedRequestId);
+
+      const finalPdfBytes = await buildSignedPdfWithTechnicalAppendix({
+        pdfBytes: signedPdfBytes,
+        detalleTecnico,
+      });
+
+      return toPdfBlob(finalPdfBytes);
+    },
+    [resolvePdfData]
+  );
+
+  const generateSignedPdfBlob = useCallback(async (): Promise<Blob> => {
+    const id = requestId.trim();
+
+    if (!id) {
+      throw new Error('No hay una solicitud seleccionada.');
+    }
+
+    return generateSignedPdfBlobByRequestId(id);
+  }, [generateSignedPdfBlobByRequestId, requestId]);
+
+  const handleViewSignedPdfByRequestId = useCallback(
+    async (selectedRequestId: string) => {
+      try {
+        setRequestId(selectedRequestId);
+
+        const blob = await generateSignedPdfBlobByRequestId(selectedRequestId);
+        const url = URL.createObjectURL(blob);
+
+        window.open(url, '_blank', 'noopener,noreferrer');
+
+        toast.success('Vista previa del PDF generada correctamente.');
+      } catch (error) {
+        console.error('Error al visualizar el PDF firmado:', error);
+
+        const message =
+          error instanceof Error
+            ? error.message
+            : 'No se pudo abrir la vista previa del PDF.';
+
+        toast.error(message);
+      }
+    },
+    [generateSignedPdfBlobByRequestId]
+  );
+
+  const handleDownloadSignedPdfByRequestId = useCallback(
+    async (selectedRequestId: string) => {
+      try {
+        setRequestId(selectedRequestId);
+
+        const { detalle } = await resolvePdfData(selectedRequestId);
+
+        const blob = await generateSignedPdfBlobByRequestId(selectedRequestId);
+        const url = URL.createObjectURL(blob);
+
+        const fileName = buildSignedPdfFileName(
+          detalle?.documentName,
+          detalle?.originalFileName
+        );
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        URL.revokeObjectURL(url);
+
+        toast.success('PDF firmado generado correctamente.');
+      } catch (error) {
+        console.error('Error al descargar el PDF firmado:', error);
+
+        const message =
+          error instanceof Error
+            ? error.message
+            : 'No se pudo generar el PDF firmado.';
+
+        toast.error(message);
+      }
+    },
+    [generateSignedPdfBlobByRequestId, resolvePdfData]
+  );
+
+  const handleViewSignedPdf = useCallback(async () => {
+    const id = requestId.trim();
+
+    if (!id) {
+      toast.error('Debes seleccionar una solicitud válida.');
+      return;
+    }
+
+    await handleViewSignedPdfByRequestId(id);
+  }, [handleViewSignedPdfByRequestId, requestId]);
+
+  const handleDownloadSignedPdf = useCallback(async () => {
+    const id = requestId.trim();
+
+    if (!id) {
+      toast.error('Debes seleccionar una solicitud válida.');
+      return;
+    }
+
+    await handleDownloadSignedPdfByRequestId(id);
+  }, [handleDownloadSignedPdfByRequestId, requestId]);
 
   return {
     isCreateModalOpen,
@@ -253,6 +414,7 @@ export function useFirmaElectronicaView() {
     createForm,
     updateCreateField,
     canCreate,
+    canGenerateSignedPdf,
     setRequestId,
     setStatusFilter,
     handleOpenCreateModal,
@@ -262,9 +424,15 @@ export function useFirmaElectronicaView() {
     handleSelectRequest,
     handleLoadDetail,
     handleLoadTechnicalDetail,
-    creacion: domain.creacion,
-    listado: domain.listado,
-    detalle: domain.detalle,
-    detalleTecnico: domain.detalleTecnico,
+    handleViewSignedPdf,
+    handleDownloadSignedPdf,
+    handleViewSignedPdfByRequestId,
+    handleDownloadSignedPdfByRequestId,
+    generateSignedPdfBlob,
+    generateSignedPdfBlobByRequestId,
+    creacion,
+    listado,
+    detalle,
+    detalleTecnico,
   };
 }

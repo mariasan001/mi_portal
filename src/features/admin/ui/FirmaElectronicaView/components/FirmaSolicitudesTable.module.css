@@ -2,33 +2,34 @@
   width: 100%;
   overflow: auto;
   border: 1px solid var(--border);
-  border-radius: 18px;
+  border-radius: 20px;
   background: #fff;
 }
 
 .table {
   width: 100%;
-  min-width: 920px;
-  border-collapse: collapse;
+  min-width: 1100px;
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
 .table thead th {
   position: sticky;
   top: 0;
   z-index: 1;
-  padding: 14px 16px;
+  padding: 16px 18px;
   text-align: left;
   background: #faf7f2;
   color: var(--text);
   font-size: 12px;
-  font-weight: 900;
+  font-weight: 800;
   border-bottom: 1px solid var(--border);
   white-space: nowrap;
 }
 
 .table tbody td {
-  padding: 14px 16px;
-  border-bottom: 1px solid #f0ece5;
+  padding: 18px;
+  border-bottom: 1px solid #f1ece4;
   color: var(--text);
   font-size: 13px;
   vertical-align: middle;
@@ -36,31 +37,65 @@
 
 .table tbody tr {
   cursor: pointer;
-  transition: background 0.18s ease;
+  transition:
+    background 0.18s ease,
+    box-shadow 0.18s ease;
 }
 
 .table tbody tr:hover {
   background: #fcfaf6;
 }
 
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
 .activeRow {
   background: rgba(159, 33, 65, 0.06);
 }
 
+.requestIdCell {
+  max-width: 220px;
+}
+
 .requestId {
+  display: inline-block;
+  max-width: 220px;
   font-weight: 700;
   color: var(--vino);
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.fileName {
+  display: inline-block;
+  max-width: 220px;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.providerId {
+  display: inline-block;
+  max-width: 260px;
+  color: var(--muted);
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.dateCell {
+  min-width: 120px;
+  line-height: 1.5;
 }
 
 .statusBadge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 28px;
-  padding: 0 10px;
+  min-height: 30px;
+  padding: 0 12px;
   border-radius: 999px;
   font-size: 11px;
-  font-weight: 900;
+  font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   white-space: nowrap;
@@ -89,4 +124,52 @@
 .defaultStatus {
   background: rgba(10, 10, 10, 0.08);
   color: rgba(10, 10, 10, 0.72);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: stretch;
+  min-width: 110px;
+}
+
+.primaryButton,
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    opacity 0.18s ease,
+    background 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.primaryButton:hover,
+.secondaryButton:hover {
+  transform: translateY(-1px);
+}
+
+.primaryButton {
+  border: none;
+  background: var(--vino);
+  color: #fff;
+}
+
+.secondaryButton {
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text);
+}
+
+.noActions {
+  color: var(--muted);
+  font-size: 13px;
 }

@@ -1,4 +1,4 @@
-import { FileSignature, Plus, ShieldCheck } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import s from './FirmaElectronicaHero.module.css';
 
 type Props = {
@@ -8,24 +8,32 @@ type Props = {
 export default function FirmaElectronicaHero({
   onOpenCreateModal,
 }: Props) {
+  void onOpenCreateModal;
+  void Plus;
+
   return (
     <header className={s.hero}>
       <div className={s.topRow}>
         <div className={s.leftBlock}>
           <span className={s.kicker}>Firma electrónica</span>
-
         </div>
 
-        <div className={s.rightBlock}>
-          <button
-            type="button"
-            className={s.primaryBtn}
-            onClick={onOpenCreateModal}
-          >
-            <Plus size={16} />
-            Nueva solicitud
-          </button>
-        </div>
+        {/*
+          Botón temporalmente retirado del hero.
+          Se conserva la prop onOpenCreateModal para reusarlo después
+          en otro header, toolbar o bloque de acciones.
+          
+          <div className={s.rightBlock}>
+            <button
+              type="button"
+              className={s.primaryBtn}
+              onClick={onOpenCreateModal}
+            >
+              <Plus size={16} />
+              Nueva solicitud
+            </button>
+          </div>
+        */}
       </div>
 
       <div className={s.textBlock}>

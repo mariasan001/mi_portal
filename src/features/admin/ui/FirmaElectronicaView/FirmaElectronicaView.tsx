@@ -11,10 +11,6 @@ import { useFirmaElectronicaView } from './hook/useFirmaElectronicaView';
 export default function FirmaElectronicaView() {
   const vm = useFirmaElectronicaView();
 
-  /**
-   * Ya no existe wrapper .data.data en la vista.
-   * Si hay detalle o detalle técnico, mostramos la sección inferior.
-   */
   const hasSelection =
     Boolean(vm.detalle.data) || Boolean(vm.detalleTecnico.data);
 
@@ -25,16 +21,18 @@ export default function FirmaElectronicaView() {
 
         <div className={s.workspace}>
           <section className={s.tableSection}>
-            <FirmaSolicitudesPanel
-              status={vm.statusFilter}
-              loading={vm.listado.loading}
-              error={vm.listado.error}
-              items={vm.listado.data ?? []}
-              selectedRequestId={vm.requestId}
-              onChangeStatus={vm.setStatusFilter}
-              onLoad={vm.handleLoadList}
-              onSelectRequest={vm.handleSelectRequest}
-            />
+          <FirmaSolicitudesPanel
+          status={vm.statusFilter}
+          loading={vm.listado.loading}
+          items={vm.listado.data ?? []}
+          error={vm.listado.error}
+          selectedRequestId={vm.requestId}
+          onChangeStatus={vm.setStatusFilter}
+          onSelectRequest={vm.handleSelectRequest}
+          onViewSignedPdf={vm.handleViewSignedPdfByRequestId}
+          onDownloadSignedPdf={vm.handleDownloadSignedPdfByRequestId}
+          onOpenCreateModal={vm.handleOpenCreateModal}
+        />
           </section>
 
           {hasSelection ? (

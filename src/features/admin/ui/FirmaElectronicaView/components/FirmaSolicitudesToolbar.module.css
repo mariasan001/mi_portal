@@ -7,54 +7,36 @@
 }
 
 .filterGroup {
-  display: flex;
-  flex-direction: column;
+  display: grid;
   gap: 8px;
-  min-width: 240px;
 }
 
 .label {
-  font-size: 12px;
-  font-weight: 800;
   color: var(--text);
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .select {
-  min-height: 46px;
+  min-width: 240px;
+  min-height: 42px;
   padding: 0 14px;
   border: 1px solid var(--border);
-  border-radius: 16px;
-  background: #fff;
-  color: var(--text);
-  font: inherit;
-  outline: none;
-}
-
-.select:focus {
-  border-color: rgba(159, 33, 65, 0.35);
-}
-
-.refreshBtn {
-  min-height: 46px;
-  padding: 0 18px;
-  border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: 14px;
   background: #fff;
   color: var(--text);
   font-size: 13px;
-  font-weight: 800;
-  cursor: pointer;
-  transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease;
+  outline: none;
 }
 
-.refreshBtn:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
+.meta {
+  display: flex;
+  align-items: center;
+  min-height: 42px;
 }
 
-.refreshBtn:disabled {
-  opacity: 0.65;
-  cursor: not-allowed;
+.loading {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
 }

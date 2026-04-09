@@ -1,50 +1,44 @@
-import s from './FirmaSolicitudesToolbar.module.css';
 import type { SignatureRequestStatus } from '../../../types/firma-electronica.types';
+import s from './FirmaSolicitudesToolbar.module.css';
 
 type Props = {
   status: SignatureRequestStatus | '';
   loading: boolean;
   onChangeStatus: (value: SignatureRequestStatus | '') => void;
-  onLoad: () => void;
 };
 
 export default function FirmaSolicitudesToolbar({
   status,
   loading,
   onChangeStatus,
-  onLoad,
 }: Props) {
   return (
     <div className={s.toolbar}>
       <div className={s.filterGroup}>
-        <label htmlFor="firma-status-filter" className={s.label}>
+        <label htmlFor="firma-status" className={s.label}>
           Filtrar por estatus
         </label>
 
         <select
-          id="firma-status-filter"
+          id="firma-status"
           className={s.select}
           value={status}
-          onChange={(e) =>
-            onChangeStatus((e.target.value as SignatureRequestStatus | '') ?? '')
+          onChange={(event) =>
+            onChangeStatus(event.target.value as SignatureRequestStatus | '')
           }
+          disabled={loading}
         >
           <option value="">Todos</option>
-          <option value="PENDING">PENDING</option>
-          <option value="PROCESSING">PROCESSING</option>
-          <option value="SIGNED">SIGNED</option>
-          <option value="FAILED">FAILED</option>
+          <option value="PENDING">Pendiente</option>
+          <option value="PROCESSING">Procesando</option>
+          <option value="SIGNED">Firmado</option>
+          <option value="FAILED">Con error</option>
         </select>
       </div>
 
-      <button
-        type="button"
-        className={s.refreshBtn}
-        onClick={onLoad}
-        disabled={loading}
-      >
-        {loading ? 'Consultando...' : 'Actualizar listado'}
-      </button>
+      <div className={s.meta}>
+        {loading ? <span className={s.loading}>Actualizando…</span> : null}
+      </div>
     </div>
   );
 }

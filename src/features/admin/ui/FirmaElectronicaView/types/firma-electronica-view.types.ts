@@ -12,3 +12,4 @@ export type FirmaFilterState = {
   status: SignatureRequestStatus | '';
   requestId: string;
 };
+

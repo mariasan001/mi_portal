@@ -20,13 +20,13 @@ export type CrearSolicitudFirmaPayload = {
 
 export type CrearSolicitudFirmaResultDto = {
   requestId: string;
-  status: string;
+  status: SignatureRequestStatus;
 };
 
 export type SolicitudFirmaListItemDto = {
   requestId: string;
   originalFileName: string;
-  status: string;
+  status: SignatureRequestStatus;
   providerSignatureId: string;
   requestedAt: string;
   completedAt: string | null;
@@ -35,7 +35,7 @@ export type SolicitudFirmaListItemDto = {
 export type SolicitudFirmaDetalleDto = {
   requestId: string;
   originalFileName: string;
-  status: string;
+  status: SignatureRequestStatus;
   cuts: string;
   documentName: string;
   documentDescription: string;
@@ -68,12 +68,42 @@ export type FirmaAutoridadCertificadoraDetalleDto = {
   organizacion: string | null;
 };
 
+export type FirmaCriptograficaDetalleDto = {
+  hashAlgoritmoDetectado?: string | null;
+  algoritmoFirma?: string | null;
+  firmaCrudaBytes?: number | null;
+  firmaHex?: string | null;
+};
+
+export type FirmaOcspDetalleDto = {
+  tipoDetectado?: string | null;
+  fechaProduccion?: string | null;
+  hashCertConsultado?: string | null;
+  serieConsultada?: string | null;
+  issuerNameHash?: string | null;
+  issuerKeyHash?: string | null;
+  thisUpdate?: string | null;
+  nonce?: string | null;
+};
+
+export type FirmaTspDetalleDto = {
+  tipoDetectado?: string | null;
+  estado?: string | null;
+  hashAlgorithm?: string | null;
+  messageImprint?: string | null;
+  numeroSerieSello?: string | null;
+  fechaSello?: string | null;
+  tsa?: string | null;
+};
+
 export type FirmaDetalleTecnicoDto = {
   identificadorFirma: string | null;
   archivo: FirmaArchivoDetalleDto | null;
   firmante: FirmaFirmanteDetalleDto | null;
   autoridadCertificadora?: FirmaAutoridadCertificadoraDetalleDto | null;
-  firmaCriptografica?: Record<string, unknown> | null;
-  ocsp?: Record<string, unknown> | null;
-  tsp?: Record<string, unknown> | null;
+  firmaCriptografica?: FirmaCriptograficaDetalleDto | null;
+  ocsp?: FirmaOcspDetalleDto | null;
+  tsp?: FirmaTspDetalleDto | null;
 };
+
+export type FirmaSignedPdfResponse = ArrayBuffer;
