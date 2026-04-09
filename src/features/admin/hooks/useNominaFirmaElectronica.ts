@@ -12,7 +12,6 @@ import type {
   CrearSolicitudFirmaPayload,
   CrearSolicitudFirmaResultDto,
   FirmaDetalleTecnicoDto,
-  SignatureApiResponse,
   SignatureRequestStatus,
   SolicitudFirmaDetalleDto,
   SolicitudFirmaListItemDto,
@@ -34,19 +33,19 @@ function createInitialState<T>(): AsyncState<T> {
 
 export function useNominaFirmaElectronica() {
   const [creacion, setCreacion] = useState<
-    AsyncState<SignatureApiResponse<CrearSolicitudFirmaResultDto>>
+    AsyncState<CrearSolicitudFirmaResultDto>
   >(createInitialState());
 
   const [listado, setListado] = useState<
-    AsyncState<SignatureApiResponse<SolicitudFirmaListItemDto[]>>
+    AsyncState<SolicitudFirmaListItemDto[]>
   >(createInitialState());
 
   const [detalle, setDetalle] = useState<
-    AsyncState<SignatureApiResponse<SolicitudFirmaDetalleDto>>
+    AsyncState<SolicitudFirmaDetalleDto>
   >(createInitialState());
 
   const [detalleTecnico, setDetalleTecnico] = useState<
-    AsyncState<SignatureApiResponse<FirmaDetalleTecnicoDto>>
+    AsyncState<FirmaDetalleTecnicoDto>
   >(createInitialState());
 
   const ejecutarCreacion = useCallback(
@@ -56,11 +55,22 @@ export function useNominaFirmaElectronica() {
 
         const response = await crearSolicitudFirma(payload);
 
-        setCreacion({ data: response, loading: false, error: null });
+        setCreacion({
+          data: response,
+          loading: false,
+          error: null,
+        });
+
         return response;
       } catch (e) {
         const message = toErrorMessage(e, 'No se pudo crear la solicitud');
-        setCreacion({ data: null, loading: false, error: message });
+
+        setCreacion({
+          data: null,
+          loading: false,
+          error: message,
+        });
+
         throw e;
       }
     },
@@ -78,15 +88,22 @@ export function useNominaFirmaElectronica() {
 
         const response = await listarSolicitudesFirma(status);
 
-        setListado({ data: response, loading: false, error: null });
+        setListado({
+          data: response,
+          loading: false,
+          error: null,
+        });
+
         return response;
       } catch (e) {
         const message = toErrorMessage(e, 'No se pudo consultar el listado');
+
         setListado((current) => ({
           ...current,
           loading: false,
           error: message,
         }));
+
         throw e;
       }
     },
@@ -99,11 +116,22 @@ export function useNominaFirmaElectronica() {
 
       const response = await obtenerDetalleSolicitudFirma(requestId);
 
-      setDetalle({ data: response, loading: false, error: null });
+      setDetalle({
+        data: response,
+        loading: false,
+        error: null,
+      });
+
       return response;
     } catch (e) {
       const message = toErrorMessage(e, 'No se pudo consultar el detalle');
-      setDetalle({ data: null, loading: false, error: message });
+
+      setDetalle({
+        data: null,
+        loading: false,
+        error: message,
+      });
+
       throw e;
     }
   }, []);
@@ -114,14 +142,25 @@ export function useNominaFirmaElectronica() {
 
       const response = await obtenerDetalleTecnicoFirma(requestId);
 
-      setDetalleTecnico({ data: response, loading: false, error: null });
+      setDetalleTecnico({
+        data: response,
+        loading: false,
+        error: null,
+      });
+
       return response;
     } catch (e) {
       const message = toErrorMessage(
         e,
         'No se pudo consultar el detalle técnico'
       );
-      setDetalleTecnico({ data: null, loading: false, error: message });
+
+      setDetalleTecnico({
+        data: null,
+        loading: false,
+        error: message,
+      });
+
       throw e;
     }
   }, []);
@@ -131,7 +170,6 @@ export function useNominaFirmaElectronica() {
     listado,
     detalle,
     detalleTecnico,
-
     ejecutarCreacion,
     consultarListado,
     consultarDetalle,

@@ -11,26 +11,25 @@ import { useFirmaElectronicaView } from './hook/useFirmaElectronicaView';
 export default function FirmaElectronicaView() {
   const vm = useFirmaElectronicaView();
 
+  /**
+   * Ya no existe wrapper .data.data en la vista.
+   * Si hay detalle o detalle técnico, mostramos la sección inferior.
+   */
   const hasSelection =
-    Boolean(vm.detalle.data?.data) || Boolean(vm.detalleTecnico.data?.data);
+    Boolean(vm.detalle.data) || Boolean(vm.detalleTecnico.data);
 
   return (
     <section className={s.page}>
       <div className={s.stack}>
         <FirmaElectronicaHero onOpenCreateModal={vm.handleOpenCreateModal} />
 
-        {/* 
-          Workspace principal:
-          - arriba: tabla/listado a todo el ancho
-          - abajo: detalle operativo y técnico
-        */}
         <div className={s.workspace}>
           <section className={s.tableSection}>
             <FirmaSolicitudesPanel
               status={vm.statusFilter}
               loading={vm.listado.loading}
               error={vm.listado.error}
-              items={vm.listado.data?.data ?? []}
+              items={vm.listado.data ?? []}
               selectedRequestId={vm.requestId}
               onChangeStatus={vm.setStatusFilter}
               onLoad={vm.handleLoadList}
@@ -38,22 +37,18 @@ export default function FirmaElectronicaView() {
             />
           </section>
 
-          {/* 
-            El detalle ya no vive como panel lateral vacío.
-            Solo aparece abajo cuando realmente hay selección.
-          */}
           {hasSelection ? (
             <section className={s.detailsSection}>
               <FirmaSolicitudDetalleCard
                 loading={vm.detalle.loading}
                 error={vm.detalle.error}
-                data={vm.detalle.data?.data ?? null}
+                data={vm.detalle.data ?? null}
               />
 
               <FirmaDetalleTecnicoCard
                 loading={vm.detalleTecnico.loading}
                 error={vm.detalleTecnico.error}
-                data={vm.detalleTecnico.data?.data ?? null}
+                data={vm.detalleTecnico.data ?? null}
               />
             </section>
           ) : null}

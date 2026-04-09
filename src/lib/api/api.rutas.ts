@@ -71,13 +71,13 @@ export const API_RUTAS = {
     receiptsBySpPeriod: '/api/admin/nomina/receipts/by-sp-period',
   },
 
-  firmaElectronica: {
-    solicitudes: '/api/v1/signature-requests',
+firmaElectronica: {
+  solicitudes: '/api/v1/signature-requests',
 
-    detalleSolicitud: (requestId: string) =>
-      `/api/v1/signature-requests/${encodeURIComponent(requestId)}`,
+  detalleSolicitud: (requestId: string) =>
+    `/api/v1/signature-requests/${encodeURIComponent(requestId)}`,
 
-    detalleFirma: (requestId: string) =>
-      `/api/v1/signature-requests/${encodeURIComponent(requestId)}/signature-details`,
-  },
+  detalleFirma: (requestId: string) =>
+    `/api/v1/signature-requests/${encodeURIComponent(requestId)}/signature-details`,
+},
 } as const;

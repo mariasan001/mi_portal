@@ -1,7 +1,7 @@
-import FirmaElectronicaView from "@/features/admin/ui/FirmaElectronicaView/FirmaElectronicaView";
+import NominaBusquedaRecibosView from '@/features/admin/ui/NominaBusquedaRecibosView/NominaBusquedaRecibosView';
 
-export const dynamic = 'force-dynamic';
-
-export default function FirmaElectronicaPage() {
-  return <FirmaElectronicaView />;
+export default function NominaBusquedaRecibosPage() {
+  return <NominaBusquedaRecibosView />;
 }
+
+

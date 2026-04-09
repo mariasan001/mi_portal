@@ -10,6 +10,91 @@ import type {
   SolicitudFirmaListItemDto,
 } from '../types/firma-electronica.types';
 
+type UnknownRecord = Record<string, unknown>;
+
+/**
+ * Valida si el valor es un objeto plano.
+ */
+function isRecord(value: unknown): value is UnknownRecord {
+  return typeof value === 'object' && value !== null;
+}
+
+/**
+ * Valida si una respuesta tiene la forma:
+ * { codigo, descripcion, data }
+ */
+function isSignatureApiResponse<T>(
+  value: unknown
+): value is SignatureApiResponse<T> {
+  return (
+    isRecord(value) &&
+    'codigo' in value &&
+    'descripcion' in value &&
+    'data' in value
+  );
+}
+
+/**
+ * Desempaqueta la respuesta sin importar si viene como:
+ * - DTO limpio
+ * - wrapper { codigo, descripcion, data }
+ * - axiosResponse.data
+ * - axiosResponse.data.data
+ */
+function unwrapApiResult<T>(response: unknown): T {
+  if (isSignatureApiResponse<T>(response)) {
+    return response.data;
+  }
+
+  if (isRecord(response) && 'data' in response) {
+    const firstLevel = response.data;
+
+    if (isSignatureApiResponse<T>(firstLevel)) {
+      return firstLevel.data;
+    }
+
+    return firstLevel as T;
+  }
+
+  return response as T;
+}
+
+/**
+ * Imprime en consola la respuesta cruda
+ * y también la respuesta ya normalizada.
+ */
+function debugApiResponse<T>(label: string, response: unknown): T {
+  console.group(`📡 ${label}`);
+  console.log('RAW RESPONSE:', response);
+
+  try {
+    console.log('RAW RESPONSE JSON:', JSON.stringify(response, null, 2));
+  } catch {
+    console.log('RAW RESPONSE JSON: no se pudo serializar');
+  }
+
+  const normalized = unwrapApiResult<T>(response);
+
+  console.log('NORMALIZED RESPONSE:', normalized);
+
+  try {
+    console.log(
+      'NORMALIZED RESPONSE JSON:',
+      JSON.stringify(normalized, null, 2)
+    );
+  } catch {
+    console.log('NORMALIZED RESPONSE JSON: no se pudo serializar');
+  }
+
+  console.groupEnd();
+
+  return normalized;
+}
+
+/**
+ * Construye el FormData requerido por la API
+ * para crear una nueva solicitud de firma.
+ */
 function buildCrearSolicitudFormData(
   payload: CrearSolicitudFirmaPayload
 ): FormData {
@@ -30,55 +115,89 @@ function buildCrearSolicitudFormData(
   return form;
 }
 
-export function crearSolicitudFirma(
+
+/**
+ * Crea una solicitud de firma. de a firma encotr
+ */
+export async function crearSolicitudFirma(
   payload: CrearSolicitudFirmaPayload,
   opts?: { signal?: AbortSignal }
-) {
+): Promise<CrearSolicitudFirmaResultDto> {
   const formData = buildCrearSolicitudFormData(payload);
 
-  return api.post<SignatureApiResponse<CrearSolicitudFirmaResultDto>>(
+  const response = await api.post(
     API_RUTAS.firmaElectronica.solicitudes,
     formData,
     {
       signal: opts?.signal,
     }
   );
+
+  return debugApiResponse<CrearSolicitudFirmaResultDto>(
+    'CREAR SOLICITUD FIRMA',
+    response
+  );
 }
 
-export function listarSolicitudesFirma(
+/**
+ * Obtiene el listado de solicitudes.
+ */
+export async function listarSolicitudesFirma(
   status?: SignatureRequestStatus,
   opts?: { signal?: AbortSignal }
-) {
+): Promise<SolicitudFirmaListItemDto[]> {
   const qs = status ? `?status=${encodeURIComponent(status)}` : '';
 
-  return api.get<SignatureApiResponse<SolicitudFirmaListItemDto[]>>(
+  const response = await api.get(
     `${API_RUTAS.firmaElectronica.solicitudes}${qs}`,
     {
       signal: opts?.signal,
     }
   );
+
+  return debugApiResponse<SolicitudFirmaListItemDto[]>(
+    'LISTADO SOLICITUDES FIRMA',
+    response
+  );
 }
 
-export function obtenerDetalleSolicitudFirma(
+/**
+ * Obtiene el detalle operativo de una solicitud.
+ */
+export async function obtenerDetalleSolicitudFirma(
   requestId: string,
   opts?: { signal?: AbortSignal }
-) {
-  return api.get<SignatureApiResponse<SolicitudFirmaDetalleDto>>(
+): Promise<SolicitudFirmaDetalleDto> {
+  const response = await api.get(
     API_RUTAS.firmaElectronica.detalleSolicitud(requestId),
     {
       signal: opts?.signal,
     }
   );
+
+  return debugApiResponse<SolicitudFirmaDetalleDto>(
+    `DETALLE SOLICITUD FIRMA - ${requestId}`,
+    response
+  );
 }
 
-export function obtenerDetalleTecnicoFirma(
+/**
+ * Obtiene el detalle técnico de una solicitud.
+ */
+
+export async function obtenerDetalleTecnicoFirma(
   requestId: string,
   opts?: { signal?: AbortSignal }
-) {
-  return api.get<SignatureApiResponse<FirmaDetalleTecnicoDto>>(
+): Promise<FirmaDetalleTecnicoDto> {
+  const response = await api.get(
     API_RUTAS.firmaElectronica.detalleFirma(requestId),
     {
       signal: opts?.signal,
     }
+  );
+
+  return debugApiResponse<FirmaDetalleTecnicoDto>(
+    `DETALLE TECNICO FIRMA - ${requestId}`,
+    response
   );
 }

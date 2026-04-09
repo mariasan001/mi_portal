@@ -42,15 +42,11 @@ export function useFirmaElectronicaView() {
 
   /**
    * Request ID actualmente seleccionado.
-   * Se usa para:
-   * - resaltar fila en tabla
-   * - cargar detalle
-   * - cargar detalle técnico
    */
   const [requestId, setRequestId] = useState('');
 
   /**
-   * Actualiza cualquier campo del formulario de creación.
+   * Actualiza cualquier campo del formulario.
    */
   const updateCreateField = useCallback(
     <K extends keyof FirmaCreateFormState>(
@@ -67,10 +63,6 @@ export function useFirmaElectronicaView() {
 
   /**
    * Determina si ya se puede crear la solicitud.
-   * Campos obligatorios según API:
-   * - file
-   * - cuts
-   * - contrasena
    */
   const canCreate = useMemo(() => {
     return Boolean(
@@ -82,7 +74,6 @@ export function useFirmaElectronicaView() {
 
   /**
    * Payload listo para enviar al dominio.
-   * Si faltan datos obligatorios, regresa null.
    */
   const createPayload = useMemo<CrearSolicitudFirmaPayload | null>(() => {
     if (
@@ -103,21 +94,21 @@ export function useFirmaElectronicaView() {
   }, [createForm]);
 
   /**
-   * Abre el modal de creación.
+   * Abre el modal.
    */
   const handleOpenCreateModal = useCallback(() => {
     setIsCreateModalOpen(true);
   }, []);
 
   /**
-   * Cierra el modal de creación.
+   * Cierra el modal.
    */
   const handleCloseCreateModal = useCallback(() => {
     setIsCreateModalOpen(false);
   }, []);
 
   /**
-   * Limpia el formulario después de una creación exitosa.
+   * Limpia el formulario.
    */
   const resetCreateForm = useCallback(() => {
     setCreateForm({
@@ -130,7 +121,7 @@ export function useFirmaElectronicaView() {
   }, []);
 
   /**
-   * Consulta el listado según el estatus seleccionado.
+   * Consulta el listado según el filtro actual.
    */
   const handleLoadList = useCallback(async () => {
     try {
@@ -142,7 +133,7 @@ export function useFirmaElectronicaView() {
   }, [domain, statusFilter]);
 
   /**
-   * Selecciona una solicitud desde la tabla y carga:
+   * Selecciona una solicitud y carga:
    * - detalle operativo
    * - detalle técnico
    */
@@ -150,11 +141,24 @@ export function useFirmaElectronicaView() {
     async (selectedRequestId: string) => {
       setRequestId(selectedRequestId);
 
+      /**
+       * Logs temporales de depuración:
+       * confirman qué requestId se seleccionó realmente.
+       */
+      console.log('Firma seleccionada:', selectedRequestId);
+
       try {
         await Promise.all([
           domain.consultarDetalle(selectedRequestId),
           domain.consultarDetalleTecnico(selectedRequestId),
         ]);
+
+        /**
+         * Log temporal para validar qué quedó cargado
+         * en memoria después de consultar.
+         */
+        console.log('Detalle operativo solicitado para:', selectedRequestId);
+        console.log('Detalle técnico solicitado para:', selectedRequestId);
       } catch {
         toast.error('No se pudo cargar el detalle de la solicitud.');
       }
@@ -163,8 +167,7 @@ export function useFirmaElectronicaView() {
   );
 
   /**
-   * Consulta manual del detalle operativo usando el requestId actual.
-   * Útil si en algún momento agregas un input de consulta manual.
+   * Consulta manual del detalle operativo.
    */
   const handleLoadDetail = useCallback(async () => {
     const id = requestId.trim();
@@ -175,6 +178,8 @@ export function useFirmaElectronicaView() {
     }
 
     try {
+      console.log('Consulta manual detalle:', id);
+
       await domain.consultarDetalle(id);
       toast.success('Detalle consultado correctamente.');
     } catch {
@@ -183,7 +188,7 @@ export function useFirmaElectronicaView() {
   }, [domain, requestId]);
 
   /**
-   * Consulta manual del detalle técnico usando el requestId actual.
+   * Consulta manual del detalle técnico.
    */
   const handleLoadTechnicalDetail = useCallback(async () => {
     const id = requestId.trim();
@@ -194,6 +199,8 @@ export function useFirmaElectronicaView() {
     }
 
     try {
+      console.log('Consulta manual detalle técnico:', id);
+
       await domain.consultarDetalleTecnico(id);
       toast.success('Detalle técnico consultado correctamente.');
     } catch {
@@ -202,16 +209,7 @@ export function useFirmaElectronicaView() {
   }, [domain, requestId]);
 
   /**
-   * Crea una nueva solicitud de firma.
-   *
-   * Flujo al crear:
-   * 1. valida datos
-   * 2. crea solicitud
-   * 3. guarda requestId nuevo
-   * 4. refresca listado
-   * 5. carga detalle y detalle técnico
-   * 6. cierra modal
-   * 7. limpia formulario
+   * Crea una nueva solicitud.
    */
   const handleCreate = useCallback(async () => {
     if (!createPayload) {
@@ -222,7 +220,14 @@ export function useFirmaElectronicaView() {
     try {
       const response = await domain.ejecutarCreacion(createPayload);
 
-      const nuevoRequestId = response.data.requestId;
+      /**
+       * Como el dominio ya regresa DTO limpio,
+       * aquí usamos response.requestId
+       * y no response.data.requestId
+       */
+      const nuevoRequestId = response.requestId;
+
+      console.log('Nueva solicitud creada:', nuevoRequestId);
 
       setRequestId(nuevoRequestId);
 
@@ -242,29 +247,14 @@ export function useFirmaElectronicaView() {
   }, [createPayload, domain, resetCreateForm, statusFilter]);
 
   return {
-    /**
-     * Estado visual general
-     */
     isCreateModalOpen,
     requestId,
     statusFilter,
-
-    /**
-     * Formulario visual
-     */
     createForm,
     updateCreateField,
     canCreate,
-
-    /**
-     * Setters visuales
-     */
     setRequestId,
     setStatusFilter,
-
-    /**
-     * Acciones UI
-     */
     handleOpenCreateModal,
     handleCloseCreateModal,
     handleCreate,
@@ -272,10 +262,6 @@ export function useFirmaElectronicaView() {
     handleSelectRequest,
     handleLoadDetail,
     handleLoadTechnicalDetail,
-
-    /**
-     * Estado proveniente del dominio
-     */
     creacion: domain.creacion,
     listado: domain.listado,
     detalle: domain.detalle,

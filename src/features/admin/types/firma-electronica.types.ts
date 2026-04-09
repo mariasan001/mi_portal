@@ -48,24 +48,32 @@ export type SolicitudFirmaDetalleDto = {
 };
 
 export type FirmaArchivoDetalleDto = {
-  nombreArchivo: string;
-  mimeType: string;
-  contenidoBase64: string;
+  nombreArchivo: string | null;
+  mimeType: string | null;
+  contenidoBase64: string | null;
 };
 
 export type FirmaFirmanteDetalleDto = {
-  nombre: string;
-  correo: string;
-  organizacion: string;
-  serieCertificado: string;
-  vigenciaInicio: string;
-  vigenciaFin: string;
+  nombre: string | null;
+  correo: string | null;
+  organizacion: string | null;
+  serieCertificado: string | null;
+  vigenciaInicio: string | null;
+  vigenciaFin: string | null;
+};
+
+export type FirmaAutoridadCertificadoraDetalleDto = {
+  nombre: string | null;
+  unidadOrganizacional: string | null;
+  organizacion: string | null;
 };
 
 export type FirmaDetalleTecnicoDto = {
-  identificadorFirma: string;
-  archivo: FirmaArchivoDetalleDto;
-  firmante: FirmaFirmanteDetalleDto;
-  autoridadCertificadora: Record<string, unknown>;
-  [key: string]: unknown;
+  identificadorFirma: string | null;
+  archivo: FirmaArchivoDetalleDto | null;
+  firmante: FirmaFirmanteDetalleDto | null;
+  autoridadCertificadora?: FirmaAutoridadCertificadoraDetalleDto | null;
+  firmaCriptografica?: Record<string, unknown> | null;
+  ocsp?: Record<string, unknown> | null;
+  tsp?: Record<string, unknown> | null;
 };

@@ -1,42 +1,60 @@
-import { NextResponse } from 'next/server';
-import { obtenerSignatureBaseUrl } from '@/lib/config/entorno';
+import { NextRequest, NextResponse } from 'next/server';
 
-export const dynamic = 'force-dynamic';
-export const runtime = 'nodejs';
+type RouteContext = {
+  params: Promise<{
+    requestId: string;
+  }>;
+};
 
 export async function GET(
-  req: Request,
-  context: { params: Promise<{ requestId: string }> }
-) {
-  const base = obtenerSignatureBaseUrl();
-  const cookie = req.headers.get('cookie') ?? '';
-  const { requestId } = await context.params;
-
+  request: NextRequest,
+  { params }: RouteContext
+): Promise<NextResponse> {
   try {
-    const upstream = await fetch(
-      `${base}/api/v1/signature-requests/${encodeURIComponent(requestId)}`,
-      {
-        method: 'GET',
-        headers: {
-          accept: 'application/json',
-          cookie,
-        },
-        cache: 'no-store',
-      }
-    );
+    const { requestId } = await params;
 
-    const contentType =
-      upstream.headers.get('content-type') ?? 'application/json';
-    const text = await upstream.text();
+    /**
+     * Ajusta esta variable según tu proyecto.
+     * Debe apuntar al backend real en 8092.
+     */
+    const backendBaseUrl =
+      process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:8092';
 
-    return new NextResponse(text, {
-      status: upstream.status,
-      headers: { 'content-type': contentType },
+    /**
+     * Importante:
+     * aquí SÍ debe llevar /signature-details
+     */
+    const targetUrl = `${backendBaseUrl}/signature/api/v1/signature-requests/${encodeURIComponent(
+      requestId
+    )}/signature-details`;
+
+    console.log('Proxy detalle técnico firma:', targetUrl);
+
+    const response = await fetch(targetUrl, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+      },
+      cache: 'no-store',
     });
-  } catch (e) {
+
+    const data = await response.json();
+
+    console.log('Respuesta backend detalle técnico:', data);
+
+    return NextResponse.json(data, {
+      status: response.status,
+    });
+  } catch (error) {
+    console.error(' Error en proxy de detalle técnico:', error);
+
     return NextResponse.json(
-      { message: 'No se pudo conectar a SIGNATURE', error: String(e) },
-      { status: 502 }
+      {
+        codigo: 'SIGN-PROXY-500',
+        descripcion: 'Error al consultar el detalle técnico de la firma',
+        data: null,
+      },
+      { status: 500 }
     );
   }
 }
