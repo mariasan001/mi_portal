@@ -1,3 +1,4 @@
+import { Download, Eye } from 'lucide-react';
 import type { SolicitudFirmaListItemDto } from '../../../types/firma-electronica.types';
 import { formatDateTime } from '../utils/firma-electronica-view.utils';
 import s from './FirmaSolicitudesTable.module.css';
@@ -25,6 +26,21 @@ function getStatusClass(status: string): string {
   }
 }
 
+function getStatusLabel(status: string): string {
+  switch (status) {
+    case 'PENDING':
+      return 'Pendiente';
+    case 'PROCESSING':
+      return 'Procesando';
+    case 'SIGNED':
+      return 'Firmado';
+    case 'FAILED':
+      return 'Fallido';
+    default:
+      return status || 'Sin estatus';
+  }
+}
+
 export default function FirmaSolicitudesTable({
   items,
   selectedRequestId,
@@ -43,7 +59,7 @@ export default function FirmaSolicitudesTable({
             <th>Proveedor</th>
             <th>Solicitado</th>
             <th>Completado</th>
-            <th>Acciones</th>
+            <th className={s.actionsHeader}>Acciones</th>
           </tr>
         </thead>
 
@@ -75,7 +91,7 @@ export default function FirmaSolicitudesTable({
                   <span
                     className={`${s.statusBadge} ${getStatusClass(normalizedStatus)}`}
                   >
-                    {item.status}
+                    {getStatusLabel(normalizedStatus)}
                   </span>
                 </td>
 
@@ -104,18 +120,22 @@ export default function FirmaSolicitudesTable({
                     >
                       <button
                         type="button"
-                        className={s.secondaryButton}
+                        className={s.iconButton}
                         onClick={() => onViewSignedPdf(item.requestId)}
+                        title="Ver PDF firmado"
+                        aria-label="Ver PDF firmado"
                       >
-                        Ver PDF
+                        <Eye size={16} strokeWidth={2.1} />
                       </button>
 
                       <button
                         type="button"
-                        className={s.primaryButton}
+                        className={`${s.iconButton} ${s.downloadButton}`}
                         onClick={() => onDownloadSignedPdf(item.requestId)}
+                        title="Descargar PDF firmado"
+                        aria-label="Descargar PDF firmado"
                       >
-                        Descargar
+                        <Download size={16} strokeWidth={2.1} />
                       </button>
                     </div>
                   ) : (

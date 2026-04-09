@@ -4,7 +4,6 @@ import type {
   SolicitudFirmaListItemDto,
 } from '../../../types/firma-electronica.types';
 import EmptyFirmaState from './EmptyFirmaState';
-import FirmaSolicitudesToolbar from './FirmaSolicitudesToolbar';
 import FirmaSolicitudesTable from './FirmaSolicitudesTable';
 import s from './FirmaSolicitudesPanel.module.css';
 
@@ -21,6 +20,17 @@ type Props = {
   onOpenCreateModal: () => void;
 };
 
+const STATUS_OPTIONS: Array<{
+  label: string;
+  value: SignatureRequestStatus | '';
+}> = [
+  { label: 'Todos', value: '' },
+  { label: 'Pendiente', value: 'PENDING' },
+  { label: 'Procesando', value: 'PROCESSING' },
+  { label: 'Firmado', value: 'SIGNED' },
+  { label: 'Fallido', value: 'FAILED' },
+];
+
 export default function FirmaSolicitudesPanel({
   status,
   loading,
@@ -36,12 +46,12 @@ export default function FirmaSolicitudesPanel({
   return (
     <section className={s.panel}>
       <header className={s.header}>
-        <div className={s.headerRow}>
+        <div className={s.topRow}>
           <div className={s.titleBlock}>
             <h2>Solicitudes registradas</h2>
             <p className={s.subtitle}>
-              Filtra por estatus y selecciona una solicitud para revisar su
-              detalle o descargar el PDF firmado.
+              Consulta el estado de cada solicitud y accede al PDF firmado
+              cuando esté disponible.
             </p>
           </div>
 
@@ -54,13 +64,33 @@ export default function FirmaSolicitudesPanel({
             Nueva solicitud
           </button>
         </div>
-      </header>
 
-      <FirmaSolicitudesToolbar
-        status={status}
-        loading={loading}
-        onChangeStatus={onChangeStatus}
-      />
+        <div className={s.filtersRow}>
+          <div className={s.filtersBlock}>
+            <span className={s.filtersLabel}>Estatus</span>
+
+            <div className={s.chips}>
+              {STATUS_OPTIONS.map((option) => {
+                const isActive = status === option.value;
+
+                return (
+                  <button
+                    key={option.label}
+                    type="button"
+                    className={`${s.chip} ${isActive ? s.chipActive : ''}`}
+                    onClick={() => onChangeStatus(option.value)}
+                    disabled={loading}
+                  >
+                    {option.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {loading ? <span className={s.loadingText}>Actualizando…</span> : null}
+        </div>
+      </header>
 
       {error ? <p className={s.feedback}>{error}</p> : null}
 
