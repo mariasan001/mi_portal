@@ -1,4 +1,7 @@
+'use client';
+
 import { CalendarRange, Layers3 } from 'lucide-react';
+import { motion, useReducedMotion } from 'motion/react';
 import s from './NominaEntityCards.module.css';
 import { NominaEntity } from '../types/nomina-configuracion.types';
 
@@ -7,25 +10,63 @@ type Props = {
   onSelect: (entity: NominaEntity) => void;
 };
 
+const itemVariants = {
+  hidden: { opacity: 0, y: 10 },
+  show: { opacity: 1, y: 0 },
+};
+
 export default function NominaEntityCards({ activeEntity, onSelect }: Props) {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
-    <section className={s.grid}>
-      <button
+    <motion.section
+      className={s.grid}
+      initial={shouldReduceMotion ? false : 'hidden'}
+      animate={shouldReduceMotion ? undefined : 'show'}
+      variants={{
+        hidden: {},
+        show: {
+          transition: {
+            staggerChildren: 0.06,
+          },
+        },
+      }}
+    >
+      <motion.button
         type="button"
-        className={`${s.card} ${activeEntity === 'periodo' ? s.active : s.inactive}`}
+        className={`${s.card} ${
+          activeEntity === 'periodo' ? s.active : s.inactive
+        }`}
         onClick={() => onSelect('periodo')}
+        variants={itemVariants}
+        transition={{ duration: 0.24 }}
+        whileHover={
+          shouldReduceMotion
+            ? undefined
+            : { y: -2, transition: { duration: 0.16 } }
+        }
+        whileTap={shouldReduceMotion ? undefined : { scale: 0.992 }}
+        layout
       >
         <div className={s.iconWrap}>
           <div className={s.icon}>
-            <CalendarRange size={20} />
+            <CalendarRange size={18} />
           </div>
         </div>
 
         <div className={s.body}>
           <div className={s.headRow}>
             <h2>Periodos</h2>
+
             {activeEntity === 'periodo' ? (
-              <span className={s.stateBadge}>Activo</span>
+              <motion.span
+                className={s.stateBadge}
+                initial={shouldReduceMotion ? false : { opacity: 0, scale: 0.92 }}
+                animate={shouldReduceMotion ? undefined : { opacity: 1, scale: 1 }}
+                transition={{ duration: 0.18 }}
+              >
+                Activo
+              </motion.span>
             ) : null}
           </div>
 
@@ -34,24 +75,43 @@ export default function NominaEntityCards({ activeEntity, onSelect }: Props) {
             sus fechas clave.
           </p>
         </div>
-      </button>
+      </motion.button>
 
-      <button
+      <motion.button
         type="button"
-        className={`${s.card} ${activeEntity === 'version' ? s.active : s.inactive}`}
+        className={`${s.card} ${
+          activeEntity === 'version' ? s.active : s.inactive
+        }`}
         onClick={() => onSelect('version')}
+        variants={itemVariants}
+        transition={{ duration: 0.24 }}
+        whileHover={
+          shouldReduceMotion
+            ? undefined
+            : { y: -2, transition: { duration: 0.16 } }
+        }
+        whileTap={shouldReduceMotion ? undefined : { scale: 0.992 }}
+        layout
       >
         <div className={s.iconWrap}>
           <div className={s.icon}>
-            <Layers3 size={20} />
+            <Layers3 size={18} />
           </div>
         </div>
 
         <div className={s.body}>
           <div className={s.headRow}>
             <h2>Versiones</h2>
+
             {activeEntity === 'version' ? (
-              <span className={s.stateBadge}>Activo</span>
+              <motion.span
+                className={s.stateBadge}
+                initial={shouldReduceMotion ? false : { opacity: 0, scale: 0.92 }}
+                animate={shouldReduceMotion ? undefined : { opacity: 1, scale: 1 }}
+                transition={{ duration: 0.18 }}
+              >
+                Activo
+              </motion.span>
             ) : null}
           </div>
 
@@ -60,7 +120,7 @@ export default function NominaEntityCards({ activeEntity, onSelect }: Props) {
             periodo y etapa correspondiente.
           </p>
         </div>
-      </button>
-    </section>
+      </motion.button>
+    </motion.section>
   );
 }

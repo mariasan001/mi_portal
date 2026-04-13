@@ -1,6 +1,6 @@
 .layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.18fr) minmax(320px, 0.82fr);
+  grid-template-columns: minmax(0, 1.12fr) minmax(320px, 0.88fr);
   gap: 18px;
   align-items: start;
 }
@@ -8,18 +8,18 @@
 .formPanel,
 .resultPanel {
   display: grid;
-  gap: 18px;
-  height: 90%;
-  padding: 20px;
+  gap: 14px;
+  min-height: 100%;
+  padding: 18px;
   background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 22px;
-  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-soft);
+  border-radius: 20px;
+  box-shadow: 0 8px 22px rgba(10, 10, 10, 0.035);
 }
 
 .intro {
   display: grid;
-  gap: 10px;
+  gap: 8px;
   padding-bottom: 10px;
   border-bottom: 1px solid var(--border-soft);
 }
@@ -28,16 +28,17 @@
   width: fit-content;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  min-height: 28px;
+  gap: 7px;
+  min-height: 26px;
   padding: 0 10px;
   border-radius: 999px;
-  background: rgba(10, 10, 10, 0.05);
+  background: rgba(10, 10, 10, 0.04);
   border: 1px solid rgba(10, 10, 10, 0.08);
   color: var(--muted);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 .introCopy {
@@ -48,33 +49,34 @@
 .introCopy h4 {
   margin: 0;
   color: var(--text);
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 800;
   line-height: 1.15;
+  letter-spacing: -0.02em;
 }
 
 .introCopy p {
   margin: 0;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.55;
 }
 
 .form {
   display: grid;
-  gap: 18px;
+  gap: 14px;
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  gap: 12px;
   align-items: start;
 }
 
 .field {
   display: grid;
-  gap: 10px;
+  gap: 6px;
 }
 
 .fieldWide {
@@ -84,24 +86,24 @@
 .fieldHead {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 9px;
 }
 
 .fieldHead span {
   color: var(--text);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   line-height: 1.35;
 }
 
 .iconWrap {
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  border-radius: 999px;
-  background: rgba(159, 33, 65, 0.06);
+  border-radius: 12px;
+  background: rgba(159, 33, 65, 0.05);
   color: var(--vino);
 }
 
@@ -109,28 +111,30 @@
 .field select,
 .field textarea {
   min-width: 0;
-  background: var(--surface);
+  background: #ffffff;
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: 14px;
   color: var(--text);
-  font-size: 14px;
+  font-size: 13px;
   font-family: var(--font-body);
   outline: none;
   transition:
-    border-color 0.18s ease,
-    box-shadow 0.18s ease;
+    border-color 0.16s ease,
+    box-shadow 0.16s ease,
+    background 0.16s ease;
 }
 
 .field input,
 .field select {
-  height: 46px;
-  padding: 0 14px;
+  height: 42px;
+  padding: 0 13px;
 }
 
 .field textarea {
-  min-height: 142px;
-  padding: 12px 14px;
+  min-height: 112px;
+  padding: 11px 13px;
   resize: vertical;
+  line-height: 1.55;
 }
 
 .field input::placeholder,
@@ -141,56 +145,72 @@
 .field input:focus,
 .field select:focus,
 .field textarea:focus {
-  border-color: rgba(159, 33, 65, 0.24);
-  box-shadow: 0 0 0 4px rgba(159, 33, 65, 0.08);
+  border-color: rgba(188, 148, 90, 0.24);
+  box-shadow: 0 0 0 3px rgba(188, 148, 90, 0.1);
 }
 
 .actions {
   display: flex;
   justify-content: flex-start;
-  padding-top: 2px;
+  padding-top: 4px;
 }
 
 .submitBtn {
   min-height: 44px;
-  padding: 0 18px;
-  border: 0;
+  padding: 0 16px;
+  border: 1px solid rgba(159, 33, 65, 0.18);
   border-radius: 14px;
   background: var(--vino);
   color: #fff;
-  font-size: 14px;
+  font-size: 12.5px;
   font-weight: 800;
   font-family: var(--font-body);
   cursor: pointer;
   transition:
-    transform 0.18s ease,
-    opacity 0.18s ease;
+    transform 0.16s ease,
+    opacity 0.16s ease,
+    background 0.16s ease,
+    border-color 0.16s ease,
+    box-shadow 0.16s ease;
+  box-shadow: 0 8px 18px rgba(159, 33, 65, 0.12);
 }
 
 .submitBtn:hover:not(:disabled) {
-  transform: translateY(-1px);
+  background: #8e1c39;
+  border-color: rgba(159, 33, 65, 0.28);
+  box-shadow: 0 10px 20px rgba(159, 33, 65, 0.16);
 }
 
 .submitBtn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .resultGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  gap: 12px;
 }
 
 .item {
   display: grid;
-  gap: 10px;
-  min-height: 110px;
-  padding: 16px;
+  gap: 8px;
+  min-height: 92px;
+  padding: 14px;
   background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-soft);
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(10, 10, 10, 0.028);
+  transition:
+    border-color 0.16s ease,
+    box-shadow 0.16s ease,
+    background 0.16s ease;
+}
+
+.item:hover {
+  border-color: rgba(10, 10, 10, 0.1);
+  box-shadow: 0 10px 20px rgba(10, 10, 10, 0.04);
 }
 
 .itemWide {
@@ -200,59 +220,61 @@
 .itemHead {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 9px;
+  min-width: 0;
 }
 
 .item dt {
   margin: 0;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   line-height: 1.35;
 }
 
 .item dd {
   margin: 0;
   color: var(--text);
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 800;
   line-height: 1.45;
   word-break: break-word;
 }
 
 .empty {
-  min-height: 360px;
+  min-height: 240px;
   display: grid;
   place-items: center;
-  gap: 14px;
-  padding: 20px;
-  border: 1px dashed var(--border);
-  border-radius: 18px;
-  background: var(--surface);
+  align-content: center;
+  gap: 10px;
+  padding: 18px;
+  border: 1px dashed rgba(10, 10, 10, 0.12);
+  border-radius: 16px;
+  background: #fafafa;
   text-align: center;
 }
 
 .emptyIcon {
-  width: 52px;
-  height: 52px;
+  width: 42px;
+  height: 42px;
   display: grid;
   place-items: center;
-  border-radius: 999px;
-  background: rgba(159, 33, 65, 0.06);
+  border-radius: 14px;
+  background: rgba(159, 33, 65, 0.05);
   color: var(--vino);
 }
 
 .emptyCopy {
   display: grid;
-  gap: 6px;
+  gap: 5px;
 }
 
 .emptyCopy h5 {
   margin: 0;
   color: var(--text);
-  font-size: 15px;
+  font-size: 13.5px;
   font-weight: 800;
   line-height: 1.3;
 }
@@ -261,7 +283,7 @@
   margin: 0;
   max-width: 30ch;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.55;
 }
 
@@ -294,12 +316,12 @@
 
   .item {
     min-height: unset;
-    padding: 14px;
-    border-radius: 16px;
+    padding: 13px;
+    border-radius: 15px;
   }
 
   .introCopy h4 {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .submitBtn {
@@ -311,6 +333,10 @@
   }
 
   .empty {
-    min-height: 260px;
+    min-height: 180px;
+  }
+
+  .field textarea {
+    min-height: 100px;
   }
 }

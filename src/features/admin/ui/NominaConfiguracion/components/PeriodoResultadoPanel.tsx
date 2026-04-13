@@ -1,3 +1,5 @@
+'use client';
+
 import {
   CalendarDays,
   CalendarRange,
@@ -5,6 +7,7 @@ import {
   FileText,
   Hash,
 } from 'lucide-react';
+import { motion, useReducedMotion } from 'motion/react';
 
 import type { PeriodoNominaDto } from '../../../types/nomina-periodos.types';
 import { formatNominaDate } from '../utils/nomina-configuracion.utils';
@@ -15,11 +18,18 @@ type Props = {
 };
 
 export default function PeriodoResultadoPanel({ detalle }: Props) {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
-    <section className={s.panel}>
+    <motion.section
+      className={s.panel}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}
+      animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+      transition={{ duration: 0.22 }}
+    >
       <div className={s.intro}>
         <div className={s.introBadge}>
-          <FileText size={14} />
+          <FileText size={13} />
           Resultado del periodo
         </div>
 
@@ -35,7 +45,7 @@ export default function PeriodoResultadoPanel({ detalle }: Props) {
         <div className={s.item}>
           <div className={s.itemHead}>
             <div className={s.iconWrap}>
-              <Hash size={15} />
+              <Hash size={14} />
             </div>
             <dt>ID del periodo</dt>
           </div>
@@ -45,7 +55,7 @@ export default function PeriodoResultadoPanel({ detalle }: Props) {
         <div className={s.item}>
           <div className={s.itemHead}>
             <div className={s.iconWrap}>
-              <Hash size={15} />
+              <Hash size={14} />
             </div>
             <dt>Año</dt>
           </div>
@@ -55,7 +65,7 @@ export default function PeriodoResultadoPanel({ detalle }: Props) {
         <div className={s.item}>
           <div className={s.itemHead}>
             <div className={s.iconWrap}>
-              <CalendarRange size={15} />
+              <CalendarRange size={14} />
             </div>
             <dt>Quincena</dt>
           </div>
@@ -65,7 +75,7 @@ export default function PeriodoResultadoPanel({ detalle }: Props) {
         <div className={`${s.item} ${s.itemWide}`}>
           <div className={s.itemHead}>
             <div className={s.iconWrap}>
-              <FileText size={15} />
+              <FileText size={14} />
             </div>
             <dt>Código del periodo</dt>
           </div>
@@ -75,7 +85,7 @@ export default function PeriodoResultadoPanel({ detalle }: Props) {
         <div className={s.item}>
           <div className={s.itemHead}>
             <div className={s.iconWrap}>
-              <CalendarDays size={15} />
+              <CalendarDays size={14} />
             </div>
             <dt>Fecha de inicio</dt>
           </div>
@@ -85,7 +95,7 @@ export default function PeriodoResultadoPanel({ detalle }: Props) {
         <div className={s.item}>
           <div className={s.itemHead}>
             <div className={s.iconWrap}>
-              <CalendarDays size={15} />
+              <CalendarDays size={14} />
             </div>
             <dt>Fecha de fin</dt>
           </div>
@@ -95,13 +105,13 @@ export default function PeriodoResultadoPanel({ detalle }: Props) {
         <div className={s.item}>
           <div className={s.itemHead}>
             <div className={s.iconWrap}>
-              <CreditCard size={15} />
+              <CreditCard size={14} />
             </div>
             <dt>Fecha de pago estimada</dt>
           </div>
           <dd>{formatNominaDate(detalle.fechaPagoEstimada)}</dd>
         </div>
       </dl>
-    </section>
+    </motion.section>
   );
 }

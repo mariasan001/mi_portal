@@ -7,6 +7,7 @@ import {
   Layers3,
   ShieldUser,
 } from 'lucide-react';
+import { motion, useReducedMotion } from 'motion/react';
 
 import type {
   CrearVersionNominaPayload,
@@ -31,6 +32,8 @@ export default function VersionCreateForm({
   ultimaCreada,
   onSubmit,
 }: Props) {
+  const shouldReduceMotion = useReducedMotion();
+
   const [form, setForm] = useState<CrearVersionNominaPayload>({
     payPeriodId: 0,
     stage: 'PREVIA',
@@ -57,11 +60,16 @@ export default function VersionCreateForm({
   }
 
   return (
-    <div className={s.layout}>
+    <motion.div
+      className={s.layout}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}
+      animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+      transition={{ duration: 0.22 }}
+    >
       <section className={s.formPanel}>
         <div className={s.intro}>
           <div className={s.introBadge}>
-            <Layers3 size={14} />
+            <Layers3 size={13} />
             Configuración de versión
           </div>
 
@@ -79,7 +87,7 @@ export default function VersionCreateForm({
             <label className={s.field}>
               <div className={s.fieldHead}>
                 <div className={s.iconWrap}>
-                  <Hash size={15} />
+                  <Hash size={14} />
                 </div>
                 <span>Periodo de pago</span>
               </div>
@@ -101,7 +109,7 @@ export default function VersionCreateForm({
             <label className={s.field}>
               <div className={s.fieldHead}>
                 <div className={s.iconWrap}>
-                  <Layers3 size={15} />
+                  <Layers3 size={14} />
                 </div>
                 <span>Etapa</span>
               </div>
@@ -123,13 +131,13 @@ export default function VersionCreateForm({
             <label className={`${s.field} ${s.fieldWide}`}>
               <div className={s.fieldHead}>
                 <div className={s.iconWrap}>
-                  <FileText size={15} />
+                  <FileText size={14} />
                 </div>
                 <span>Notas</span>
               </div>
 
               <textarea
-                rows={5}
+                rows={4}
                 value={form.notes}
                 onChange={(e) =>
                   setForm((prev) => ({
@@ -144,7 +152,7 @@ export default function VersionCreateForm({
             <label className={s.field}>
               <div className={s.fieldHead}>
                 <div className={s.iconWrap}>
-                  <ShieldUser size={15} />
+                  <ShieldUser size={14} />
                 </div>
                 <span>Usuario creador</span>
               </div>
@@ -165,9 +173,15 @@ export default function VersionCreateForm({
           </div>
 
           <div className={s.actions}>
-            <button type="submit" className={s.submitBtn} disabled={!canSubmit}>
+            <motion.button
+              type="submit"
+              className={s.submitBtn}
+              disabled={!canSubmit}
+              whileHover={!shouldReduceMotion && canSubmit ? { y: -1 } : undefined}
+              whileTap={!shouldReduceMotion && canSubmit ? { scale: 0.99 } : undefined}
+            >
               {loading ? 'Procesando...' : 'Crear versión'}
-            </button>
+            </motion.button>
           </div>
         </form>
       </section>
@@ -175,7 +189,7 @@ export default function VersionCreateForm({
       <aside className={s.resultPanel}>
         <div className={s.intro}>
           <div className={s.introBadge}>
-            <FileText size={14} />
+            <FileText size={13} />
             Resultado de la versión
           </div>
 
@@ -193,7 +207,7 @@ export default function VersionCreateForm({
             <div className={s.item}>
               <div className={s.itemHead}>
                 <div className={s.iconWrap}>
-                  <Hash size={15} />
+                  <Hash size={14} />
                 </div>
                 <dt>ID de versión</dt>
               </div>
@@ -203,7 +217,7 @@ export default function VersionCreateForm({
             <div className={s.item}>
               <div className={s.itemHead}>
                 <div className={s.iconWrap}>
-                  <Hash size={15} />
+                  <Hash size={14} />
                 </div>
                 <dt>Periodo de pago</dt>
               </div>
@@ -213,7 +227,7 @@ export default function VersionCreateForm({
             <div className={`${s.item} ${s.itemWide}`}>
               <div className={s.itemHead}>
                 <div className={s.iconWrap}>
-                  <FileText size={15} />
+                  <FileText size={14} />
                 </div>
                 <dt>Código del periodo</dt>
               </div>
@@ -223,7 +237,7 @@ export default function VersionCreateForm({
             <div className={s.item}>
               <div className={s.itemHead}>
                 <div className={s.iconWrap}>
-                  <Layers3 size={15} />
+                  <Layers3 size={14} />
                 </div>
                 <dt>Etapa</dt>
               </div>
@@ -233,7 +247,7 @@ export default function VersionCreateForm({
             <div className={s.item}>
               <div className={s.itemHead}>
                 <div className={s.iconWrap}>
-                  <Layers3 size={15} />
+                  <Layers3 size={14} />
                 </div>
                 <dt>Estatus</dt>
               </div>
@@ -243,7 +257,7 @@ export default function VersionCreateForm({
             <div className={s.item}>
               <div className={s.itemHead}>
                 <div className={s.iconWrap}>
-                  <Layers3 size={15} />
+                  <Layers3 size={14} />
                 </div>
                 <dt>Actual</dt>
               </div>
@@ -253,7 +267,7 @@ export default function VersionCreateForm({
             <div className={s.item}>
               <div className={s.itemHead}>
                 <div className={s.iconWrap}>
-                  <Layers3 size={15} />
+                  <Layers3 size={14} />
                 </div>
                 <dt>Liberada</dt>
               </div>
@@ -263,7 +277,7 @@ export default function VersionCreateForm({
             <div className={`${s.item} ${s.itemWide}`}>
               <div className={s.itemHead}>
                 <div className={s.iconWrap}>
-                  <FileText size={15} />
+                  <FileText size={14} />
                 </div>
                 <dt>Notas</dt>
               </div>
@@ -273,7 +287,7 @@ export default function VersionCreateForm({
             <div className={`${s.item} ${s.itemWide}`}>
               <div className={s.itemHead}>
                 <div className={s.iconWrap}>
-                  <FileText size={15} />
+                  <FileText size={14} />
                 </div>
                 <dt>Fecha de carga</dt>
               </div>
@@ -283,7 +297,7 @@ export default function VersionCreateForm({
         ) : (
           <div className={s.empty}>
             <div className={s.emptyIcon}>
-              <FileText size={18} />
+              <FileText size={16} />
             </div>
 
             <div className={s.emptyCopy}>
@@ -296,6 +310,6 @@ export default function VersionCreateForm({
           </div>
         )}
       </aside>
-    </div>
+    </motion.div>
   );
 }

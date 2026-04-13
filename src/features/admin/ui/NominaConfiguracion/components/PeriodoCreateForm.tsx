@@ -1,7 +1,14 @@
 'use client';
 
-import { CalendarDays, CalendarRange, Clock3, FileText, Hash } from 'lucide-react';
+import {
+  CalendarDays,
+  CalendarRange,
+  Clock3,
+  FileText,
+  Hash,
+} from 'lucide-react';
 import { FormEvent, useMemo, useState } from 'react';
+import { motion, useReducedMotion } from 'motion/react';
 
 import type {
   CrearPeriodoNominaPayload,
@@ -22,6 +29,8 @@ export default function PeriodoCreateForm({
   ultimoCreado,
   onSubmit,
 }: Props) {
+  const shouldReduceMotion = useReducedMotion();
+
   const [form, setForm] = useState<CrearPeriodoNominaPayload>({
     anio: new Date().getFullYear(),
     quincena: 1,
@@ -52,11 +61,16 @@ export default function PeriodoCreateForm({
   }
 
   return (
-    <div className={s.layout}>
+    <motion.div
+      className={s.layout}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}
+      animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+      transition={{ duration: 0.22 }}
+    >
       <form className={s.formCard} onSubmit={handleSubmit}>
         <div className={s.formIntro}>
           <div className={s.formBadge}>
-            <CalendarRange size={14} />
+            <CalendarRange size={13} />
             Configuración de periodo
           </div>
 
@@ -72,7 +86,7 @@ export default function PeriodoCreateForm({
         <div className={s.grid2}>
           <label className={s.field}>
             <span className={s.fieldLabel}>
-              <Hash size={14} />
+              <Hash size={13} />
               Año
             </span>
 
@@ -92,7 +106,7 @@ export default function PeriodoCreateForm({
 
           <label className={s.field}>
             <span className={s.fieldLabel}>
-              <CalendarRange size={14} />
+              <CalendarRange size={13} />
               Quincena
             </span>
 
@@ -114,7 +128,7 @@ export default function PeriodoCreateForm({
 
         <label className={s.field}>
           <span className={s.fieldLabel}>
-            <CalendarDays size={14} />
+            <CalendarDays size={13} />
             Fecha de inicio
           </span>
 
@@ -132,7 +146,7 @@ export default function PeriodoCreateForm({
 
         <label className={s.field}>
           <span className={s.fieldLabel}>
-            <CalendarDays size={14} />
+            <CalendarDays size={13} />
             Fecha de fin
           </span>
 
@@ -150,7 +164,7 @@ export default function PeriodoCreateForm({
 
         <label className={s.field}>
           <span className={s.fieldLabel}>
-            <Clock3 size={14} />
+            <Clock3 size={13} />
             Fecha de pago estimada
           </span>
 
@@ -167,9 +181,15 @@ export default function PeriodoCreateForm({
         </label>
 
         <div className={s.actions}>
-          <button type="submit" className={s.submitBtn} disabled={!canSubmit}>
+          <motion.button
+            type="submit"
+            className={s.submitBtn}
+            disabled={!canSubmit}
+            whileHover={!shouldReduceMotion && canSubmit ? { y: -1 } : undefined}
+            whileTap={!shouldReduceMotion && canSubmit ? { scale: 0.99 } : undefined}
+          >
             {loading ? 'Procesando...' : 'Crear / recuperar periodo'}
-          </button>
+          </motion.button>
         </div>
       </form>
 
@@ -177,9 +197,10 @@ export default function PeriodoCreateForm({
         <div className={s.resultHead}>
           <div className={s.resultTitleGroup}>
             <div className={s.resultBadge}>
-              <FileText size={14} />
+              <FileText size={13} />
               Resultado
             </div>
+
             <h4>Último registro generado</h4>
           </div>
 
@@ -226,12 +247,12 @@ export default function PeriodoCreateForm({
         ) : (
           <div className={s.empty}>
             <div className={s.emptyIcon}>
-              <CalendarRange size={18} />
+              <CalendarRange size={16} />
             </div>
             <p>Todavía no se ha creado ni recuperado ningún periodo.</p>
           </div>
         )}
       </aside>
-    </div>
+    </motion.div>
   );
 }

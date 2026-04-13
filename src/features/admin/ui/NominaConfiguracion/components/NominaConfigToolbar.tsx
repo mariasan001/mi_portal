@@ -1,4 +1,7 @@
+'use client';
+
 import { Plus, Search } from 'lucide-react';
+import { motion, useReducedMotion } from 'motion/react';
 import s from './NominaConfigToolbar.module.css';
 
 type Props = {
@@ -24,8 +27,18 @@ export default function NominaConfigToolbar({
   onSearch,
   onCreate,
 }: Props) {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
-    <section className={s.toolbar}>
+    <motion.section
+      className={s.toolbar}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 12 }}
+      animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.28,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+    >
       <div className={s.left}>
         <label className={s.label} htmlFor="nomina-search-id">
           {searchLabel}
@@ -33,7 +46,7 @@ export default function NominaConfigToolbar({
 
         <div className={s.searchSurface}>
           <div className={s.inputWrap}>
-            <Search size={17} className={s.icon} />
+            <Search size={16} className={s.icon} />
 
             <input
               id="nomina-search-id"
@@ -45,23 +58,43 @@ export default function NominaConfigToolbar({
             />
           </div>
 
-          <button
+          <motion.button
             type="button"
             className={s.searchBtn}
             onClick={onSearch}
             disabled={!canSearch}
+            whileHover={
+              !shouldReduceMotion && canSearch
+                ? { y: -1, transition: { duration: 0.16 } }
+                : undefined
+            }
+            whileTap={
+              !shouldReduceMotion && canSearch
+                ? { scale: 0.99 }
+                : undefined
+            }
           >
             {loading ? 'Consultando...' : searchButtonLabel}
-          </button>
+          </motion.button>
         </div>
       </div>
 
       <div className={s.right}>
-        <button type="button" className={s.createBtn} onClick={onCreate}>
-          <Plus size={17} />
+        <motion.button
+          type="button"
+          className={s.createBtn}
+          onClick={onCreate}
+          whileHover={
+            !shouldReduceMotion
+              ? { y: -1, transition: { duration: 0.16 } }
+              : undefined
+          }
+          whileTap={!shouldReduceMotion ? { scale: 0.99 } : undefined}
+        >
+          <Plus size={16} />
           <span>Crear nuevo</span>
-        </button>
+        </motion.button>
       </div>
-    </section>
+    </motion.section>
   );
 }

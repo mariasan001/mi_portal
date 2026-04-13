@@ -1,3 +1,5 @@
+'use client';
+
 import {
   CalendarDays,
   CheckCircle2,
@@ -6,6 +8,7 @@ import {
   Layers3,
   ShieldCheck,
 } from 'lucide-react';
+import { motion, useReducedMotion } from 'motion/react';
 
 import type { VersionNominaDto } from '../../../types/nomina-versiones.types';
 import {
@@ -20,11 +23,18 @@ type Props = {
 };
 
 export default function VersionResultadoPanel({ detalle }: Props) {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
-    <section className={s.panel}>
+    <motion.section
+      className={s.panel}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}
+      animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+      transition={{ duration: 0.22 }}
+    >
       <div className={s.intro}>
         <div className={s.introBadge}>
-          <FileText size={14} />
+          <FileText size={13} />
           Resultado de la versión
         </div>
 
@@ -41,7 +51,7 @@ export default function VersionResultadoPanel({ detalle }: Props) {
         <div className={s.item}>
           <div className={s.itemHead}>
             <div className={s.iconWrap}>
-              <Hash size={15} />
+              <Hash size={14} />
             </div>
             <dt>ID de versión</dt>
           </div>
@@ -51,7 +61,7 @@ export default function VersionResultadoPanel({ detalle }: Props) {
         <div className={s.item}>
           <div className={s.itemHead}>
             <div className={s.iconWrap}>
-              <Hash size={15} />
+              <Hash size={14} />
             </div>
             <dt>Periodo de pago</dt>
           </div>
@@ -61,7 +71,7 @@ export default function VersionResultadoPanel({ detalle }: Props) {
         <div className={`${s.item} ${s.itemWide}`}>
           <div className={s.itemHead}>
             <div className={s.iconWrap}>
-              <FileText size={15} />
+              <FileText size={14} />
             </div>
             <dt>Código del periodo</dt>
           </div>
@@ -71,7 +81,7 @@ export default function VersionResultadoPanel({ detalle }: Props) {
         <div className={s.item}>
           <div className={s.itemHead}>
             <div className={s.iconWrap}>
-              <Layers3 size={15} />
+              <Layers3 size={14} />
             </div>
             <dt>Etapa</dt>
           </div>
@@ -81,7 +91,7 @@ export default function VersionResultadoPanel({ detalle }: Props) {
         <div className={s.item}>
           <div className={s.itemHead}>
             <div className={s.iconWrap}>
-              <CheckCircle2 size={15} />
+              <CheckCircle2 size={14} />
             </div>
             <dt>Estatus</dt>
           </div>
@@ -91,7 +101,7 @@ export default function VersionResultadoPanel({ detalle }: Props) {
         <div className={s.item}>
           <div className={s.itemHead}>
             <div className={s.iconWrap}>
-              <ShieldCheck size={15} />
+              <ShieldCheck size={14} />
             </div>
             <dt>Actual</dt>
           </div>
@@ -101,7 +111,7 @@ export default function VersionResultadoPanel({ detalle }: Props) {
         <div className={s.item}>
           <div className={s.itemHead}>
             <div className={s.iconWrap}>
-              <ShieldCheck size={15} />
+              <ShieldCheck size={14} />
             </div>
             <dt>Liberada</dt>
           </div>
@@ -111,7 +121,7 @@ export default function VersionResultadoPanel({ detalle }: Props) {
         <div className={`${s.item} ${s.itemWide}`}>
           <div className={s.itemHead}>
             <div className={s.iconWrap}>
-              <FileText size={15} />
+              <FileText size={14} />
             </div>
             <dt>Notas</dt>
           </div>
@@ -121,13 +131,13 @@ export default function VersionResultadoPanel({ detalle }: Props) {
         <div className={`${s.item} ${s.itemWide}`}>
           <div className={s.itemHead}>
             <div className={s.iconWrap}>
-              <CalendarDays size={15} />
+              <CalendarDays size={14} />
             </div>
             <dt>Fecha de carga</dt>
           </div>
           <dd>{formatNominaDate(detalle.loadedAt)}</dd>
         </div>
       </dl>
-    </section>
+    </motion.section>
   );
 }
