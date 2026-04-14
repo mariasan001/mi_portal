@@ -16,10 +16,11 @@ export const API_RUTAS = {
     menu: (appCode: string) => `/api/apps/${encodeURIComponent(appCode)}/menu`,
   },
   nomina: {
-    periodos: '/api/admin/nomina/periodos',
-    periodoDetalle: (periodId: number | string) =>
-      `/api/admin/nomina/periodos/${encodeURIComponent(String(periodId))}`,
 
+ periods: '/api/admin/nomina/periods',
+  periodDetalle: (periodId: number | string) =>
+    `/api/admin/nomina/periods/${encodeURIComponent(String(periodId))}`,
+  
     versiones: '/api/admin/nomina/versiones',
     versionDetalle: (versionId: number | string) =>
       `/api/admin/nomina/versiones/${encodeURIComponent(String(versionId))}`,

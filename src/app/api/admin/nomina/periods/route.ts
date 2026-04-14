@@ -47,7 +47,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const upstream = await fetch(`${base}/api/admin/nomina/periodos`, {
+    const upstream = await fetch(`${base}/api/admin/nomina/periods`, {
       method: 'POST',
       headers: {
         'content-type': 'application/json',

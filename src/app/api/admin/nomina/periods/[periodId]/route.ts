@@ -26,7 +26,7 @@ export async function GET(req: Request, ctx: Ctx) {
 
   try {
     const upstream = await fetch(
-      `${base}/api/admin/nomina/periodos/${encodeURIComponent(periodId)}`,
+      `${base}/api/admin/nomina/periods/${encodeURIComponent(periodId)}`,
       {
         method: 'GET',
         headers: {
