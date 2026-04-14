@@ -25,14 +25,17 @@ export function getContentEyebrow(entity: NominaEntity) {
   return entity === 'periodo' ? 'Periodo' : 'Versión';
 }
 
-export function getContentTitle(entity: NominaEntity, mode: 'resultados' | 'crear') {
+export function getContentTitle(
+  entity: NominaEntity,
+  mode: 'resultados' | 'crear'
+) {
   if (mode === 'resultados') {
-    return entity === 'periodo' ? 'Resultado de consulta' : 'Resultado de versión';
+    return entity === 'periodo'
+      ? 'Resultado de consulta'
+      : 'Resultado de versión';
   }
 
   return entity === 'periodo'
     ? 'Crear o recuperar periodo'
     : 'Crear versión';
 }
-
-

@@ -4,29 +4,22 @@ import {
   CalendarDays,
   CalendarRange,
   Clock3,
-  FileText,
   Hash,
 } from 'lucide-react';
 import { FormEvent, useMemo, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 
-import type {
-  CrearPeriodoNominaPayload,
-  PeriodoNominaDto,
-} from '../../../types/nomina-periodos.types';
-
-import { formatNominaDate } from '../utils/nomina-configuracion.utils';
+import type { CrearPeriodoNominaPayload } from '../../../types/nomina-periodos.types';
 import s from './PeriodoCreateForm.module.css';
 
 type Props = {
   loading: boolean;
-  ultimoCreado: PeriodoNominaDto | null;
+  ultimoCreado: null;
   onSubmit: (payload: CrearPeriodoNominaPayload) => Promise<void>;
 };
 
 export default function PeriodoCreateForm({
   loading,
-  ultimoCreado,
   onSubmit,
 }: Props) {
   const shouldReduceMotion = useReducedMotion();
@@ -53,92 +46,84 @@ export default function PeriodoCreateForm({
     );
   }, [form, loading]);
 
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
 
     if (!canSubmit) return;
     await onSubmit(form);
   }
 
   return (
-    <motion.div
-      className={s.layout}
+    <motion.form
+      className={s.formCard}
+      onSubmit={handleSubmit}
       initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}
       animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
       transition={{ duration: 0.22 }}
     >
-      <form className={s.formCard} onSubmit={handleSubmit}>
-        <div className={s.formIntro}>
-          <div className={s.formBadge}>
-            <CalendarRange size={13} />
-            Configuración de periodo
-          </div>
-
-          <div className={s.formCopy}>
-            <h4>Crear o recuperar periodo</h4>
-            <p>
-              Captura la información base del periodo de nómina para dejarlo listo
-              dentro del flujo de procesamiento.
-            </p>
-          </div>
-        </div>
-
-        <div className={s.grid2}>
-          <label className={s.field}>
-            <span className={s.fieldLabel}>
+      <div className={s.grid2}>
+        <label className={s.field}>
+          <span className={s.fieldLabel}>
+            <span className={s.iconWrap}>
               <Hash size={13} />
-              Año
             </span>
+            Año
+          </span>
 
-            <input
-              type="number"
-              min="2000"
-              value={form.anio}
-              onChange={(e) =>
-                setForm((prev) => ({
-                  ...prev,
-                  anio: Number(e.target.value),
-                }))
-              }
-              placeholder="Ej. 2026"
-            />
-          </label>
-
-          <label className={s.field}>
-            <span className={s.fieldLabel}>
-              <CalendarRange size={13} />
-              Quincena
-            </span>
-
-            <input
-              type="number"
-              min="1"
-              max="24"
-              value={form.quincena}
-              onChange={(e) =>
-                setForm((prev) => ({
-                  ...prev,
-                  quincena: Number(e.target.value),
-                }))
-              }
-              placeholder="Ej. 1"
-            />
-          </label>
-        </div>
+          <input
+            type="number"
+            min="2000"
+            value={form.anio}
+            onChange={(event) =>
+              setForm((prev) => ({
+                ...prev,
+                anio: Number(event.target.value),
+              }))
+            }
+            placeholder="Ej. 2026"
+          />
+        </label>
 
         <label className={s.field}>
           <span className={s.fieldLabel}>
-            <CalendarDays size={13} />
+            <span className={s.iconWrap}>
+              <CalendarRange size={13} />
+            </span>
+            Quincena
+          </span>
+
+          <input
+            type="number"
+            min="1"
+            max="24"
+            value={form.quincena}
+            onChange={(event) =>
+              setForm((prev) => ({
+                ...prev,
+                quincena: Number(event.target.value),
+              }))
+            }
+            placeholder="Ej. 1"
+          />
+        </label>
+      </div>
+
+      <div className={s.grid3}>
+        <label className={s.field}>
+          <span className={s.fieldLabel}>
+            <span className={s.iconWrap}>
+              <CalendarDays size={13} />
+            </span>
             Fecha de inicio
           </span>
 
           <input
             type="date"
             value={form.fechaInicio}
-            onChange={(e) =>
+            onChange={(event) =>
               setForm((prev) => ({
                 ...prev,
-                fechaInicio: e.target.value,
+                fechaInicio: event.target.value,
               }))
             }
           />
@@ -146,17 +131,19 @@ export default function PeriodoCreateForm({
 
         <label className={s.field}>
           <span className={s.fieldLabel}>
-            <CalendarDays size={13} />
+            <span className={s.iconWrap}>
+              <CalendarDays size={13} />
+            </span>
             Fecha de fin
           </span>
 
           <input
             type="date"
             value={form.fechaFin}
-            onChange={(e) =>
+            onChange={(event) =>
               setForm((prev) => ({
                 ...prev,
-                fechaFin: e.target.value,
+                fechaFin: event.target.value,
               }))
             }
           />
@@ -164,95 +151,36 @@ export default function PeriodoCreateForm({
 
         <label className={s.field}>
           <span className={s.fieldLabel}>
-            <Clock3 size={13} />
+            <span className={s.iconWrap}>
+              <Clock3 size={13} />
+            </span>
             Fecha de pago estimada
           </span>
 
           <input
             type="date"
             value={form.fechaPagoEstimada}
-            onChange={(e) =>
+            onChange={(event) =>
               setForm((prev) => ({
                 ...prev,
-                fechaPagoEstimada: e.target.value,
+                fechaPagoEstimada: event.target.value,
               }))
             }
           />
         </label>
+      </div>
 
-        <div className={s.actions}>
-          <motion.button
-            type="submit"
-            className={s.submitBtn}
-            disabled={!canSubmit}
-            whileHover={!shouldReduceMotion && canSubmit ? { y: -1 } : undefined}
-            whileTap={!shouldReduceMotion && canSubmit ? { scale: 0.99 } : undefined}
-          >
-            {loading ? 'Procesando...' : 'Crear / recuperar periodo'}
-          </motion.button>
-        </div>
-      </form>
-
-      <aside className={s.resultCard}>
-        <div className={s.resultHead}>
-          <div className={s.resultTitleGroup}>
-            <div className={s.resultBadge}>
-              <FileText size={13} />
-              Resultado
-            </div>
-
-            <h4>Último registro generado</h4>
-          </div>
-
-          <span className={s.typeBadge}>Periodo</span>
-        </div>
-
-        {ultimoCreado ? (
-          <dl className={s.detailGrid}>
-            <div className={s.detailItem}>
-              <dt>ID</dt>
-              <dd>{ultimoCreado.periodId}</dd>
-            </div>
-
-            <div className={s.detailItem}>
-              <dt>Año</dt>
-              <dd>{ultimoCreado.anio}</dd>
-            </div>
-
-            <div className={s.detailItem}>
-              <dt>Quincena</dt>
-              <dd>{ultimoCreado.quincena}</dd>
-            </div>
-
-            <div className={s.detailItem}>
-              <dt>Código</dt>
-              <dd>{ultimoCreado.periodoCode}</dd>
-            </div>
-
-            <div className={s.detailItem}>
-              <dt>Fecha inicio</dt>
-              <dd>{formatNominaDate(ultimoCreado.fechaInicio)}</dd>
-            </div>
-
-            <div className={s.detailItem}>
-              <dt>Fecha fin</dt>
-              <dd>{formatNominaDate(ultimoCreado.fechaFin)}</dd>
-            </div>
-
-            <div className={s.detailItem}>
-              <dt>Pago estimado</dt>
-              <dd>{formatNominaDate(ultimoCreado.fechaPagoEstimada)}</dd>
-            </div>
-          </dl>
-        ) : (
-          <div className={s.empty}>
-            <div className={s.emptyIcon}>
-              <CalendarRange size={16} />
-            </div>
-            <p>Todavía no se ha creado ni recuperado ningún periodo.</p>
-          </div>
-        )}
-      </aside>
-    </motion.div>
+      <div className={s.actions}>
+        <motion.button
+          type="submit"
+          className={s.submitBtn}
+          disabled={!canSubmit}
+          whileHover={!shouldReduceMotion && canSubmit ? { y: -1 } : undefined}
+          whileTap={!shouldReduceMotion && canSubmit ? { scale: 0.99 } : undefined}
+        >
+          {loading ? 'Procesando...' : 'Crear / recuperar periodo'}
+        </motion.button>
+      </div>
+    </motion.form>
   );
 }

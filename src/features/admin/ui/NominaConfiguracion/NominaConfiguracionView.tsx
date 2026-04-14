@@ -44,7 +44,7 @@ export default function NominaConfiguracionView() {
           canSearch={vm.canSearch}
           onSearchIdChange={vm.setSearchId}
           onSearch={vm.handleSearch}
-          onCreate={() => vm.setMode('crear')}
+          onCreate={vm.openCreateModal}
         />
 
         {vm.activeError ? (
@@ -55,14 +55,13 @@ export default function NominaConfiguracionView() {
         ) : null}
 
         <section className={s.contentShell}>
-          <NominaContentHeader
-            eyebrow={getContentEyebrow(vm.activeEntity)}
-            title={getContentTitle(vm.activeEntity, vm.mode)}
-            showBackButton={vm.mode === 'crear'}
-            onBack={() => vm.setMode('resultados')}
-          />
+        <NominaContentHeader
+          eyebrow={getContentEyebrow(vm.activeEntity)}
+          title={getContentTitle(vm.activeEntity, 'resultados')}
+          showBackButton={false}
+        />
 
-          {vm.activeEntity === 'periodo' && vm.mode === 'resultados' ? (
+          {vm.activeEntity === 'periodo' ? (
             vm.periodos.detalle ? (
               <PeriodoResultadoPanel detalle={vm.periodos.detalle} />
             ) : (
@@ -73,7 +72,7 @@ export default function NominaConfiguracionView() {
             )
           ) : null}
 
-          {vm.activeEntity === 'version' && vm.mode === 'resultados' ? (
+          {vm.activeEntity === 'version' ? (
             vm.versiones.detalle ? (
               <VersionResultadoPanel detalle={vm.versiones.detalle} />
             ) : (
@@ -83,24 +82,62 @@ export default function NominaConfiguracionView() {
               />
             )
           ) : null}
-
-          {vm.activeEntity === 'periodo' && vm.mode === 'crear' ? (
-            <PeriodoCreateForm
-              loading={vm.periodos.loadingCreate}
-              ultimoCreado={vm.periodos.ultimoCreado}
-              onSubmit={vm.handleCreatePeriodo}
-            />
-          ) : null}
-
-          {vm.activeEntity === 'version' && vm.mode === 'crear' ? (
-            <VersionCreateForm
-              loading={vm.versiones.loadingCreate}
-              ultimaCreada={vm.versiones.ultimaCreada}
-              onSubmit={vm.handleCreateVersion}
-            />
-          ) : null}
         </section>
       </div>
+
+      {vm.isCreateModalOpen ? (
+        <div
+          className={s.modalOverlay}
+          onClick={vm.closeCreateModal}
+          role="presentation"
+        >
+          <div
+            className={s.modalCard}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="nomina-create-modal-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className={s.modalHeader}>
+              <div className={s.modalHeaderCopy}>
+                <span className={s.modalEyebrow}>
+                  {getContentEyebrow(vm.activeEntity)}
+                </span>
+                <h3 id="nomina-create-modal-title">
+                  {getContentTitle(vm.activeEntity, 'crear')}
+                </h3>
+              </div>
+
+              <button
+                type="button"
+                className={s.modalClose}
+                onClick={vm.closeCreateModal}
+                aria-label="Cerrar modal"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className={s.modalBody}>
+              {vm.activeEntity === 'periodo' ? (
+                <PeriodoCreateForm
+                  loading={vm.periodos.loadingCreate}
+                  ultimoCreado={null}
+                  onSubmit={vm.handleCreatePeriodo}
+                />
+              ) : null}
+
+              {vm.activeEntity === 'version' ? (
+                <VersionCreateForm
+                  loading={vm.versiones.loadingCreate}
+                  ultimaCreada={null}
+                  onSubmit={vm.handleCreateVersion}
+                />
+              ) : null}
+            </div>
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 }

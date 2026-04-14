@@ -384,7 +384,7 @@
 
   .signalGrid,
   .inlineInfoRow {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; 
   }
 }
 

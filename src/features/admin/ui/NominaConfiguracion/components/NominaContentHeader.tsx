@@ -8,7 +8,7 @@ type Props = {
   eyebrow: string;
   title: string;
   showBackButton: boolean;
-  onBack: () => void;
+  onBack?: () => void;
 };
 
 export default function NominaContentHeader({

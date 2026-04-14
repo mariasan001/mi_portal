@@ -3,9 +3,7 @@
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-
 import type {
-  ContentMode,
   NominaEntity,
 } from '../types/nomina-configuracion.types';
 import { useNominaPeriodos } from '@/features/admin/hooks/useNominaPeriodos';
@@ -13,14 +11,16 @@ import { useNominaVersiones } from '@/features/admin/hooks/useNominaVersiones';
 
 export function useNominaConfiguracionView() {
   const [activeEntity, setActiveEntity] = useState<NominaEntity>('periodo');
-  const [mode, setMode] = useState<ContentMode>('resultados');
   const [searchId, setSearchId] = useState('');
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const periodos = useNominaPeriodos();
   const versiones = useNominaVersiones();
 
   const currentLoadingSearch =
-    activeEntity === 'periodo' ? periodos.loadingDetalle : versiones.loadingDetalle;
+    activeEntity === 'periodo'
+      ? periodos.loadingDetalle
+      : versiones.loadingDetalle;
 
   const canSearch = useMemo(() => {
     return searchId.trim().length > 0 && !currentLoadingSearch;
@@ -28,13 +28,12 @@ export function useNominaConfiguracionView() {
 
   const activeError = useMemo(() => {
     if (activeEntity === 'periodo') {
-      return mode === 'resultados' ? periodos.errorDetalle : periodos.errorCreate;
+      return periodos.errorDetalle || periodos.errorCreate;
     }
 
-    return mode === 'resultados' ? versiones.errorDetalle : versiones.errorCreate;
+    return versiones.errorDetalle || versiones.errorCreate;
   }, [
     activeEntity,
-    mode,
     periodos.errorCreate,
     periodos.errorDetalle,
     versiones.errorCreate,
@@ -43,8 +42,16 @@ export function useNominaConfiguracionView() {
 
   function handleSelectEntity(entity: NominaEntity) {
     setActiveEntity(entity);
-    setMode('resultados');
     setSearchId('');
+    setIsCreateModalOpen(false);
+  }
+
+  function openCreateModal() {
+    setIsCreateModalOpen(true);
+  }
+
+  function closeCreateModal() {
+    setIsCreateModalOpen(false);
   }
 
   async function handleSearch() {
@@ -67,8 +74,6 @@ export function useNominaConfiguracionView() {
         await versiones.consultarPorId(id);
         toast.success('Versión consultada correctamente.');
       }
-
-      setMode('resultados');
     } catch {
       toast.error(
         activeEntity === 'periodo'
@@ -78,18 +83,24 @@ export function useNominaConfiguracionView() {
     }
   }
 
-  async function handleCreatePeriodo(payload: Parameters<typeof periodos.crearPeriodo>[0]) {
+  async function handleCreatePeriodo(
+    payload: Parameters<typeof periodos.crearPeriodo>[0]
+  ) {
     try {
       await periodos.crearPeriodo(payload);
+      setIsCreateModalOpen(false);
       toast.success('Periodo creado o recuperado correctamente.');
     } catch {
       toast.error('No se pudo crear o recuperar el periodo.');
     }
   }
 
-  async function handleCreateVersion(payload: Parameters<typeof versiones.crearVersion>[0]) {
+  async function handleCreateVersion(
+    payload: Parameters<typeof versiones.crearVersion>[0]
+  ) {
     try {
       await versiones.crearVersion(payload);
+      setIsCreateModalOpen(false);
       toast.success('Versión creada correctamente.');
     } catch {
       toast.error('No se pudo crear la versión.');
@@ -98,24 +109,20 @@ export function useNominaConfiguracionView() {
 
   return {
     activeEntity,
-    mode,
     searchId,
     canSearch,
     activeError,
+    isCreateModalOpen,
     periodos,
     versiones,
     currentLoadingSearch,
 
-    setMode,
     setSearchId,
     handleSelectEntity,
     handleSearch,
     handleCreatePeriodo,
     handleCreateVersion,
+    openCreateModal,
+    closeCreateModal,
   };
 }
-
-/**
- *
- * 
- */
