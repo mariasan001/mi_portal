@@ -34,3 +34,5 @@ export function getContentTitle(entity: NominaEntity, mode: 'resultados' | 'crea
     ? 'Crear o recuperar periodo'
     : 'Crear versión';
 }
+
+

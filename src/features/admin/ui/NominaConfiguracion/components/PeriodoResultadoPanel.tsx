@@ -4,7 +4,6 @@ import {
   CalendarDays,
   CalendarRange,
   CreditCard,
-  FileText,
   Hash,
 } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';
@@ -23,95 +22,92 @@ export default function PeriodoResultadoPanel({ detalle }: Props) {
   return (
     <motion.section
       className={s.panel}
-      initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 10 }}
       animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-      transition={{ duration: 0.22 }}
+      transition={{ duration: 0.24 }}
     >
-      <div className={s.intro}>
-        <div className={s.introBadge}>
-          <FileText size={13} />
-          Resultado del periodo
+      <div className={s.summaryCard}>
+        <div className={s.identity}>
+          <div className={s.identityIndex}>P</div>
+
+          <div className={s.identityContent}>
+            <div className={s.identityHeader}>
+              <h5>Periodo de nómina</h5>
+            </div>
+
+            <div className={s.identityMeta}>
+              <div className={s.metaItem}>
+                <span className={s.metaLabel}>Año</span>
+                <strong>{detalle.anio}</strong>
+              </div>
+
+              <div className={s.metaItem}>
+                <span className={s.metaLabel}>Quincena</span>
+                <strong>{detalle.quincena}</strong>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className={s.introCopy}>
-          <h4>Detalle del periodo consultado</h4>
-          <p>
-            Revisa la información principal del periodo de nómina seleccionado.
-          </p>
+        <div className={s.timeline}>
+          <div className={s.timelineBar} />
+
+          <div className={s.timelineSteps}>
+            <div className={s.step}>
+              <div className={s.stepIcon}>
+                <CalendarDays size={14} />
+              </div>
+              <div className={s.stepCopy}>
+                <span>Inicio</span>
+                <strong>{formatNominaDate(detalle.fechaInicio)}</strong>
+              </div>
+            </div>
+
+            <div className={s.step}>
+              <div className={s.stepIcon}>
+                <CalendarRange size={14} />
+              </div>
+              <div className={s.stepCopy}>
+                <span>Fin</span>
+                <strong>{formatNominaDate(detalle.fechaFin)}</strong>
+              </div>
+            </div>
+
+            <div className={s.step}>
+              <div className={s.stepIcon}>
+                <CreditCard size={14} />
+              </div>
+              <div className={s.stepCopy}>
+                <span>Pago estimado</span>
+                <strong>{formatNominaDate(detalle.fechaPagoEstimada)}</strong>
+              </div>
+            </div>
+          </div>
+
+          <div className={s.codeInline}>
+            <div className={s.codeInlineHead}>
+              <div className={s.codeInlineIcon}>
+                <Hash size={13} />
+              </div>
+              <span>Código del periodo</span>
+            </div>
+
+            <strong>{detalle.periodoCode || '—'}</strong>
+          </div>
+        </div>
+
+        <div className={s.kpis}>
+          <div className={s.kpiCard}>
+            <span className={s.kpiLabel}>ID</span>
+            <strong className={s.kpiValue}>{detalle.periodId}</strong>
+          </div>
+
+          <div className={s.kpiCard}>
+            <span className={s.kpiLabel}>Registro</span>
+            <strong className={s.kpiValueText}>Periodo</strong>
+          </div>
         </div>
       </div>
-
-      <dl className={s.grid}>
-        <div className={s.item}>
-          <div className={s.itemHead}>
-            <div className={s.iconWrap}>
-              <Hash size={14} />
-            </div>
-            <dt>ID del periodo</dt>
-          </div>
-          <dd>{detalle.periodId}</dd>
-        </div>
-
-        <div className={s.item}>
-          <div className={s.itemHead}>
-            <div className={s.iconWrap}>
-              <Hash size={14} />
-            </div>
-            <dt>Año</dt>
-          </div>
-          <dd>{detalle.anio}</dd>
-        </div>
-
-        <div className={s.item}>
-          <div className={s.itemHead}>
-            <div className={s.iconWrap}>
-              <CalendarRange size={14} />
-            </div>
-            <dt>Quincena</dt>
-          </div>
-          <dd>{detalle.quincena}</dd>
-        </div>
-
-        <div className={`${s.item} ${s.itemWide}`}>
-          <div className={s.itemHead}>
-            <div className={s.iconWrap}>
-              <FileText size={14} />
-            </div>
-            <dt>Código del periodo</dt>
-          </div>
-          <dd>{detalle.periodoCode}</dd>
-        </div>
-
-        <div className={s.item}>
-          <div className={s.itemHead}>
-            <div className={s.iconWrap}>
-              <CalendarDays size={14} />
-            </div>
-            <dt>Fecha de inicio</dt>
-          </div>
-          <dd>{formatNominaDate(detalle.fechaInicio)}</dd>
-        </div>
-
-        <div className={s.item}>
-          <div className={s.itemHead}>
-            <div className={s.iconWrap}>
-              <CalendarDays size={14} />
-            </div>
-            <dt>Fecha de fin</dt>
-          </div>
-          <dd>{formatNominaDate(detalle.fechaFin)}</dd>
-        </div>
-
-        <div className={s.item}>
-          <div className={s.itemHead}>
-            <div className={s.iconWrap}>
-              <CreditCard size={14} />
-            </div>
-            <dt>Fecha de pago estimada</dt>
-          </div>
-          <dd>{formatNominaDate(detalle.fechaPagoEstimada)}</dd>
-        </div>
-      </dl>
     </motion.section>
   );
 }

@@ -306,6 +306,7 @@ export default function VersionCreateForm({
                 Cuando generes una nueva versión, su información aparecerá aquí
                 para consulta inmediata.
               </p>
+              
             </div>
           </div>
         )}
