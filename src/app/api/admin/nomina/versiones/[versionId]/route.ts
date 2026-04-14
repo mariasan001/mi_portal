@@ -21,12 +21,15 @@ export async function GET(req: Request, ctx: Ctx) {
   const { versionId } = await getParams(ctx);
 
   if (!versionId?.trim()) {
-    return NextResponse.json({ message: 'Falta versionId en la ruta' }, { status: 400 });
+    return NextResponse.json(
+      { message: 'Falta versionId en la ruta' },
+      { status: 400 }
+    );
   }
 
   try {
     const upstream = await fetch(
-      `${base}/api/admin/nomina/versiones/${encodeURIComponent(versionId)}`,
+      `${base}/api/admin/nomina/versions/${encodeURIComponent(versionId)}`,
       {
         method: 'GET',
         headers: {
@@ -37,7 +40,8 @@ export async function GET(req: Request, ctx: Ctx) {
       }
     );
 
-    const contentType = upstream.headers.get('content-type') ?? 'application/json';
+    const contentType =
+      upstream.headers.get('content-type') ?? 'application/json';
     const text = await upstream.text();
 
     return new NextResponse(text, {

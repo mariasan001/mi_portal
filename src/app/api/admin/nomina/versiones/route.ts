@@ -45,7 +45,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const upstream = await fetch(`${base}/api/admin/nomina/versiones`, {
+    const upstream = await fetch(`${base}/api/admin/nomina/versions`, {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
@@ -56,7 +56,8 @@ export async function POST(req: Request) {
       cache: 'no-store',
     });
 
-    const contentType = upstream.headers.get('content-type') ?? 'application/json';
+    const contentType =
+      upstream.headers.get('content-type') ?? 'application/json';
     const text = await upstream.text();
 
     return new NextResponse(text, {
