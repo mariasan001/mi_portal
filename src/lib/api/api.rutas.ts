@@ -23,6 +23,7 @@ export const API_RUTAS = {
     versiones: "/api/admin/nomina/versiones",
     versionDetalle: (versionId: number | string) =>
       `/api/admin/nomina/versiones/${encodeURIComponent(String(versionId))}`,
+
     uploadArchivo: "/api/admin/nomina/files/upload",
 
     ejecutarCatalogo: (fileId: number | string) =>
@@ -78,7 +79,7 @@ export const API_RUTAS = {
 
     detalleFirma: (requestId: string) =>
       `/api/v1/signature-requests/${encodeURIComponent(requestId)}/signature-details`,
-
+  
     signedPdf: (requestId: string) =>
       `/api/v1/signature-requests/${encodeURIComponent(requestId)}/signed-pdf`,
   },

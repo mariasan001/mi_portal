@@ -5,7 +5,6 @@ import {
   FileText,
   Hash,
   Layers3,
-  ShieldUser,
 } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';
 
@@ -19,7 +18,9 @@ import s from './VersionCreateForm.module.css';
 type Props = {
   loading: boolean;
   ultimaCreada: null;
-  onSubmit: (payload: CrearVersionNominaPayload) => Promise<void>;
+  onSubmit: (
+    payload: Omit<CrearVersionNominaPayload, 'createdByUserId'>
+  ) => Promise<void>;
 };
 
 export default function VersionCreateForm({
@@ -28,11 +29,14 @@ export default function VersionCreateForm({
 }: Props) {
   const shouldReduceMotion = useReducedMotion();
 
-  const [form, setForm] = useState<CrearVersionNominaPayload>({
+  const [form, setForm] = useState<{
+    payPeriodId: number;
+    stage: NominaStage;
+    notes: string;
+  }>({
     payPeriodId: 0,
     stage: 'PREVIA',
     notes: '',
-    createdByUserId: 0,
   });
 
   const canSubmit = useMemo(() => {
@@ -40,8 +44,6 @@ export default function VersionCreateForm({
       Number.isFinite(form.payPeriodId) &&
       form.payPeriodId > 0 &&
       (form.stage === 'PREVIA' || form.stage === 'INTEGRADA') &&
-      Number.isFinite(form.createdByUserId) &&
-      form.createdByUserId > 0 &&
       !loading
     );
   }, [form, loading]);
@@ -50,7 +52,12 @@ export default function VersionCreateForm({
     event.preventDefault();
 
     if (!canSubmit) return;
-    await onSubmit(form);
+
+    await onSubmit({
+      payPeriodId: form.payPeriodId,
+      stage: form.stage,
+      notes: form.notes,
+    });
   }
 
   return (
@@ -126,30 +133,6 @@ export default function VersionCreateForm({
               }))
             }
             placeholder="Escribe aquí observaciones de la versión"
-          />
-        </label>
-      </div>
-
-      <div className={s.grid1Compact}>
-        <label className={s.field}>
-          <span className={s.fieldLabel}>
-            <span className={s.iconWrap}>
-              <ShieldUser size={13} />
-            </span>
-            Usuario creador
-          </span>
-
-          <input
-            type="number"
-            min="1"
-            value={form.createdByUserId || ''}
-            onChange={(event) =>
-              setForm((prev) => ({
-                ...prev,
-                createdByUserId: Number(event.target.value),
-              }))
-            }
-            placeholder="Ej. 1"
           />
         </label>
       </div>

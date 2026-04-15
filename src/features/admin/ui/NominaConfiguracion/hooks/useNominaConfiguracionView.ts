@@ -3,16 +3,17 @@
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import type {
-  NominaEntity,
-} from '../types/nomina-configuracion.types';
+import type { NominaEntity } from '../types/nomina-configuracion.types';
 import { useNominaPeriodos } from '@/features/admin/hooks/useNominaPeriodos';
 import { useNominaVersiones } from '@/features/admin/hooks/useNominaVersiones';
+import { useAuth } from '@/features/auth/context/auth.context';
 
 export function useNominaConfiguracionView() {
   const [activeEntity, setActiveEntity] = useState<NominaEntity>('periodo');
   const [searchId, setSearchId] = useState('');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  const { sesion } = useAuth();
 
   const periodos = useNominaPeriodos();
   const versiones = useNominaVersiones();
@@ -96,10 +97,24 @@ export function useNominaConfiguracionView() {
   }
 
   async function handleCreateVersion(
-    payload: Parameters<typeof versiones.crearVersion>[0]
+    payload: Omit<
+      Parameters<typeof versiones.crearVersion>[0],
+      'createdByUserId'
+    >
   ) {
+    const userId = sesion?.userId;
+
+    if (!userId || !Number.isFinite(userId) || userId <= 0) {
+      toast.error('No se pudo identificar al usuario autenticado.');
+      return;
+    }
+
     try {
-      await versiones.crearVersion(payload);
+      await versiones.crearVersion({
+        ...payload,
+        createdByUserId: userId,
+      });
+
       setIsCreateModalOpen(false);
       toast.success('Versión creada correctamente.');
     } catch {
@@ -116,6 +131,7 @@ export function useNominaConfiguracionView() {
     periodos,
     versiones,
     currentLoadingSearch,
+    sesion,
 
     setSearchId,
     handleSelectEntity,

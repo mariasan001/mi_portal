@@ -1,4 +1,7 @@
+'use client';
+
 import { Database, FileText, Hash } from 'lucide-react';
+import { motion, useReducedMotion } from 'motion/react';
 
 import type { EjecucionPayrollStagingDto } from '../../../types/nomina-staging.types';
 
@@ -8,52 +11,88 @@ type Props = {
   detalle: EjecucionPayrollStagingDto;
 };
 
+/**
+ * Variantes simples para entrada escalonada de tarjetas.
+ */
+const itemVariants = {
+  hidden: { opacity: 0, y: 10 },
+  show: { opacity: 1, y: 0 },
+};
+
 export default function NominaResultadoPanel({ detalle }: Props) {
+  /**
+   * Accesibilidad:
+   * si el usuario prefiere menos movimiento,
+   * evitamos animaciones innecesarias.
+   */
+  const shouldReduceMotion = useReducedMotion();
+
   return (
-    <section className={s.panel}>
-      <div className={s.intro}>
-        <div className={s.introBadge}>
-          <Database size={14} />
-          Resultado de nómina
-        </div>
-
-        <div className={s.introCopy}>
-          <h4>Detalle del staging ejecutado</h4>
-          <p>Revisa la información principal del job de nómina más reciente.</p>
-        </div>
-      </div>
-
-      <dl className={s.grid}>
-        <div className={s.item}>
+    <motion.section
+      className={s.panel}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}
+      animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+      transition={{ duration: 0.24 }}
+    >
+   
+      <motion.dl
+        className={s.grid}
+        initial={shouldReduceMotion ? false : 'hidden'}
+        animate={shouldReduceMotion ? undefined : 'show'}
+        variants={{
+          hidden: {},
+          show: {
+            transition: {
+              staggerChildren: 0.04,
+            },
+          },
+        }}
+      >
+        <motion.div
+          className={s.item}
+          variants={itemVariants}
+          transition={{ duration: 0.2 }}
+        >
           <div className={s.itemHead}>
             <div className={s.iconWrap}>
               <Hash size={15} />
             </div>
-            <dt>executionId</dt>
+            <dt>Execution ID</dt>
           </div>
+
           <dd>{detalle.executionId}</dd>
-        </div>
+        </motion.div>
 
-        <div className={s.item}>
+        <motion.div
+          className={s.item}
+          variants={itemVariants}
+          transition={{ duration: 0.2 }}
+        >
           <div className={s.itemHead}>
             <div className={s.iconWrap}>
               <Hash size={15} />
             </div>
-            <dt>fileId</dt>
+            <dt>File ID</dt>
           </div>
-          <dd>{detalle.fileId}</dd>
-        </div>
 
-        <div className={`${s.item} ${s.itemWide}`}>
+          <dd>{detalle.fileId}</dd>
+        </motion.div>
+
+        <motion.div
+          className={s.item}
+          variants={itemVariants}
+          transition={{ duration: 0.2 }}
+        >
           <div className={s.itemHead}>
             <div className={s.iconWrap}>
               <FileText size={15} />
             </div>
-            <dt>jobName</dt>
+            <dt>Proceso</dt>
           </div>
-          <dd>{detalle.jobName}</dd>
-        </div>
-      </dl>
-    </section>
+
+          <dd className={s.compactValue}>{detalle.jobName}</dd>
+        </motion.div>
+      </motion.dl>
+    </motion.section>
   );
 }

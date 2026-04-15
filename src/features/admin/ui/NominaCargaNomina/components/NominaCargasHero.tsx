@@ -1,38 +1,110 @@
+'use client';
+
 import { Database, FileArchive, PlayCircle } from 'lucide-react';
+import { motion, useReducedMotion } from 'motion/react';
 import s from './NominaCargasHero.module.css';
 
 export default function NominaCargasHero() {
+  /**
+   * Respetamos accesibilidad:
+   * si el usuario prefiere menos movimiento,
+   * las animaciones se suavizan o se eliminan.
+   */
+  const shouldReduceMotion = useReducedMotion();
+
+  /**
+   * Variantes reutilizables para los badges superiores.
+   * Así evitamos repetir tanto código y mantenemos
+   * una entrada visual consistente.
+   */
+  const badgeVariants = {
+    hidden: { opacity: 0, y: -6 },
+    show: { opacity: 1, y: 0 },
+  };
+
   return (
-    <header className={s.hero}>
+    <motion.header
+      className={s.hero}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 10 }}
+      animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.32,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+    >
       <div className={s.headerTop}>
-        <span className={s.kicker}>Nómina</span>
+        <motion.span
+          className={s.kicker}
+          initial={shouldReduceMotion ? false : { opacity: 0, x: -8 }}
+          animate={shouldReduceMotion ? undefined : { opacity: 1, x: 0 }}
+          transition={{ duration: 0.22, delay: 0.04 }}
+        >
+          Nómina
+        </motion.span>
 
-        <div className={s.metaBadges}>
-          <span className={s.metaBadge}>
-            <FileArchive size={14} />
+        <motion.div
+          className={s.metaBadges}
+          initial={shouldReduceMotion ? false : 'hidden'}
+          animate={shouldReduceMotion ? undefined : 'show'}
+          variants={{
+            hidden: {},
+            show: {
+              transition: {
+                staggerChildren: 0.05,
+                delayChildren: 0.08,
+              },
+            },
+          }}
+        >
+          <motion.span
+            className={s.metaBadge}
+            variants={badgeVariants}
+            transition={{ duration: 0.2 }}
+          >
+            <FileArchive size={13} />
             Catálogo
-          </span>
+          </motion.span>
 
-          <span className={s.metaBadge}>
-            <Database size={14} />
+          <motion.span
+            className={s.metaBadge}
+            variants={badgeVariants}
+            transition={{ duration: 0.2 }}
+          >
+            <Database size={13} />
             Nómina
-          </span>
+          </motion.span>
 
-          <span className={s.metaBadge}>
-            <PlayCircle size={14} />
+          <motion.span
+            className={s.metaBadge}
+            variants={badgeVariants}
+            transition={{ duration: 0.2 }}
+          >
+            <PlayCircle size={13} />
             Procesamiento
-          </span>
-        </div>
+          </motion.span>
+        </motion.div>
       </div>
 
       <div className={s.content}>
-        <h1 className={s.title}>Carga de catálogo y nómina</h1>
+        <motion.h1
+          className={s.title}
+          initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}
+          animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+          transition={{ duration: 0.24, delay: 0.12 }}
+        >
+          Carga de catálogo y nómina
+        </motion.h1>
 
-        <p className={s.subtitle}>
+        <motion.p
+          className={s.subtitle}
+          initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}
+          animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+          transition={{ duration: 0.24, delay: 0.16 }}
+        >
           Sube, ejecuta y da seguimiento a archivos operativos del flujo de
           catálogo y staging de nómina desde una sola sesión.
-        </p>
+        </motion.p>
       </div>
-    </header>
+    </motion.header>
   );
 }

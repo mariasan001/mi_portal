@@ -1,4 +1,7 @@
+'use client';
+
 import { Play, Plus, Search } from 'lucide-react';
+import { motion, useReducedMotion } from 'motion/react';
 
 import s from './NominaCargaToolbar.module.css';
 import {
@@ -24,15 +27,31 @@ export default function NominaCargaToolbar({
   activeEntity,
   searchFileId,
   loading,
-  canSearch,
+
+  
   canExecute,
   onSearchFileIdChange,
-  onConsult,
+
   onExecute,
   onPrimaryAction,
 }: Props) {
+  /**
+   * Accesibilidad:
+   * si el usuario prefiere reducir movimiento,
+   * suavizamos o eliminamos animaciones.
+   */
+  const shouldReduceMotion = useReducedMotion();
+
   return (
-    <section className={s.toolbar}>
+    <motion.section
+      className={s.toolbar}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 12 }}
+      animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.28,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+    >
       <div className={s.left}>
         <label className={s.label} htmlFor="nomina-carga-search-id">
           {getToolbarSearchLabel(activeEntity)}
@@ -40,7 +59,7 @@ export default function NominaCargaToolbar({
 
         <div className={s.searchSurface}>
           <div className={s.inputWrap}>
-            <Search size={17} className={s.icon} />
+            <Search size={16} className={s.icon} />
 
             <input
               id="nomina-carga-search-id"
@@ -52,38 +71,45 @@ export default function NominaCargaToolbar({
             />
           </div>
 
-          <button
-            type="button"
-            className={s.searchBtn}
-            disabled={!canSearch || loading}
-            onClick={onConsult}
-          >
-            {loading ? 'Consultando...' : 'Consultar'}
-          </button>
-
-          <button
+          <motion.button
             type="button"
             className={s.executeBtn}
             disabled={!canExecute || loading}
             onClick={onExecute}
+            whileHover={
+              !shouldReduceMotion && canExecute && !loading
+                ? { y: -1, transition: { duration: 0.16 } }
+                : undefined
+            }
+            whileTap={
+              !shouldReduceMotion && canExecute && !loading
+                ? { scale: 0.99 }
+                : undefined
+            }
           >
             <Play size={16} />
             <span>{loading ? 'Ejecutando...' : 'Ejecutar'}</span>
-          </button>
+          </motion.button>
         </div>
       </div>
 
       <div className={s.right}>
-        <button
+        <motion.button
           type="button"
           className={s.createBtn}
           onClick={onPrimaryAction}
           disabled={loading}
+          whileHover={
+            !shouldReduceMotion && !loading
+              ? { y: -1, transition: { duration: 0.16 } }
+              : undefined
+          }
+          whileTap={!shouldReduceMotion && !loading ? { scale: 0.99 } : undefined}
         >
-          {activeEntity === 'catalogo' ? <Plus size={17} /> : <Play size={17} />}
+          {activeEntity === 'catalogo' ? <Plus size={16} /> : <Play size={16} />}
           <span>{getToolbarPrimaryLabel(activeEntity)}</span>
-        </button>
+        </motion.button>
       </div>
-    </section>
+    </motion.section>
   );
 }

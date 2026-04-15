@@ -1,9 +1,14 @@
 .panel {
+  /* Contenedor general del panel */
   display: grid;
   gap: 16px;
 }
 
 .summaryCard {
+  /* Tarjeta principal con tres zonas:
+     izquierda = identidad
+     centro = señales y datos
+     derecha = KPIs */
   display: grid;
   grid-template-columns: 300px minmax(0, 1fr) 172px;
   gap: 18px;
@@ -12,10 +17,12 @@
   border: 1px solid var(--border-soft);
   border-radius: 24px;
   background: var(--surface);
-  box-shadow: 0 6px 20px rgba(10, 10, 10, 0.03);
+  box-shadow: 0 10px 24px rgba(10, 10, 10, 0.04);
 }
 
-/* LEFT */
+/* ─────────────────────────────
+   LEFT / IDENTIDAD
+───────────────────────────── */
 .identity {
   display: flex;
   gap: 14px;
@@ -26,17 +33,20 @@
 }
 
 .identityIndex {
+  /* Bloque índice visual: en este caso la "V" de versión */
   width: 42px;
   height: 42px;
   display: grid;
   place-items: center;
   flex-shrink: 0;
   border-radius: 14px;
-  background: rgba(10, 10, 10, 0.045);
-  color: var(--text);
+  background: rgba(188, 148, 90, 0.08);
+  border: 1px solid rgba(188, 148, 90, 0.14);
+  color: var(--oro);
   font-size: 12px;
   font-weight: 900;
   letter-spacing: -0.03em;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 
 .identityContent {
@@ -72,8 +82,8 @@
 
 .metaLabel {
   color: var(--muted);
-  font-size: 10px;
-  font-weight: 400;
+  font-size: 10.5px;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   line-height: 1.2;
@@ -88,7 +98,9 @@
   word-break: break-word;
 }
 
-/* CENTER */
+/* ─────────────────────────────
+   CENTER / SEÑALES Y DETALLE
+───────────────────────────── */
 .center {
   display: grid;
   gap: 14px;
@@ -129,15 +141,16 @@
 }
 
 .iconDefault {
-  background: rgba(159, 33, 65, 0.05);
-  color: var(--vino);
-  border-color: rgba(159, 33, 65, 0.08);
+  /* Acento base del módulo en tono oro */
+  background: rgba(188, 148, 90, 0.08);
+  color: var(--oro);
+  border-color: rgba(188, 148, 90, 0.14);
 }
 
 .signalHead span {
   color: var(--muted);
-  font-size: 10px;
-  font-weight: 400;
+  font-size: 10.5px;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   line-height: 1.2;
@@ -153,6 +166,7 @@
   word-break: break-word;
 }
 
+/* Línea de información secundaria en dos columnas */
 .inlineInfoRow {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -181,14 +195,15 @@
   place-items: center;
   flex-shrink: 0;
   border-radius: 8px;
-  background: rgba(159, 33, 65, 0.05);
-  color: var(--vino);
+  background: rgba(188, 148, 90, 0.08);
+  color: var(--oro);
+  border: 1px solid rgba(188, 148, 90, 0.12);
 }
 
 .inlineHead span {
   color: var(--muted);
-  font-size: 10px;
-  font-weight: 400;
+  font-size: 10.5px;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   line-height: 1.2;
@@ -202,6 +217,7 @@
   word-break: break-word;
 }
 
+/* Bloque de notas */
 .notesCard {
   display: grid;
   gap: 8px;
@@ -224,14 +240,15 @@
   place-items: center;
   flex-shrink: 0;
   border-radius: 8px;
-  background: rgba(159, 33, 65, 0.05);
-  color: var(--vino);
+  background: rgba(188, 148, 90, 0.08);
+  color: var(--oro);
+  border: 1px solid rgba(188, 148, 90, 0.12);
 }
 
 .notesHead span {
   color: var(--muted);
-  font-size: 12px;
-  font-weight: 400;
+  font-size: 10.5px;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   line-height: 1.2;
@@ -240,13 +257,15 @@
 .notesCard p {
   margin: 0;
   color: var(--text);
-  font-size: 11px;
-  font-weight: 800;
-  line-height: 1.5;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.55;
   word-break: break-word;
 }
 
-/* RIGHT */
+/* ─────────────────────────────
+   RIGHT / KPIS
+───────────────────────────── */
 .kpis {
   display: grid;
   gap: 12px;
@@ -273,8 +292,8 @@
 .kpiLabel {
   display: block;
   color: var(--muted);
-  font-size: 11px;
-  font-weight: 400;
+  font-size: 10.5px;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   line-height: 1.2;
@@ -301,7 +320,9 @@
   text-align: center;
 }
 
-/* TEXT TONES */
+/* ─────────────────────────────
+   TEXT TONES / ESTADOS
+───────────────────────────── */
 .textSuccess {
   color: #166534 !important;
 }
@@ -322,7 +343,9 @@
   color: var(--text) !important;
 }
 
-/* ICON TONES */
+/* ─────────────────────────────
+   ICON TONES / ESTADOS
+───────────────────────────── */
 .iconSuccess {
   color: #166534;
   background: #dcfce7;
@@ -353,9 +376,12 @@
   border-color: rgba(10, 10, 10, 0.06);
 }
 
-/* RESPONSIVE */
+/* ─────────────────────────────
+   RESPONSIVE
+───────────────────────────── */
 @media (max-width: 1180px) {
   .summaryCard {
+    /* En pantallas medianas bajamos a una sola columna grande */
     grid-template-columns: 1fr;
   }
 
@@ -384,7 +410,8 @@
 
   .signalGrid,
   .inlineInfoRow {
-    grid-template-columns: 1fr; 
+    /* Apilamos bloques para no apretar demasiado el contenido */
+    grid-template-columns: 1fr;
   }
 }
 
