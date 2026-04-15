@@ -14,6 +14,8 @@ import NominaProcesamientoContentHeader from './components/NominaProcesamientoCo
 import NominaProcesamientoSummaryPanel from './components/NominaProcesamientoSummaryPanel';
 import NominaProcesamientoPreviewTable from './components/NominaProcesamientoPreviewTable';
 import NominaProcesamientoErrorsTable from './components/NominaProcesamientoErrorsTable';
+import { getProcesamientoDefaultLimit, getProcesamientoEmptyState, getProcesamientoResultHeader } from './utils/Nomina-procesamiento-view.utils';
+
 
 type ProcesamientoView = 'summary' | 'preview' | 'errors';
 
@@ -34,21 +36,29 @@ export default function NominaProcesamientoView() {
   } = useNominaProcesamiento();
 
   const [activeView, setActiveView] = useState<ProcesamientoView>('summary');
-
   const [fileId, setFileId] = useState('');
-  const [limit, setLimit] = useState('20');
+  const [limit, setLimit] = useState(getProcesamientoDefaultLimit('summary'));
 
-  const loading = useMemo(() => {
-    if (activeView === 'summary') return loadingSummary;
-    if (activeView === 'preview') return loadingPreview;
-    return loadingErrors;
-  }, [activeView, loadingSummary, loadingPreview, loadingErrors]);
+  const loadingMap = useMemo(
+    () => ({
+      summary: loadingSummary,
+      preview: loadingPreview,
+      errors: loadingErrors,
+    }),
+    [loadingSummary, loadingPreview, loadingErrors]
+  );
 
-  const currentError = useMemo(() => {
-    if (activeView === 'summary') return errorSummary;
-    if (activeView === 'preview') return errorPreview;
-    return errorErrors;
-  }, [activeView, errorSummary, errorPreview, errorErrors]);
+  const errorMap = useMemo(
+    () => ({
+      summary: errorSummary,
+      preview: errorPreview,
+      errors: errorErrors,
+    }),
+    [errorSummary, errorPreview, errorErrors]
+  );
+
+  const loading = loadingMap[activeView];
+  const currentError = errorMap[activeView];
 
   const canSubmit = useMemo(() => {
     const numericFileId = Number(fileId);
@@ -60,6 +70,27 @@ export default function NominaProcesamientoView() {
 
     return numericFileId > 0 && numericLimit > 0 && !loading;
   }, [activeView, fileId, limit, loading]);
+
+  const resultHeader = useMemo(
+    () =>
+      getProcesamientoResultHeader({
+        activeView,
+        summary,
+        previewRows,
+        errorRows,
+      }),
+    [activeView, summary, previewRows, errorRows]
+  );
+
+  const emptyState = useMemo(
+    () => getProcesamientoEmptyState(activeView),
+    [activeView]
+  );
+
+  const handleViewChange = (view: ProcesamientoView) => {
+    setActiveView(view);
+    setLimit(getProcesamientoDefaultLimit(view));
+  };
 
   const handleConsult = async () => {
     const numericFileId = Number(fileId);
@@ -79,73 +110,67 @@ export default function NominaProcesamientoView() {
     }
 
     try {
-      if (activeView === 'summary') {
-        await consultarSummary(numericFileId);
-        toast.success('Resumen consultado correctamente.');
-        return;
-      }
+      const actions = {
+        summary: async () => {
+          await consultarSummary(numericFileId);
+          toast.success('Resumen consultado correctamente.');
+        },
+        preview: async () => {
+          await consultarPreview(numericFileId, numericLimit);
+          toast.success('Preview consultado correctamente.');
+        },
+        errors: async () => {
+          await consultarErrors(numericFileId, numericLimit);
+          toast.success('Errores consultados correctamente.');
+        },
+      };
 
-      if (activeView === 'preview') {
-        await consultarPreview(numericFileId, numericLimit);
-        toast.success('Preview consultado correctamente.');
-        return;
-      }
-
-      await consultarErrors(numericFileId, numericLimit);
-      toast.success('Errores consultados correctamente.');
+      await actions[activeView]();
     } catch {
-      if (activeView === 'summary') {
-        toast.error('No se pudo consultar el resumen.');
-        return;
-      }
+      const errorMessages = {
+        summary: 'No se pudo consultar el resumen.',
+        preview: 'No se pudo consultar el preview.',
+        errors: 'No se pudo consultar el detalle de errores.',
+      };
 
-      if (activeView === 'preview') {
-        toast.error('No se pudo consultar el preview.');
-        return;
-      }
-
-      toast.error('No se pudo consultar el detalle de errores.');
+      toast.error(errorMessages[activeView]);
     }
   };
 
   const handleReset = () => {
     setFileId('');
-    setLimit(activeView === 'errors' ? '50' : '20');
+    setLimit(getProcesamientoDefaultLimit(activeView));
   };
 
-  const resultHeader = useMemo(() => {
+  const renderContent = () => {
     if (activeView === 'summary') {
-      return {
-        eyebrow: 'Resultado',
-        title: summary
-          ? 'Resumen del procesamiento consultado'
-          : 'Resumen del procesamiento',
-        description: summary
-          ? 'Aquí se muestran los indicadores principales y el estado general del archivo procesado.'
-          : 'Consulta un fileId para visualizar métricas generales, estatus y conteos clave del procesamiento.',
-      };
+      return summary ? (
+        <NominaProcesamientoSummaryPanel detalle={summary} />
+      ) : (
+        <EmptyState
+          title={emptyState.title}
+          description={emptyState.description}
+        />
+      );
     }
 
     if (activeView === 'preview') {
-      return {
-        eyebrow: 'Resultado',
-        title: previewRows.length
-          ? 'Vista previa del archivo consultado'
-          : 'Preview del archivo',
-        description:
-          'Revisa una muestra de filas procesadas para validar la información operativa del archivo.',
-      };
+      return previewRows.length ? (
+        <NominaProcesamientoPreviewTable rows={previewRows} />
+      ) : (
+        <EmptyState
+          title={emptyState.title}
+          description={emptyState.description}
+        />
+      );
     }
 
-    return {
-      eyebrow: 'Resultado',
-      title: errorRows.length
-        ? 'Detalle de errores consultados'
-        : 'Filas con error',
-      description:
-        'Consulta filas con incidencias detectadas durante el procesamiento para revisar el motivo del error.',
-    };
-  }, [activeView, summary, previewRows.length, errorRows.length]);
+    return errorRows.length ? (
+      <NominaProcesamientoErrorsTable rows={errorRows} />
+    ) : (
+      <EmptyState title={emptyState.title} description={emptyState.description} />
+    );
+  };
 
   return (
     <section className={s.page}>
@@ -154,7 +179,7 @@ export default function NominaProcesamientoView() {
 
         <NominaProcesamientoEntityCards
           activeView={activeView}
-          onSelect={setActiveView}
+          onSelect={handleViewChange}
         />
 
         <NominaProcesamientoToolbar
@@ -178,38 +203,7 @@ export default function NominaProcesamientoView() {
             description={resultHeader.description}
           />
 
-          {activeView === 'summary' ? (
-            summary ? (
-              <NominaProcesamientoSummaryPanel detalle={summary} />
-            ) : (
-              <EmptyState
-                title="Aún no has consultado ningún resumen"
-                description="Captura un fileId válido para revisar las métricas generales del archivo procesado."
-              />
-            )
-          ) : null}
-
-          {activeView === 'preview' ? (
-            previewRows.length ? (
-              <NominaProcesamientoPreviewTable rows={previewRows} />
-            ) : (
-              <EmptyState
-                title="Aún no has cargado una vista previa"
-                description="Consulta un fileId y un límite para visualizar una muestra de filas procesadas."
-              />
-            )
-          ) : null}
-
-          {activeView === 'errors' ? (
-            errorRows.length ? (
-              <NominaProcesamientoErrorsTable rows={errorRows} />
-            ) : (
-              <EmptyState
-                title="Aún no has consultado filas con error"
-                description="Consulta un fileId y un límite para revisar las incidencias detectadas en el procesamiento."
-              />
-            )
-          ) : null}
+          {renderContent()}
         </div>
       </div>
     </section>

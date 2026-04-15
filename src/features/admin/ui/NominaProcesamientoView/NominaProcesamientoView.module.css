@@ -1,5 +1,6 @@
 .page {
   display: grid;
+  gap: 18px;
   margin: 20px;
 }
 
@@ -31,6 +32,10 @@
 }
 
 @media (max-width: 640px) {
+  .page {
+    margin: 16px;
+  }
+
   .resultCard {
     padding: 16px;
     border-radius: 18px;

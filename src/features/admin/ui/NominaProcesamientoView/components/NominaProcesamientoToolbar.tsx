@@ -1,4 +1,8 @@
+'use client';
+
 import { RotateCcw, Search } from 'lucide-react';
+import { motion, useReducedMotion } from 'motion/react';
+
 import s from './NominaProcesamientoToolbar.module.css';
 
 type ProcesamientoView = 'summary' | 'preview' | 'errors';
@@ -21,6 +25,10 @@ function getLabel(view: ProcesamientoView) {
   return 'Consultar errores';
 }
 
+function getLimitLabel(view: ProcesamientoView) {
+  return view === 'errors' ? 'Límite de errores' : 'Límite de preview';
+}
+
 export default function NominaProcesamientoToolbar({
   activeView,
   fileId,
@@ -32,8 +40,23 @@ export default function NominaProcesamientoToolbar({
   onConsult,
   onReset,
 }: Props) {
+  /**
+   * Accesibilidad:
+   * si el usuario prefiere reducir movimiento,
+   * suavizamos o eliminamos animaciones.
+   */
+  const shouldReduceMotion = useReducedMotion();
+
   return (
-    <section className={s.toolbar}>
+    <motion.section
+      className={s.toolbar}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 12 }}
+      animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.28,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+    >
       <div className={s.left}>
         <label className={s.label} htmlFor="nomina-procesamiento-file-id">
           fileId
@@ -41,7 +64,7 @@ export default function NominaProcesamientoToolbar({
 
         <div className={s.searchSurface}>
           <div className={s.inputWrap}>
-            <Search size={17} className={s.icon} />
+            <Search size={16} className={s.icon} />
 
             <input
               id="nomina-procesamiento-file-id"
@@ -55,38 +78,61 @@ export default function NominaProcesamientoToolbar({
 
           {activeView !== 'summary' ? (
             <div className={s.limitWrap}>
-              <input
-                type="number"
-                min="1"
-                value={limit}
-                onChange={(e) => onLimitChange(e.target.value)}
-                placeholder={activeView === 'errors' ? '50' : '20'}
-              />
+              <div className={s.limitInner}>
+                <span className={s.limitLabel}>{getLimitLabel(activeView)}</span>
+
+                <input
+                  type="number"
+                  min="1"
+                  value={limit}
+                  onChange={(e) => onLimitChange(e.target.value)}
+                  placeholder={activeView === 'errors' ? '50' : '20'}
+                />
+              </div>
             </div>
           ) : null}
 
-          <button
+          <motion.button
             type="button"
             className={s.searchBtn}
             onClick={onConsult}
-            disabled={!canSubmit}
+            disabled={!canSubmit || loading}
+            whileHover={
+              !shouldReduceMotion && canSubmit && !loading
+                ? { y: -1, transition: { duration: 0.16 } }
+                : undefined
+            }
+            whileTap={
+              !shouldReduceMotion && canSubmit && !loading
+                ? { scale: 0.99 }
+                : undefined
+            }
           >
-            {loading ? 'Consultando...' : getLabel(activeView)}
-          </button>
+            <Search size={16} />
+            <span>{loading ? 'Consultando...' : getLabel(activeView)}</span>
+          </motion.button>
         </div>
       </div>
 
       <div className={s.right}>
-        <button
+        <motion.button
           type="button"
           className={s.resetBtn}
           onClick={onReset}
           disabled={loading}
+          whileHover={
+            !shouldReduceMotion && !loading
+              ? { y: -1, transition: { duration: 0.16 } }
+              : undefined
+          }
+          whileTap={
+            !shouldReduceMotion && !loading ? { scale: 0.99 } : undefined
+          }
         >
-          <RotateCcw size={17} />
+          <RotateCcw size={16} />
           <span>Limpiar</span>
-        </button>
+        </motion.button>
       </div>
-    </section>
+    </motion.section>
   );
 }

@@ -21,15 +21,18 @@
 
 .kpiCard span {
   color: var(--muted);
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .kpiCard strong {
   color: var(--text);
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 900;
   line-height: 1;
+  letter-spacing: -0.03em;
 }
 
 .grid {
@@ -41,7 +44,7 @@
 .item {
   display: grid;
   gap: 10px;
-  min-height: 110px;
+  min-height: 108px;
   padding: 16px;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -73,17 +76,17 @@
 .item dt {
   margin: 0;
   color: var(--muted);
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 10px;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   line-height: 1.35;
 }
 
 .item dd {
   margin: 0;
   color: var(--text);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 800;
   line-height: 1.45;
   word-break: break-word;
@@ -96,9 +99,9 @@
   min-height: 28px;
   padding: 0 10px;
   border-radius: 999px;
-  font-size: 11px;
-  font-weight: 900;
-  letter-spacing: 0.04em;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   white-space: nowrap;
 }
@@ -153,5 +156,9 @@
 
   .kpiCard strong {
     font-size: 22px;
+  }
+
+  .item dd {
+    font-size: 13px;
   }
 }

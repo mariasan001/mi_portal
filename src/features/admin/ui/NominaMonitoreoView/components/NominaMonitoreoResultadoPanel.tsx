@@ -1,9 +1,10 @@
 'use client';
 
+import { useMemo, useState } from 'react';
 import {
   AlertTriangle,
-  CalendarDays,
   CheckCircle2,
+  ChevronDown,
   Clock3,
   FileText,
   Layers3,
@@ -47,53 +48,52 @@ function formatNullable(value: number | string | null | undefined) {
   return String(value);
 }
 
-function getStateClass(okValue: boolean, warn = false) {
-  if (warn) return s.stateWarn;
-  return okValue ? s.stateOk : s.stateOff;
+function getToneClass(value: boolean, warn = false) {
+  if (warn) return s.warn;
+  return value ? s.ok : s.off;
 }
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 12 },
+  hidden: { opacity: 0, y: 10 },
   show: { opacity: 1, y: 0 },
 };
 
-type CheckItemProps = {
+type StatusItemProps = {
   icon: React.ReactNode;
   label: string;
-  description: string;
+  hint: string;
   value: boolean;
   warn?: boolean;
 };
 
-function CheckItem({
+function StatusItem({
   icon,
   label,
-  description,
+  hint,
   value,
   warn = false,
-}: CheckItemProps) {
+}: StatusItemProps) {
   return (
-    <motion.article
-      className={`${s.checkItem} ${getStateClass(value, warn)}`}
-      variants={itemVariants}
-      transition={{ duration: 0.2 }}
-    >
-      <div className={s.checkItemLeft}>
-        <div className={s.checkIcon}>{icon}</div>
+    <li className={`${s.taskItem} ${getToneClass(value, warn)}`}>
+      <div className={s.taskLeft}>
+        <div className={s.taskIcon}>{icon}</div>
 
-        <div className={s.checkCopy}>
+        <div className={s.taskCopy}>
           <span>{label}</span>
-          <small>{description}</small>
+          <small>{hint}</small>
         </div>
       </div>
 
-      <div className={s.checkBadge}>{boolLabel(value)}</div>
-    </motion.article>
+      <div className={s.taskRight}>
+        <span className={s.taskBadge}>{boolLabel(value)}</span>
+      </div>
+    </li>
   );
 }
 
 export default function NominaMonitoreoResultadoPanel({ detalle }: Props) {
   const shouldReduceMotion = useReducedMotion();
+  const [isOperationOpen, setIsOperationOpen] = useState(true);
 
   const mainStatus = detalle.released
     ? 'Periodo liberado'
@@ -102,10 +102,35 @@ export default function NominaMonitoreoResultadoPanel({ detalle }: Props) {
       : 'Periodo en revisión';
 
   const mainStatusClass = detalle.released
-    ? s.statusSuccess
+    ? s.statusPillOk
     : detalle.validated
-      ? s.statusNeutral
-      : s.statusWarn;
+      ? s.statusPillNeutral
+      : s.statusPillWarn;
+
+  const operationStats = useMemo(() => {
+    const okCount = [
+      detalle.previaLoaded,
+      detalle.integradaLoaded,
+      detalle.catalogLoaded,
+      detalle.validated,
+      detalle.released,
+      !detalle.hasCancellations,
+      !detalle.hasReexpeditions,
+    ].filter(Boolean).length;
+
+    return {
+      okCount,
+      total: 7,
+    };
+  }, [
+    detalle.previaLoaded,
+    detalle.integradaLoaded,
+    detalle.catalogLoaded,
+    detalle.validated,
+    detalle.released,
+    detalle.hasCancellations,
+    detalle.hasReexpeditions,
+  ]);
 
   return (
     <motion.section
@@ -114,223 +139,218 @@ export default function NominaMonitoreoResultadoPanel({ detalle }: Props) {
       animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
       transition={{ duration: 0.24 }}
     >
-      <div className={s.sectionHeader}>
-        <div className={s.headerCopy}>
-          <span className={s.kicker}>Resultado</span>
-          <h3>Monitoreo del periodo</h3>
-          <p>
-            Vista consolidada con el contexto del periodo, versiones activas y
-            estado operativo general.
-          </p>
-        </div>
-      </div>
-
       <motion.div
-        className={s.hero}
+        className={s.sheet}
         initial={shouldReduceMotion ? false : 'hidden'}
         animate={shouldReduceMotion ? undefined : 'show'}
         variants={{
           hidden: {},
           show: {
             transition: {
-              staggerChildren: 0.05,
+              staggerChildren: 0.04,
             },
           },
         }}
       >
         <motion.div
-          className={s.heroMain}
+          className={s.topBar}
           variants={itemVariants}
-          transition={{ duration: 0.22 }}
+          transition={{ duration: 0.2 }}
         >
-          <div className={s.heroTop}>
-            <div className={s.heroBadge}>
+          <div className={s.topBarLeft}>
+            <div className={s.docIcon}>
               <FileText size={14} />
-              <span>Periodo consultado</span>
             </div>
 
-            <div className={`${s.heroStatus} ${mainStatusClass}`}>
-              <span className={s.heroStatusDot} />
-              {mainStatus}
+            <div className={s.topBarCopy}>
+              <span className={s.topBarLabel}>Código del periodo</span>
+              <strong>{formatNullable(detalle.periodCode)}</strong>
             </div>
           </div>
 
-          <div className={s.heroBody}>
-            <div>
-              <p className={s.heroLabel}>Código del periodo</p>
-              <h4 className={s.heroCode}>{formatNullable(detalle.periodCode)}</h4>
+          <div className={`${s.statusPill} ${mainStatusClass}`}>
+            <span className={s.statusDot} />
+            {mainStatus}
+          </div>
+        </motion.div>
+
+        <motion.div
+          className={s.summaryGrid}
+          variants={itemVariants}
+          transition={{ duration: 0.2 }}
+        >
+          <article className={s.primaryCard}>
+            <div className={s.primaryTop}>
+              <div className={s.avatar}>P</div>
+
+              <div className={s.primaryCopy}>
+                <span className={s.cardEyebrow}>Periodo de nómina</span>
+                <h4>{formatNullable(detalle.periodCode)}</h4>
+              </div>
             </div>
 
-            <div className={s.heroMiniGrid}>
-              <div className={s.heroMiniCard}>
+            <div className={s.primaryMeta}>
+              <div className={s.metaChip}>
                 <span>Año</span>
                 <strong>{formatNullable(detalle.anio)}</strong>
               </div>
 
-              <div className={s.heroMiniCard}>
+              <div className={s.metaChip}>
                 <span>Quincena</span>
                 <strong>{formatNullable(detalle.quincena)}</strong>
               </div>
             </div>
-          </div>
-        </motion.div>
+          </article>
 
-        <motion.div
-          className={s.heroAside}
-          variants={itemVariants}
-          transition={{ duration: 0.22 }}
-        >
-          <div className={s.asideCard}>
-            <div className={s.asideHead}>
-              <Clock3 size={14} />
-              <span>Fecha de liberación</span>
+          <article className={s.sideStack}>
+            <div className={s.infoRow}>
+              <div className={s.infoHead}>
+                <Clock3 size={14} />
+                <span>Fecha de liberación</span>
+              </div>
+              <strong>{formatDate(detalle.releasedAt)}</strong>
             </div>
-            <strong>{formatDate(detalle.releasedAt)}</strong>
-          </div>
 
-          <div className={s.asideCard}>
-            <div className={s.asideHead}>
-              <UserCircle2 size={14} />
-              <span>Usuario que liberó</span>
+            <div className={s.infoRow}>
+              <div className={s.infoHead}>
+                <UserCircle2 size={14} />
+                <span>Usuario que liberó</span>
+              </div>
+              <strong>{formatNullable(detalle.releasedByUserId)}</strong>
             </div>
-            <strong>{formatNullable(detalle.releasedByUserId)}</strong>
-          </div>
+          </article>
         </motion.div>
+
+        <motion.div
+          className={s.versionStrip}
+          variants={itemVariants}
+          transition={{ duration: 0.2 }}
+        >
+          <article className={s.versionItem}>
+            <div className={s.versionIcon}>
+              <Layers3 size={14} />
+            </div>
+            <div className={s.versionCopy}>
+              <span>Versión previa</span>
+              <strong>{formatNullable(detalle.currentPreviaVersionId)}</strong>
+            </div>
+          </article>
+
+          <article className={s.versionItem}>
+            <div className={s.versionIcon}>
+              <Layers3 size={14} />
+            </div>
+            <div className={s.versionCopy}>
+              <span>Versión integrada</span>
+              <strong>{formatNullable(detalle.currentIntegradaVersionId)}</strong>
+            </div>
+          </article>
+
+          <article className={s.versionItem}>
+            <div className={s.versionIcon}>
+              <ShieldCheck size={14} />
+            </div>
+            <div className={s.versionCopy}>
+              <span>Liberación</span>
+              <strong>{boolLabel(detalle.released)}</strong>
+            </div>
+          </article>
+        </motion.div>
+
+        <motion.section
+          className={s.operationBlock}
+          variants={itemVariants}
+          transition={{ duration: 0.2 }}
+        >
+          <button
+            type="button"
+            className={s.accordionTrigger}
+            onClick={() => setIsOperationOpen((prev) => !prev)}
+            aria-expanded={isOperationOpen}
+          >
+            <div className={s.accordionCopy}>
+              <span className={s.blockEyebrow}>Operación</span>
+              <h4>Estado operativo</h4>
+              <p>Lista rápida del flujo actual del periodo.</p>
+            </div>
+
+            <div className={s.accordionSide}>
+              <span className={s.progressPill}>
+                {operationStats.okCount}/{operationStats.total}
+              </span>
+
+              <span
+                className={`${s.chevronWrap} ${
+                  isOperationOpen ? s.chevronOpen : ''
+                }`}
+              >
+                <ChevronDown size={16} />
+              </span>
+            </div>
+          </button>
+
+          <div
+            className={`${s.accordionPanel} ${
+              isOperationOpen ? s.accordionPanelOpen : ''
+            }`}
+          >
+            <div className={s.accordionInner}>
+              <ul className={s.taskList}>
+                <StatusItem
+                  icon={<CheckCircle2 size={14} />}
+                  label="Previa cargada"
+                  hint="Archivo de previa disponible para operación."
+                  value={detalle.previaLoaded}
+                />
+
+                <StatusItem
+                  icon={<CheckCircle2 size={14} />}
+                  label="Integrada cargada"
+                  hint="Versión integrada registrada en el periodo."
+                  value={detalle.integradaLoaded}
+                />
+
+                <StatusItem
+                  icon={<CheckCircle2 size={14} />}
+                  label="Catálogo cargado"
+                  hint="Catálogo base listo para el flujo de nómina."
+                  value={detalle.catalogLoaded}
+                />
+
+                <StatusItem
+                  icon={<CheckCircle2 size={14} />}
+                  label="Validado"
+                  hint="La validación operativa del periodo fue completada."
+                  value={detalle.validated}
+                />
+
+                <StatusItem
+                  icon={<ShieldCheck size={14} />}
+                  label="Liberado"
+                  hint="El periodo ya fue liberado para su salida."
+                  value={detalle.released}
+                />
+
+                <StatusItem
+                  icon={<XCircle size={14} />}
+                  label="Cancelaciones"
+                  hint="Muestra si existen cancelaciones registradas."
+                  value={detalle.hasCancellations}
+                  warn={detalle.hasCancellations}
+                />
+
+                <StatusItem
+                  icon={<AlertTriangle size={14} />}
+                  label="Reexpediciones"
+                  hint="Muestra si existen reexpediciones en el periodo."
+                  value={detalle.hasReexpeditions}
+                  warn={detalle.hasReexpeditions}
+                />
+              </ul>
+            </div>
+          </div>
+        </motion.section>
       </motion.div>
-
-      <motion.div
-        className={s.metricsGrid}
-        initial={shouldReduceMotion ? false : 'hidden'}
-        animate={shouldReduceMotion ? undefined : 'show'}
-        variants={{
-          hidden: {},
-          show: {
-            transition: {
-              staggerChildren: 0.05,
-            },
-          },
-        }}
-      >
-        <motion.div
-          className={s.metricCard}
-          variants={itemVariants}
-          transition={{ duration: 0.2 }}
-        >
-          <div className={s.metricIcon}>
-            <Layers3 size={14} />
-          </div>
-          <div className={s.metricContent}>
-            <span>Versión previa</span>
-            <strong>{formatNullable(detalle.currentPreviaVersionId)}</strong>
-          </div>
-        </motion.div>
-
-        <motion.div
-          className={s.metricCard}
-          variants={itemVariants}
-          transition={{ duration: 0.2 }}
-        >
-          <div className={s.metricIcon}>
-            <Layers3 size={14} />
-          </div>
-          <div className={s.metricContent}>
-            <span>Versión integrada</span>
-            <strong>{formatNullable(detalle.currentIntegradaVersionId)}</strong>
-          </div>
-        </motion.div>
-
-        <motion.div
-          className={s.metricCard}
-          variants={itemVariants}
-          transition={{ duration: 0.2 }}
-        >
-          <div className={s.metricIcon}>
-            <ShieldCheck size={14} />
-          </div>
-          <div className={s.metricContent}>
-            <span>Liberación</span>
-            <strong>{boolLabel(detalle.released)}</strong>
-          </div>
-        </motion.div>
-      </motion.div>
-
-      <div className={s.flagsSection}>
-        <div className={s.flagsHeader}>
-          <div>
-            <span className={s.blockEyebrow}>Operación</span>
-            <h4>Estado operativo</h4>
-            <p>
-              Seguimiento rápido sobre carga, validación, incidencias y control
-              de salida.
-            </p>
-          </div>
-        </div>
-
-        <motion.div
-          className={s.flagsGrid}
-          initial={shouldReduceMotion ? false : 'hidden'}
-          animate={shouldReduceMotion ? undefined : 'show'}
-          variants={{
-            hidden: {},
-            show: {
-              transition: {
-                staggerChildren: 0.04,
-              },
-            },
-          }}
-        >
-          <CheckItem
-            icon={<CheckCircle2 size={14} />}
-            label="Previa cargada"
-            description="Archivo de previa disponible para operación."
-            value={detalle.previaLoaded}
-          />
-
-          <CheckItem
-            icon={<CheckCircle2 size={14} />}
-            label="Integrada cargada"
-            description="Versión integrada presente en el periodo."
-            value={detalle.integradaLoaded}
-          />
-
-          <CheckItem
-            icon={<CheckCircle2 size={14} />}
-            label="Catálogo cargado"
-            description="Catálogo base listo para el flujo de nómina."
-            value={detalle.catalogLoaded}
-          />
-
-          <CheckItem
-            icon={<CheckCircle2 size={14} />}
-            label="Validado"
-            description="La validación operativa del periodo fue completada."
-            value={detalle.validated}
-          />
-
-          <CheckItem
-            icon={<ShieldCheck size={14} />}
-            label="Liberado"
-            description="El periodo ya fue liberado para su salida."
-            value={detalle.released}
-          />
-
-          <CheckItem
-            icon={<XCircle size={14} />}
-            label="Cancelaciones"
-            description="Indica si existen cancelaciones registradas."
-            value={detalle.hasCancellations}
-            warn={detalle.hasCancellations}
-          />
-
-          <CheckItem
-            icon={<AlertTriangle size={14} />}
-            label="Reexpediciones"
-            description="Indica si existen reexpediciones en el periodo."
-            value={detalle.hasReexpeditions}
-            warn={detalle.hasReexpeditions}
-          />
-        </motion.div>
-      </div>
     </motion.section>
   );
 }
