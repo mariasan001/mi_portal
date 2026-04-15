@@ -30,7 +30,7 @@ export async function GET(req: Request, ctx: Ctx) {
 
   try {
     const upstream = await fetch(
-      `${base}/api/admin/nomina/state/periodo/${encodeURIComponent(String(payPeriodIdNum))}`,
+      `${base}/api/admin/nomina/state/period/${encodeURIComponent(String(payPeriodIdNum))}`,
       {
         method: 'GET',
         headers: {

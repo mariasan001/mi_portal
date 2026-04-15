@@ -1,4 +1,8 @@
-import { Search, RotateCcw } from 'lucide-react';
+'use client';
+
+import { RotateCcw, Search } from 'lucide-react';
+import { motion, useReducedMotion } from 'motion/react';
+
 import s from './NominaMonitoreoToolbar.module.css';
 
 type Props = {
@@ -18,8 +22,23 @@ export default function NominaMonitoreoToolbar({
   onSubmit,
   onReset,
 }: Props) {
+  /**
+   * Accesibilidad:
+   * si el usuario prefiere menos movimiento,
+   * suavizamos o eliminamos animaciones.
+   */
+  const shouldReduceMotion = useReducedMotion();
+
   return (
-    <section className={s.toolbar}>
+    <motion.section
+      className={s.toolbar}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 12 }}
+      animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.28,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+    >
       <div className={s.left}>
         <label className={s.label} htmlFor="nomina-monitoreo-period-id">
           payPeriodId
@@ -27,7 +46,7 @@ export default function NominaMonitoreoToolbar({
 
         <div className={s.searchSurface}>
           <div className={s.inputWrap}>
-            <Search size={17} className={s.icon} />
+            <Search size={16} className={s.icon} />
 
             <input
               id="nomina-monitoreo-period-id"
@@ -39,28 +58,44 @@ export default function NominaMonitoreoToolbar({
             />
           </div>
 
-          <button
+          <motion.button
             type="button"
             className={s.searchBtn}
             onClick={onSubmit}
-            disabled={!canSubmit}
+            disabled={!canSubmit || loading}
+            whileHover={
+              !shouldReduceMotion && canSubmit && !loading
+                ? { y: -1, transition: { duration: 0.16 } }
+                : undefined
+            }
+            whileTap={
+              !shouldReduceMotion && canSubmit && !loading
+                ? { scale: 0.99 }
+                : undefined
+            }
           >
             {loading ? 'Consultando...' : 'Consultar estado'}
-          </button>
+          </motion.button>
         </div>
       </div>
 
       <div className={s.right}>
-        <button
+        <motion.button
           type="button"
           className={s.resetBtn}
           onClick={onReset}
           disabled={loading}
+          whileHover={
+            !shouldReduceMotion && !loading
+              ? { y: -1, transition: { duration: 0.16 } }
+              : undefined
+          }
+          whileTap={!shouldReduceMotion && !loading ? { scale: 0.99 } : undefined}
         >
-          <RotateCcw size={17} />
+          <RotateCcw size={16} />
           <span>Limpiar</span>
-        </button>
+        </motion.button>
       </div>
-    </section>
+    </motion.section>
   );
 }

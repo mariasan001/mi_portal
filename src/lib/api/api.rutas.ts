@@ -52,7 +52,7 @@ export const API_RUTAS = {
     },
 
     monitoreoPeriodo: (payPeriodId: number | string) =>
-      `/api/admin/nomina/state/periodo/${encodeURIComponent(String(payPeriodId))}`,
+      `/api/admin/nomina/state/period/${encodeURIComponent(String(payPeriodId))}`,
 
     snapshotsGenerate: (versionId: number | string) =>
       `/api/admin/nomina/snapshots/generate/${encodeURIComponent(String(versionId))}`,
