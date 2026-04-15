@@ -9,17 +9,17 @@ export function getNominaCargasHeroDescription() {
 }
 
 export function getToolbarSearchLabel(entity: NominaCargaEntity) {
-  return entity === 'catalogo' ? 'Buscar catálogo por fileId' : 'Buscar nómina por fileId';
+  return entity === 'catalogo'
+    ? 'Buscar catálogo por fileId'
+    : 'Buscar nómina por fileId';
 }
 
 export function getToolbarSearchPlaceholder(entity: NominaCargaEntity) {
-  return entity === 'catalogo'
-    ? 'Ej. 125'
-    : 'Ej. 240';
+  return entity === 'catalogo' ? 'Ej. 125' : 'Ej. 240';
 }
 
 export function getToolbarPrimaryLabel(entity: NominaCargaEntity) {
-  return entity === 'catalogo' ? 'Nuevo catálogo' : 'Ejecutar staging';
+  return entity === 'catalogo' ? 'Nuevo catálogo' : 'Nuevo archivo';
 }
 
 export function getContentEyebrow(entity: NominaCargaEntity) {
@@ -41,7 +41,7 @@ export function getEmptyTitle(entity: NominaCargaEntity) {
 export function getEmptyDescription(entity: NominaCargaEntity) {
   return entity === 'catalogo'
     ? 'Sube un nuevo archivo de catálogo o ejecuta manualmente uno existente mediante su fileId.'
-    : 'Ejecuta el staging de nómina mediante un fileId registrado para visualizar aquí el resultado.';
+    : 'Sube un archivo de nómina o ejecuta manualmente un staging mediante un fileId registrado.';
 }
 
 export function formatNominaDateTime(value?: string | null) {
@@ -73,4 +73,15 @@ export function formatBytes(value?: number | null) {
 
   const decimals = size >= 10 ? 0 : 1;
   return `${size.toFixed(decimals)} ${units[unitIndex]}`;
+}
+
+export function formatNominaTitle(value?: string | null) {
+  if (!value) return '—';
+
+  return value
+    .toLowerCase()
+    .split(/[_\s-]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
 }

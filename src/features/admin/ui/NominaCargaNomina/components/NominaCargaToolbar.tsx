@@ -1,6 +1,6 @@
 'use client';
 
-import { Play, Plus, Search } from 'lucide-react';
+import { Plus, Play, Search } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';
 
 import s from './NominaCargaToolbar.module.css';
@@ -15,10 +15,8 @@ type Props = {
   activeEntity: NominaCargaEntity;
   searchFileId: string;
   loading: boolean;
-  canSearch: boolean;
   canExecute: boolean;
   onSearchFileIdChange: (value: string) => void;
-  onConsult: () => void;
   onExecute: () => void;
   onPrimaryAction: () => void;
 };
@@ -27,11 +25,8 @@ export default function NominaCargaToolbar({
   activeEntity,
   searchFileId,
   loading,
-
-  
   canExecute,
   onSearchFileIdChange,
-
   onExecute,
   onPrimaryAction,
 }: Props) {
@@ -104,9 +99,11 @@ export default function NominaCargaToolbar({
               ? { y: -1, transition: { duration: 0.16 } }
               : undefined
           }
-          whileTap={!shouldReduceMotion && !loading ? { scale: 0.99 } : undefined}
+          whileTap={
+            !shouldReduceMotion && !loading ? { scale: 0.99 } : undefined
+          }
         >
-          {activeEntity === 'catalogo' ? <Plus size={16} /> : <Play size={16} />}
+          <Plus size={16} />
           <span>{getToolbarPrimaryLabel(activeEntity)}</span>
         </motion.button>
       </div>

@@ -5,10 +5,16 @@ import { LoaderCircle, X } from 'lucide-react';
 import type { NominaFileType } from '../../../types/nomina-catalogo.types';
 
 import s from './NominaCargaUploadModal.module.css';
-import { CatalogoModalForm, NominaCargaModalStatus } from '../types/nomina-cargas.types';
+import {
+  CatalogoModalForm,
+  NominaCargaEntity,
+  NominaCargaModalStatus,
+} from '../types/nomina-cargas.types';
 import NominaCargaDropzone from './NominaCargaDropzone';
 
-const FILE_TYPE_OPTIONS: NominaFileType[] = [
+const FILE_TYPE_OPTIONS_CATALOGO: NominaFileType[] = ['CATALOGO'];
+
+const FILE_TYPE_OPTIONS_NOMINA: NominaFileType[] = [
   'TCOMP',
   'TCALC',
   'HNCOMADI',
@@ -16,11 +22,11 @@ const FILE_TYPE_OPTIONS: NominaFileType[] = [
   'COMP',
   'CALC',
   'CONTAGUB',
-  'CATALOGO',
 ];
 
 type Props = {
   open: boolean;
+  entity: NominaCargaEntity;
   form: CatalogoModalForm;
   status: NominaCargaModalStatus;
   error: string | null;
@@ -37,6 +43,7 @@ type Props = {
 
 export default function NominaCargaUploadModal({
   open,
+  entity,
   form,
   status,
   error,
@@ -49,16 +56,38 @@ export default function NominaCargaUploadModal({
 }: Props) {
   if (!open) return null;
 
-  const isBusy = loadingUpload || loadingRun || status === 'uploading' || status === 'running';
+  const isCatalogo = entity === 'catalogo';
+
+  const availableOptions = isCatalogo
+    ? FILE_TYPE_OPTIONS_CATALOGO
+    : FILE_TYPE_OPTIONS_NOMINA;
+
+  const isBusy =
+    loadingUpload ||
+    loadingRun ||
+    status === 'uploading' ||
+    status === 'running';
 
   return (
     <div className={s.overlay}>
       <div className={s.modal}>
         <div className={s.head}>
           <div className={s.copy}>
-            <span className={s.kicker}>Carga de catálogo</span>
-            <h3>Nuevo catálogo de nómina</h3>
-            <p>Sube el archivo DBF y ejecuta automáticamente la carga asociada.</p>
+            <span className={s.kicker}>
+              {isCatalogo ? 'Carga de catálogo' : 'Carga de nómina'}
+            </span>
+
+            <h3>
+              {isCatalogo
+                ? 'Nuevo catálogo de nómina'
+                : 'Nuevo archivo de nómina'}
+            </h3>
+
+            <p>
+              {isCatalogo
+                ? 'Sube el archivo DBF y ejecuta automáticamente la carga asociada.'
+                : 'Sube el archivo DBF y ejecuta automáticamente el staging asociado.'}
+            </p>
           </div>
 
           <button
@@ -89,25 +118,16 @@ export default function NominaCargaUploadModal({
               <span>fileType</span>
               <select
                 value={form.fileType}
-                onChange={(e) => onFileTypeChange(e.target.value as NominaFileType)}
+                onChange={(e) =>
+                  onFileTypeChange(e.target.value as NominaFileType)
+                }
               >
-                {FILE_TYPE_OPTIONS.map((option) => (
+                {availableOptions.map((option) => (
                   <option key={option} value={option}>
                     {option}
                   </option>
                 ))}
               </select>
-            </label>
-
-            <label className={`${s.field} ${s.fieldWide}`}>
-              <span>createdByUserId</span>
-              <input
-                type="number"
-                min="1"
-                value={form.createdByUserId}
-                onChange={(e) => onFieldChange('createdByUserId', e.target.value)}
-                placeholder="Opcional"
-              />
             </label>
           </div>
 
@@ -123,7 +143,8 @@ export default function NominaCargaUploadModal({
                 {status === 'idle' && 'Esperando archivo'}
                 {status === 'selected' && 'Archivo listo'}
                 {status === 'uploading' && 'Subiendo archivo'}
-                {status === 'running' && 'Ejecutando carga'}
+                {status === 'running' &&
+                  (isCatalogo ? 'Ejecutando catálogo' : 'Ejecutando staging')}
                 {status === 'success' && 'Proceso completado'}
                 {status === 'error' && 'Error en el proceso'}
               </span>
@@ -133,7 +154,11 @@ export default function NominaCargaUploadModal({
               <div className={s.loaderRow}>
                 <LoaderCircle size={16} className={s.loader} />
                 <span>
-                  {loadingUpload ? 'Subiendo archivo...' : 'Ejecutando carga...'}
+                  {loadingUpload
+                    ? 'Subiendo archivo...'
+                    : isCatalogo
+                    ? 'Ejecutando catálogo...'
+                    : 'Ejecutando staging...'}
                 </span>
               </div>
             ) : null}
@@ -158,7 +183,11 @@ export default function NominaCargaUploadModal({
             onClick={onSubmit}
             disabled={isBusy}
           >
-            {isBusy ? 'Procesando...' : 'Subir y ejecutar'}
+            {isBusy
+              ? 'Procesando...'
+              : isCatalogo
+              ? 'Subir y ejecutar'
+              : 'Subir y ejecutar'}
           </button>
         </div>
       </div>

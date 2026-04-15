@@ -31,21 +31,15 @@ export default function NominaCargasView() {
           onSelect={vm.handleSelectEntity}
         />
 
-        <NominaCargaToolbar
-          activeEntity={vm.activeEntity}
-          searchFileId={vm.searchFileId}
-          loading={vm.currentLoading}
-          canSearch={vm.canSearch}
-          canExecute={vm.canExecute}
-          onSearchFileIdChange={vm.setSearchFileId}
-          onConsult={vm.handleConsult}
-          onExecute={vm.handleExecute}
-          onPrimaryAction={
-            vm.activeEntity === 'catalogo'
-              ? vm.openUploadModal
-              : vm.handleExecute
-          }
-        />
+      <NominaCargaToolbar
+      activeEntity={vm.activeEntity}
+      searchFileId={vm.searchFileId}
+      loading={vm.currentLoading}
+      canExecute={vm.canExecute}
+      onSearchFileIdChange={vm.setSearchFileId}
+      onExecute={vm.handleExecute}
+      onPrimaryAction={vm.openUploadModal}
+    />
 
         {vm.activeError ? (
           <div className={s.errorBanner} role="alert">
@@ -100,15 +94,20 @@ export default function NominaCargasView() {
 
       <NominaCargaUploadModal
         open={vm.isUploadModalOpen}
+        entity={vm.activeEntity}
         form={vm.modalForm}
         status={vm.modalStatus}
         error={vm.modalError}
         loadingUpload={vm.catalogo.loadingUpload}
-        loadingRun={vm.catalogo.loadingRun}
+        loadingRun={
+          vm.activeEntity === 'catalogo'
+            ? vm.catalogo.loadingRun
+            : vm.nomina.loadingRun
+        }
         onClose={vm.closeUploadModal}
         onFieldChange={vm.updateModalField}
         onFileTypeChange={vm.setModalFileType}
-        onSubmit={vm.handleUploadAndRunCatalogo}
+        onSubmit={vm.handleUploadAndRun}
       />
     </section>
   );

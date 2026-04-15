@@ -3,7 +3,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-
 import type {
   CatalogoModalForm,
   NominaCargaEntity,
@@ -12,25 +11,30 @@ import type {
 import { useNominaStaging } from '@/features/admin/hooks/useNominaStaging';
 import { useNominaCatalogo } from '@/features/admin/hooks/useNominaCatalogo';
 import { NominaFileType } from '@/features/admin/types/nomina-catalogo.types';
+import { useAuth } from '@/features/auth/context/auth.context';
 
 const INITIAL_MODAL_FORM: CatalogoModalForm = {
   versionId: '',
   fileType: 'CATALOGO',
-  createdByUserId: '',
   file: null,
 };
 
 export function useNominaCargasView() {
+  const { sesion } = useAuth();
+
   const catalogo = useNominaCatalogo();
   const nomina = useNominaStaging();
 
-  const [activeEntity, setActiveEntity] = useState<NominaCargaEntity>('catalogo');
+  const [activeEntity, setActiveEntity] =
+    useState<NominaCargaEntity>('catalogo');
   const [searchFileId, setSearchFileId] = useState('');
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [consultMessage, setConsultMessage] = useState<string | null>(null);
 
-  const [modalForm, setModalForm] = useState<CatalogoModalForm>(INITIAL_MODAL_FORM);
-  const [modalStatus, setModalStatus] = useState<NominaCargaModalStatus>('idle');
+  const [modalForm, setModalForm] =
+    useState<CatalogoModalForm>(INITIAL_MODAL_FORM);
+  const [modalStatus, setModalStatus] =
+    useState<NominaCargaModalStatus>('idle');
   const [modalError, setModalError] = useState<string | null>(null);
 
   const activeError = useMemo(() => {
@@ -81,19 +85,13 @@ export function useNominaCargasView() {
       return;
     }
 
-    /**
-     * NOTA IMPORTANTE:
-     * Aquí NO se llama a ningún endpoint porque no fue compartido
-     * un servicio real de consulta por fileId.
-     *
-     * Dejamos el flujo listo para conectar el endpoint real cuando exista.
-     */
     setConsultMessage(
       `La búsqueda por fileId (${parsedFileId}) ya quedó preparada en la UI. Solo falta conectar el endpoint real de consulta.`
     );
 
     toast.message('Consulta preparada visualmente.', {
-      description: 'Falta enlazar el endpoint real para recuperar el detalle por fileId.',
+      description:
+        'Falta enlazar el endpoint real para recuperar el detalle por fileId.',
     });
   }, [searchFileId]);
 
@@ -125,19 +123,29 @@ export function useNominaCargasView() {
   }, [activeEntity, catalogo, nomina, searchFileId]);
 
   const openUploadModal = useCallback(() => {
-    setModalForm(INITIAL_MODAL_FORM);
+    setModalForm({
+      versionId: '',
+      fileType: activeEntity === 'catalogo' ? 'CATALOGO' : 'TCOMP',
+      file: null,
+    });
+
     setModalStatus('idle');
     setModalError(null);
     setIsUploadModalOpen(true);
-  }, []);
+  }, [activeEntity]);
 
   const closeUploadModal = useCallback(() => {
-    if (catalogo.loadingRun || catalogo.loadingUpload) return;
+    const isBusy =
+      catalogo.loadingUpload ||
+      catalogo.loadingRun ||
+      nomina.loadingRun;
+
+    if (isBusy) return;
 
     setIsUploadModalOpen(false);
     setModalStatus('idle');
     setModalError(null);
-  }, [catalogo.loadingRun, catalogo.loadingUpload]);
+  }, [catalogo.loadingRun, catalogo.loadingUpload, nomina.loadingRun]);
 
   const updateModalField = useCallback(
     <K extends keyof CatalogoModalForm>(key: K, value: CatalogoModalForm[K]) => {
@@ -153,23 +161,19 @@ export function useNominaCargasView() {
     setModalError(null);
   }, []);
 
-  const handleUploadAndRunCatalogo = useCallback(async () => {
+  const handleUploadAndRun = useCallback(async () => {
     const parsedVersionId = Number(modalForm.versionId);
-    const parsedCreatedByUserId =
-      modalForm.createdByUserId.trim().length > 0
-        ? Number(modalForm.createdByUserId)
-        : undefined;
+    const createdByUserId = sesion?.userId;
 
     if (!Number.isFinite(parsedVersionId) || parsedVersionId <= 0) {
       setModalError('Captura un versionId válido.');
       return;
     }
 
-    if (
-      parsedCreatedByUserId !== undefined &&
-      (!Number.isFinite(parsedCreatedByUserId) || parsedCreatedByUserId <= 0)
-    ) {
-      setModalError('createdByUserId debe ser válido.');
+    if (!Number.isFinite(createdByUserId) || Number(createdByUserId) <= 0) {
+      setModalError(
+        'No se encontró un usuario autenticado para registrar la carga.'
+      );
       return;
     }
 
@@ -185,22 +189,32 @@ export function useNominaCargasView() {
       const archivo = await catalogo.uploadArchivo({
         versionId: parsedVersionId,
         fileType: modalForm.fileType,
-        createdByUserId: parsedCreatedByUserId,
+        createdByUserId,
         file: modalForm.file,
       });
 
       setModalStatus('running');
 
-      await catalogo.runCatalogo(archivo.fileId);
+      if (activeEntity === 'catalogo') {
+        await catalogo.runCatalogo(archivo.fileId);
+        toast.success('Catálogo cargado y ejecutado correctamente.');
+      } else {
+        await nomina.runStaging(archivo.fileId);
+        toast.success('Archivo de nómina cargado y ejecutado correctamente.');
+      }
 
       setModalStatus('success');
-      toast.success('Archivo cargado y ejecutado correctamente.');
     } catch {
       setModalStatus('error');
       setModalError('No se pudo completar la carga automática del archivo.');
-      toast.error('Falló la carga automática del catálogo.');
+
+      if (activeEntity === 'catalogo') {
+        toast.error('Falló la carga automática del catálogo.');
+      } else {
+        toast.error('Falló la carga automática del archivo de nómina.');
+      }
     }
-  }, [catalogo, modalForm]);
+  }, [activeEntity, catalogo, nomina, modalForm, sesion?.userId]);
 
   const shouldDimContent = useMemo(() => {
     if (activeEntity === 'catalogo') {
@@ -237,6 +251,6 @@ export function useNominaCargasView() {
     closeUploadModal,
     updateModalField,
     setModalFileType,
-    handleUploadAndRunCatalogo,
+    handleUploadAndRun,
   };
 }

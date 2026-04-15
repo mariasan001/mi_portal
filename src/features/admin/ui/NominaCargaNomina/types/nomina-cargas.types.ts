@@ -14,7 +14,6 @@ export type NominaCargaModalStatus =
 export type CatalogoModalForm = {
   versionId: string;
   fileType: NominaFileType;
-  createdByUserId: string;
   file: File | null;
 };
 
