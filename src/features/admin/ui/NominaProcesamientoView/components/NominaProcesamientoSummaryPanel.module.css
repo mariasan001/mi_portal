@@ -1,35 +1,34 @@
 .panel {
   display: grid;
-  gap: 18px;
+  gap: 16px;
 }
 
+/* KPI afuera */
 .kpiGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
+  gap: 12px;
 }
 
 .kpiCard {
   display: grid;
   gap: 12px;
-  min-height: 118px;
-  padding: 16px 16px 14px;
-  border-radius: 18px;
+  padding: 14px 16px;
+  border-radius: 16px;
   border: 1px solid rgba(10, 10, 10, 0.07);
-  background: var(--surface);
-  box-shadow: 0 8px 20px rgba(10, 10, 10, 0.03);
+  background: #ffffff;
+  box-shadow: 0 6px 16px rgba(10, 10, 10, 0.025);
 }
 
 .kpiHead {
   display: flex;
   align-items: center;
   gap: 8px;
-  min-width: 0;
 }
 
 .kpiIcon {
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
   display: grid;
   place-items: center;
   border-radius: 999px;
@@ -55,26 +54,28 @@
   color: rgba(10, 10, 10, 0.62);
   font-size: 10px;
   font-weight: 700;
-  line-height: 1.2;
   letter-spacing: 0.02em;
+}
+
+.kpiBody {
+  display: grid;
+  gap: 4px;
 }
 
 .kpiValue {
   margin: 0;
   color: var(--text);
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 900;
   line-height: 1;
   letter-spacing: -0.04em;
 }
 
 .kpiHint {
-  margin: 0;
   color: var(--muted);
-  font-size: 11px;
-  font-weight: 500;
-  line-height: 1.35;
-  opacity: 0.82;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.3;
 }
 
 .kpi_ok .kpiHint {
@@ -93,68 +94,102 @@
   color: var(--muted);
 }
 
-.detailsBlock {
+/* Contenedor solo para detalle */
+.summaryContainer {
   display: grid;
+  gap: 16px;
+  padding: 20px 22px;
+  border-radius: 22px;
+  background: #f8f8f8;
+  border: 1px solid rgba(10, 10, 10, 0.06);
+  box-shadow:
+    0 10px 28px rgba(10, 10, 10, 0.035),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.summaryShell {
+  display: grid;
+  gap: 12px;
+}
+
+.topGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.fileGrid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.bottomGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.infoCard,
+.fileCard,
+.miniCard {
+  display: grid;
+  gap: 8px;
+  padding: 7px 15px;
+  border-radius: 16px;
+  border: 1px solid rgba(10, 10, 10, 0.06);
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(10, 10, 10, 0.018);
+}
+
+.heroCard {
+  min-height: 124px;
+  background: rgba(188, 148, 90, 0.05);
+  border-color: rgba(188, 148, 90, 0.09);
+}
+
+.heroHead {
+  display: flex;
+  align-items: center;
   gap: 14px;
 }
 
-.detailsHeader {
+.heroIconWrap {
+  width: 48px;
+  height: 48px;
   display: grid;
-  gap: 4px;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 16px;
+  background: rgba(188, 148, 90, 0.15);
+  color: var(--oro);
 }
 
-.eyebrow {
-  display: inline-flex;
-  width: fit-content;
-  align-items: center;
-  min-height: 26px;
-  padding: 0 10px;
-  border-radius: 999px;
-  background: rgba(188, 148, 90, 0.08);
-  border: 1px solid rgba(188, 148, 90, 0.14);
-  color: #8a6a3d;
+.heroCopy {
+  display: grid;
+  gap: 3px;
+}
+
+.cardLabel {
+  color: var(--muted);
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 400;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-.detailsHeader h4 {
-  margin: 0;
+.heroCopy strong {
   color: var(--text);
-  font-size: 16px;
-  font-weight: 800;
-  line-height: 1.15;
-  letter-spacing: -0.02em;
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.04em;
 }
 
-.detailsHeader p {
-  margin: 0;
+.heroCopy small {
   color: var(--muted);
-  font-size: 12px;
-  line-height: 1.55;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: 14px;
-}
-
-.item {
-  grid-column: span 4;
-  display: grid;
-  gap: 12px;
-  min-height: 98px;
-  padding: 16px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  box-shadow: var(--shadow-sm);
-}
-
-.itemWide {
-  grid-column: span 6;
+  font-size: 9px;
+  line-height: 1.4;
 }
 
 .itemHead {
@@ -165,8 +200,8 @@
 }
 
 .iconWrap {
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   display: grid;
   place-items: center;
   flex-shrink: 0;
@@ -175,34 +210,58 @@
   color: var(--vino);
 }
 
-.item dt {
+.itemHead dt {
   margin: 0;
-  color: var(--muted);
-  font-size: 10px;
-  font-weight: 800;
+  color: rgba(10, 10, 10, 0.62);
+  font-size: 9.5px;
+  font-weight: 400;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  line-height: 1.35;
+  letter-spacing: 0.05em;
+  line-height: 1.3;
 }
 
-.item dd {
+.infoCard dd,
+.fileCard dd,
+.miniCard dd {
   margin: 0;
   color: var(--text);
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 800;
   line-height: 1.35;
   word-break: break-word;
 }
 
-.longValue {
-  font-size: 13px;
+.fileCardWide {
+  grid-column: span 6;
+}
+
+.fileCardName {
+  background: rgba(159, 33, 65, 0.03);
+  border-color: rgba(159, 33, 65, 0.08);
+}
+
+.fileCardName dd {
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 1.35;
+}
+
+.fileValue {
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.pathValue {
+  font-size: 12.5px;
   line-height: 1.5;
+  word-break: break-word;
 }
 
 .statusBadge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: fit-content;
   min-height: 28px;
   padding: 0 10px;
   border-radius: 999px;
@@ -237,52 +296,55 @@
   border: 1px solid rgba(10, 10, 10, 0.08);
 }
 
-@media (max-width: 1080px) {
-  .item {
-    grid-column: span 6;
+@media (max-width: 1180px) {
+  .topGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .itemWide {
+  .heroCard {
+    grid-column: span 2;
+  }
+
+  .fileCardWide {
     grid-column: span 12;
+  }
+
+  .fileGrid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 840px) {
-  .kpiGrid {
+  .kpiGrid,
+  .topGrid,
+  .bottomGrid,
+  .fileGrid {
     grid-template-columns: 1fr;
   }
 
-  .kpiCard {
-    min-height: unset;
+  .heroCard,
+  .fileCardWide {
+    grid-column: auto;
+  }
+
+  .summaryContainer {
+    padding: 16px;
+    border-radius: 18px;
+  }
+
+  .kpiCard,
+  .infoCard,
+  .fileCard,
+  .miniCard {
     padding: 14px;
-    border-radius: 16px;
+    border-radius: 14px;
   }
 
   .kpiValue {
     font-size: 20px;
   }
 
-  .grid {
-    grid-template-columns: 1fr;
-  }
-
-  .item,
-  .itemWide {
-    grid-column: auto;
-  }
-
-  .item {
-    min-height: unset;
-    padding: 14px;
-    border-radius: 16px;
-  }
-
-  .item dd {
-    font-size: 14px;
-  }
-
-  .longValue {
-    font-size: 12.5px;
+  .heroCopy strong {
+    font-size: 18px;
   }
 }
-
