@@ -40,6 +40,32 @@ function getFieldIcon(icon: SummaryField['icon']) {
   }
 }
 
+function getKpiIcon(key: string) {
+  switch (key) {
+    case 'totalRowsInFile':
+      return <FileSpreadsheet size={14} />;
+    case 'processedRows':
+      return <CheckCircle2 size={14} />;
+    case 'errorRows':
+      return <AlertTriangle size={14} />;
+    default:
+      return <FileSpreadsheet size={14} />;
+  }
+}
+
+function getKpiHint(key: string) {
+  switch (key) {
+    case 'totalRowsInFile':
+      return 'Filas detectadas en el archivo';
+    case 'processedRows':
+      return 'Aplicadas al procesamiento';
+    case 'errorRows':
+      return 'Registros con incidencia';
+    default:
+      return '';
+  }
+}
+
 export default function NominaProcesamientoSummaryPanel({ detalle }: Props) {
   const kpis = getSummaryKpis(detalle);
   const fields = getSummaryFields(detalle);
@@ -50,37 +76,57 @@ export default function NominaProcesamientoSummaryPanel({ detalle }: Props) {
         {kpis.map((kpi) => (
           <article
             key={kpi.key}
-            className={`${s.kpiCard} ${kpi.tone ? s[kpi.tone] : ''}`}
+            className={`${s.kpiCard} ${kpi.tone ? s[`kpi_${kpi.tone}`] : ''}`}
           >
-            <span>{kpi.label}</span>
-            <strong>{kpi.value}</strong>
+            <div className={s.kpiHead}>
+              <div className={`${s.kpiIcon} ${s[`kpiIcon_${kpi.key}`]}`}>
+                {getKpiIcon(kpi.key)}
+              </div>
+
+              <span className={s.kpiLabel}>{kpi.label}</span>
+            </div>
+
+            <strong className={s.kpiValue}>{kpi.value}</strong>
+
+            <p className={s.kpiHint}>{getKpiHint(kpi.key)}</p>
           </article>
         ))}
       </div>
 
-      <dl className={s.grid}>
-        {fields.map((field) => (
-          <div
-            key={field.key}
-            className={`${s.item} ${field.wide ? s.itemWide : ''}`}
-          >
-            <div className={s.itemHead}>
-              <div className={s.iconWrap}>{getFieldIcon(field.icon)}</div>
-              <dt>{field.label}</dt>
-            </div>
+      <div className={s.detailsBlock}>
+        <div className={s.detailsHeader}>
+          <span className={s.eyebrow}>Detalle</span>
+          <h4>Información del procesamiento</h4>
+          <p>
+            Resumen del archivo, versión y periodo asociado al procesamiento
+            consultado.
+          </p>
+        </div>
 
-            <dd>
-              {field.asBadge && field.tone ? (
-                <span className={`${s.statusBadge} ${s[field.tone]}`}>
-                  {field.value}
-                </span>
-              ) : (
-                field.value
-              )}
-            </dd>
-          </div>
-        ))}
-      </dl>
+        <dl className={s.grid}>
+          {fields.map((field) => (
+            <div
+              key={field.key}
+              className={`${s.item} ${field.wide ? s.itemWide : ''}`}
+            >
+              <div className={s.itemHead}>
+                <div className={s.iconWrap}>{getFieldIcon(field.icon)}</div>
+                <dt>{field.label}</dt>
+              </div>
+
+              <dd className={field.wide ? s.longValue : undefined}>
+                {field.asBadge && field.tone ? (
+                  <span className={`${s.statusBadge} ${s[field.tone]}`}>
+                    {field.value}
+                  </span>
+                ) : (
+                  field.value
+                )}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </div>
     </section>
   );
 }
