@@ -1,6 +1,7 @@
 'use client';
 
 import { motion, useReducedMotion } from 'motion/react';
+import { FileSpreadsheet } from 'lucide-react';
 
 import type { PayrollPreviewRowDto } from '@/features/admin/types/nomina-procesamiento.types';
 import s from './NominaProcesamientoPreviewTable.module.css';
@@ -15,16 +16,16 @@ const columns: Array<{
   key: keyof PayrollPreviewRowDto | 'loadStatusBadge';
   label: string;
 }> = [
-  { key: 'rowNum', label: 'rowNum' },
-  { key: 'fileType', label: 'fileType' },
-  { key: 'payPeriodCode', label: 'payPeriodCode' },
-  { key: 'receiptPeriodCode', label: 'receiptPeriodCode' },
-  { key: 'neyemp', label: 'neyemp' },
-  { key: 'neyrfc', label: 'neyrfc' },
-  { key: 'negnom', label: 'negnom' },
-  { key: 'necpza', label: 'necpza' },
-  { key: 'nominaTipo', label: 'nominaTipo' },
-  { key: 'loadStatusBadge', label: 'loadStatus' },
+  { key: 'rowNum', label: 'Fila' },
+  { key: 'fileType', label: 'Tipo archivo' },
+  { key: 'payPeriodCode', label: 'Periodo nómina' },
+  { key: 'receiptPeriodCode', label: 'Periodo recibo' },
+  { key: 'neyemp', label: 'Empleado' },
+  { key: 'neyrfc', label: 'RFC' },
+  { key: 'negnom', label: 'Nombre' },
+  { key: 'necpza', label: 'Plaza' },
+  { key: 'nominaTipo', label: 'Tipo nómina' },
+  { key: 'loadStatusBadge', label: 'Estatus' },
 ];
 
 function getStatusTone(value: string): StatusTone {
@@ -72,71 +73,110 @@ export default function NominaProcesamientoPreviewTable({ rows }: Props) {
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <motion.div
+    <motion.section
       className={s.panel}
       initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}
       animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
       transition={{ duration: 0.24 }}
     >
-      <div className={s.topBar}>
-        <div className={s.copy}>
-          <span className={s.kicker}>Preview</span>
-          <h4>Muestra de filas procesadas</h4>
-          <p>Revisa una vista rápida del contenido cargado para validar datos clave.</p>
+      <div className={s.header}>
+        <div className={s.headerMain}>
+          <div className={s.iconWrap}>
+            <FileSpreadsheet size={16} />
+          </div>
+
+          <div className={s.copy}>
+            <h4>Vista previa del archivo procesado</h4>
+            <p>
+              Consulta los registros detectados en el lote con una presentación
+              más clara, limpia y cómoda para revisión operativa.
+            </p>
+          </div>
         </div>
 
         <div className={s.counter}>
-          <span>Total</span>
           <strong>{rows.length}</strong>
+          <span>filas</span>
         </div>
       </div>
 
-      <div className={s.tableWrap}>
-        <table className={s.table}>
-          <thead>
-            <tr>
-              {columns.map((column) => (
-                <th key={column.key}>{column.label}</th>
-              ))}
-            </tr>
-          </thead>
+      <div className={s.tableShell}>
+        <div className={s.tableWrap}>
+          <table className={s.table}>
+            <thead>
+              <tr>
+                {columns.map((column) => (
+                  <th key={column.key}>{column.label}</th>
+                ))}
+              </tr>
+            </thead>
 
-          <tbody>
-            {rows.map((row, index) => {
-              const statusTone = getStatusTone(row.loadStatus);
+            <tbody>
+              {rows.map((row, index) => {
+                const statusTone = getStatusTone(row.loadStatus);
 
-              return (
-                <motion.tr
-                  key={`${row.fileId}-${row.rowNum}-${index}`}
-                  initial={shouldReduceMotion ? false : { opacity: 0, y: 6 }}
-                  animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-                  transition={{
-                    duration: 0.16,
-                    delay: shouldReduceMotion ? 0 : Math.min(index * 0.02, 0.18),
-                  }}
-                >
-                  <td>
-                    <span className={s.rowNum}>{formatCellValue(row.rowNum)}</span>
-                  </td>
-                  <td>{formatCellValue(row.fileType)}</td>
-                  <td>{formatCellValue(row.payPeriodCode)}</td>
-                  <td>{formatCellValue(row.receiptPeriodCode)}</td>
-                  <td>{formatCellValue(row.neyemp)}</td>
-                  <td>{formatCellValue(row.neyrfc)}</td>
-                  <td>{formatCellValue(row.negnom)}</td>
-                  <td>{formatCellValue(row.necpza)}</td>
-                  <td>{formatCellValue(row.nominaTipo)}</td>
-                  <td>
-                    <span className={`${s.statusBadge} ${s[statusTone]}`}>
-                      {formatCellValue(row.loadStatus)}
-                    </span>
-                  </td>
-                </motion.tr>
-              );
-            })}
-          </tbody>
-        </table>
+                return (
+                  <motion.tr
+                    key={`${row.fileId}-${row.rowNum}-${index}`}
+                    initial={shouldReduceMotion ? false : { opacity: 0, y: 6 }}
+                    animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.16,
+                      delay: shouldReduceMotion ? 0 : Math.min(index * 0.018, 0.14),
+                    }}
+                  >
+                    <td>
+                      <span className={s.rowIndex}>
+                        {formatCellValue(row.rowNum)}
+                      </span>
+                    </td>
+
+                    <td>
+                      <span className={s.fileTypeBadge}>
+                        {formatCellValue(row.fileType)}
+                      </span>
+                    </td>
+
+                    <td className={s.periodCell}>
+                      {formatCellValue(row.payPeriodCode)}
+                    </td>
+
+                    <td className={s.periodCell}>
+                      {formatCellValue(row.receiptPeriodCode)}
+                    </td>
+
+                    <td className={s.employeeCell}>
+                      {formatCellValue(row.neyemp)}
+                    </td>
+
+                    <td className={s.rfcCell}>
+                      {formatCellValue(row.neyrfc)}
+                    </td>
+
+                    <td className={s.nameCell}>
+                      {formatCellValue(row.negnom)}
+                    </td>
+
+                    <td className={s.plazaCell}>
+                      {formatCellValue(row.necpza)}
+                    </td>
+
+                    <td className={s.nominaCell}>
+                      {formatCellValue(row.nominaTipo)}
+                    </td>
+
+                    <td>
+                      <span className={`${s.statusBadge} ${s[statusTone]}`}>
+                        {formatCellValue(row.loadStatus)}
+                      </span>
+                    </td>
+                  </motion.tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </motion.div>
+    </motion.section>
   );
 }
