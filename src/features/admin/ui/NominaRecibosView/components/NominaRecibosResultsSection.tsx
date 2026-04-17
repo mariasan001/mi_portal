@@ -26,28 +26,40 @@ export default function NominaRecibosResultsSection({
 
   return (
     <section className={s.section}>
-      <div className={s.stack}>
-        <div className={s.header}>
-          <h3>{mainPanelConfig.heading}</h3>
-          <p>{mainPanelConfig.description}</p>
+      <div className={s.group}>
+        <div className={s.groupHeader}>
+          <div className={s.groupHeaderCopy}>
+            <span className={s.kicker}>Flujo principal</span>
+            <h3>{mainPanelConfig.heading}</h3>
+            <p>{mainPanelConfig.description}</p>
+          </div>
         </div>
 
         <RecibosResultPanel
           title={mainPanelConfig.title}
           data={mainPanelConfig.data}
+          emptyText="Aún no hay resultado disponible para la acción principal seleccionada."
+          tone="primary"
         />
+      </div>
 
-        <div className={s.header}>
-          <h3>Resultado de liberación</h3>
-          <p>
-            Consulta aquí la respuesta técnica registrada cuando se ejecute la
-            liberación de la versión.
-          </p>
+      <div className={s.group}>
+        <div className={s.groupHeader}>
+          <div className={s.groupHeaderCopy}>
+            <span className={s.kickerAlt}>Liberación</span>
+            <h3>Resultado de liberación</h3>
+            <p>
+              Consulta aquí la respuesta técnica registrada cuando se ejecute la
+              liberación de la versión.
+            </p>
+          </div>
         </div>
 
         <RecibosResultPanel
           title="Resultado de liberación"
           data={release}
+          emptyText="Todavía no se ha ejecutado la liberación para esta versión."
+          tone="secondary"
         />
       </div>
     </section>

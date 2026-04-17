@@ -6,24 +6,48 @@ import s from './RecibosResultPanel.module.css';
 type Props = {
   title: string;
   data: Record<string, unknown> | null;
+  emptyText?: string;
+  tone?: 'primary' | 'secondary';
 };
 
-export default function RecibosResultPanel({ title, data }: Props) {
+function formatLabel(key: string) {
+  return key
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+    .replace(/[_-]+/g, ' ')
+    .trim()
+    .toUpperCase();
+}
+
+export default function RecibosResultPanel({
+  title,
+  data,
+  emptyText = 'Aún no hay resultado disponible para esta acción.',
+  tone = 'primary',
+}: Props) {
+  const toneClass = tone === 'secondary' ? s.secondary : s.primary;
+
   return (
-    <section className={s.panel}>
+    <section className={`${s.panel} ${toneClass}`}>
       <header className={s.header}>
-        <h3>{title}</h3>
+        <div className={s.headerCopy}>
+          <h3>{title}</h3>
+          <p>
+            {data
+              ? 'Se muestra la respuesta técnica registrada para esta operación.'
+              : 'Todavía no hay información registrada en este bloque.'}
+          </p>
+        </div>
       </header>
 
       {!data ? (
         <div className={s.empty}>
-          <p>Aún no hay resultado disponible para esta acción.</p>
+          <p>{emptyText}</p>
         </div>
       ) : (
         <dl className={s.grid}>
           {Object.entries(data).map(([key, value]) => (
             <div className={s.item} key={key}>
-              <dt>{key}</dt>
+              <dt>{formatLabel(key)}</dt>
               <dd>{formatUnknownValue(value)}</dd>
             </div>
           ))}
