@@ -32,20 +32,6 @@ export default function NominaRecibosView() {
           onExecute={vm.executeActiveAction}
         />
 
-        <NominaRecibosReleasePanel
-          versionId={vm.form.versionId}
-          releasedByUserId={vm.form.releasedByUserId}
-          comments={vm.form.comments}
-          loading={vm.releaseLoading}
-          canExecute={vm.canRelease}
-          onChangeVersionId={(value) => vm.updateField('versionId', value)}
-          onChangeReleasedByUserId={(value) =>
-            vm.updateField('releasedByUserId', value)
-          }
-          onChangeComments={(value) => vm.updateField('comments', value)}
-          onExecute={vm.executeRelease}
-        />
-
         <section className={s.resultCard}>
           <NominaRecibosContentHeader
             eyebrow="Resultado"
@@ -73,6 +59,20 @@ export default function NominaRecibosView() {
           )}
         </section>
       </div>
+
+      <NominaRecibosReleasePanel
+        versionId={vm.form.versionId}
+        releasedByUserId={vm.form.releasedByUserId}
+        comments={vm.form.comments}
+        loading={vm.releaseLoading}
+        canExecute={vm.canRelease}
+        onChangeVersionId={(value) => vm.updateField('versionId', value)}
+        onChangeReleasedByUserId={(value) =>
+          vm.updateField('releasedByUserId', value)
+        }
+        onChangeComments={(value) => vm.updateField('comments', value)}
+        onExecute={vm.executeRelease}
+      />
     </section>
   );
 }
