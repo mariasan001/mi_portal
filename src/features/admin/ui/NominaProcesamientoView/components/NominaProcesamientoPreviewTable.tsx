@@ -1,7 +1,6 @@
 'use client';
 
 import { motion, useReducedMotion } from 'motion/react';
-import { FileSpreadsheet } from 'lucide-react';
 
 import type { PayrollPreviewRowDto } from '@/features/admin/types/nomina-procesamiento.types';
 import s from './NominaProcesamientoPreviewTable.module.css';
@@ -37,35 +36,26 @@ function getStatusTone(value: string): StatusTone {
     normalized.includes('loaded') ||
     normalized.includes('process') ||
     normalized.includes('complete')
-  ) {
-    return 'ok';
-  }
+  ) return 'ok';
 
   if (
     normalized.includes('pending') ||
     normalized.includes('progress') ||
     normalized.includes('partial') ||
     normalized.includes('valid')
-  ) {
-    return 'warn';
-  }
+  ) return 'warn';
 
   if (
     normalized.includes('error') ||
     normalized.includes('fail') ||
     normalized.includes('reject')
-  ) {
-    return 'danger';
-  }
+  ) return 'danger';
 
   return 'neutral';
 }
 
 function formatCellValue(value: unknown) {
-  if (value === null || value === undefined || value === '') {
-    return '—';
-  }
-
+  if (value === null || value === undefined || value === '') return '—';
   return String(value);
 }
 
@@ -75,31 +65,10 @@ export default function NominaProcesamientoPreviewTable({ rows }: Props) {
   return (
     <motion.section
       className={s.panel}
-      initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 6 }}
       animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-      transition={{ duration: 0.24 }}
+      transition={{ duration: 0.2 }}
     >
-      <div className={s.header}>
-        <div className={s.headerMain}>
-          <div className={s.iconWrap}>
-            <FileSpreadsheet size={16} />
-          </div>
-
-          <div className={s.copy}>
-            <h4>Vista previa del archivo procesado</h4>
-            <p>
-              Consulta los registros detectados en el lote con una presentación
-              más clara, limpia y cómoda para revisión operativa.
-            </p>
-          </div>
-        </div>
-
-        <div className={s.counter}>
-          <strong>{rows.length}</strong>
-          <span>filas</span>
-        </div>
-      </div>
-
       <div className={s.tableShell}>
         <div className={s.tableWrap}>
           <table className={s.table}>
@@ -118,12 +87,9 @@ export default function NominaProcesamientoPreviewTable({ rows }: Props) {
                 return (
                   <motion.tr
                     key={`${row.fileId}-${row.rowNum}-${index}`}
-                    initial={shouldReduceMotion ? false : { opacity: 0, y: 6 }}
-                    animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-                    transition={{
-                      duration: 0.16,
-                      delay: shouldReduceMotion ? 0 : Math.min(index * 0.018, 0.14),
-                    }}
+                    initial={shouldReduceMotion ? false : { opacity: 0 }}
+                    animate={shouldReduceMotion ? undefined : { opacity: 1 }}
+                    transition={{ duration: 0.15 }}
                   >
                     <td>
                       <span className={s.rowIndex}>
@@ -137,31 +103,23 @@ export default function NominaProcesamientoPreviewTable({ rows }: Props) {
                       </span>
                     </td>
 
-                    <td className={s.periodCell}>
-                      {formatCellValue(row.payPeriodCode)}
-                    </td>
+                    <td className={s.cell}>{formatCellValue(row.payPeriodCode)}</td>
+                    <td className={s.cell}>{formatCellValue(row.receiptPeriodCode)}</td>
+                    <td className={s.cell}>{formatCellValue(row.neyemp)}</td>
+                    <td className={s.cell}>{formatCellValue(row.neyrfc)}</td>
 
-                    <td className={s.periodCell}>
-                      {formatCellValue(row.receiptPeriodCode)}
-                    </td>
-
-                    <td className={s.employeeCell}>
-                      {formatCellValue(row.neyemp)}
-                    </td>
-
-                    <td className={s.rfcCell}>
-                      {formatCellValue(row.neyrfc)}
-                    </td>
-
+                    {/* 🔥 nombre con hover inteligente */}
                     <td className={s.nameCell}>
-                      {formatCellValue(row.negnom)}
+                      <span className={s.nameText}>
+                        {formatCellValue(row.negnom)}
+                      </span>
                     </td>
 
                     <td className={s.plazaCell}>
                       {formatCellValue(row.necpza)}
                     </td>
 
-                    <td className={s.nominaCell}>
+                    <td className={s.cell}>
                       {formatCellValue(row.nominaTipo)}
                     </td>
 

@@ -14,8 +14,11 @@ import NominaProcesamientoContentHeader from './components/NominaProcesamientoCo
 import NominaProcesamientoSummaryPanel from './components/NominaProcesamientoSummaryPanel';
 import NominaProcesamientoPreviewTable from './components/NominaProcesamientoPreviewTable';
 import NominaProcesamientoErrorsTable from './components/NominaProcesamientoErrorsTable';
-import { getProcesamientoDefaultLimit, getProcesamientoEmptyState, getProcesamientoResultHeader } from './utils/Nomina-procesamiento-view.utils';
-
+import {
+  getProcesamientoDefaultLimit,
+  getProcesamientoEmptyState,
+  getProcesamientoResultHeader,
+} from './utils/Nomina-procesamiento-view.utils';
 
 type ProcesamientoView = 'summary' | 'preview' | 'errors';
 
@@ -38,6 +41,10 @@ export default function NominaProcesamientoView() {
   const [activeView, setActiveView] = useState<ProcesamientoView>('summary');
   const [fileId, setFileId] = useState('');
   const [limit, setLimit] = useState(getProcesamientoDefaultLimit('summary'));
+
+  const [hasConsultedSummary, setHasConsultedSummary] = useState(false);
+  const [hasConsultedPreview, setHasConsultedPreview] = useState(false);
+  const [hasConsultedErrors, setHasConsultedErrors] = useState(false);
 
   const loadingMap = useMemo(
     () => ({
@@ -113,14 +120,17 @@ export default function NominaProcesamientoView() {
       const actions = {
         summary: async () => {
           await consultarSummary(numericFileId);
+          setHasConsultedSummary(true);
           toast.success('Resumen consultado correctamente.');
         },
         preview: async () => {
           await consultarPreview(numericFileId, numericLimit);
+          setHasConsultedPreview(true);
           toast.success('Preview consultado correctamente.');
         },
         errors: async () => {
           await consultarErrors(numericFileId, numericLimit);
+          setHasConsultedErrors(true);
           toast.success('Errores consultados correctamente.');
         },
       };
@@ -140,6 +150,18 @@ export default function NominaProcesamientoView() {
   const handleReset = () => {
     setFileId('');
     setLimit(getProcesamientoDefaultLimit(activeView));
+
+    if (activeView === 'summary') {
+      setHasConsultedSummary(false);
+    }
+
+    if (activeView === 'preview') {
+      setHasConsultedPreview(false);
+    }
+
+    if (activeView === 'errors') {
+      setHasConsultedErrors(false);
+    }
   };
 
   const renderContent = () => {
@@ -150,6 +172,7 @@ export default function NominaProcesamientoView() {
         <EmptyState
           title={emptyState.title}
           description={emptyState.description}
+          variant={hasConsultedSummary ? 'search' : 'default'}
         />
       );
     }
@@ -161,14 +184,31 @@ export default function NominaProcesamientoView() {
         <EmptyState
           title={emptyState.title}
           description={emptyState.description}
+          variant={hasConsultedPreview ? 'search' : 'default'}
         />
       );
     }
 
-    return errorRows.length ? (
-      <NominaProcesamientoErrorsTable rows={errorRows} />
-    ) : (
-      <EmptyState title={emptyState.title} description={emptyState.description} />
+    if (errorRows.length) {
+      return <NominaProcesamientoErrorsTable rows={errorRows} />;
+    }
+
+    if (hasConsultedErrors) {
+      return (
+        <EmptyState
+          title="Sin errores detectados"
+          description="La consulta se realizó correctamente y no se encontraron filas con incidencias para este archivo."
+          variant="success"
+        />
+      );
+    }
+
+    return (
+      <EmptyState
+        title={emptyState.title}
+        description={emptyState.description}
+        variant="default"
+      />
     );
   };
 

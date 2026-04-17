@@ -14,15 +14,15 @@ const columns: Array<{
   key: keyof PayrollErrorRowDto | 'reexpeditionBadge' | 'errorDetailCell';
   label: string;
 }> = [
-  { key: 'rowNum', label: 'rowNum' },
-  { key: 'fileType', label: 'fileType' },
-  { key: 'payPeriodCode', label: 'payPeriodCode' },
-  { key: 'receiptPeriodCode', label: 'receiptPeriodCode' },
-  { key: 'neyemp', label: 'neyemp' },
-  { key: 'necpza', label: 'necpza' },
-  { key: 'nominaTipo', label: 'nominaTipo' },
-  { key: 'reexpeditionBadge', label: 'isReexpedition' },
-  { key: 'errorDetailCell', label: 'errorDetail' },
+  { key: 'rowNum', label: 'Fila' },
+  { key: 'fileType', label: 'Tipo archivo' },
+  { key: 'payPeriodCode', label: 'Periodo nómina' },
+  { key: 'receiptPeriodCode', label: 'Periodo recibo' },
+  { key: 'neyemp', label: 'Empleado' },
+  { key: 'necpza', label: 'Plaza' },
+  { key: 'nominaTipo', label: 'Tipo nómina' },
+  { key: 'reexpeditionBadge', label: 'Reexpedición' },
+  { key: 'errorDetailCell', label: 'Detalle del error' },
 ];
 
 function formatCellValue(value: unknown) {
@@ -37,80 +37,77 @@ export default function NominaProcesamientoErrorsTable({ rows }: Props) {
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <motion.div
+    <motion.section
       className={s.panel}
-      initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 6 }}
       animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-      transition={{ duration: 0.24 }}
+      transition={{ duration: 0.2 }}
     >
-      <div className={s.topBar}>
-        <div className={s.copy}>
-          <span className={s.kicker}>Errores</span>
-          <h4>Filas con incidencias detectadas</h4>
-          <p>
-            Revisa el detalle de los registros que presentaron errores durante el
-            procesamiento.
-          </p>
-        </div>
+      <div className={s.tableShell}>
+        <div className={s.tableWrap}>
+          <table className={s.table}>
+            <thead>
+              <tr>
+                {columns.map((column) => (
+                  <th key={column.key}>{column.label}</th>
+                ))}
+              </tr>
+            </thead>
 
-        <div className={s.counter}>
-          <span>Total</span>
-          <strong>{rows.length}</strong>
-        </div>
-      </div>
+            <tbody>
+              {rows.map((row, index) => (
+                <motion.tr
+                  key={`${row.fileId}-${row.rowNum}-${index}`}
+                  initial={shouldReduceMotion ? false : { opacity: 0 }}
+                  animate={shouldReduceMotion ? undefined : { opacity: 1 }}
+                  transition={{
+                    duration: 0.15,
+                    delay: shouldReduceMotion ? 0 : Math.min(index * 0.01, 0.12),
+                  }}
+                >
+                  <td>
+                    <span className={s.rowIndex}>
+                      {formatCellValue(row.rowNum)}
+                    </span>
+                  </td>
 
-      <div className={s.tableWrap}>
-        <table className={s.table}>
-          <thead>
-            <tr>
-              {columns.map((column) => (
-                <th key={column.key}>{column.label}</th>
-              ))}
-            </tr>
-          </thead>
+                  <td>
+                    <span className={s.fileTypeBadge}>
+                      {formatCellValue(row.fileType)}
+                    </span>
+                  </td>
 
-          <tbody>
-            {rows.map((row, index) => (
-              <motion.tr
-                key={`${row.fileId}-${row.rowNum}-${index}`}
-                initial={shouldReduceMotion ? false : { opacity: 0, y: 6 }}
-                animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.16,
-                  delay: shouldReduceMotion ? 0 : Math.min(index * 0.02, 0.18),
-                }}
-              >
-                <td>
-                  <span className={s.rowNum}>{formatCellValue(row.rowNum)}</span>
-                </td>
-                <td>{formatCellValue(row.fileType)}</td>
-                <td>{formatCellValue(row.payPeriodCode)}</td>
-                <td>{formatCellValue(row.receiptPeriodCode)}</td>
-                <td>{formatCellValue(row.neyemp)}</td>
-                <td>{formatCellValue(row.necpza)}</td>
-                <td>{formatCellValue(row.nominaTipo)}</td>
-                <td>
-                  <span
-                    className={`${s.reexpeditionBadge} ${
-                      row.isReexpedition ? s.warn : s.neutral
-                    }`}
-                  >
-                    {row.isReexpedition ? 'Sí' : 'No'}
-                  </span>
-                </td>
-                <td>
-                  <div className={s.errorDetail}>
-                    <div className={s.errorIcon}>
-                      <AlertTriangle size={14} />
+                  <td className={s.cell}>{formatCellValue(row.payPeriodCode)}</td>
+                  <td className={s.cell}>{formatCellValue(row.receiptPeriodCode)}</td>
+                  <td className={s.cell}>{formatCellValue(row.neyemp)}</td>
+                  <td className={s.plazaCell}>{formatCellValue(row.necpza)}</td>
+                  <td className={s.cell}>{formatCellValue(row.nominaTipo)}</td>
+
+                  <td>
+                    <span
+                      className={`${s.reexpeditionBadge} ${
+                        row.isReexpedition ? s.warn : s.neutral
+                      }`}
+                    >
+                      {row.isReexpedition ? 'Sí' : 'No'}
+                    </span>
+                  </td>
+
+                  <td className={s.errorCell}>
+                    <div className={s.errorDetail}>
+                      <span className={s.errorIcon}>
+                        <AlertTriangle size={12} />
+                      </span>
+
+                      <p>{formatCellValue(row.errorDetail)}</p>
                     </div>
-                    <p>{formatCellValue(row.errorDetail)}</p>
-                  </div>
-                </td>
-              </motion.tr>
-            ))}
-          </tbody>
-        </table>
+                  </td>
+                </motion.tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </motion.div>
+    </motion.section>
   );
 }
