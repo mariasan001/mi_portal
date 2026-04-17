@@ -46,7 +46,7 @@ export default function NominaRecibosView() {
           onExecute={vm.executeRelease}
         />
 
-        <section className={s.resultContainer}>
+        <section className={s.resultCard}>
           <NominaRecibosContentHeader
             eyebrow="Resultado"
             title={vm.currentTitle}
@@ -68,6 +68,7 @@ export default function NominaRecibosView() {
             <EmptyState
               title="Aún no has ejecutado ninguna acción"
               description="Selecciona una opción del flujo principal o ejecuta la liberación cuando corresponda."
+              variant="default"
             />
           )}
         </section>

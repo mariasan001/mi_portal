@@ -1,45 +1,78 @@
+'use client';
+
 import { FileStack, ReceiptText, RefreshCw } from 'lucide-react';
+import { motion, useReducedMotion } from 'motion/react';
+
 import type { NominaRecibosAction } from '../types/nomina-recibos-view.types';
 import s from './NominaRecibosActionCards.module.css';
 
 type Props = {
-  // Acción actualmente seleccionada dentro del flujo principal
   activeAction: NominaRecibosAction;
-
-  // Callback para cambiar la acción activa
   onSelect: (action: NominaRecibosAction) => void;
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 10 },
+  show: { opacity: 1, y: 0 },
 };
 
 export default function NominaRecibosActionCards({
   activeAction,
   onSelect,
 }: Props) {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
-    // Contenedor general de las 3 tarjetas del flujo principal
-    <section className={s.grid}>
-      {/* Card: Snapshots */}
-      <button
+    <motion.section
+      className={s.grid}
+      initial={shouldReduceMotion ? false : 'hidden'}
+      animate={shouldReduceMotion ? undefined : 'show'}
+      variants={{
+        hidden: {},
+        show: {
+          transition: {
+            staggerChildren: 0.06,
+          },
+        },
+      }}
+    >
+      <motion.button
         type="button"
         className={`${s.card} ${
           activeAction === 'snapshots' ? s.active : s.inactive
         }`}
         onClick={() => onSelect('snapshots')}
+        variants={itemVariants}
+        transition={{ duration: 0.24 }}
+        whileHover={
+          shouldReduceMotion
+            ? undefined
+            : { y: -2, transition: { duration: 0.16 } }
+        }
+        whileTap={shouldReduceMotion ? undefined : { scale: 0.992 }}
+        layout
       >
-        {/* Ícono principal de la tarjeta */}
         <div className={s.iconWrap}>
           <div className={s.icon}>
-            <FileStack size={20} />
+            <FileStack size={18} />
           </div>
         </div>
 
-        {/* Contenido textual */}
         <div className={s.body}>
           <div className={s.headRow}>
             <h2>Snapshots</h2>
 
-            {/* Badge visible solo si esta acción está seleccionada */}
             {activeAction === 'snapshots' ? (
-              <span className={s.stateBadge}>Activo</span>
+              <motion.span
+                className={s.stateBadge}
+                initial={
+                  shouldReduceMotion ? false : { opacity: 0, scale: 0.92 }
+                }
+                animate={shouldReduceMotion ? undefined : { opacity: 1, scale: 1 }}
+                transition={{ duration: 0.18 }}
+              >
+                Activo
+              </motion.span>
             ) : null}
           </div>
 
@@ -48,19 +81,27 @@ export default function NominaRecibosActionCards({
             seleccionada.
           </p>
         </div>
-      </button>
+      </motion.button>
 
-      {/* Card: Recibos */}
-      <button
+      <motion.button
         type="button"
         className={`${s.card} ${
           activeAction === 'recibos' ? s.active : s.inactive
         }`}
         onClick={() => onSelect('recibos')}
+        variants={itemVariants}
+        transition={{ duration: 0.24 }}
+        whileHover={
+          shouldReduceMotion
+            ? undefined
+            : { y: -2, transition: { duration: 0.16 } }
+        }
+        whileTap={shouldReduceMotion ? undefined : { scale: 0.992 }}
+        layout
       >
         <div className={s.iconWrap}>
           <div className={s.icon}>
-            <ReceiptText size={20} />
+            <ReceiptText size={18} />
           </div>
         </div>
 
@@ -69,7 +110,16 @@ export default function NominaRecibosActionCards({
             <h2>Recibos</h2>
 
             {activeAction === 'recibos' ? (
-              <span className={s.stateBadge}>Activo</span>
+              <motion.span
+                className={s.stateBadge}
+                initial={
+                  shouldReduceMotion ? false : { opacity: 0, scale: 0.92 }
+                }
+                animate={shouldReduceMotion ? undefined : { opacity: 1, scale: 1 }}
+                transition={{ duration: 0.18 }}
+              >
+                Activo
+              </motion.span>
             ) : null}
           </div>
 
@@ -78,19 +128,27 @@ export default function NominaRecibosActionCards({
             previamente generados.
           </p>
         </div>
-      </button>
+      </motion.button>
 
-      {/* Card: Sincronización */}
-      <button
+      <motion.button
         type="button"
         className={`${s.card} ${
           activeAction === 'sincronizacion' ? s.active : s.inactive
         }`}
         onClick={() => onSelect('sincronizacion')}
+        variants={itemVariants}
+        transition={{ duration: 0.24 }}
+        whileHover={
+          shouldReduceMotion
+            ? undefined
+            : { y: -2, transition: { duration: 0.16 } }
+        }
+        whileTap={shouldReduceMotion ? undefined : { scale: 0.992 }}
+        layout
       >
         <div className={s.iconWrap}>
           <div className={s.icon}>
-            <RefreshCw size={20} />
+            <RefreshCw size={18} />
           </div>
         </div>
 
@@ -99,7 +157,16 @@ export default function NominaRecibosActionCards({
             <h2>Sincronización</h2>
 
             {activeAction === 'sincronizacion' ? (
-              <span className={s.stateBadge}>Activo</span>
+              <motion.span
+                className={s.stateBadge}
+                initial={
+                  shouldReduceMotion ? false : { opacity: 0, scale: 0.92 }
+                }
+                animate={shouldReduceMotion ? undefined : { opacity: 1, scale: 1 }}
+                transition={{ duration: 0.18 }}
+              >
+                Activo
+              </motion.span>
             ) : null}
           </div>
 
@@ -108,7 +175,7 @@ export default function NominaRecibosActionCards({
             vigente.
           </p>
         </div>
-      </button>
-    </section>
+      </motion.button>
+    </motion.section>
   );
 }

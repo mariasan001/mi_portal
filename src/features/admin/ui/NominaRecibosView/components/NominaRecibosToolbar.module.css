@@ -1,25 +1,25 @@
 .toolbar {
   display: grid;
-  gap: 18px;
-  padding: 20px 22px;
+  gap: 8px;
+  padding: 18px;
   background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 22px;
-  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-soft);
+  border-radius: 24px;
+  box-shadow: 0 10px 24px rgba(10, 10, 10, 0.04);
 }
 
 .left {
   min-width: 0;
   display: grid;
-  gap: 10px;
+  gap: 8px;
 }
 
 .label {
   display: inline-block;
-  color: var(--muted);
+  color: var(--text);
   font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.01em;
+  letter-spacing: -0.01em;
 }
 
 .searchSurface {
@@ -27,15 +27,15 @@
   align-items: center;
   gap: 10px;
   padding: 8px;
-  background: #f7f7f7;
-  border: 1px solid rgba(10, 10, 10, 0.08);
+  background: #f6f6f7;
+  border: 1px solid rgba(10, 10, 10, 0.07);
   border-radius: 18px;
 }
 
 .inputWrap {
   flex: 1;
   min-width: 0;
-  height: 50px;
+  height: 48px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -49,15 +49,14 @@
     background 0.18s ease;
 }
 
-.inputWrap:focus-within,
-.textareaWrap:focus-within {
-  border-color: rgba(159, 33, 65, 0.16);
-  box-shadow: 0 0 0 4px rgba(159, 33, 65, 0.06);
+.inputWrap:focus-within {
+  border-color: rgba(188, 148, 90, 0.22);
+  box-shadow: 0 0 0 4px rgba(188, 148, 90, 0.08);
   background: #ffffff;
 }
 
 .icon {
-  color: rgba(10, 10, 10, 0.44);
+  color: rgba(10, 10, 10, 0.42);
   flex-shrink: 0;
 }
 
@@ -69,14 +68,13 @@
   outline: 0;
   background: transparent;
   color: var(--text);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   font-family: var(--font-body);
 }
 
-.inputWrap input::placeholder,
-.textareaWrap textarea::placeholder {
-  color: rgba(10, 10, 10, 0.42);
+.inputWrap input::placeholder {
+  color: rgba(10, 10, 10, 0.4);
   font-weight: 400;
 }
 
@@ -92,37 +90,38 @@
 }
 
 .searchBtn {
-  border: 0;
-  cursor: pointer;
+  height: 48px;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid rgba(188, 148, 90, 0.16);
+  border-radius: 14px;
+  background: rgba(188, 148, 90, 0.08);
+  color: #7b5a2f;
+  font-size: 12.5px;
+  font-weight: 700;
   font-family: var(--font-body);
+  white-space: nowrap;
+  cursor: pointer;
   transition:
     transform 0.18s ease,
     box-shadow 0.18s ease,
     opacity 0.18s ease,
     background 0.18s ease,
-    border-color 0.18s ease;
+    border-color 0.18s ease,
+    color 0.18s ease;
 }
 
 .searchBtn:hover:not(:disabled) {
-  transform: translateY(-1px);
+  border-color: rgba(188, 148, 90, 0.24);
+  background: rgba(188, 148, 90, 0.12);
+  box-shadow: 0 8px 18px rgba(188, 148, 90, 0.08);
 }
 
-.searchBtn {
-  height: 50px;
-  padding: 0 18px;
-  border: 1px solid rgba(10, 10, 10, 0.12);
-  border-radius: 14px;
-  background: #ffffff;
-  color: var(--text);
-  font-size: 13px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.searchBtn:hover:not(:disabled) {
-  border-color: rgba(10, 10, 10, 0.2);
-  background: #fffdfb;
-  box-shadow: 0 8px 18px rgba(10, 10, 10, 0.05);
+.searchBtn svg {
+  flex-shrink: 0;
 }
 
 .searchBtn:disabled {
@@ -130,37 +129,6 @@
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
-}
-
-.extraFields {
-  display: grid;
-  gap: 10px;
-}
-
-.textareaWrap {
-  min-width: 0;
-  display: flex;
-  padding: 12px 14px;
-  background: #ffffff;
-  border: 1px solid rgba(10, 10, 10, 0.08);
-  border-radius: 14px;
-  transition:
-    border-color 0.18s ease,
-    box-shadow 0.18s ease,
-    background 0.18s ease;
-}
-
-.textareaWrap textarea {
-  width: 100%;
-  border: 0;
-  outline: 0;
-  resize: vertical;
-  background: transparent;
-  color: var(--text);
-  font-size: 14px;
-  font-weight: 500;
-  font-family: var(--font-body);
-  line-height: 1.55;
 }
 
 @media (max-width: 960px) {
@@ -178,7 +146,8 @@
 @media (max-width: 640px) {
   .toolbar {
     padding: 16px;
-    border-radius: 18px;
+    border-radius: 20px;
+    gap: 8px;
   }
 
   .searchSurface {
@@ -188,6 +157,14 @@
 
   .inputWrap,
   .searchBtn {
-    height: 48px;
+    height: 46px;
+  }
+
+  .label {
+    font-size: 11.5px;
+  }
+
+  .inputWrap input {
+    font-size: 12.5px;
   }
 }

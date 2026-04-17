@@ -1,7 +1,7 @@
 .panel {
   display: grid;
-  gap: 14px;
-  padding: 18px;
+  gap: 12px;
+  padding: 16px;
   border: 1px solid var(--border-soft);
   border-radius: 18px;
   background: var(--surface);
@@ -12,7 +12,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding-bottom: 12px;
+  padding-bottom: 10px;
   border-bottom: 1px solid var(--border-soft);
 }
 
@@ -21,26 +21,27 @@
   color: var(--text);
   font-size: 14px;
   font-weight: 800;
-  line-height: 1.2;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
 }
 
 .empty {
-  min-height: 140px;
+  min-height: 120px;
   display: grid;
   place-items: center;
-  padding: 18px;
-  border: 1px dashed var(--border);
-  border-radius: 16px;
-  background: var(--surface);
+  padding: 16px;
+  border: 1px dashed rgba(10, 10, 10, 0.1);
+  border-radius: 14px;
+  background: #fcfcfc;
   text-align: center;
 }
 
 .empty p {
   margin: 0;
-  max-width: 40ch;
+  max-width: 42ch;
   color: var(--muted);
-  font-size: 13px;
-  line-height: 1.6;
+  font-size: 12px;
+  line-height: 1.55;
 }
 
 .grid {
@@ -51,41 +52,67 @@
 
 .item {
   display: grid;
-  gap: 6px;
-  padding: 14px;
-  border-radius: 16px;
+  gap: 5px;
+  min-width: 0;
+  padding: 12px 14px;
   border: 1px solid var(--border-soft);
-  background: var(--surface-2);
+  border-radius: 16px;
+  background: #faf9f7;
 }
 
 .item dt {
   margin: 0;
   color: var(--muted);
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 1.4;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   word-break: break-word;
 }
 
 .item dd {
   margin: 0;
   color: var(--text);
-  font-size: 14px;
-  font-weight: 800;
-  line-height: 1.45;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
   word-break: break-word;
 }
 
 @media (max-width: 840px) {
+  .panel {
+    padding: 14px;
+    border-radius: 16px;
+  }
+
+  .header {
+    padding-bottom: 8px;
+  }
+
+  .header h3 {
+    font-size: 13px;
+  }
+
   .grid {
     grid-template-columns: 1fr;
   }
 
-  .panel {
-    padding: 16px;
+  .item {
+    padding: 12px;
+    border-radius: 14px;
+  }
+
+  .item dd {
+    font-size: 12.5px;
   }
 
   .empty {
-    min-height: 120px;
+    min-height: 100px;
+    padding: 14px;
+  }
+
+  .empty p {
+    font-size: 12px;
   }
 }

@@ -1,4 +1,8 @@
-import { Search } from 'lucide-react';
+'use client';
+
+import { Play, Search } from 'lucide-react';
+import { motion, useReducedMotion } from 'motion/react';
+
 import type { NominaRecibosAction } from '../types/nomina-recibos-view.types';
 import s from './NominaRecibosToolbar.module.css';
 
@@ -11,6 +15,22 @@ type Props = {
   onExecute: () => void;
 };
 
+function getButtonLabel(action: NominaRecibosAction, loading: boolean): string {
+  if (action === 'snapshots') {
+    return loading ? 'Generando...' : 'Generar snapshots';
+  }
+
+  if (action === 'recibos') {
+    return loading ? 'Generando...' : 'Generar recibos';
+  }
+
+  if (action === 'sincronizacion') {
+    return loading ? 'Sincronizando...' : 'Ejecutar sincronización';
+  }
+
+  return loading ? 'Procesando...' : 'Ejecutar';
+}
+
 export default function NominaRecibosToolbar({
   activeAction,
   versionId,
@@ -19,32 +39,29 @@ export default function NominaRecibosToolbar({
   onChangeVersionId,
   onExecute,
 }: Props) {
-  const getButtonLabel = (): string => {
-    switch (activeAction) {
-      case 'snapshots':
-        return loading ? 'Generando...' : 'Generar snapshots';
-      case 'recibos':
-        return loading ? 'Generando...' : 'Generar recibos';
-      case 'sincronizacion':
-        return loading ? 'Sincronizando...' : 'Ejecutar sincronización';
-      default:
-        return loading ? 'Procesando...' : 'Ejecutar';
-    }
-  };
+  const shouldReduceMotion = useReducedMotion();
 
   return (
-    <section className={s.toolbar}>
+    <motion.section
+      className={s.toolbar}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 12 }}
+      animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.28,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+    >
       <div className={s.left}>
-        <label className={s.label} htmlFor="nomina-version-id">
-          Version ID
+        <label className={s.label} htmlFor="nomina-recibos-version-id">
+          versionId
         </label>
 
         <div className={s.searchSurface}>
           <div className={s.inputWrap}>
-            <Search size={17} className={s.icon} />
+            <Search size={16} className={s.icon} />
 
             <input
-              id="nomina-version-id"
+              id="nomina-recibos-version-id"
               type="number"
               min="1"
               value={versionId}
@@ -53,16 +70,27 @@ export default function NominaRecibosToolbar({
             />
           </div>
 
-          <button
+          <motion.button
             type="button"
             className={s.searchBtn}
             onClick={onExecute}
             disabled={!canExecute || loading}
+            whileHover={
+              !shouldReduceMotion && canExecute && !loading
+                ? { y: -1, transition: { duration: 0.16 } }
+                : undefined
+            }
+            whileTap={
+              !shouldReduceMotion && canExecute && !loading
+                ? { scale: 0.99 }
+                : undefined
+            }
           >
-            {getButtonLabel()}
-          </button>
+            <Play size={16} />
+            <span>{getButtonLabel(activeAction, loading)}</span>
+          </motion.button>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
-}
+} 
