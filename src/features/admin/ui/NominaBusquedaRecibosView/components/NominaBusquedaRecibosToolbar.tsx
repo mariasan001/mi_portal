@@ -38,8 +38,8 @@ export default function NominaBusquedaRecibosToolbar({
     >
       <div className={s.left}>
         <div className={s.searchSurface}>
-          <label className={s.fieldBlock} htmlFor="nomina-busqueda-clave-sp">
-            <span className={s.fieldLabel}>Clave SP</span>
+          <label className={s.field} htmlFor="nomina-busqueda-clave-sp">
+            <span className={s.label}>Clave SP</span>
 
             <div className={s.inputWrap}>
               <Search size={16} className={s.icon} />
@@ -52,8 +52,8 @@ export default function NominaBusquedaRecibosToolbar({
             </div>
           </label>
 
-          <label className={s.fieldBlock} htmlFor="nomina-busqueda-period-code">
-            <span className={s.fieldLabel}>Periodo</span>
+          <label className={s.field} htmlFor="nomina-busqueda-period-code">
+            <span className={s.label}>Periodo</span>
 
             <div className={s.inputWrap}>
               <Search size={16} className={s.icon} />

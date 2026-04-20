@@ -55,6 +55,7 @@ export function useFirmaElectronicaView() {
   } = useNominaFirmaElectronica();
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
 
   const [createForm, setCreateForm] = useState<FirmaCreateFormState>({
     file: null,
@@ -164,7 +165,7 @@ export function useFirmaElectronicaView() {
     }
   }, [consultarListado, statusFilter]);
 
-  const handleSelectRequest = useCallback(
+  const loadRequestDetails = useCallback(
     async (selectedRequestId: string) => {
       setRequestId(selectedRequestId);
 
@@ -179,6 +180,25 @@ export function useFirmaElectronicaView() {
     },
     [consultarDetalle, consultarDetalleTecnico]
   );
+
+  const handleSelectRequest = useCallback(
+    async (selectedRequestId: string) => {
+      await loadRequestDetails(selectedRequestId);
+    },
+    [loadRequestDetails]
+  );
+
+  const handleOpenDetailsModal = useCallback(
+    async (selectedRequestId: string) => {
+      setIsDetailsModalOpen(true);
+      await loadRequestDetails(selectedRequestId);
+    },
+    [loadRequestDetails]
+  );
+
+  const handleCloseDetailsModal = useCallback(() => {
+    setIsDetailsModalOpen(false);
+  }, []);
 
   const handleLoadDetail = useCallback(async () => {
     const id = requestId.trim();
@@ -409,6 +429,7 @@ export function useFirmaElectronicaView() {
 
   return {
     isCreateModalOpen,
+    isDetailsModalOpen,
     requestId,
     statusFilter,
     createForm,
@@ -419,6 +440,8 @@ export function useFirmaElectronicaView() {
     setStatusFilter,
     handleOpenCreateModal,
     handleCloseCreateModal,
+    handleOpenDetailsModal,
+    handleCloseDetailsModal,
     handleCreate,
     handleLoadList,
     handleSelectRequest,

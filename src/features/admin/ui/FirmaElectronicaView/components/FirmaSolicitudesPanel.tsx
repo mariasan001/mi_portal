@@ -14,7 +14,7 @@ type Props = {
   error: string | null;
   selectedRequestId: string;
   onChangeStatus: (value: SignatureRequestStatus | '') => void;
-  onSelectRequest: (requestId: string) => void;
+  onOpenDetails: (requestId: string) => void;
   onViewSignedPdf: (requestId: string) => void;
   onDownloadSignedPdf: (requestId: string) => void;
   onOpenCreateModal: () => void;
@@ -38,7 +38,7 @@ export default function FirmaSolicitudesPanel({
   error,
   selectedRequestId,
   onChangeStatus,
-  onSelectRequest,
+  onOpenDetails,
   onViewSignedPdf,
   onDownloadSignedPdf,
   onOpenCreateModal,
@@ -105,7 +105,7 @@ export default function FirmaSolicitudesPanel({
         <FirmaSolicitudesTable
           items={items}
           selectedRequestId={selectedRequestId}
-          onSelectRequest={onSelectRequest}
+          onOpenDetails={onOpenDetails}
           onViewSignedPdf={onViewSignedPdf}
           onDownloadSignedPdf={onDownloadSignedPdf}
         />

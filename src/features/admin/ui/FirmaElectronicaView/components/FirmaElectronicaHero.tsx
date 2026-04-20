@@ -1,49 +1,71 @@
-import { Plus } from 'lucide-react';
+'use client';
+
+import { FileSignature, ShieldCheck } from 'lucide-react';
+import { motion, useReducedMotion } from 'motion/react';
+
 import s from './FirmaElectronicaHero.module.css';
 
-type Props = {
-  onOpenCreateModal: () => void;
-};
-
-export default function FirmaElectronicaHero({
-  onOpenCreateModal,
-}: Props) {
-  void onOpenCreateModal;
-  void Plus;
+export default function FirmaElectronicaHero() {
+  const shouldReduceMotion = useReducedMotion();
 
   return (
-    <header className={s.hero}>
-      <div className={s.topRow}>
-        <div className={s.leftBlock}>
-          <span className={s.kicker}>Firma electrónica</span>
-        </div>
+    <motion.header
+      className={s.hero}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 10 }}
+      animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.24,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+    >
+      <div className={s.headerTop}>
+        <motion.span
+          className={s.kicker}
+          initial={shouldReduceMotion ? false : { opacity: 0, x: -6 }}
+          animate={shouldReduceMotion ? undefined : { opacity: 1, x: 0 }}
+          transition={{ duration: 0.18, delay: 0.04 }}
+        >
+          Firma electronica
+        </motion.span>
 
-        {/*
-          Botón temporalmente retirado del hero.
-          Se conserva la prop onOpenCreateModal para reusarlo después
-          en otro header, toolbar o bloque de acciones.
-          
-          <div className={s.rightBlock}>
-            <button
-              type="button"
-              className={s.primaryBtn}
-              onClick={onOpenCreateModal}
-            >
-              <Plus size={16} />
-              Nueva solicitud
-            </button>
-          </div>
-        */}
+        <motion.div
+          className={s.metaBadges}
+          initial={shouldReduceMotion ? false : { opacity: 0, y: 6 }}
+          animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+          transition={{ duration: 0.2, delay: 0.08 }}
+        >
+          <span className={s.metaBadge}>
+            <FileSignature size={14} />
+            Solicitudes
+          </span>
+
+          <span className={s.metaBadge}>
+            <ShieldCheck size={14} />
+            Estatus y detalle
+          </span>
+        </motion.div>
       </div>
 
-      <div className={s.textBlock}>
-        <h1 className={s.title}>Firma electrónica</h1>
+      <div className={s.content}>
+        <motion.h1
+          className={s.title}
+          initial={shouldReduceMotion ? false : { opacity: 0, y: 6 }}
+          animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+          transition={{ duration: 0.2, delay: 0.12 }}
+        >
+          Firma electronica
+        </motion.h1>
 
-        <p className={s.subtitle}>
+        <motion.p
+          className={s.subtitle}
+          initial={shouldReduceMotion ? false : { opacity: 0, y: 6 }}
+          animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+          transition={{ duration: 0.2, delay: 0.16 }}
+        >
           Gestiona solicitudes de firma, consulta su estatus y revisa el detalle
-          técnico de cada documento firmado.
-        </p>
+          funcional y tecnico de cada documento firmado.
+        </motion.p>
       </div>
-    </header>
+    </motion.header>
   );
 }

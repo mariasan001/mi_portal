@@ -2,54 +2,34 @@
 
 import FirmaElectronicaHero from './components/FirmaElectronicaHero';
 import FirmaSolicitudesPanel from './components/FirmaSolicitudesPanel';
-import FirmaSolicitudDetalleCard from './components/FirmaSolicitudDetalleCard';
-import FirmaDetalleTecnicoCard from './components/FirmaDetalleTecnicoCard';
 import FirmaCrearSolicitudModal from './components/FirmaCrearSolicitudModal';
+import FirmaDetallesModal from './components/FirmaDetallesModal';
 import s from './FirmaElectronicaView.module.css';
 import { useFirmaElectronicaView } from './hook/useFirmaElectronicaView';
 
 export default function FirmaElectronicaView() {
   const vm = useFirmaElectronicaView();
 
-  const hasSelection =
-    Boolean(vm.detalle.data) || Boolean(vm.detalleTecnico.data);
-
   return (
     <section className={s.page}>
       <div className={s.stack}>
-        <FirmaElectronicaHero onOpenCreateModal={vm.handleOpenCreateModal} />
+        <FirmaElectronicaHero />
 
         <div className={s.workspace}>
           <section className={s.tableSection}>
-          <FirmaSolicitudesPanel
-          status={vm.statusFilter}
-          loading={vm.listado.loading}
-          items={vm.listado.data ?? []}
-          error={vm.listado.error}
-          selectedRequestId={vm.requestId}
-          onChangeStatus={vm.setStatusFilter}
-          onSelectRequest={vm.handleSelectRequest}
-          onViewSignedPdf={vm.handleViewSignedPdfByRequestId}
-          onDownloadSignedPdf={vm.handleDownloadSignedPdfByRequestId}
-          onOpenCreateModal={vm.handleOpenCreateModal}
-        />
+            <FirmaSolicitudesPanel
+              status={vm.statusFilter}
+              loading={vm.listado.loading}
+              items={vm.listado.data ?? []}
+              error={vm.listado.error}
+              selectedRequestId={vm.requestId}
+              onChangeStatus={vm.setStatusFilter}
+              onOpenDetails={vm.handleOpenDetailsModal}
+              onViewSignedPdf={vm.handleViewSignedPdfByRequestId}
+              onDownloadSignedPdf={vm.handleDownloadSignedPdfByRequestId}
+              onOpenCreateModal={vm.handleOpenCreateModal}
+            />
           </section>
-
-          {hasSelection ? (
-            <section className={s.detailsSection}>
-              <FirmaSolicitudDetalleCard
-                loading={vm.detalle.loading}
-                error={vm.detalle.error}
-                data={vm.detalle.data ?? null}
-              />
-
-              <FirmaDetalleTecnicoCard
-                loading={vm.detalleTecnico.loading}
-                error={vm.detalleTecnico.error}
-                data={vm.detalleTecnico.data ?? null}
-              />
-            </section>
-          ) : null}
         </div>
 
         <FirmaCrearSolicitudModal
@@ -72,6 +52,17 @@ export default function FirmaElectronicaView() {
             vm.updateCreateField('descripcion', value)
           }
           onSubmit={vm.handleCreate}
+        />
+
+        <FirmaDetallesModal
+          isOpen={vm.isDetailsModalOpen}
+          detalle={vm.detalle.data ?? null}
+          detalleTecnico={vm.detalleTecnico.data ?? null}
+          detalleLoading={vm.detalle.loading}
+          detalleError={vm.detalle.error}
+          detalleTecnicoLoading={vm.detalleTecnico.loading}
+          detalleTecnicoError={vm.detalleTecnico.error}
+          onClose={vm.handleCloseDetailsModal}
         />
       </div>
     </section>

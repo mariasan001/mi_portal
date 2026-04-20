@@ -16,38 +16,26 @@
 .searchSurface {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
-  align-items: stretch;
+  align-items: end;
   gap: 10px;
-  padding: 10px;
+  padding: 8px;
   background: linear-gradient(180deg, #f8f8f8 0%, #f4f4f5 100%);
   border: 1px solid rgba(10, 10, 10, 0.07);
-  border-radius: 20px;
+  border-radius: 18px;
 }
 
-.fieldBlock {
+.field {
   display: grid;
-  gap: 8px;
-  padding: 10px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(10, 10, 10, 0.05);
+  gap: 6px;
+  min-width: 0;
 }
 
-.fieldLabel {
-  display: inline-flex;
-  align-items: center;
-  width: fit-content;
-  min-height: 22px;
-  padding: 0 8px;
-  border-radius: 999px;
-  background: #ffffff;
-  border: 1px solid rgba(188, 148, 90, 0.14);
-  color: #7b5a2f;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  white-space: nowrap;
+.label {
+  display: inline-block;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .inputWrap {
@@ -96,8 +84,9 @@
 }
 
 .searchBtn {
-  min-width: 168px;
-  min-height: 100%;
+  min-width: 160px;
+  height: 44px;
+  align-self: end;
   padding: 0 18px;
   display: inline-flex;
   align-items: center;
@@ -157,18 +146,17 @@
   }
 
   .searchSurface {
-    padding: 8px;
-    border-radius: 18px;
-  }
-
-  .fieldBlock {
-    padding: 8px;
-    border-radius: 14px;
+    padding: 6px;
+    border-radius: 16px;
   }
 
   .inputWrap,
   .searchBtn {
     height: 46px;
+  }
+
+  .label {
+    font-size: 11.5px;
   }
 
   .inputWrap input {

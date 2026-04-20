@@ -1,106 +1,111 @@
 .hero {
   display: grid;
+  gap: 10px;
+}
+
+.headerTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 14px;
-}
-
-.topRow {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  min-width: 0;
-}
-
-.leftBlock {
-  display: flex;
-  align-items: center;
-  gap: 12px;
   flex-wrap: wrap;
-  min-width: 0;
 }
 
 .kicker {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 28px;
-  padding: 0 11px;
+  width: fit-content;
+  min-height: 26px;
+  padding: 0 10px;
   border-radius: 999px;
-  background: rgba(188, 148, 90, 0.14);
-  border: 1px solid rgba(188, 148, 90, 0.2);
-  color: var(--oro);
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
+  background: rgba(188, 148, 90, 0.1);
+  border: 1px solid rgba(188, 148, 90, 0.18);
+  color: #8a6a3d;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   white-space: nowrap;
 }
 
-.textBlock {
+.metaBadges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.metaBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.metaBadge svg {
+  color: var(--oro);
+}
+
+.content {
   display: grid;
   gap: 6px;
-  max-width: 680px;
+  max-width: 760px;
 }
 
 .title {
   margin: 0;
   color: var(--text);
-  font-size: clamp(20px, 2.4vw, 24px);
+  font-size: clamp(20px, 2.6vw, 28px);
   font-weight: 800;
-  letter-spacing: -0.015em;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
 }
 
 .subtitle {
   margin: 0;
-  max-width: 65ch;
+  max-width: 68ch;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 400;
-  line-height: 1.5;
-}
-
-/*
-  Se conservan estilos del botón para reutilizarlos después
-  en otro header o barra de acciones.
-*/
-.rightBlock {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding-top: 5px;
-}
-
-.primaryBtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 42px;
-  padding: 0 18px;
-  border: none;
-  border-radius: 14px;
-  background: var(--vino);
-  color: #fff;
-  font-size: 12.5px;
-  font-weight: 700;
-  white-space: nowrap;
-  cursor: pointer;
-  transition:
-    opacity 0.18s ease,
-    transform 0.18s ease;
-}
-
-.primaryBtn:hover {
-  opacity: 0.92;
-  transform: translateY(-1px);
+  line-height: 1.55;
 }
 
 @media (max-width: 840px) {
+  .hero {
+    gap: 8px;
+  }
+
+  .headerTop {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .metaBadges {
+    gap: 6px;
+  }
+
+  .content {
+    gap: 5px;
+  }
+
   .title {
-    font-size: clamp(22px, 6vw, 28px);
+    font-size: clamp(18px, 5.8vw, 24px);
   }
 
   .subtitle {
-    font-size: 12.5px;
+    font-size: 12px;
     line-height: 1.5;
   }
 }
