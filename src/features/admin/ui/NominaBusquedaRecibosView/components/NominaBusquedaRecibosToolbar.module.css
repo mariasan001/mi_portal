@@ -1,41 +1,64 @@
 .toolbar {
   display: grid;
-  gap: 18px;
-  padding: 20px 22px;
+  gap: 8px;
+  padding: 18px;
   background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 22px;
-  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-soft);
+  border-radius: 24px;
+  box-shadow: 0 10px 24px rgba(10, 10, 10, 0.04);
 }
 
-.fieldsGrid {
+.left {
+  min-width: 0;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
 }
 
-.field {
+.searchSurface {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  align-items: stretch;
+  gap: 10px;
+  padding: 10px;
+  background: linear-gradient(180deg, #f8f8f8 0%, #f4f4f5 100%);
+  border: 1px solid rgba(10, 10, 10, 0.07);
+  border-radius: 20px;
+}
+
+.fieldBlock {
   display: grid;
   gap: 8px;
+  padding: 10px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(10, 10, 10, 0.05);
 }
 
-.field span {
-  display: inline-block;
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.01em;
+.fieldLabel {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  min-height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid rgba(188, 148, 90, 0.14);
+  color: #7b5a2f;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .inputWrap {
   min-width: 0;
-  height: 50px;
+  height: 48px;
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 0 14px;
   background: #ffffff;
-  border: 1px solid rgba(10, 10, 10, 0.08);
+  border: 1px solid transparent;
   border-radius: 14px;
   transition:
     border-color 0.18s ease,
@@ -44,13 +67,13 @@
 }
 
 .inputWrap:focus-within {
-  border-color: rgba(159, 33, 65, 0.16);
-  box-shadow: 0 0 0 4px rgba(159, 33, 65, 0.06);
+  border-color: rgba(188, 148, 90, 0.22);
+  box-shadow: 0 0 0 4px rgba(188, 148, 90, 0.08);
   background: #ffffff;
 }
 
 .icon {
-  color: rgba(10, 10, 10, 0.44);
+  color: #8a6a3d;
   flex-shrink: 0;
 }
 
@@ -62,29 +85,29 @@
   outline: 0;
   background: transparent;
   color: var(--text);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   font-family: var(--font-body);
 }
 
 .inputWrap input::placeholder {
-  color: rgba(10, 10, 10, 0.42);
+  color: rgba(10, 10, 10, 0.4);
   font-weight: 400;
 }
 
-.actions {
-  display: flex;
-  justify-content: flex-end;
-}
-
 .searchBtn {
-  height: 50px;
+  min-width: 168px;
+  min-height: 100%;
   padding: 0 18px;
-  border: 1px solid rgba(10, 10, 10, 0.12);
-  border-radius: 14px;
-  background: #ffffff;
-  color: var(--text);
-  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid rgba(188, 148, 90, 0.16);
+  border-radius: 16px;
+  background: rgba(188, 148, 90, 0.08);
+  color: #7b5a2f;
+  font-size: 12.5px;
   font-weight: 700;
   font-family: var(--font-body);
   white-space: nowrap;
@@ -94,14 +117,18 @@
     box-shadow 0.18s ease,
     opacity 0.18s ease,
     background 0.18s ease,
-    border-color 0.18s ease;
+    border-color 0.18s ease,
+    color 0.18s ease;
 }
 
 .searchBtn:hover:not(:disabled) {
-  transform: translateY(-1px);
-  border-color: rgba(10, 10, 10, 0.2);
-  background: #fffdfb;
-  box-shadow: 0 8px 18px rgba(10, 10, 10, 0.05);
+  border-color: rgba(188, 148, 90, 0.24);
+  background: rgba(188, 148, 90, 0.12);
+  box-shadow: 0 8px 18px rgba(188, 148, 90, 0.08);
+}
+
+.searchBtn svg {
+  flex-shrink: 0;
 }
 
 .searchBtn:disabled {
@@ -111,22 +138,40 @@
   box-shadow: none;
 }
 
-@media (max-width: 760px) {
-  .toolbar {
-    padding: 16px;
-    border-radius: 18px;
-  }
-
-  .fieldsGrid {
+@media (max-width: 960px) {
+  .searchSurface {
     grid-template-columns: 1fr;
   }
 
-  .actions {
-    justify-content: stretch;
+  .searchBtn {
+    min-height: 48px;
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .toolbar {
+    padding: 16px;
+    border-radius: 20px;
+    gap: 8px;
   }
 
+  .searchSurface {
+    padding: 8px;
+    border-radius: 18px;
+  }
+
+  .fieldBlock {
+    padding: 8px;
+    border-radius: 14px;
+  }
+
+  .inputWrap,
   .searchBtn {
-    width: 100%;
-    justify-content: center;
+    height: 46px;
+  }
+
+  .inputWrap input {
+    font-size: 12.5px;
   }
 }

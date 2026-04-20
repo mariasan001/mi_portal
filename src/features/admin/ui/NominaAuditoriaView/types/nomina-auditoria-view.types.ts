@@ -4,8 +4,6 @@ export type NominaAuditoriaReleaseFormState = {
   versionId: string;
   payPeriodCode: string;
   stage: string;
-  limit: string;
-  offset: string;
 };
 
 export type NominaAuditoriaCancellationFormState = {
@@ -14,8 +12,6 @@ export type NominaAuditoriaCancellationFormState = {
   payPeriodCode: string;
   receiptPeriodCode: string;
   nominaTipo: string;
-  limit: string;
-  offset: string;
 };
 
 export type NominaAuditoriaSummaryItem = {

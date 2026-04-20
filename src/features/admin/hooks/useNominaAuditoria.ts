@@ -1,7 +1,9 @@
 'use client';
 
 import { useCallback, useState } from 'react';
+
 import { toErrorMessage } from '@/lib/api/api.errores';
+
 import {
   obtenerAuditoriaCancelaciones,
   obtenerAuditoriaLiberaciones,
@@ -26,38 +28,64 @@ export function useNominaAuditoria() {
     error: null,
   });
 
-  const [cancellations, setCancellations] = useState<QueryState<AuditCancellationsResponseDto>>({
-    data: null,
-    loading: false,
-    error: null,
-  });
+  const [cancellations, setCancellations] =
+    useState<QueryState<AuditCancellationsResponseDto>>({
+      data: null,
+      loading: false,
+      error: null,
+    });
 
-  const consultarLiberaciones = useCallback(
-    async (query?: AuditReleasesQuery) => {
-      try {
-        setReleases({ data: null, loading: true, error: null });
-        const response = await obtenerAuditoriaLiberaciones(query);
-        setReleases({ data: response, loading: false, error: null });
-        return response;
-      } catch (e) {
-        const message = toErrorMessage(e, 'No se pudo consultar la auditoría de liberaciones');
-        setReleases({ data: null, loading: false, error: message });
-        throw e;
-      }
-    },
-    []
-  );
+  const consultarLiberaciones = useCallback(async (query?: AuditReleasesQuery) => {
+    try {
+      setReleases((current) => ({
+        data: current.data,
+        loading: true,
+        error: null,
+      }));
+
+      const response = await obtenerAuditoriaLiberaciones(query);
+      setReleases({ data: response, loading: false, error: null });
+      return response;
+    } catch (e) {
+      const message = toErrorMessage(
+        e,
+        'No se pudo consultar la auditoria de liberaciones'
+      );
+
+      setReleases((current) => ({
+        data: current.data,
+        loading: false,
+        error: message,
+      }));
+
+      throw e;
+    }
+  }, []);
 
   const consultarCancelaciones = useCallback(
     async (query?: AuditCancellationsQuery) => {
       try {
-        setCancellations({ data: null, loading: true, error: null });
+        setCancellations((current) => ({
+          data: current.data,
+          loading: true,
+          error: null,
+        }));
+
         const response = await obtenerAuditoriaCancelaciones(query);
         setCancellations({ data: response, loading: false, error: null });
         return response;
       } catch (e) {
-        const message = toErrorMessage(e, 'No se pudo consultar la auditoría de cancelaciones');
-        setCancellations({ data: null, loading: false, error: message });
+        const message = toErrorMessage(
+          e,
+          'No se pudo consultar la auditoria de cancelaciones'
+        );
+
+        setCancellations((current) => ({
+          data: current.data,
+          loading: false,
+          error: message,
+        }));
+
         throw e;
       }
     },

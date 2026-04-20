@@ -1,17 +1,68 @@
 .toolbar {
   display: grid;
-  gap: 18px;
-  padding: 20px 22px;
+  padding: 18px;
   background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 22px;
-  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-soft);
+  border-radius: 24px;
+  box-shadow: 0 10px 24px rgba(10, 10, 10, 0.04);
 }
 
-.fieldsGrid {
+.shell {
   display: grid;
+  gap: 14px;
+}
+
+.formLayout {
+  display: grid;
+  gap: 14px;
+}
+
+.formBlock {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  background: #f6f6f7;
+  border: 1px solid rgba(10, 10, 10, 0.07);
+  border-radius: 18px;
+}
+
+.blockHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.blockKicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  min-height: 24px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid rgba(10, 10, 10, 0.07);
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.primaryGrid,
+.secondaryGrid {
+  display: grid;
+  gap: 12px;
+}
+
+.primaryGrid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+}
+
+.secondaryGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .field {
@@ -21,21 +72,21 @@
 
 .field span {
   display: inline-block;
-  color: var(--muted);
+  color: var(--text);
   font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.01em;
+  letter-spacing: -0.01em;
 }
 
 .inputWrap {
   min-width: 0;
-  height: 50px;
+  height: 48px;
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 0 14px;
   background: #ffffff;
-  border: 1px solid rgba(10, 10, 10, 0.08);
+  border: 1px solid transparent;
   border-radius: 14px;
   transition:
     border-color 0.18s ease,
@@ -44,13 +95,13 @@
 }
 
 .inputWrap:focus-within {
-  border-color: rgba(159, 33, 65, 0.16);
-  box-shadow: 0 0 0 4px rgba(159, 33, 65, 0.06);
+  border-color: rgba(188, 148, 90, 0.22);
+  box-shadow: 0 0 0 4px rgba(188, 148, 90, 0.08);
   background: #ffffff;
 }
 
 .icon {
-  color: rgba(10, 10, 10, 0.44);
+  color: rgba(10, 10, 10, 0.42);
   flex-shrink: 0;
 }
 
@@ -62,13 +113,13 @@
   outline: 0;
   background: transparent;
   color: var(--text);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   font-family: var(--font-body);
 }
 
 .inputWrap input::placeholder {
-  color: rgba(10, 10, 10, 0.42);
+  color: rgba(10, 10, 10, 0.4);
   font-weight: 400;
 }
 
@@ -86,50 +137,54 @@
 .actions {
   display: flex;
   justify-content: flex-end;
+  padding-top: 2px;
 }
 
 .executeBtn {
-  height: 50px;
-  padding: 0 20px;
+  min-height: 48px;
+  padding: 0 16px;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  border-radius: 18px;
-  border: 1px solid rgba(159, 33, 65, 0.18);
-  background: var(--vino);
-  color: #fffdfb;
-  font-size: 13px;
-  font-weight: 600;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid rgba(188, 148, 90, 0.16);
+  border-radius: 14px;
+  background: rgba(188, 148, 90, 0.08);
+  color: #7b5a2f;
+  font-size: 12.5px;
+  font-weight: 700;
   font-family: var(--font-body);
-  cursor: pointer;
   white-space: nowrap;
-  box-shadow: 0 10px 18px rgba(159, 33, 65, 0.08);
+  cursor: pointer;
   transition:
     transform 0.18s ease,
     box-shadow 0.18s ease,
     opacity 0.18s ease,
     background 0.18s ease,
-    border-color 0.18s ease;
+    border-color 0.18s ease,
+    color 0.18s ease;
 }
 
-.executeBtn:hover {
-  transform: translateY(-1px);
-  border-color: rgba(159, 33, 65, 0.26);
+.executeBtn:hover:not(:disabled) {
+  border-color: rgba(188, 148, 90, 0.24);
+  background: rgba(188, 148, 90, 0.12);
+  box-shadow: 0 8px 18px rgba(188, 148, 90, 0.08);
 }
 
-@media (max-width: 1100px) {
-  .fieldsGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+.executeBtn svg {
+  flex-shrink: 0;
 }
 
-@media (max-width: 760px) {
-  .toolbar {
-    padding: 16px;
-    border-radius: 18px;
-  }
+.executeBtn:disabled {
+  opacity: 0.52;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
 
-  .fieldsGrid {
+@media (max-width: 960px) {
+  .primaryGrid,
+  .secondaryGrid {
     grid-template-columns: 1fr;
   }
 
@@ -139,6 +194,29 @@
 
   .executeBtn {
     width: 100%;
-    justify-content: center;
+  }
+}
+
+@media (max-width: 760px) {
+  .toolbar {
+    padding: 16px;
+    border-radius: 20px;
+  }
+
+  .shell {
+    gap: 14px;
+  }
+
+  .formBlock {
+    padding: 12px;
+    border-radius: 16px;
+  }
+
+  .field span {
+    font-size: 11.5px;
+  }
+
+  .inputWrap input {
+    font-size: 12.5px;
   }
 }

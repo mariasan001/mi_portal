@@ -1,34 +1,72 @@
+'use client';
+
 import { CalendarRange, Search } from 'lucide-react';
+import { motion, useReducedMotion } from 'motion/react';
+
 import s from './NominaBusquedaRecibosHero.module.css';
 
 export default function NominaBusquedaRecibosHero() {
-  return (
-    <header className={s.hero}>
-      <div className={s.headerTop}>
-        <span className={s.kicker}>Nómina</span>
+  const shouldReduceMotion = useReducedMotion();
 
-        <div className={s.metaBadges}>
+  return (
+    <motion.header
+      className={s.hero}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 10 }}
+      animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.24,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+    >
+      <div className={s.headerTop}>
+        <motion.span
+          className={s.kicker}
+          initial={shouldReduceMotion ? false : { opacity: 0, x: -6 }}
+          animate={shouldReduceMotion ? undefined : { opacity: 1, x: 0 }}
+          transition={{ duration: 0.18, delay: 0.04 }}
+        >
+          Nomina
+        </motion.span>
+
+        <motion.div
+          className={s.metaBadges}
+          initial={shouldReduceMotion ? false : { opacity: 0, y: 6 }}
+          animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+          transition={{ duration: 0.2, delay: 0.08 }}
+        >
           <span className={s.metaBadge}>
             <Search size={14} />
-            Búsqueda
+            Busqueda
           </span>
 
           <span className={s.metaBadge}>
             <CalendarRange size={14} />
-            Periodo
+            Servidor y periodo
           </span>
-        </div>
+        </motion.div>
       </div>
 
       <div className={s.content}>
-        <h1 className={s.title}>Búsqueda por servidor público y periodo</h1>
+        <motion.h1
+          className={s.title}
+          initial={shouldReduceMotion ? false : { opacity: 0, y: 6 }}
+          animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+          transition={{ duration: 0.2, delay: 0.12 }}
+        >
+          Busqueda por servidor publico y periodo
+        </motion.h1>
 
-        <p className={s.subtitle}>
+        <motion.p
+          className={s.subtitle}
+          initial={shouldReduceMotion ? false : { opacity: 0, y: 6 }}
+          animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+          transition={{ duration: 0.2, delay: 0.16 }}
+        >
           Consulta recibos completos por clave SP y periodo, considerando
           reexpediciones y mostrando encabezado, plazas, detalle fiscal y
           conceptos.
-        </p>
+        </motion.p>
       </div>
-    </header>
+    </motion.header>
   );
 }

@@ -1,4 +1,8 @@
-import { Play, Search, ShieldCheck, Ban } from 'lucide-react';
+'use client';
+
+import { Ban, Filter, Play, Search, ShieldCheck } from 'lucide-react';
+import { motion, useReducedMotion } from 'motion/react';
+
 import type {
   NominaAuditoriaAction,
   NominaAuditoriaCancellationFormState,
@@ -22,6 +26,17 @@ type Props = {
   onExecute: () => void;
 };
 
+function getButtonLabel(
+  action: NominaAuditoriaAction,
+  loading: boolean
+): string {
+  if (action === 'liberaciones') {
+    return loading ? 'Consultando...' : 'Consultar liberaciones';
+  }
+
+  return loading ? 'Consultando...' : 'Consultar cancelaciones';
+}
+
 export default function NominaAuditoriaToolbar({
   activeAction,
   releaseForm,
@@ -31,187 +46,219 @@ export default function NominaAuditoriaToolbar({
   onUpdateCancellationField,
   onExecute,
 }: Props) {
-  const isLiberaciones = activeAction === 'liberaciones';
+  const shouldReduceMotion = useReducedMotion();
+  const buttonLabel = getButtonLabel(activeAction, loading);
 
   return (
-    <section className={s.toolbar}>
-      <div className={s.fieldsGrid}>
-        {isLiberaciones ? (
-          <>
-            <label className={s.field}>
-              <span>Version ID</span>
-              <div className={s.inputWrap}>
-                <Search size={17} className={s.icon} />
-                <input
-                  type="number"
-                  value={releaseForm.versionId}
-                  onChange={(e) => onUpdateReleaseField('versionId', e.target.value)}
-                  placeholder="Ej. 125"
-                />
+    <motion.section
+      className={s.toolbar}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 12 }}
+      animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.28,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+    >
+      <div className={s.shell}>
+        {activeAction === 'liberaciones' ? (
+          <div className={s.formLayout}>
+            <div className={s.formBlock}>
+              <div className={s.blockHeader}>
+                <span className={s.blockKicker}>
+                  <Filter size={14} />
+                  Filtros principales
+                </span>
               </div>
-            </label>
 
-            <label className={s.field}>
-              <span>Pay period code</span>
-              <div className={s.inputWrap}>
-                <ShieldCheck size={17} className={s.icon} />
-                <input
-                  value={releaseForm.payPeriodCode}
-                  onChange={(e) =>
-                    onUpdateReleaseField('payPeriodCode', e.target.value)
+              <div className={s.primaryGrid}>
+                <label className={s.field}>
+                  <span>versionId</span>
+                  <div className={s.inputWrap}>
+                    <Search size={16} className={s.icon} />
+                    <input
+                      type="number"
+                      min="1"
+                      value={releaseForm.versionId}
+                      onChange={(e) =>
+                        onUpdateReleaseField('versionId', e.target.value)
+                      }
+                      placeholder="Ej. 125"
+                    />
+                  </div>
+                </label>
+
+                <label className={s.field}>
+                  <span>payPeriodCode</span>
+                  <div className={s.inputWrap}>
+                    <ShieldCheck size={16} className={s.icon} />
+                    <input
+                      value={releaseForm.payPeriodCode}
+                      onChange={(e) =>
+                        onUpdateReleaseField('payPeriodCode', e.target.value)
+                      }
+                      placeholder="Ej. 2025-06"
+                    />
+                  </div>
+                </label>
+
+                <label className={s.field}>
+                  <span>stage</span>
+                  <div className={s.inputWrap}>
+                    <ShieldCheck size={16} className={s.icon} />
+                    <input
+                      value={releaseForm.stage}
+                      onChange={(e) =>
+                        onUpdateReleaseField('stage', e.target.value)
+                      }
+                      placeholder="Ej. INTEGRADA"
+                    />
+                  </div>
+                </label>
+              </div>
+
+              <div className={s.actions}>
+                <motion.button
+                  type="button"
+                  className={s.executeBtn}
+                  onClick={onExecute}
+                  disabled={loading}
+                  whileHover={
+                    !shouldReduceMotion && !loading
+                      ? { y: -1, transition: { duration: 0.16 } }
+                      : undefined
                   }
-                  placeholder="Ej. 2025-06"
-                />
+                  whileTap={
+                    !shouldReduceMotion && !loading ? { scale: 0.99 } : undefined
+                  }
+                >
+                  <Play size={16} />
+                  <span>{buttonLabel}</span>
+                </motion.button>
               </div>
-            </label>
-
-            <label className={s.field}>
-              <span>Stage</span>
-              <div className={s.inputWrap}>
-                <ShieldCheck size={17} className={s.icon} />
-                <input
-                  value={releaseForm.stage}
-                  onChange={(e) => onUpdateReleaseField('stage', e.target.value)}
-                  placeholder="Ej. INTEGRADA"
-                />
-              </div>
-            </label>
-
-            <label className={s.field}>
-              <span>Limit</span>
-              <div className={s.inputWrap}>
-                <Search size={17} className={s.icon} />
-                <input
-                  type="number"
-                  value={releaseForm.limit}
-                  onChange={(e) => onUpdateReleaseField('limit', e.target.value)}
-                />
-              </div>
-            </label>
-
-            <label className={s.field}>
-              <span>Offset</span>
-              <div className={s.inputWrap}>
-                <Search size={17} className={s.icon} />
-                <input
-                  type="number"
-                  value={releaseForm.offset}
-                  onChange={(e) => onUpdateReleaseField('offset', e.target.value)}
-                />
-              </div>
-            </label>
-          </>
+            </div>
+          </div>
         ) : (
-          <>
-            <label className={s.field}>
-              <span>Receipt ID</span>
-              <div className={s.inputWrap}>
-                <Search size={17} className={s.icon} />
-                <input
-                  type="number"
-                  value={cancellationForm.receiptId}
-                  onChange={(e) =>
-                    onUpdateCancellationField('receiptId', e.target.value)
-                  }
-                  placeholder="Ej. 4501"
-                />
+          <div className={s.formLayout}>
+            <div className={s.formBlock}>
+              <div className={s.blockHeader}>
+                <span className={s.blockKicker}>
+                  <Filter size={14} />
+                  Identificadores
+                </span>
               </div>
-            </label>
 
-            <label className={s.field}>
-              <span>Clave SP</span>
-              <div className={s.inputWrap}>
-                <Ban size={17} className={s.icon} />
-                <input
-                  value={cancellationForm.claveSp}
-                  onChange={(e) =>
-                    onUpdateCancellationField('claveSp', e.target.value)
-                  }
-                  placeholder="Ej. ABC123"
-                />
-              </div>
-            </label>
+              <div className={s.primaryGrid}>
+                <label className={s.field}>
+                  <span>receiptId</span>
+                  <div className={s.inputWrap}>
+                    <Search size={16} className={s.icon} />
+                    <input
+                      type="number"
+                      min="1"
+                      value={cancellationForm.receiptId}
+                      onChange={(e) =>
+                        onUpdateCancellationField('receiptId', e.target.value)
+                      }
+                      placeholder="Ej. 4501"
+                    />
+                  </div>
+                </label>
 
-            <label className={s.field}>
-              <span>Pay period code</span>
-              <div className={s.inputWrap}>
-                <Ban size={17} className={s.icon} />
-                <input
-                  value={cancellationForm.payPeriodCode}
-                  onChange={(e) =>
-                    onUpdateCancellationField('payPeriodCode', e.target.value)
-                  }
-                  placeholder="Ej. 2025-06"
-                />
-              </div>
-            </label>
+                <label className={s.field}>
+                  <span>claveSp</span>
+                  <div className={s.inputWrap}>
+                    <Ban size={16} className={s.icon} />
+                    <input
+                      value={cancellationForm.claveSp}
+                      onChange={(e) =>
+                        onUpdateCancellationField('claveSp', e.target.value)
+                      }
+                      placeholder="Ej. ABC123"
+                    />
+                  </div>
+                </label>
 
-            <label className={s.field}>
-              <span>Receipt period code</span>
-              <div className={s.inputWrap}>
-                <Ban size={17} className={s.icon} />
-                <input
-                  value={cancellationForm.receiptPeriodCode}
-                  onChange={(e) =>
-                    onUpdateCancellationField('receiptPeriodCode', e.target.value)
-                  }
-                  placeholder="Ej. 2025-06-Q1"
-                />
+                <label className={s.field}>
+                  <span>nominaTipo</span>
+                  <div className={s.inputWrap}>
+                    <Ban size={16} className={s.icon} />
+                    <input
+                      type="number"
+                      value={cancellationForm.nominaTipo}
+                      onChange={(e) =>
+                        onUpdateCancellationField('nominaTipo', e.target.value)
+                      }
+                      placeholder="Ej. 1"
+                    />
+                  </div>
+                </label>
               </div>
-            </label>
+            </div>
 
-            <label className={s.field}>
-              <span>Nómina tipo</span>
-              <div className={s.inputWrap}>
-                <Ban size={17} className={s.icon} />
-                <input
-                  type="number"
-                  value={cancellationForm.nominaTipo}
-                  onChange={(e) =>
-                    onUpdateCancellationField('nominaTipo', e.target.value)
-                  }
-                  placeholder="Ej. 1"
-                />
+            <div className={s.formBlock}>
+              <div className={s.blockHeader}>
+                <span className={s.blockKicker}>
+                  <Filter size={14} />
+                  Contexto de periodos
+                </span>
               </div>
-            </label>
 
-            <label className={s.field}>
-              <span>Limit</span>
-              <div className={s.inputWrap}>
-                <Search size={17} className={s.icon} />
-                <input
-                  type="number"
-                  value={cancellationForm.limit}
-                  onChange={(e) =>
-                    onUpdateCancellationField('limit', e.target.value)
-                  }
-                />
-              </div>
-            </label>
+              <div className={s.secondaryGrid}>
+                <label className={s.field}>
+                  <span>payPeriodCode</span>
+                  <div className={s.inputWrap}>
+                    <Ban size={16} className={s.icon} />
+                    <input
+                      value={cancellationForm.payPeriodCode}
+                      onChange={(e) =>
+                        onUpdateCancellationField('payPeriodCode', e.target.value)
+                      }
+                      placeholder="Ej. 2025-06"
+                    />
+                  </div>
+                </label>
 
-            <label className={s.field}>
-              <span>Offset</span>
-              <div className={s.inputWrap}>
-                <Search size={17} className={s.icon} />
-                <input
-                  type="number"
-                  value={cancellationForm.offset}
-                  onChange={(e) =>
-                    onUpdateCancellationField('offset', e.target.value)
-                  }
-                />
+                <label className={s.field}>
+                  <span>receiptPeriodCode</span>
+                  <div className={s.inputWrap}>
+                    <Ban size={16} className={s.icon} />
+                    <input
+                      value={cancellationForm.receiptPeriodCode}
+                      onChange={(e) =>
+                        onUpdateCancellationField(
+                          'receiptPeriodCode',
+                          e.target.value
+                        )
+                      }
+                      placeholder="Ej. 2025-06-Q1"
+                    />
+                  </div>
+                </label>
               </div>
-            </label>
-          </>
+
+              <div className={s.actions}>
+                <motion.button
+                  type="button"
+                  className={s.executeBtn}
+                  onClick={onExecute}
+                  disabled={loading}
+                  whileHover={
+                    !shouldReduceMotion && !loading
+                      ? { y: -1, transition: { duration: 0.16 } }
+                      : undefined
+                  }
+                  whileTap={
+                    !shouldReduceMotion && !loading ? { scale: 0.99 } : undefined
+                  }
+                >
+                  <Play size={16} />
+                  <span>{buttonLabel}</span>
+                </motion.button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
-
-      <div className={s.actions}>
-        <button type="button" className={s.executeBtn} onClick={onExecute}>
-          <Play size={17} />
-          <span>{loading ? 'Consultando...' : 'Consultar auditoría'}</span>
-        </button>
-      </div>
-    </section>
+    </motion.section>
   );
 }

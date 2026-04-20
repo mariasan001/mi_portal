@@ -64,11 +64,15 @@ export default function NominaAuditoriaView() {
               activeAction={vm.activeAction}
               releases={releaseItems}
               cancellations={cancellationItems}
+              currentPage={vm.currentPage}
+              totalPages={vm.totalPages}
+              onPageChange={vm.goToPage}
             />
           ) : (
             <EmptyState
-              title="Aún no hay resultados para mostrar"
-              description="Selecciona una auditoría, captura los filtros necesarios y ejecuta la consulta."
+              title="Aun no hay resultados para mostrar"
+              description="Selecciona una auditoria, captura los filtros necesarios y ejecuta la consulta."
+              variant="search"
             />
           )}
         </section>

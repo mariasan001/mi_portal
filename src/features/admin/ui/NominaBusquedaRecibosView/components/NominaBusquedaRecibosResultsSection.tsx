@@ -11,15 +11,23 @@ export default function NominaBusquedaRecibosResultsSection({
 }: Props) {
   return (
     <section className={s.section}>
-      <div className={s.header}>
-        <h3>Resultados</h3>
-        <p>Recibos completos localizados para los criterios consultados.</p>
-      </div>
+      <div className={s.group}>
+        <div className={s.groupHeader}>
+          <div className={s.groupHeaderCopy}>
+            <span className={s.kicker}>Busqueda</span>
+            <h3>Resultados localizados</h3>
+            <p>
+              Recibos completos localizados para los criterios consultados, con
+              encabezado, plazas, detalle fiscal y conceptos asociados.
+            </p>
+          </div>
+        </div>
 
-      <div className={s.stack}>
-        {receipts.map((receipt) => (
-          <ReciboCard key={receipt.header.receiptId} receipt={receipt} />
-        ))}
+        <div className={s.stack}>
+          {receipts.map((receipt) => (
+            <ReciboCard key={receipt.header.receiptId} receipt={receipt} />
+          ))}
+        </div>
       </div>
     </section>
   );

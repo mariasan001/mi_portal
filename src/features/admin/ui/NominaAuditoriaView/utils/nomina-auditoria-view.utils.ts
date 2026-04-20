@@ -16,7 +16,7 @@ export function parseOptionalNumber(value: string): number | undefined {
 
 export function formatDate(value: string): string {
   if (!value) {
-    return '—';
+    return '-';
   }
 
   const date = new Date(value);
@@ -33,18 +33,22 @@ export function buildAuditSummary(params: {
   limit?: number;
   offset?: number;
 }): NominaAuditoriaSummaryItem[] {
+  const limit = params.limit ?? 20;
+  const offset = params.offset ?? 0;
+  const currentPage = limit > 0 ? Math.floor(offset / limit) + 1 : 1;
+
   return [
     {
       label: 'Total',
       value: String(params.total ?? 0),
     },
     {
-      label: 'Límite',
-      value: String(params.limit ?? '—'),
+      label: 'Pagina actual',
+      value: String(currentPage),
     },
     {
-      label: 'Offset',
-      value: String(params.offset ?? '—'),
+      label: 'Por pagina',
+      value: String(limit),
     },
   ];
 }

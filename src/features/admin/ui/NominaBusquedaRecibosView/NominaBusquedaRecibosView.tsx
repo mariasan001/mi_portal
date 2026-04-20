@@ -43,8 +43,9 @@ export default function NominaBusquedaRecibosView() {
             />
           ) : (
             <EmptyState
-              title="Aún no hay recibos para mostrar"
-              description="Captura una clave SP y un periodo válido para consultar recibos."
+              title="Aun no hay recibos para mostrar"
+              description="Captura una clave SP y un periodo valido para consultar recibos."
+              variant="search"
             />
           )}
         </section>
@@ -52,11 +53,3 @@ export default function NominaBusquedaRecibosView() {
     </section>
   );
 }
-
-
-/**
- * 
- * AQUI VAMOS AQUI  EN BUSQUEDA BUS QUEDA }
- * BUD QUE 
- */
-
