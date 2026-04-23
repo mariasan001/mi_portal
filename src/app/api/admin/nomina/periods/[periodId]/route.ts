@@ -1,5 +1,12 @@
-import { NextResponse } from 'next/server';
 import { obtenerBatchBaseUrl } from '@/lib/config/entorno';
+import {
+  buildProxyHeaders,
+  forwardResponse,
+  invalidParam,
+  requireAdminAccess,
+  resolveRouteParams,
+  upstreamUnavailable,
+} from '@/app/api/_lib/proxy';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -7,47 +14,29 @@ export const runtime = 'nodejs';
 type Params = { periodId: string };
 type Ctx = { params: Params | Promise<Params> };
 
-async function getParams(ctx: Ctx): Promise<Params> {
-  const p = ctx.params;
-  return typeof (p as { then?: unknown })?.then === 'function'
-    ? await (p as Promise<Params>)
-    : (p as Params);
-}
-
 export async function GET(req: Request, ctx: Ctx) {
-  const base = obtenerBatchBaseUrl();
-  const cookie = req.headers.get('cookie') ?? '';
+  const forbidden = await requireAdminAccess(req);
+  if (forbidden) {
+    return forbidden;
+  }
 
-  const { periodId } = await getParams(ctx);
-
+  const { periodId } = await resolveRouteParams(ctx.params);
   if (!periodId?.trim()) {
-    return NextResponse.json({ message: 'Falta periodId en la ruta' }, { status: 400 });
+    return invalidParam('periodId');
   }
 
   try {
     const upstream = await fetch(
-      `${base}/api/admin/nomina/periods/${encodeURIComponent(periodId)}`,
+      `${obtenerBatchBaseUrl()}/api/admin/nomina/periods/${encodeURIComponent(periodId)}`,
       {
         method: 'GET',
-        headers: {
-          accept: 'application/json',
-          cookie,
-        },
+        headers: buildProxyHeaders({ req }),
         cache: 'no-store',
       }
     );
 
-    const contentType = upstream.headers.get('content-type') ?? 'application/json';
-    const text = await upstream.text();
-
-    return new NextResponse(text, {
-      status: upstream.status,
-      headers: { 'content-type': contentType },
-    });
-  } catch (e) {
-    return NextResponse.json(
-      { message: 'No se pudo conectar a BATCH', error: String(e) },
-      { status: 502 }
-    );
+    return forwardResponse(upstream);
+  } catch (error) {
+    return upstreamUnavailable('BATCH', error);
   }
 }

@@ -17,12 +17,13 @@ type Props = {
 export default function AdminShell({ children, appCode }: Props) {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const { logout } = useAuth();
+  const { logout, appCode: authAppCode } = useAuth();
+  const resolvedAppCode = authAppCode ?? appCode;
 
   return (
     <div className={`${s.layout} ${isCollapsed ? s.isCollapsed : ''}`}>
       <SidebarMenu
-        appCode={appCode}
+        appCode={resolvedAppCode}
         userLabel="Usuario"
         userName={null}
         onLogout={logout}

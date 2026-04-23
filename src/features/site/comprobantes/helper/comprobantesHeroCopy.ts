@@ -7,10 +7,7 @@ type HeroCopy = {
   subtitle: string;
 };
 
-export function buildHeroCopy(
-  view: ComprobantesHeroView,
-  displayName: string
-): HeroCopy {
+export function buildHeroCopy(view: ComprobantesHeroView): HeroCopy {
   if (view === 'menu') {
     return {
       title: 'Hola,',

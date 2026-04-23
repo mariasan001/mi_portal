@@ -12,13 +12,14 @@ import ComprobantesHero from '../ComprobantesHero/ComprobantesHero';
 import s from './ComprobantesPageClient.module.css';
 import { useComprobantesAccessState } from '../../hook/useComprobantesAccessState';
 import { buildHeroCopy } from '../../helper/comprobantesHeroCopy';
+import { buildAuthModalHref } from '@/features/auth/utils/authRedirect';
 
 export default function ComprobantesPageClient() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const { isAuthenticated, loading, sesion } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
 
   const {
     selectedKey,
@@ -28,12 +29,7 @@ export default function ComprobantesPageClient() {
     handleBack,
   } = useComprobantesAccessState();
 
-  const displayName = sesion?.username ?? 'Usuario';
-
-  const heroCopy = useMemo(
-    () => buildHeroCopy(heroView, displayName),
-    [heroView, displayName]
-  );
+  const heroCopy = useMemo(() => buildHeroCopy(heroView), [heroView]);
 
   useEffect(() => {
     if (loading) return;
@@ -42,7 +38,9 @@ export default function ComprobantesPageClient() {
       const query = searchParams.toString();
       const fullPath = query ? `${pathname}?${query}` : pathname;
 
-      router.replace(`/login?redirect=${encodeURIComponent(fullPath)}`);
+      router.replace(
+        buildAuthModalHref({ returnTo: fullPath, appCode: 'PLAT_SERV' })
+      );
     }
   }, [isAuthenticated, loading, pathname, router, searchParams]);
 

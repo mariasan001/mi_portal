@@ -2,71 +2,56 @@
 
 import { useCallback, useState } from 'react';
 import { toErrorMessage } from '@/lib/api/api.errores';
+import { crearVersionNomina, obtenerVersionNomina } from '../services/nomina-versiones.service';
 import {
-  crearVersionNomina,
-  obtenerVersionNomina,
-} from '../services/nomina-versiones.service';
+  errorState,
+  idleState,
+  loadingState,
+  successState,
+  type AsyncState,
+} from './request-state';
 import type {
   CrearVersionNominaPayload,
   VersionNominaDto,
 } from '../types/nomina-versiones.types';
 
 export function useNominaVersiones() {
-  const [detalle, setDetalle] = useState<VersionNominaDto | null>(null);
-  const [ultimaCreada, setUltimaCreada] = useState<VersionNominaDto | null>(null);
-
-  const [loadingDetalle, setLoadingDetalle] = useState(false);
-  const [loadingCreate, setLoadingCreate] = useState(false);
-
-  const [errorDetalle, setErrorDetalle] = useState<string | null>(null);
-  const [errorCreate, setErrorCreate] = useState<string | null>(null);
+  const [detalle, setDetalle] = useState<AsyncState<VersionNominaDto>>(idleState());
+  const [ultimaCreada, setUltimaCreada] = useState<AsyncState<VersionNominaDto>>(idleState());
 
   const consultarPorId = useCallback(async (versionId: number) => {
     try {
-      setLoadingDetalle(true);
-      setErrorDetalle(null);
-
+      setDetalle((current) => loadingState(current.data));
       const response = await obtenerVersionNomina(versionId);
-      setDetalle(response);
-
+      setDetalle(successState(response));
       return response;
     } catch (e) {
-      const message = toErrorMessage(e, 'No se pudo consultar la versión');
-      setErrorDetalle(message);
+      const message = toErrorMessage(e, 'No se pudo consultar la version');
+      setDetalle((current) => errorState(message, current.data));
       throw e;
-    } finally {
-      setLoadingDetalle(false);
     }
   }, []);
 
   const crearVersion = useCallback(async (payload: CrearVersionNominaPayload) => {
     try {
-      setLoadingCreate(true);
-      setErrorCreate(null);
-
+      setUltimaCreada((current) => loadingState(current.data));
       const response = await crearVersionNomina(payload);
-      setUltimaCreada(response);
-
+      setUltimaCreada(successState(response));
       return response;
     } catch (e) {
-      const message = toErrorMessage(e, 'No se pudo crear la versión');
-      setErrorCreate(message);
+      const message = toErrorMessage(e, 'No se pudo crear la version');
+      setUltimaCreada((current) => errorState(message, current.data));
       throw e;
-    } finally {
-      setLoadingCreate(false);
     }
   }, []);
 
   return {
-    detalle,
-    ultimaCreada,
-
-    loadingDetalle,
-    loadingCreate,
-
-    errorDetalle,
-    errorCreate,
-
+    detalle: detalle.data,
+    ultimaCreada: ultimaCreada.data,
+    loadingDetalle: detalle.loading,
+    loadingCreate: ultimaCreada.loading,
+    errorDetalle: detalle.error,
+    errorCreate: ultimaCreada.error,
     consultarPorId,
     crearVersion,
   };

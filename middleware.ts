@@ -1,15 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-
-/**
- * Nombre(s) posibles de cookie de sesión.
- * Ajusta aquí al nombre real que te manda el IAM en Set-Cookie.
- */
-const COOKIES_SESION = ['iam_session', 'JSESSIONID', 'SESSION', 'sid'] as const;
-
-function tieneCookieSesion(req: NextRequest): boolean {
-  return COOKIES_SESION.some((name) => Boolean(req.cookies.get(name)?.value));
-}
+import { hasSessionCookie } from '@/lib/auth/session';
 
 function buildLoginRedirect(req: NextRequest): NextResponse {
   const url = req.nextUrl.clone();
@@ -22,30 +13,23 @@ function buildLoginRedirect(req: NextRequest): NextResponse {
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // ✅ No tocar rutas públicas/estáticas
   if (
     pathname.startsWith('/_next') ||
     pathname.startsWith('/favicon.ico') ||
     pathname.startsWith('/robots.txt') ||
     pathname.startsWith('/sitemap.xml') ||
-    pathname.startsWith('/api') // dejamos API libre (tu proxy necesita funcionar)
+    pathname.startsWith('/api')
   ) {
     return NextResponse.next();
   }
 
-  // ✅ Protege admin
-  if (pathname.startsWith('/admin')) {
-    if (!tieneCookieSesion(req)) {
-      return buildLoginRedirect(req);
-    }
+  if (pathname.startsWith('/admin') && !hasSessionCookie(req)) {
+    return buildLoginRedirect(req);
   }
 
   return NextResponse.next();
 }
 
-/**
- * Solo corre en estas rutas (más rápido y sin ruido).
- */
 export const config = {
   matcher: ['/admin/:path*'],
 };

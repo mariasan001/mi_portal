@@ -1,7 +1,8 @@
 'use client';
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import css from './SiteNav.module.css';
 
@@ -17,6 +18,8 @@ import { useCompactNav } from '@/features/site/Components/Nav/hooks/useCompactNa
 import { useOverlayLock } from '@/features/site/Components/Nav/hooks/useOverlayLock';
 import { useAuthModal } from '@/features/site/Components/Nav/hooks/useAuthModal';
 import { useAuthModalEvent } from '@/features/site/Components/Nav/hooks/useAuthModalEvent';
+import { getLoginFlowParams } from '@/features/auth/utils/authQuery';
+import { stripAuthModalQuery } from '@/features/auth/utils/authRedirect';
 
 import NavSocials from './ui/NavSocials/NavSocials';
 import NavLogo from './ui/NavLogo/NavLogo';
@@ -24,6 +27,9 @@ import NavLinks from './ui/NavLinks/NavLinks';
 
 export default function SiteNav() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const { compact } = useCompactNav();
   const { isAuthenticated, logout, sesion, mode } = useAuth();
@@ -42,6 +48,7 @@ export default function SiteNav() {
   useAuthModalEvent({ onOpen: openAuthModal });
 
   const displayName = sesion?.username ?? 'Mi cuenta';
+  const authQuery = useMemo(() => getLoginFlowParams(searchParams), [searchParams]);
 
   const navItems = useMemo(() => {
     return isAuthenticated ? AUTH_NAV_ITEMS : SITE_NAV_ITEMS;
@@ -58,6 +65,36 @@ export default function SiteNav() {
       initialView: 'login',
     });
   }, [closeMenu, openAuthModal]);
+
+  const clearAuthQuery = useCallback(() => {
+    const nextUrl = stripAuthModalQuery(pathname, new URLSearchParams(searchParams.toString()));
+    router.replace(nextUrl, { scroll: false });
+  }, [pathname, router, searchParams]);
+
+  useEffect(() => {
+    if (!authQuery.authView) {
+      return;
+    }
+
+    if (isAuthenticated) {
+      clearAuthQuery();
+      return;
+    }
+
+    openAuthModal({
+      source: 'nav',
+      returnTo: authQuery.returnTo,
+      appCode: authQuery.appCodeFromQuery,
+      initialView: authQuery.authView,
+    });
+  }, [authQuery, clearAuthQuery, isAuthenticated, openAuthModal]);
+
+  const handleCloseAuthModal = useCallback(() => {
+    closeAuthModal();
+    if (authQuery.authView) {
+      clearAuthQuery();
+    }
+  }, [authQuery.authView, clearAuthQuery, closeAuthModal]);
 
   return (
     <>
@@ -190,7 +227,7 @@ export default function SiteNav() {
 
       <AuthModal
         open={authModal.open}
-        onClose={closeAuthModal}
+        onClose={handleCloseAuthModal}
         source={authModal.source}
         returnTo={authModal.returnTo}
         appCode={authModal.appCode}

@@ -1,20 +1,30 @@
-'use client';
-
 import type { ReactNode } from 'react';
-import { useAuth } from '@/features/auth/context/auth.context';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 import AdminShell from './AdminShell';
+import { hasAdminAccess } from '@/lib/auth/server';
+import { buildAuthModalHref } from '@/features/auth/utils/authRedirect';
 
-export default function AdminLayout({ children }: { children: ReactNode }) {
-  const { status, appCode } = useAuth();
+export default async function AdminLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  const cookieStore = await cookies();
+  const cookieHeader = cookieStore
+    .getAll()
+    .map(({ name, value }) => `${name}=${value}`)
+    .join('; ');
 
-  if (status === 'booting') {
-    return <main style={{ padding: 24 }}>Cargando sesión…</main>;
+  if (!cookieHeader) {
+    redirect(buildAuthModalHref({ returnTo: '/admin' }));
   }
 
-  if (status === 'anonymous') {
-    return <main style={{ padding: 24 }}>Sin sesión. Ve a login.</main>;
+  const canAccessAdmin = await hasAdminAccess(cookieHeader);
+
+  if (!canAccessAdmin) {
+    redirect('/');
   }
 
-  // authenticated
-  return <AdminShell appCode={appCode}>{children}</AdminShell>;
+  return <AdminShell appCode={null}>{children}</AdminShell>;
 }

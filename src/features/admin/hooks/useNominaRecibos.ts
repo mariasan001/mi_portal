@@ -8,6 +8,13 @@ import {
   liberarVersionRecibos,
   sincronizarVersionCore,
 } from '../services/nomina-recibos.service';
+import {
+  errorState,
+  idleState,
+  loadingState,
+  successState,
+  type AsyncState,
+} from './request-state';
 import type {
   CoreSyncResponseDto,
   GenerarRecibosResponseDto,
@@ -16,18 +23,11 @@ import type {
   LiberarVersionResponseDto,
 } from '../types/nomina-recibos.types';
 
-type ActionState<T> = {
-  data: T | null;
-  loading: boolean;
-  error: string | null;
-};
-
 type UseNominaRecibosReturn = {
-  snapshots: ActionState<GenerarSnapshotsResponseDto>;
-  receipts: ActionState<GenerarRecibosResponseDto>;
-  release: ActionState<LiberarVersionResponseDto>;
-  coreSync: ActionState<CoreSyncResponseDto>;
-
+  snapshots: AsyncState<GenerarSnapshotsResponseDto>;
+  receipts: AsyncState<GenerarRecibosResponseDto>;
+  release: AsyncState<LiberarVersionResponseDto>;
+  coreSync: AsyncState<CoreSyncResponseDto>;
   ejecutarSnapshots: (versionId: number) => Promise<GenerarSnapshotsResponseDto>;
   ejecutarRecibos: (versionId: number) => Promise<GenerarRecibosResponseDto>;
   ejecutarLiberacion: (
@@ -35,7 +35,6 @@ type UseNominaRecibosReturn = {
     payload: LiberarVersionPayload
   ) => Promise<LiberarVersionResponseDto>;
   ejecutarCoreSync: (versionId: number) => Promise<CoreSyncResponseDto>;
-
   resetSnapshots: () => void;
   resetRecibos: () => void;
   resetRelease: () => void;
@@ -43,52 +42,33 @@ type UseNominaRecibosReturn = {
 };
 
 export function useNominaRecibos(): UseNominaRecibosReturn {
-  const [snapshots, setSnapshots] = useState<ActionState<GenerarSnapshotsResponseDto>>({
-    data: null,
-    loading: false,
-    error: null,
-  });
-
-  const [receipts, setReceipts] = useState<ActionState<GenerarRecibosResponseDto>>({
-    data: null,
-    loading: false,
-    error: null,
-  });
-
-  const [release, setRelease] = useState<ActionState<LiberarVersionResponseDto>>({
-    data: null,
-    loading: false,
-    error: null,
-  });
-
-  const [coreSync, setCoreSync] = useState<ActionState<CoreSyncResponseDto>>({
-    data: null,
-    loading: false,
-    error: null,
-  });
+  const [snapshots, setSnapshots] = useState<AsyncState<GenerarSnapshotsResponseDto>>(idleState());
+  const [receipts, setReceipts] = useState<AsyncState<GenerarRecibosResponseDto>>(idleState());
+  const [release, setRelease] = useState<AsyncState<LiberarVersionResponseDto>>(idleState());
+  const [coreSync, setCoreSync] = useState<AsyncState<CoreSyncResponseDto>>(idleState());
 
   const ejecutarSnapshots = useCallback(async (versionId: number) => {
     try {
-      setSnapshots({ data: null, loading: true, error: null });
+      setSnapshots(loadingState());
       const response = await generarSnapshots(versionId);
-      setSnapshots({ data: response, loading: false, error: null });
+      setSnapshots(successState(response));
       return response;
     } catch (e) {
       const message = toErrorMessage(e, 'No se pudieron generar los snapshots');
-      setSnapshots({ data: null, loading: false, error: message });
+      setSnapshots(errorState(message));
       throw e;
     }
   }, []);
 
   const ejecutarRecibos = useCallback(async (versionId: number) => {
     try {
-      setReceipts({ data: null, loading: true, error: null });
+      setReceipts(loadingState());
       const response = await generarRecibos(versionId);
-      setReceipts({ data: response, loading: false, error: null });
+      setReceipts(successState(response));
       return response;
     } catch (e) {
       const message = toErrorMessage(e, 'No se pudieron generar los recibos');
-      setReceipts({ data: null, loading: false, error: message });
+      setReceipts(errorState(message));
       throw e;
     }
   }, []);
@@ -96,13 +76,13 @@ export function useNominaRecibos(): UseNominaRecibosReturn {
   const ejecutarLiberacion = useCallback(
     async (versionId: number, payload: LiberarVersionPayload) => {
       try {
-        setRelease({ data: null, loading: true, error: null });
+        setRelease(loadingState());
         const response = await liberarVersionRecibos(versionId, payload);
-        setRelease({ data: response, loading: false, error: null });
+        setRelease(successState(response));
         return response;
       } catch (e) {
-        const message = toErrorMessage(e, 'No se pudo liberar la versión');
-        setRelease({ data: null, loading: false, error: message });
+        const message = toErrorMessage(e, 'No se pudo liberar la version');
+        setRelease(errorState(message));
         throw e;
       }
     },
@@ -111,32 +91,21 @@ export function useNominaRecibos(): UseNominaRecibosReturn {
 
   const ejecutarCoreSync = useCallback(async (versionId: number) => {
     try {
-      setCoreSync({ data: null, loading: true, error: null });
+      setCoreSync(loadingState());
       const response = await sincronizarVersionCore(versionId);
-      setCoreSync({ data: response, loading: false, error: null });
+      setCoreSync(successState(response));
       return response;
     } catch (e) {
-      const message = toErrorMessage(e, 'No se pudo sincronizar la versión a core');
-      setCoreSync({ data: null, loading: false, error: message });
+      const message = toErrorMessage(e, 'No se pudo sincronizar la version a core');
+      setCoreSync(errorState(message));
       throw e;
     }
   }, []);
 
-  const resetSnapshots = useCallback(() => {
-    setSnapshots({ data: null, loading: false, error: null });
-  }, []);
-
-  const resetRecibos = useCallback(() => {
-    setReceipts({ data: null, loading: false, error: null });
-  }, []);
-
-  const resetRelease = useCallback(() => {
-    setRelease({ data: null, loading: false, error: null });
-  }, []);
-
-  const resetCoreSync = useCallback(() => {
-    setCoreSync({ data: null, loading: false, error: null });
-  }, []);
+  const resetSnapshots = useCallback(() => setSnapshots(idleState()), []);
+  const resetRecibos = useCallback(() => setReceipts(idleState()), []);
+  const resetRelease = useCallback(() => setRelease(idleState()), []);
+  const resetCoreSync = useCallback(() => setCoreSync(idleState()), []);
 
   return {
     snapshots,

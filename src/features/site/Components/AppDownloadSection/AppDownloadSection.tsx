@@ -1,6 +1,7 @@
 // src/features/site/Components/AppDownloadSection/AppDownloadSection.tsx
 'use client';
 
+import Image from 'next/image';
 import s from './AppDownloadSection.module.css';
 import { FiSmartphone, FiCheck, FiArrowUpRight } from 'react-icons/fi';
 import { useRevealMotion } from '@/hooks/useRevealMotion';
@@ -101,12 +102,14 @@ export default function AppDownloadSection({
 
         <div className={s.right}>
           <div className={s.mediaCard}>
-            <img
+            <Image
               className={s.phoneImg}
               src={phoneImg}
               alt={phoneAlt}
+              width={420}
+              height={860}
               loading="lazy"
-              decoding="async"
+              sizes="(max-width: 980px) min(560px, 100vw), 420px"
             />
           </div>
         </div>

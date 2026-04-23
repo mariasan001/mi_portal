@@ -1,5 +1,13 @@
-import { NextResponse } from 'next/server';
 import { obtenerBatchBaseUrl } from '@/lib/config/entorno';
+import {
+  buildProxyHeaders,
+  forwardResponse,
+  invalidJsonBody,
+  invalidParam,
+  invalidPayload,
+  requireAdminAccess,
+  upstreamUnavailable,
+} from '@/app/api/_lib/proxy';
 
 type RouteContext = {
   params: Promise<{
@@ -27,57 +35,43 @@ function isValidBody(value: unknown): value is ReleaseBody {
 }
 
 export async function POST(req: Request, context: RouteContext) {
+  const forbidden = await requireAdminAccess(req);
+  if (forbidden) {
+    return forbidden;
+  }
+
   const { versionId } = await context.params;
 
   if (!Number.isFinite(Number(versionId)) || Number(versionId) <= 0) {
-    return NextResponse.json(
-      { message: 'versionId inválido' },
-      { status: 400 }
-    );
+    return invalidParam('versionId');
   }
 
   let body: unknown;
-
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json(
-      { message: 'Body JSON inválido' },
-      { status: 400 }
-    );
+    return invalidJsonBody('Body JSON invalido');
   }
 
   if (!isValidBody(body)) {
-    return NextResponse.json(
-      { message: 'Payload inválido para liberar versión' },
-      { status: 400 }
-    );
+    return invalidPayload('Payload invalido para liberar version');
   }
 
   const baseUrl = obtenerBatchBaseUrl();
-  const cookie = req.headers.get('cookie') ?? '';
 
-  const upstream = await fetch(
-    `${baseUrl}/api/admin/nomina/releases/versions/${encodeURIComponent(versionId)}`,
-    {
-      method: 'POST',
-      headers: {
-        accept: 'application/json',
-        'content-type': 'application/json',
-        cookie,
-      },
-      body: JSON.stringify(body),
-      cache: 'no-store',
-    }
-  );
+  try {
+    const upstream = await fetch(
+      `${baseUrl}/api/admin/nomina/releases/versions/${encodeURIComponent(versionId)}`,
+      {
+        method: 'POST',
+        headers: buildProxyHeaders({ req, withJsonContentType: true }),
+        body: JSON.stringify(body),
+        cache: 'no-store',
+      }
+    );
 
-  const contentType = upstream.headers.get('content-type') ?? 'application/json';
-  const text = await upstream.text();
-
-  return new NextResponse(text, {
-    status: upstream.status,
-    headers: {
-      'content-type': contentType,
-    },
-  });
+    return forwardResponse(upstream);
+  } catch (error) {
+    return upstreamUnavailable('BATCH', error);
+  }
 }

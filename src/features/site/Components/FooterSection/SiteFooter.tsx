@@ -1,6 +1,7 @@
 // src/features/site/Components/FooterSection/FooterSection.tsx
 'use client';
 
+import Image from 'next/image';
 import s from './FooterSection.module.css';
 import { FiExternalLink } from 'react-icons/fi';
 
@@ -88,7 +89,14 @@ export default function FooterSection({
           <div className={s.brand}>
             <div className={s.brandRow}>
               <div className={s.logoWrap} aria-hidden="true">
-                <img className={s.logo} src="/img/logo_principal.png" alt="" loading="lazy" />
+                <Image
+                  className={s.logo}
+                  src="/img/logo_principal.png"
+                  alt=""
+                  width={30}
+                  height={30}
+                  loading="lazy"
+                />
               </div>
               <div>
                 <div className={s.brandTitle}>{brandTitle}</div>

@@ -6,6 +6,13 @@ import {
   ejecutarCargaCatalogo,
   subirArchivoNomina,
 } from '../services/nomina-catalogo.service';
+import {
+  errorState,
+  idleState,
+  loadingState,
+  successState,
+  type AsyncState,
+} from './request-state';
 import type {
   ArchivoNominaDto,
   EjecucionCatalogoDto,
@@ -13,61 +20,42 @@ import type {
 } from '../types/nomina-catalogo.types';
 
 export function useNominaCatalogo() {
-  const [archivo, setArchivo] = useState<ArchivoNominaDto | null>(null);
-  const [ejecucion, setEjecucion] = useState<EjecucionCatalogoDto | null>(null);
-
-  const [loadingUpload, setLoadingUpload] = useState(false);
-  const [loadingRun, setLoadingRun] = useState(false);
-
-  const [errorUpload, setErrorUpload] = useState<string | null>(null);
-  const [errorRun, setErrorRun] = useState<string | null>(null);
+  const [archivo, setArchivo] = useState<AsyncState<ArchivoNominaDto>>(idleState());
+  const [ejecucion, setEjecucion] = useState<AsyncState<EjecucionCatalogoDto>>(idleState());
 
   const uploadArchivo = useCallback(async (payload: UploadArchivoNominaPayload) => {
     try {
-      setLoadingUpload(true);
-      setErrorUpload(null);
-
+      setArchivo(loadingState());
       const response = await subirArchivoNomina(payload);
-      setArchivo(response);
-
+      setArchivo(successState(response));
       return response;
     } catch (e) {
       const message = toErrorMessage(e, 'No se pudo subir el archivo');
-      setErrorUpload(message);
+      setArchivo(errorState(message));
       throw e;
-    } finally {
-      setLoadingUpload(false);
     }
   }, []);
 
   const runCatalogo = useCallback(async (fileId: number) => {
     try {
-      setLoadingRun(true);
-      setErrorRun(null);
-
+      setEjecucion(loadingState());
       const response = await ejecutarCargaCatalogo(fileId);
-      setEjecucion(response);
-
+      setEjecucion(successState(response));
       return response;
     } catch (e) {
       const message = toErrorMessage(e, 'No se pudo ejecutar la carga');
-      setErrorRun(message);
+      setEjecucion(errorState(message));
       throw e;
-    } finally {
-      setLoadingRun(false);
     }
   }, []);
 
   return {
-    archivo,
-    ejecucion,
-
-    loadingUpload,
-    loadingRun,
-
-    errorUpload,
-    errorRun,
-
+    archivo: archivo.data,
+    ejecucion: ejecucion.data,
+    loadingUpload: archivo.loading,
+    loadingRun: ejecucion.loading,
+    errorUpload: archivo.error,
+    errorRun: ejecucion.error,
     uploadArchivo,
     runCatalogo,
   };

@@ -6,6 +6,7 @@ import { useEffect, useMemo } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 
 import { useAuth } from '@/features/auth/context/auth.context';
+import { buildAuthModalHref } from '@/features/auth/utils/authRedirect';
 
 type Props = {
   children: ReactNode;
@@ -55,8 +56,9 @@ export default function UserRouteGuard({
 
     // 2) sin sesión => login (respetando "from" para regresar)
     if (status === 'anonymous') {
-      const from = encodeURIComponent(pathname || '/usuario');
-      router.replace(`/login?from=${from}`);
+      router.replace(
+        buildAuthModalHref({ returnTo: pathname || '/usuario', appCode: allowAppCode })
+      );
       router.refresh();
       return;
     }
@@ -66,7 +68,7 @@ export default function UserRouteGuard({
       router.replace(redirectTo);
       router.refresh();
     }
-  }, [status, isAllowed, redirectTo, router, pathname]);
+  }, [status, isAllowed, redirectTo, router, pathname, allowAppCode]);
 
   // evita parpadeos
   if (status === 'booting') return null;

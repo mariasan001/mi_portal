@@ -1,4 +1,5 @@
 import type { SesionMe } from '../types/me.types';
+import { isAdminRole, normalizeRoles } from '@/lib/auth/roles';
 
 export type AuthMode = 'admin' | 'user';
 export type Home = '/admin' | '/';
@@ -11,18 +12,6 @@ type ResolveOutput = {
 
 function safeTrim(v: string | null | undefined) {
   return (v ?? '').trim();
-}
-
-function hasRole(roles: string[] | undefined, role: string) {
-  return Array.isArray(roles) && roles.includes(role);
-}
-
-function isAdminRole(roles: string[]) {
-  return (
-    hasRole(roles, 'ROLE_ADMIN') ||
-    hasRole(roles, 'ROLE_SP_ADMIN') ||
-    hasRole(roles, 'ROLE_ADMIN_PLAT_SERV')
-  );
 }
 
 function resolveHomeByAppCode(
@@ -63,7 +52,7 @@ export function resolveAuthDestination(args: {
 }): ResolveOutput {
   const { sesion, appCode, returnTo } = args;
 
-  const roles = sesion?.roles ?? [];
+  const roles = normalizeRoles(sesion?.roles);
   const code = safeTrim(appCode);
 
   if (!code) {

@@ -1,5 +1,12 @@
-import { NextResponse } from 'next/server';
 import { obtenerBatchBaseUrl } from '@/lib/config/entorno';
+import {
+  buildProxyHeaders,
+  forwardResponse,
+  invalidJsonBody,
+  invalidPayload,
+  requireAdminAccess,
+  upstreamUnavailable,
+} from '@/app/api/_lib/proxy';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -12,63 +19,56 @@ type CrearPeriodoPayload = {
   fechaPagoEstimada: string;
 };
 
-function isCrearPeriodoPayload(v: unknown): v is CrearPeriodoPayload {
-  if (!v || typeof v !== 'object') return false;
+function isCrearPeriodoPayload(value: unknown): value is CrearPeriodoPayload {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
 
-  const o = v as Record<string, unknown>;
+  const body = value as Record<string, unknown>;
 
   return (
-    typeof o.anio === 'number' &&
-    Number.isFinite(o.anio) &&
-    typeof o.quincena === 'number' &&
-    Number.isFinite(o.quincena) &&
-    typeof o.fechaInicio === 'string' &&
-    o.fechaInicio.trim().length > 0 &&
-    typeof o.fechaFin === 'string' &&
-    o.fechaFin.trim().length > 0 &&
-    typeof o.fechaPagoEstimada === 'string' &&
-    o.fechaPagoEstimada.trim().length > 0
+    typeof body.anio === 'number' &&
+    Number.isFinite(body.anio) &&
+    typeof body.quincena === 'number' &&
+    Number.isFinite(body.quincena) &&
+    typeof body.fechaInicio === 'string' &&
+    body.fechaInicio.trim().length > 0 &&
+    typeof body.fechaFin === 'string' &&
+    body.fechaFin.trim().length > 0 &&
+    typeof body.fechaPagoEstimada === 'string' &&
+    body.fechaPagoEstimada.trim().length > 0
   );
 }
 
 export async function POST(req: Request) {
-  const base = obtenerBatchBaseUrl();
-  const cookie = req.headers.get('cookie') ?? '';
+  const forbidden = await requireAdminAccess(req);
+  if (forbidden) {
+    return forbidden;
+  }
+
+  const baseUrl = obtenerBatchBaseUrl();
 
   let payload: unknown;
   try {
     payload = await req.json();
   } catch {
-    return NextResponse.json({ message: 'Body inválido' }, { status: 400 });
+    return invalidJsonBody('Body invalido');
   }
 
   if (!isCrearPeriodoPayload(payload)) {
-    return NextResponse.json({ message: 'Payload inválido' }, { status: 400 });
+    return invalidPayload('Payload invalido');
   }
 
   try {
-    const upstream = await fetch(`${base}/api/admin/nomina/periods`, {
+    const upstream = await fetch(`${baseUrl}/api/admin/nomina/periods`, {
       method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        accept: 'application/json',
-        cookie,
-      },
+      headers: buildProxyHeaders({ req, withJsonContentType: true }),
       body: JSON.stringify(payload),
       cache: 'no-store',
     });
 
-    const contentType = upstream.headers.get('content-type') ?? 'application/json';
-    const text = await upstream.text();
-
-    return new NextResponse(text, {
-      status: upstream.status,
-      headers: { 'content-type': contentType },
-    });
-  } catch (e) {
-    return NextResponse.json(
-      { message: 'No se pudo conectar a BATCH', error: String(e) },
-      { status: 502 }
-    );
+    return forwardResponse(upstream);
+  } catch (error) {
+    return upstreamUnavailable('BATCH', error);
   }
 }

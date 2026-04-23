@@ -16,6 +16,7 @@ import { iniciarSesion } from '../services/auth-login.service';
 import { obtenerSesion } from '../services/auth-me.service';
 
 import { esApiError, toErrorMessage } from '@/lib/api/api.errores';
+import { isAdminRole, normalizeRoles } from '@/lib/auth/roles';
 
 type AuthMode = 'admin' | 'user';
 
@@ -26,14 +27,6 @@ type RouteDecision = {
 
 function hasRole(roles: readonly string[], role: string) {
   return roles.includes(role);
-}
-
-function isAdminRole(roles: readonly string[]) {
-  return (
-    hasRole(roles, 'ROLE_ADMIN') ||
-    hasRole(roles, 'ROLE_SP_ADMIN') ||
-    hasRole(roles, 'ROLE_ADMIN_PLAT_SERV')
-  );
 }
 
 function resolvePostLoginRoute(
@@ -155,18 +148,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const me = await obtenerSesion();
 
-      console.log('🔐 [AuthProvider.refresh] sesión obtenida:', me);
-
       setSesion(me);
       setStatus('authenticated');
     } catch (e) {
       if (esApiError(e) && (e.status === 401 || e.status === 403)) {
-        console.log('🟡 [AuthProvider.refresh] sin sesión activa (401/403)');
         setSesion(null);
         setError(null);
         setStatus('anonymous');
       } else {
-        console.log('🔴 [AuthProvider.refresh] error al obtener sesión:', e);
         setSesion(null);
         setError(toErrorMessage(e));
         setStatus('anonymous');
@@ -188,11 +177,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           appCode: args.appCode.trim(),
         };
 
-        console.log('📨 [AuthProvider.login] payload:', payload);
-
         await iniciarSesion(payload);
-
-        console.log('✅ [AuthProvider.login] login exitoso');
 
         setAppCode(payload.appCode);
 
@@ -200,7 +185,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         return true;
       } catch (e) {
-        console.log('🔴 [AuthProvider.login] error login:', e);
         setSesion(null);
         setStatus('anonymous');
         setError(toErrorMessage(e, 'No se pudo iniciar sesión'));
@@ -214,8 +198,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 
   const logout = useCallback(() => {
-    console.log('🚪 [AuthProvider.logout] cerrando sesión');
-
     limpiarAppCode();
     _setAppCode(null);
     setSesion(null);
@@ -226,7 +208,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const stored = leerAppCode();
     if (stored) {
-      console.log('💾 [AuthProvider] appCode recuperado de storage:', stored);
       _setAppCode(stored);
     }
   }, []);
@@ -242,12 +223,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     if (!Array.isArray(raw)) return [];
 
-    return raw
-      .map((role) => {
+    return normalizeRoles(
+      raw.map((role) => {
         if (typeof role === 'string') return role;
         return role.name ?? role.authority ?? '';
       })
-      .filter((r): r is string => Boolean(r));
+    );
   }, [sesion]);
 
   const roleCheck = useCallback((role: string) => hasRole(roles, role), [roles]);
@@ -261,16 +242,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     () => resolvePostLoginRoute(appCode, roles).path,
     [appCode, roles]
   );
-
-  useEffect(() => {
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    console.log('🔐 [AuthProvider] sesion completa:', sesion);
-    console.log('🪪 [AuthProvider] appCode actual:', appCode);
-    console.log('🧩 [AuthProvider] roles normalizados:', roles);
-    console.log('🧭 [AuthProvider] decision de ruta:', decision);
-    console.log('🏠 [AuthProvider] resolveHome():', resolveHome());
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  }, [sesion, appCode, roles, decision, resolveHome]);
 
   const value = useMemo<AuthState>(
     () => ({

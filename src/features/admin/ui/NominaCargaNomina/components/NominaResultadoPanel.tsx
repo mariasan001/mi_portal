@@ -1,6 +1,6 @@
 'use client';
 
-import { Database, FileText, Hash } from 'lucide-react';
+import { FileText, Hash } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';
 
 import type { EjecucionPayrollStagingDto } from '../../../types/nomina-staging.types';
