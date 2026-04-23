@@ -5,21 +5,21 @@ import { toErrorMessage } from '@/lib/api/api.errores';
 import {
   ejecutarCargaCatalogo,
   subirArchivoNomina,
-} from '../services/nomina-catalogo.service';
+} from '@/features/admin/nomina/carga/api/catalogo.commands';
 import {
   errorState,
   idleState,
   loadingState,
   successState,
   type AsyncState,
-} from './request-state';
+} from '@/features/admin/hooks/request-state';
 import type {
   ArchivoNominaDto,
   EjecucionCatalogoDto,
   UploadArchivoNominaPayload,
-} from '../types/nomina-catalogo.types';
+} from '@/features/admin/types/nomina-catalogo.types';
 
-export function useNominaCatalogo() {
+export function useCatalogoResource() {
   const [archivo, setArchivo] = useState<AsyncState<ArchivoNominaDto>>(idleState());
   const [ejecucion, setEjecucion] = useState<AsyncState<EjecucionCatalogoDto>>(idleState());
 

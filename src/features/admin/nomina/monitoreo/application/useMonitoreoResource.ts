@@ -2,17 +2,17 @@
 
 import { useCallback, useState } from 'react';
 import { toErrorMessage } from '@/lib/api/api.errores';
-import { obtenerEstadoPeriodo } from '../services/nomina-monitoreo.service';
+import { obtenerEstadoPeriodo } from '@/features/admin/nomina/monitoreo/api/queries';
 import {
   errorState,
   idleState,
   loadingState,
   successState,
   type AsyncState,
-} from './request-state';
-import type { NominaPeriodoEstadoDto } from '../types/nomina-monitoreo.types';
+} from '@/features/admin/hooks/request-state';
+import type { NominaPeriodoEstadoDto } from '../model/monitoreo.types';
 
-export function useNominaMonitoreo() {
+export function useMonitoreoResource() {
   const [estadoPeriodo, setEstadoPeriodo] =
     useState<AsyncState<NominaPeriodoEstadoDto>>(idleState());
 

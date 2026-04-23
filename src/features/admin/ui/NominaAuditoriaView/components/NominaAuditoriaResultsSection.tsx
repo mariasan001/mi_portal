@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import type {
   AuditCancellationItemDto,
   AuditReleaseItemDto,
-} from '../../../types/nomina-auditoria.types';
+} from '@/features/admin/nomina/auditoria/model/auditoria.types';
 import type { NominaAuditoriaAction } from '../types/nomina-auditoria-view.types';
 import { formatDate } from '../utils/nomina-auditoria-view.utils';
 import s from './NominaAuditoriaResultsSection.module.css';

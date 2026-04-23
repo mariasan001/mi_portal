@@ -1,6 +1,6 @@
 import { api } from '@/lib/api/api.cliente';
 import { API_RUTAS } from '@/lib/api/api.rutas';
-import type { NominaPeriodoEstadoDto } from '../types/nomina-monitoreo.types';
+import type { NominaPeriodoEstadoDto } from '../model/monitoreo.types';
 
 export function obtenerEstadoPeriodo(
   payPeriodId: number,

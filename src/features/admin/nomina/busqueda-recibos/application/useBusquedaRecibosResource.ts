@@ -2,11 +2,11 @@
 
 import { useCallback, useState } from 'react';
 import { toErrorMessage } from '@/lib/api/api.errores';
-import { buscarRecibosPorServidorYPeriodo } from '../services/nomina-busqueda-recibos.service';
+import { buscarRecibosPorServidorYPeriodo } from '@/features/admin/nomina/busqueda-recibos/api/queries';
 import type {
   BuscarRecibosSpPeriodQuery,
   BuscarRecibosSpPeriodResponseDto,
-} from '../types/nomina-busqueda-recibos.types';
+} from '../model/busqueda-recibos.types';
 
 type SearchState = {
   data: BuscarRecibosSpPeriodResponseDto | null;
@@ -14,7 +14,7 @@ type SearchState = {
   error: string | null;
 };
 
-export function useNominaBusquedaRecibos() {
+export function useBusquedaRecibosResource() {
   const [state, setState] = useState<SearchState>({
     data: null,
     loading: false,
@@ -28,10 +28,7 @@ export function useNominaBusquedaRecibos() {
       setState({ data: response, loading: false, error: null });
       return response;
     } catch (e) {
-      const message = toErrorMessage(
-        e,
-        'No se pudo consultar la búsqueda de recibos'
-      );
+      const message = toErrorMessage(e, 'No se pudo consultar la busqueda de recibos');
       setState({ data: null, loading: false, error: message });
       throw e;
     }

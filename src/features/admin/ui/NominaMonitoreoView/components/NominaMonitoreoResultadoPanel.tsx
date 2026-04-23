@@ -14,7 +14,7 @@ import {
 import { motion, useReducedMotion } from 'motion/react';
 
 import s from './NominaMonitoreoResultadoPanel.module.css';
-import { NominaPeriodoEstadoDto } from '@/features/admin/types/nomina-monitoreo.types';
+import type { NominaPeriodoEstadoDto } from '@/features/admin/nomina/monitoreo/model/monitoreo.types';
 
 type Props = {
   detalle: NominaPeriodoEstadoDto;

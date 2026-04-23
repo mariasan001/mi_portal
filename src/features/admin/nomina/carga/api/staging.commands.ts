@@ -1,6 +1,6 @@
 import { api } from '@/lib/api/api.cliente';
 import { API_RUTAS } from '@/lib/api/api.rutas';
-import type { EjecucionPayrollStagingDto } from '../types/nomina-staging.types';
+import type { EjecucionPayrollStagingDto } from '@/features/admin/types/nomina-staging.types';
 
 export function ejecutarPayrollStaging(
   fileId: number,

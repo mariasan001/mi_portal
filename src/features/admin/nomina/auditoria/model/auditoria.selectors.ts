@@ -22,6 +22,20 @@ export function parseOptionalNumber(value: string): number | undefined {
   return Math.trunc(parsed);
 }
 
+export function formatDate(value: string): string {
+  if (!value) {
+    return '-';
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return date.toLocaleString('es-MX');
+}
+
 export function buildAuditSummary(params: {
   total?: number;
   limit?: number;

@@ -5,22 +5,22 @@ import { toErrorMessage } from '@/lib/api/api.errores';
 import {
   obtenerAuditoriaCancelaciones,
   obtenerAuditoriaLiberaciones,
-} from '../services/nomina-auditoria.service';
+} from '@/features/admin/nomina/auditoria/api/queries';
 import {
   errorState,
   idleState,
   loadingState,
   successState,
   type AsyncState,
-} from './request-state';
+} from '@/features/admin/hooks/request-state';
 import type {
   AuditCancellationsQuery,
   AuditCancellationsResponseDto,
   AuditReleasesQuery,
   AuditReleasesResponseDto,
-} from '../types/nomina-auditoria.types';
+} from '../model/auditoria.types';
 
-export function useNominaAuditoria() {
+export function useAuditoriaResource() {
   const [releases, setReleases] = useState<AsyncState<AuditReleasesResponseDto>>(idleState());
   const [cancellations, setCancellations] =
     useState<AsyncState<AuditCancellationsResponseDto>>(idleState());

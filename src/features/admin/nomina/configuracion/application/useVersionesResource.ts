@@ -2,20 +2,23 @@
 
 import { useCallback, useState } from 'react';
 import { toErrorMessage } from '@/lib/api/api.errores';
-import { crearVersionNomina, obtenerVersionNomina } from '../services/nomina-versiones.service';
+import {
+  crearVersionNomina,
+  obtenerVersionNomina,
+} from '@/features/admin/nomina/configuracion/api/versiones';
 import {
   errorState,
   idleState,
   loadingState,
   successState,
   type AsyncState,
-} from './request-state';
+} from '@/features/admin/hooks/request-state';
 import type {
   CrearVersionNominaPayload,
   VersionNominaDto,
-} from '../types/nomina-versiones.types';
+} from '@/features/admin/types/nomina-versiones.types';
 
-export function useNominaVersiones() {
+export function useVersionesResource() {
   const [detalle, setDetalle] = useState<AsyncState<VersionNominaDto>>(idleState());
   const [ultimaCreada, setUltimaCreada] = useState<AsyncState<VersionNominaDto>>(idleState());
 

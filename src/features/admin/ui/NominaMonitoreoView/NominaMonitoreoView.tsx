@@ -6,8 +6,8 @@ import { toast } from 'sonner';
 import AdminInlineMessage from '../../shared/ui/AdminInlineMessage/AdminInlineMessage';
 import AdminPageShell from '../../shared/ui/AdminPageShell/AdminPageShell';
 import AdminSurface from '../../shared/ui/AdminSurface/AdminSurface';
+import { useMonitoreoResource } from '@/features/admin/nomina/monitoreo/application/useMonitoreoResource';
 import s from './NominaMonitoreoView.module.css';
-import { useNominaMonitoreo } from '../../hooks/useNominaMonitoreo';
 import NominaMonitoreoHero from './components/NominaMonitoreoHero';
 import NominaMonitoreoToolbar from './components/NominaMonitoreoToolbar';
 import NominaMonitoreoResultadoPanel from './components/NominaMonitoreoResultadoPanel';
@@ -21,7 +21,7 @@ export default function NominaMonitoreoView() {
     errorEstado,
     consultarEstadoPeriodo,
     resetEstadoPeriodo,
-  } = useNominaMonitoreo();
+  } = useMonitoreoResource();
 
   const [payPeriodId, setPayPeriodId] = useState('');
 

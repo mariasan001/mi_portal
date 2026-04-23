@@ -1,8 +1,8 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import { useNominaCatalogo } from '@/features/admin/hooks/useNominaCatalogo';
-import { useNominaStaging } from '@/features/admin/hooks/useNominaStaging';
+import { useCatalogoResource } from '@/features/admin/nomina/carga/application/useCatalogoResource';
+import { useStagingResource } from '@/features/admin/nomina/carga/application/useStagingResource';
 import { useAuth } from '@/features/auth/context/auth.context';
 import type { NominaCargaEntity } from '../types/nomina-cargas.types';
 import { useNominaCargaExecution } from './useNominaCargaExecution';
@@ -10,8 +10,8 @@ import { useNominaCargaUploadModal } from './useNominaCargaUploadModal';
 
 export function useNominaCargasView() {
   const { sesion } = useAuth();
-  const catalogo = useNominaCatalogo();
-  const nomina = useNominaStaging();
+  const catalogo = useCatalogoResource();
+  const nomina = useStagingResource();
 
   const [activeEntity, setActiveEntity] = useState<NominaCargaEntity>('catalogo');
   const [searchFileId, setSearchFileId] = useState('');

@@ -2,10 +2,10 @@
 
 import { useCallback, useState } from 'react';
 import { toErrorMessage } from '@/lib/api/api.errores';
-import { ejecutarPayrollStaging } from '../services/nomina-staging.service';
-import type { EjecucionPayrollStagingDto } from '../types/nomina-staging.types';
+import { ejecutarPayrollStaging } from '@/features/admin/nomina/carga/api/staging.commands';
+import type { EjecucionPayrollStagingDto } from '@/features/admin/types/nomina-staging.types';
 
-export function useNominaStaging() {
+export function useStagingResource() {
   const [ejecucion, setEjecucion] = useState<EjecucionPayrollStagingDto | null>(null);
   const [loadingRun, setLoadingRun] = useState(false);
   const [errorRun, setErrorRun] = useState<string | null>(null);
@@ -20,7 +20,7 @@ export function useNominaStaging() {
 
       return response;
     } catch (e) {
-      const message = toErrorMessage(e, 'No se pudo ejecutar el staging de nómina');
+      const message = toErrorMessage(e, 'No se pudo ejecutar el staging de nomina');
       setErrorRun(message);
       throw e;
     } finally {

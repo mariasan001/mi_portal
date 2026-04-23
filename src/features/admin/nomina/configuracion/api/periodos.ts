@@ -3,7 +3,7 @@ import { API_RUTAS } from '@/lib/api/api.rutas';
 import type {
   CrearPeriodoNominaPayload,
   PeriodoNominaDto,
-} from '../types/nomina-periodos.types';
+} from '@/features/admin/types/nomina-periodos.types';
 
 export function obtenerPeriodoNomina(
   periodId: number,

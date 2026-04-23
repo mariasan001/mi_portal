@@ -2,12 +2,12 @@
 
 import { useCallback, useMemo } from 'react';
 import { toast } from 'sonner';
-import type { useNominaCatalogo } from '@/features/admin/hooks/useNominaCatalogo';
-import type { useNominaStaging } from '@/features/admin/hooks/useNominaStaging';
+import type { useCatalogoResource } from '@/features/admin/nomina/carga/application/useCatalogoResource';
+import type { useStagingResource } from '@/features/admin/nomina/carga/application/useStagingResource';
 import type { NominaCargaEntity } from '../types/nomina-cargas.types';
 
-type CatalogoState = ReturnType<typeof useNominaCatalogo>;
-type NominaState = ReturnType<typeof useNominaStaging>;
+type CatalogoState = ReturnType<typeof useCatalogoResource>;
+type NominaState = ReturnType<typeof useStagingResource>;
 
 type Params = {
   activeEntity: NominaCargaEntity;

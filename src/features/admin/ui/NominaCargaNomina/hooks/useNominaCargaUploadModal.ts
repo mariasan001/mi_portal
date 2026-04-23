@@ -2,8 +2,8 @@
 
 import { useCallback, useState } from 'react';
 import { toast } from 'sonner';
-import type { useNominaCatalogo } from '@/features/admin/hooks/useNominaCatalogo';
-import type { useNominaStaging } from '@/features/admin/hooks/useNominaStaging';
+import type { useCatalogoResource } from '@/features/admin/nomina/carga/application/useCatalogoResource';
+import type { useStagingResource } from '@/features/admin/nomina/carga/application/useStagingResource';
 import type { NominaFileType } from '@/features/admin/types/nomina-catalogo.types';
 import type {
   CatalogoModalForm,
@@ -11,8 +11,8 @@ import type {
   NominaCargaModalStatus,
 } from '../types/nomina-cargas.types';
 
-type CatalogoState = ReturnType<typeof useNominaCatalogo>;
-type NominaState = ReturnType<typeof useNominaStaging>;
+type CatalogoState = ReturnType<typeof useCatalogoResource>;
+type NominaState = ReturnType<typeof useStagingResource>;
 
 const INITIAL_MODAL_FORM: CatalogoModalForm = {
   versionId: '',

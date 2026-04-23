@@ -3,7 +3,7 @@ import type {
   ReciboBusquedaItemDto,
   ReciboBusquedaPlazaDto,
   ReciboBusquedaTaxDetailDto,
-} from '../../../types/nomina-busqueda-recibos.types';
+} from '@/features/admin/nomina/busqueda-recibos/model/busqueda-recibos.types';
 import {
   formatCurrency,
   formatDate,

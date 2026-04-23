@@ -5,13 +5,13 @@ import { toErrorMessage } from '@/lib/api/api.errores';
 import {
   crearORecuperarPeriodoNomina,
   obtenerPeriodoNomina,
-} from '../services/nomina-periodos.service';
+} from '@/features/admin/nomina/configuracion/api/periodos';
 import type {
   CrearPeriodoNominaPayload,
   PeriodoNominaDto,
-} from '../types/nomina-periodos.types';
+} from '@/features/admin/types/nomina-periodos.types';
 
-export function useNominaPeriodos() {
+export function usePeriodosResource() {
   const [detalle, setDetalle] = useState<PeriodoNominaDto | null>(null);
   const [ultimoCreado, setUltimoCreado] = useState<PeriodoNominaDto | null>(null);
 
@@ -60,13 +60,10 @@ export function useNominaPeriodos() {
   return {
     detalle,
     ultimoCreado,
-
     loadingDetalle,
     loadingCreate,
-
     errorDetalle,
     errorCreate,
-
     consultarPorId,
     crearPeriodo,
   };

@@ -1,4 +1,4 @@
-import type { ReciboBusquedaItemDto } from '../../../types/nomina-busqueda-recibos.types';
+import type { ReciboBusquedaItemDto } from '@/features/admin/nomina/busqueda-recibos/model/busqueda-recibos.types';
 import ReciboCard from './ReciboCard';
 import s from './NominaBusquedaRecibosResultsSection.module.css';
 

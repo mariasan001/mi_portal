@@ -2,18 +2,18 @@
 
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { useNominaPeriodos } from '@/features/admin/hooks/useNominaPeriodos';
-import { useNominaVersiones } from '@/features/admin/hooks/useNominaVersiones';
 import { useAuth } from '@/features/auth/context/auth.context';
 import type { ConfiguracionEntity } from '../model/configuracion.types';
+import { usePeriodosResource } from './usePeriodosResource';
+import { useVersionesResource } from './useVersionesResource';
 
 export function useConfiguracionController() {
   const [activeEntity, setActiveEntity] = useState<ConfiguracionEntity>('periodo');
   const [searchId, setSearchId] = useState('');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const { sesion } = useAuth();
-  const periodos = useNominaPeriodos();
-  const versiones = useNominaVersiones();
+  const periodos = usePeriodosResource();
+  const versiones = useVersionesResource();
 
   const currentLoadingSearch =
     activeEntity === 'periodo'

@@ -2,13 +2,12 @@
 
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
-
-import { useNominaBusquedaRecibos } from '../../../hooks/useNominaBusquedaRecibos';
+import { useBusquedaRecibosResource } from '@/features/admin/nomina/busqueda-recibos/application/useBusquedaRecibosResource';
 import { buildSummary } from '../utils/nomina-busqueda-recibos-view.utils';
 import type { NominaBusquedaRecibosFormState } from '../types/nomina-busqueda-recibos-view.types';
 
 export function useNominaBusquedaRecibosView() {
-  const domain = useNominaBusquedaRecibos();
+  const domain = useBusquedaRecibosResource();
 
   const [form, setForm] = useState<NominaBusquedaRecibosFormState>({
     claveSp: '',

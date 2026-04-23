@@ -2,13 +2,13 @@
 
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { useNominaAuditoria } from '@/features/admin/hooks/useNominaAuditoria';
 import {
   buildAuditSummary,
   buildCancellationFilters,
   buildReleaseFilters,
   PAGE_SIZE,
 } from '../model/auditoria.selectors';
+import { useAuditoriaResource } from './useAuditoriaResource';
 import type {
   AuditCancellationsQuery,
   AuditReleasesQuery,
@@ -18,7 +18,7 @@ import type {
 } from '../model/auditoria.types';
 
 export function useAuditoriaController() {
-  const domain = useNominaAuditoria();
+  const domain = useAuditoriaResource();
   const [activeAction, setActiveAction] = useState<AuditoriaAction>('liberaciones');
   const [releaseForm, setReleaseForm] = useState<AuditoriaReleaseFormState>({
     versionId: '',
