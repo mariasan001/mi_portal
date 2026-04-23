@@ -10,6 +10,25 @@
   background: var(--surface);
 }
 
+.enter {
+  animation: fadeUpScale 0.26s ease both;
+}
+
+.enterScale {
+  animation: fadeScale 0.22s ease both;
+  animation-delay: 0.05s;
+}
+
+.enterSoft {
+  animation: fadeUp 0.2s ease both;
+  animation-delay: 0.08s;
+}
+
+.enterSoftDelay {
+  animation: fadeUp 0.2s ease both;
+  animation-delay: 0.12s;
+}
+
 .iconWrap {
   width: 52px;
   height: 52px;
@@ -64,6 +83,48 @@
 .search .iconWrap {
   background: rgba(188, 148, 90, 0.1);
   color: #8a6a3d;
+}
+
+@keyframes fadeUpScale {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fadeScale {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .enter,
+  .enterScale,
+  .enterSoft,
+  .enterSoftDelay {
+    animation: none !important;
+  }
 }
 
 @media (max-width: 640px) {

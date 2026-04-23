@@ -1,4 +1,4 @@
-'use client';
+
 
 import { CalendarRange, Layers3 } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';

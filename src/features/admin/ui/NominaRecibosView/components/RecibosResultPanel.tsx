@@ -1,4 +1,4 @@
-'use client';
+
 
 import { formatUnknownValue } from '../utils/nomina-recibos-view.utils';
 import s from './RecibosResultPanel.module.css';

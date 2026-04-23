@@ -1,4 +1,3 @@
-'use client';
 
 import { FileSearch } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';

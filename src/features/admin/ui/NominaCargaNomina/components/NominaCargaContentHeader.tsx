@@ -1,4 +1,4 @@
-'use client';
+
 
 import { ArrowLeft } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';

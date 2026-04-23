@@ -1,4 +1,4 @@
-'use client';
+
 
 import { AlertTriangle, BarChart3, Eye } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';

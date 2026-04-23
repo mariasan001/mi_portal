@@ -1,4 +1,4 @@
-'use client';
+
 
 import { FileText, RefreshCw } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';

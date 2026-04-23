@@ -1,4 +1,3 @@
-'use client';
 
 import { CheckCircle2, FileSearch, SearchX } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';

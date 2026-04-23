@@ -4,6 +4,8 @@
  * cx()
  * Utilidad mínima para componer className sin librerías.
  *
+ *
+ * 
  * ✅ Por qué existe:
  * - Evita ternarios/joins feos en JSX.
  * - Reemplaza `clsx`/`classnames` si no quieres sumar dependencias.

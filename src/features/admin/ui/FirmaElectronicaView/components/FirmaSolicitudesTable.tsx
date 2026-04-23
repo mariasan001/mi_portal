@@ -1,4 +1,4 @@
-'use client';
+
 
 import { Download, Eye, FileText } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';

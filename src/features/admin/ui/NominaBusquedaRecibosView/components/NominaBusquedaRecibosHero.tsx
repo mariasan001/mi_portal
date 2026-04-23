@@ -1,39 +1,13 @@
-'use client';
-
 import { CalendarRange, Search } from 'lucide-react';
-import { motion, useReducedMotion } from 'motion/react';
-
 import s from './NominaBusquedaRecibosHero.module.css';
 
 export default function NominaBusquedaRecibosHero() {
-  const shouldReduceMotion = useReducedMotion();
-
   return (
-    <motion.header
-      className={s.hero}
-      initial={shouldReduceMotion ? false : { opacity: 0, y: 10 }}
-      animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-      transition={{
-        duration: 0.24,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-    >
+    <header className={`${s.hero} ${s.enter}`}>
       <div className={s.headerTop}>
-        <motion.span
-          className={s.kicker}
-          initial={shouldReduceMotion ? false : { opacity: 0, x: -6 }}
-          animate={shouldReduceMotion ? undefined : { opacity: 1, x: 0 }}
-          transition={{ duration: 0.18, delay: 0.04 }}
-        >
-          Nomina
-        </motion.span>
+        <span className={`${s.kicker} ${s.enterLeft}`}>Nomina</span>
 
-        <motion.div
-          className={s.metaBadges}
-          initial={shouldReduceMotion ? false : { opacity: 0, y: 6 }}
-          animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-          transition={{ duration: 0.2, delay: 0.08 }}
-        >
+        <div className={`${s.metaBadges} ${s.enterSoft}`}>
           <span className={s.metaBadge}>
             <Search size={14} />
             Busqueda
@@ -43,29 +17,16 @@ export default function NominaBusquedaRecibosHero() {
             <CalendarRange size={14} />
             Servidor y periodo
           </span>
-        </motion.div>
+        </div>
       </div>
 
       <div className={s.content}>
-        <motion.h1
-          className={s.title}
-          initial={shouldReduceMotion ? false : { opacity: 0, y: 6 }}
-          animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-          transition={{ duration: 0.2, delay: 0.12 }}
-        >
-          Busqueda por servidor 
-        </motion.h1>
+        <h1 className={`${s.title} ${s.enterSoft}`}>Busqueda por servidor</h1>
 
-        <motion.p
-          className={s.subtitle}
-          initial={shouldReduceMotion ? false : { opacity: 0, y: 6 }}
-          animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-          transition={{ duration: 0.2, delay: 0.16 }}
-        >
-          Consulta recibos completos por clave SP 
-   
-        </motion.p>
+        <p className={`${s.subtitle} ${s.enterSoftDelay}`}>
+          Consulta recibos completos por clave SP
+        </p>
       </div>
-    </motion.header>
+    </header>
   );
 }

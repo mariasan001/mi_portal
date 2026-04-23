@@ -1,4 +1,4 @@
-'use client';
+
 
 import { FileText, LockKeyhole, UserRound, AlignLeft, Upload, X } from 'lucide-react';
 import s from './FirmaCrearSolicitudModal.module.css';

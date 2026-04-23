@@ -1,4 +1,4 @@
-'use client';
+
 
 import { ChevronUp, ShieldCheck, X } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';

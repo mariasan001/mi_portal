@@ -1,4 +1,4 @@
-'use client';
+
 
 import { LoaderCircle, X } from 'lucide-react';
 

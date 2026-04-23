@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { FiArrowUpRight, FiMessageCircle, FiSearch, FiX } from 'react-icons/fi';
 
 import s from './PortalAssistant.module.css';

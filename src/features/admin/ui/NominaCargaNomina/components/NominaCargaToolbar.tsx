@@ -1,4 +1,4 @@
-'use client';
+
 
 import { Plus, Play, Search } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';
