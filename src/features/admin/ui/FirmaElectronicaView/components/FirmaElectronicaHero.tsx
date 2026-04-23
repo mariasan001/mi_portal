@@ -55,15 +55,14 @@ export default function FirmaElectronicaHero() {
         >
           Firma electronica
         </motion.h1>
-
+         
         <motion.p
           className={s.subtitle}
           initial={shouldReduceMotion ? false : { opacity: 0, y: 6 }}
           animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
           transition={{ duration: 0.2, delay: 0.16 }}
         >
-          Gestiona solicitudes de firma, consulta su estatus y revisa el detalle
-          funcional y tecnico de cada documento firmado.
+          Gestiona solicitudes de firma, consulta su estatus
         </motion.p>
       </div>
     </motion.header>

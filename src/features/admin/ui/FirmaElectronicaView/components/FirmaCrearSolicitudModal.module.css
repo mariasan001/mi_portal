@@ -245,12 +245,16 @@
   border: none;
   background: transparent;
   color: var(--text);
-  font: inherit;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
   outline: none;
 }
 
 .inputWrap input::placeholder {
   color: var(--muted);
+  font-size: 12px;
 }
 
 .field textarea {
@@ -264,7 +268,9 @@
   border-radius: 12px;
   background: #fff;
   color: var(--text);
-  font: inherit;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
   line-height: 1.45;
   resize: vertical;
   outline: none;
@@ -278,6 +284,7 @@
 
 .field textarea::placeholder {
   color: var(--muted);
+  font-size: 12px;
 }
 
 .footer {

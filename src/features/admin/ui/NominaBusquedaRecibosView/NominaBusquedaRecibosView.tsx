@@ -30,7 +30,7 @@ export default function NominaBusquedaRecibosView() {
           <NominaBusquedaRecibosContentHeader
             eyebrow="Resultado"
             title="Recibos localizados"
-            description="Consulta recibos completos por clave SP y periodo, mostrando encabezado, plazas, detalle fiscal y conceptos asociados."
+            description="Consulta recibos completos por clave SP y periodo"
             summaryItems={vm.summaryItems}
             showSummary={vm.hasResults}
           />

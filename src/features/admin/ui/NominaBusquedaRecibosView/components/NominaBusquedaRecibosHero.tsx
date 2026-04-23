@@ -53,7 +53,7 @@ export default function NominaBusquedaRecibosHero() {
           animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
           transition={{ duration: 0.2, delay: 0.12 }}
         >
-          Busqueda por servidor publico y periodo
+          Busqueda por servidor 
         </motion.h1>
 
         <motion.p
@@ -62,9 +62,8 @@ export default function NominaBusquedaRecibosHero() {
           animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
           transition={{ duration: 0.2, delay: 0.16 }}
         >
-          Consulta recibos completos por clave SP y periodo, considerando
-          reexpediciones y mostrando encabezado, plazas, detalle fiscal y
-          conceptos.
+          Consulta recibos completos por clave SP 
+   
         </motion.p>
       </div>
     </motion.header>

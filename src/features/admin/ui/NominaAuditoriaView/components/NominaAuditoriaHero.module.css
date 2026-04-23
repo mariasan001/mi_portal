@@ -52,6 +52,10 @@
   white-space: nowrap;
 }
 
+.metaBadge svg {
+  color: var(--oro);
+}
+
 .content {
   display: grid;
   gap: 6px;

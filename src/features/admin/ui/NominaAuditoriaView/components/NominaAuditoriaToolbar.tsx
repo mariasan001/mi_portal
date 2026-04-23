@@ -114,26 +114,26 @@ export default function NominaAuditoriaToolbar({
                     />
                   </div>
                 </label>
-              </div>
 
-              <div className={s.actions}>
-                <motion.button
-                  type="button"
-                  className={s.executeBtn}
-                  onClick={onExecute}
-                  disabled={loading}
-                  whileHover={
-                    !shouldReduceMotion && !loading
-                      ? { y: -1, transition: { duration: 0.16 } }
-                      : undefined
-                  }
-                  whileTap={
-                    !shouldReduceMotion && !loading ? { scale: 0.99 } : undefined
-                  }
-                >
-                  <Play size={16} />
-                  <span>{buttonLabel}</span>
-                </motion.button>
+                <div className={`${s.actions} ${s.inlineAction}`}>
+                  <motion.button
+                    type="button"
+                    className={s.executeBtn}
+                    onClick={onExecute}
+                    disabled={loading}
+                    whileHover={
+                      !shouldReduceMotion && !loading
+                        ? { y: -1, transition: { duration: 0.16 } }
+                        : undefined
+                    }
+                    whileTap={
+                      !shouldReduceMotion && !loading ? { scale: 0.99 } : undefined
+                    }
+                  >
+                    <Play size={16} />
+                    <span>{buttonLabel}</span>
+                  </motion.button>
+                </div>
               </div>
             </div>
           </div>

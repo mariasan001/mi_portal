@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useAuth } from '@/features/auth/context/auth.context';
 import { SidebarMenu } from '@/features/navegacion/ui/SidebarMenu';
 
+import AdminFloatingBubble from './AdminFloatingBubble';
 import s from './AdminShell.module.css';
 
 type Props = {
@@ -29,6 +30,7 @@ export default function AdminShell({ children, appCode }: Props) {
       />
 
       <main className={s.main}>{children}</main>
+      <AdminFloatingBubble />
     </div>
   );
 }
