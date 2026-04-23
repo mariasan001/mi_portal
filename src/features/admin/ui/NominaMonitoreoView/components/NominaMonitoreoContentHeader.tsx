@@ -1,4 +1,4 @@
-import s from './NominaMonitoreoContentHeader.module.css';
+import NominaSectionHeader from '@/features/admin/nomina/shared/ui/NominaSectionHeader/NominaSectionHeader';
 
 type Props = {
   eyebrow: string;
@@ -11,15 +11,5 @@ export default function NominaMonitoreoContentHeader({
   title,
   description,
 }: Props) {
-  return (
-    <div className={`${s.header} ${s.enter}`}>
-      <div className={s.copy}>
-        <span className={`${s.eyebrow} ${s.enterLeft}`}>{eyebrow}</span>
-        <h3 className={`${s.title} ${s.enterSoft}`}>{title}</h3>
-        {description ? (
-          <p className={`${s.description} ${s.enterSoftDelay}`}>{description}</p>
-        ) : null}
-      </div>
-    </div>
-  );
+  return <NominaSectionHeader eyebrow={eyebrow} title={title} description={description} />;
 }

@@ -1,5 +1,8 @@
 'use client';
 
+import AdminInlineMessage from '../../shared/ui/AdminInlineMessage/AdminInlineMessage';
+import AdminPageShell from '../../shared/ui/AdminPageShell/AdminPageShell';
+import AdminSurface from '../../shared/ui/AdminSurface/AdminSurface';
 import EmptyState from './components/EmptyState';
 import NominaBusquedaRecibosContentHeader from './components/NominaBusquedaRecibosContentHeader';
 import NominaBusquedaRecibosHero from './components/NominaBusquedaRecibosHero';
@@ -12,8 +15,7 @@ export default function NominaBusquedaRecibosView() {
   const vm = useNominaBusquedaRecibosView();
 
   return (
-    <section className={s.page}>
-      <div className={s.stack}>
+    <AdminPageShell>
         <NominaBusquedaRecibosHero />
 
         <NominaBusquedaRecibosToolbar
@@ -26,7 +28,7 @@ export default function NominaBusquedaRecibosView() {
           onSearch={vm.executeSearch}
         />
 
-        <section className={s.resultContainer}>
+        <AdminSurface className={s.resultContainer}>
           <NominaBusquedaRecibosContentHeader
             eyebrow="Resultado"
             title="Recibos localizados"
@@ -35,7 +37,11 @@ export default function NominaBusquedaRecibosView() {
             showSummary={vm.hasResults}
           />
 
-          {vm.error ? <div className={s.errorBox}>{vm.error}</div> : null}
+          {vm.error ? (
+            <AdminInlineMessage title="Ocurrió un problema" tone="error">
+              {vm.error}
+            </AdminInlineMessage>
+          ) : null}
 
           {vm.hasResults ? (
             <NominaBusquedaRecibosResultsSection
@@ -48,8 +54,7 @@ export default function NominaBusquedaRecibosView() {
               variant="search"
             />
           )}
-        </section>
-      </div>
-    </section>
+        </AdminSurface>
+    </AdminPageShell>
   );
 }

@@ -11,12 +11,12 @@ import {
 } from 'lucide-react';
 
 import s from './NominaProcesamientoSummaryPanel.module.css';
-import type { PayrollSummaryDto } from '@/features/admin/types/nomina-procesamiento.types';
+import type { PayrollSummaryDto } from '@/features/admin/nomina/procesamiento/model/procesamiento.types';
 import {
   getSummaryFields,
   getSummaryKpis,
   type SummaryField,
-} from '../utils/nomina-procesamiento-summary.utils';
+} from '@/features/admin/nomina/procesamiento/model/procesamiento.selectors';
 
 type Props = {
   detalle: PayrollSummaryDto;

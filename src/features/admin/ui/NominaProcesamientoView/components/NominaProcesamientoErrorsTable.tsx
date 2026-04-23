@@ -1,9 +1,7 @@
-
-
 import { AlertTriangle } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';
-
-import type { PayrollErrorRowDto } from '@/features/admin/types/nomina-procesamiento.types';
+import type { PayrollErrorRowDto } from '@/features/admin/nomina/procesamiento/model/procesamiento.types';
+import { formatCellValue } from '@/features/admin/nomina/procesamiento/model/procesamiento.selectors';
 import s from './NominaProcesamientoErrorsTable.module.css';
 
 type Props = {
@@ -16,22 +14,14 @@ const columns: Array<{
 }> = [
   { key: 'rowNum', label: 'Fila' },
   { key: 'fileType', label: 'Tipo archivo' },
-  { key: 'payPeriodCode', label: 'Periodo nómina' },
+  { key: 'payPeriodCode', label: 'Periodo nomina' },
   { key: 'receiptPeriodCode', label: 'Periodo recibo' },
   { key: 'neyemp', label: 'Empleado' },
   { key: 'necpza', label: 'Plaza' },
-  { key: 'nominaTipo', label: 'Tipo nómina' },
-  { key: 'reexpeditionBadge', label: 'Reexpedición' },
+  { key: 'nominaTipo', label: 'Tipo nomina' },
+  { key: 'reexpeditionBadge', label: 'Reexpedicion' },
   { key: 'errorDetailCell', label: 'Detalle del error' },
 ];
-
-function formatCellValue(value: unknown) {
-  if (value === null || value === undefined || value === '') {
-    return '—';
-  }
-
-  return String(value);
-}
 
 export default function NominaProcesamientoErrorsTable({ rows }: Props) {
   const shouldReduceMotion = useReducedMotion();
@@ -66,15 +56,11 @@ export default function NominaProcesamientoErrorsTable({ rows }: Props) {
                   }}
                 >
                   <td>
-                    <span className={s.rowIndex}>
-                      {formatCellValue(row.rowNum)}
-                    </span>
+                    <span className={s.rowIndex}>{formatCellValue(row.rowNum)}</span>
                   </td>
 
                   <td>
-                    <span className={s.fileTypeBadge}>
-                      {formatCellValue(row.fileType)}
-                    </span>
+                    <span className={s.fileTypeBadge}>{formatCellValue(row.fileType)}</span>
                   </td>
 
                   <td className={s.cell}>{formatCellValue(row.payPeriodCode)}</td>
@@ -89,7 +75,7 @@ export default function NominaProcesamientoErrorsTable({ rows }: Props) {
                         row.isReexpedition ? s.warn : s.neutral
                       }`}
                     >
-                      {row.isReexpedition ? 'Sí' : 'No'}
+                      {row.isReexpedition ? 'Si' : 'No'}
                     </span>
                   </td>
 

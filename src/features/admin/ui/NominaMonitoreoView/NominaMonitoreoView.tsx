@@ -3,6 +3,9 @@
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import AdminInlineMessage from '../../shared/ui/AdminInlineMessage/AdminInlineMessage';
+import AdminPageShell from '../../shared/ui/AdminPageShell/AdminPageShell';
+import AdminSurface from '../../shared/ui/AdminSurface/AdminSurface';
 import s from './NominaMonitoreoView.module.css';
 import { useNominaMonitoreo } from '../../hooks/useNominaMonitoreo';
 import NominaMonitoreoHero from './components/NominaMonitoreoHero';
@@ -49,8 +52,7 @@ export default function NominaMonitoreoView() {
   };
 
   return (
-    <section className={s.page}>
-      <div className={s.stack}>
+    <AdminPageShell>
         <NominaMonitoreoHero />
 
         <NominaMonitoreoToolbar
@@ -62,9 +64,13 @@ export default function NominaMonitoreoView() {
           onReset={handleReset}
         />
 
-        {errorEstado ? <p className={s.error}>{errorEstado}</p> : null}
+        {errorEstado ? (
+          <AdminInlineMessage title="Ocurrió un problema" tone="error">
+            {errorEstado}
+          </AdminInlineMessage>
+        ) : null}
 
-        <div className={s.resultCard}>
+        <AdminSurface className={s.resultCard} as="div">
           <NominaMonitoreoContentHeader
             eyebrow="Resultado"
             title={
@@ -87,8 +93,7 @@ export default function NominaMonitoreoView() {
               description="Captura un payPeriodId válido para revisar el estado general del proceso de nómina."
             />
           )}
-        </div>
-      </div>
-    </section>
+        </AdminSurface>
+    </AdminPageShell>
   );
 }

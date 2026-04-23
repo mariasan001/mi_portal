@@ -1,43 +1,10 @@
-.page {
-  display: grid;
-  gap: 18px;
-  margin: 20px;
-}
-
-.stack {
-  display: grid;
-  gap: 18px;
-}
-
 .resultCard {
   display: grid;
   gap: 18px;
-  padding: 20px 22px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 22px;
-  box-shadow: var(--shadow-sm);
-}
-
-.error {
-  margin: 0;
-  padding: 14px 16px;
-  border-radius: 16px;
-  border: 1px solid rgba(180, 35, 24, 0.14);
-  background: rgba(180, 35, 24, 0.06);
-  color: var(--danger);
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1.5;
 }
 
 @media (max-width: 640px) {
-  .page {
-    margin: 16px;
-  }
-
   .resultCard {
-    padding: 16px;
-    border-radius: 18px;
+    gap: 16px;
   }
 }
