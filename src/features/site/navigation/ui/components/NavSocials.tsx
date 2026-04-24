@@ -3,7 +3,7 @@
 import { FaFacebookF, FaXTwitter } from 'react-icons/fa6';
 
 import { SOCIAL_LINKS } from '../../model/nav.constants';
-import css from '../../../Components/Nav/SiteNav.module.css';
+import css from '../SiteNav.module.css';
 
 const SOCIAL_ICONS = {
   Facebook: <FaFacebookF />,

@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import css from '../../../Components/Nav/SiteNav.module.css';
+import css from '../SiteNav.module.css';
 
 export function NavLogo() {
   return (

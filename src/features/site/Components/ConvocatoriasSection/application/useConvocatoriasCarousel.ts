@@ -1,10 +1,12 @@
-// src/features/site/Components/ConvocatoriasSection/hooks/useConvocatoriasCarousel.ts
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { clamp, prefersReducedMotion } from '../utils/convocatoriasUtils';
 
-type PostCard = { id: string };
+import { clamp, prefersReducedMotion } from '../model/convocatorias.utils';
+
+type PostCard = {
+  id: string;
+};
 
 type Params = {
   posts: PostCard[];
@@ -13,50 +15,48 @@ type Params = {
 
 export function useConvocatoriasCarousel({ posts, scrollerRef }: Params) {
   const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
   const stepRef = useRef<number>(320);
 
-  const [paused, setPaused] = useState(false);
-
   const clampIndex = useCallback(
-    (i: number) => clamp(i, 0, Math.max(0, posts.length - 1)),
+    (index: number) => clamp(index, 0, Math.max(0, posts.length - 1)),
     [posts.length]
   );
 
   const computeStep = useCallback(() => {
-    const el = scrollerRef.current;
-    if (!el) return;
+    const element = scrollerRef.current;
+    if (!element) return;
 
-    const first = el.querySelector<HTMLElement>('[data-post]');
-    if (!first) return;
+    const firstCard = element.querySelector<HTMLElement>('[data-post]');
+    if (!firstCard) return;
 
-    const gap = 18; // debe coincidir con tu CSS
-    stepRef.current = first.offsetWidth + gap;
+    const gap = 18;
+    stepRef.current = firstCard.offsetWidth + gap;
   }, [scrollerRef]);
 
   const scrollToIndex = useCallback(
-    (idx: number) => {
-      const el = scrollerRef.current;
-      if (!el) return;
+    (index: number) => {
+      const element = scrollerRef.current;
+      if (!element) return;
 
-      const next = clampIndex(idx);
-      el.scrollTo({ left: stepRef.current * next, behavior: 'smooth' });
-      setActive(next);
+      const nextIndex = clampIndex(index);
+      element.scrollTo({ left: stepRef.current * nextIndex, behavior: 'smooth' });
+      setActive(nextIndex);
     },
     [scrollerRef, clampIndex]
   );
 
   const scrollByCard = useCallback(
-    (dir: 1 | -1) => {
-      scrollToIndex(active + dir);
+    (direction: 1 | -1) => {
+      scrollToIndex(active + direction);
     },
     [active, scrollToIndex]
   );
 
-  // ✅ mantener step actualizado + set índice por scroll real
   useEffect(() => {
     computeStep();
-    const el = scrollerRef.current;
-    if (!el) return;
+    const element = scrollerRef.current;
+    if (!element) return;
 
     let raf = 0;
 
@@ -64,45 +64,44 @@ export function useConvocatoriasCarousel({ posts, scrollerRef }: Params) {
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
         const step = stepRef.current || 1;
-        const idx = Math.round(el.scrollLeft / step);
-        const safe = clampIndex(idx);
-        setActive((prev) => (prev === safe ? prev : safe));
+        const index = Math.round(element.scrollLeft / step);
+        const safeIndex = clampIndex(index);
+        setActive((previous) => (previous === safeIndex ? previous : safeIndex));
       });
     };
 
-    el.addEventListener('scroll', onScroll, { passive: true });
+    element.addEventListener('scroll', onScroll, { passive: true });
 
     const onResize = () => computeStep();
     window.addEventListener('resize', onResize);
 
     return () => {
-      el.removeEventListener('scroll', onScroll);
+      element.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onResize);
       cancelAnimationFrame(raf);
     };
   }, [computeStep, clampIndex, scrollerRef]);
 
-  // ✅ autoplay
   useEffect(() => {
     if (paused) return;
     if (prefersReducedMotion()) return;
     if (posts.length <= 1) return;
 
-    const t = window.setInterval(() => {
-      const next = active + 1 >= posts.length ? 0 : active + 1;
-      scrollToIndex(next);
+    const timer = window.setInterval(() => {
+      const nextIndex = active + 1 >= posts.length ? 0 : active + 1;
+      scrollToIndex(nextIndex);
     }, 4200);
 
-    return () => window.clearInterval(t);
+    return () => window.clearInterval(timer);
   }, [paused, active, posts.length, scrollToIndex]);
 
   const pickById = useCallback(
     (id: string) => {
-      const idx = posts.findIndex((p) => p.id === id);
-      if (idx < 0) return;
+      const index = posts.findIndex((post) => post.id === id);
+      if (index < 0) return;
 
       setPaused(true);
-      scrollToIndex(idx);
+      scrollToIndex(index);
       window.setTimeout(() => setPaused(false), 900);
     },
     [posts, scrollToIndex]

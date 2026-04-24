@@ -8,7 +8,7 @@ import { useSiteNavController } from '../application/useSiteNavController';
 import { NavLinks } from './components/NavLinks';
 import { NavLogo } from './components/NavLogo';
 import { NavSocials } from './components/NavSocials';
-import css from '../../Components/Nav/SiteNav.module.css';
+import css from './SiteNav.module.css';
 
 export default function SiteNav() {
   const {

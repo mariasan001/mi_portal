@@ -3,7 +3,7 @@
 import Link from 'next/link';
 
 import type { NavItem } from '../../model/nav.types';
-import css from '../../../Components/Nav/SiteNav.module.css';
+import css from '../SiteNav.module.css';
 
 type Props = {
   items: NavItem[];

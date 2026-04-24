@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 
 import { useAuth } from '@/features/auth/context/auth.context';
 import { buildAuthModalHref } from '@/features/auth/utils/authRedirect';
+import { APP_ROUTES } from '../_lib/routes';
 
 type Props = {
   children: ReactNode;
@@ -26,7 +27,7 @@ export default function UserRouteGuard({
   children,
   allowAppCode = 'PLAT_SERV',
   allowRole = 'ROLE_SP_USER',
-  redirectTo = '/admin',
+  redirectTo = APP_ROUTES.admin.root,
 }: Props) {
   const router = useRouter();
   const pathname = usePathname();
@@ -50,7 +51,7 @@ export default function UserRouteGuard({
     if (status === 'anonymous') {
       router.replace(
         buildAuthModalHref({
-          returnTo: pathname || '/usuario',
+          returnTo: pathname || APP_ROUTES.usuario.root,
           appCode: allowAppCode,
         })
       );

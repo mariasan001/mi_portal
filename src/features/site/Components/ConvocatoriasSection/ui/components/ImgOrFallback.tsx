@@ -1,12 +1,15 @@
-// src/features/site/Components/ConvocatoriasSection/ui/ImgOrFallback.tsx
 'use client';
 
 import Image from 'next/image';
 import { useMemo } from 'react';
-import css from '../ConvocatoriasSection.module.css';
-import { placeholderDataUri } from '../utils/convocatoriasUtils';
 
-type Props = { src?: string; alt: string };
+import { placeholderDataUri } from '../../model/convocatorias.utils';
+import css from '../../ConvocatoriasSection.module.css';
+
+type Props = {
+  src?: string;
+  alt: string;
+};
 
 export default function ImgOrFallback({ src, alt }: Props) {
   const fallback = useMemo(() => placeholderDataUri(), []);
