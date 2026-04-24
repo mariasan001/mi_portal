@@ -1,4 +1,3 @@
-
 import {
   CalendarDays,
   FileArchive,
@@ -14,23 +13,19 @@ import type {
   ArchivoNominaDto,
   EjecucionCatalogoDto,
 } from '@/features/admin/nomina/shared/model/catalogo.types';
-
-import s from './CatalogoResultadoPanel.module.css';
 import {
   formatBytes,
   formatNominaDateTime,
-  
-} from '../utils/nomina-cargas.utils';
-import { formatNominaTitle } from '@/features/admin/nomina/configuracion/ui/utils/nomina-configuracion_tex.utils';
+  formatNominaTitle,
+} from '../../model/carga.selectors';
+
+import s from './CatalogoResultadoPanel.module.css';
 
 type Props = {
   archivo: ArchivoNominaDto | null;
   ejecucion: EjecucionCatalogoDto | null;
 };
 
-/**
- * Variantes simples para entrada escalonada de las tarjetas.
- */
 const itemVariants = {
   hidden: { opacity: 0, y: 10 },
   show: { opacity: 1, y: 0 },
@@ -40,11 +35,6 @@ export default function CatalogoResultadoPanel({
   archivo,
   ejecucion,
 }: Props) {
-  /**
-   * Accesibilidad:
-   * si el usuario prefiere menos movimiento,
-   * reducimos o eliminamos animaciones.
-   */
   const shouldReduceMotion = useReducedMotion();
 
   return (
@@ -54,10 +44,9 @@ export default function CatalogoResultadoPanel({
       animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
       transition={{ duration: 0.24 }}
     >
-    
       {archivo ? (
         <div className={s.group}>
-          <h5 className={s.groupTitle}>Archivo</h5>
+          <h5 className={s.groupTitle}>Archivo cargado</h5>
 
           <motion.dl
             className={s.grid}
@@ -72,147 +61,56 @@ export default function CatalogoResultadoPanel({
               },
             }}
           >
-            <motion.div
-              className={s.item}
-              variants={itemVariants}
-              transition={{ duration: 0.2 }}
+            <InfoCard label="File ID" icon={<Hash size={15} />}>
+              {archivo.fileId}
+            </InfoCard>
+
+            <InfoCard label="Versión" icon={<Hash size={15} />}>
+              {archivo.versionId}
+            </InfoCard>
+
+            <InfoCard label="Tipo de archivo" icon={<FileArchive size={15} />}>
+              {formatNominaTitle(archivo.fileType)}
+            </InfoCard>
+
+            <InfoCard
+              label="Nombre del archivo"
+              icon={<FileText size={15} />}
+              wide
             >
-              <div className={s.itemHead}>
-                <div className={s.iconWrap}>
-                  <Hash size={15} />
-                </div>
-                <dt>File ID</dt>
-              </div>
+              {archivo.fileName}
+            </InfoCard>
 
-              <dd>{archivo.fileId}</dd>
-            </motion.div>
+            <InfoCard label="Ruta de almacenamiento" icon={<FolderCog size={15} />} wide>
+              {archivo.filePath}
+            </InfoCard>
 
-            <motion.div
-              className={s.item}
-              variants={itemVariants}
-              transition={{ duration: 0.2 }}
+            <InfoCard label="Checksum" icon={<ShieldCheck size={15} />} wide>
+              {archivo.checksumSha256}
+            </InfoCard>
+
+            <InfoCard label="Tamaño" icon={<HardDrive size={15} />}>
+              {formatBytes(archivo.fileSizeBytes)}
+            </InfoCard>
+
+            <InfoCard label="Estatus" icon={<ShieldCheck size={15} />}>
+              {formatNominaTitle(archivo.status)}
+            </InfoCard>
+
+            <InfoCard
+              label="Fecha de carga"
+              icon={<CalendarDays size={15} />}
+              wide
             >
-              <div className={s.itemHead}>
-                <div className={s.iconWrap}>
-                  <Hash size={15} />
-                </div>
-                <dt>Versión ID</dt>
-              </div>
-
-              <dd>{archivo.versionId}</dd>
-            </motion.div>
-
-            <motion.div
-              className={s.item}
-              variants={itemVariants}
-              transition={{ duration: 0.2 }}
-            >
-              <div className={s.itemHead}>
-                <div className={s.iconWrap}>
-                  <FileArchive size={15} />
-                </div>
-                <dt>Tipo</dt>
-              </div>
-
-              <dd>{formatNominaTitle(archivo.fileType)}</dd>
-            </motion.div>
-
-            <motion.div
-              className={`${s.item} ${s.itemWide}`}
-              variants={itemVariants}
-              transition={{ duration: 0.2 }}
-            >
-              <div className={s.itemHead}>
-                <div className={s.iconWrap}>
-                  <FileText size={15} />
-                </div>
-                <dt>Nombre del archivo</dt>
-              </div>
-
-              <dd>{archivo.fileName}</dd>
-            </motion.div>
-
-            <motion.div
-              className={`${s.item} ${s.itemWide}`}
-              variants={itemVariants}
-              transition={{ duration: 0.2 }}
-            >
-              <div className={s.itemHead}>
-                <div className={s.iconWrap}>
-                  <FolderCog size={15} />
-                </div>
-                <dt>Ruta</dt>
-              </div>
-
-              <dd>{archivo.filePath}</dd>
-            </motion.div>
-
-            <motion.div
-              className={`${s.item} ${s.itemWide}`}
-              variants={itemVariants}
-              transition={{ duration: 0.2 }}
-            >
-              <div className={s.itemHead}>
-                <div className={s.iconWrap}>
-                  <ShieldCheck size={15} />
-                </div>
-                <dt>Checksum</dt>
-              </div>
-
-              <dd>{archivo.checksumSha256}</dd>
-            </motion.div>
-
-            <motion.div
-              className={s.item}
-              variants={itemVariants}
-              transition={{ duration: 0.2 }}
-            >
-              <div className={s.itemHead}>
-                <div className={s.iconWrap}>
-                  <HardDrive size={15} />
-                </div>
-                <dt>Tamaño</dt>
-              </div>
-
-              <dd>{formatBytes(archivo.fileSizeBytes)}</dd>
-            </motion.div>
-
-            <motion.div
-              className={s.item}
-              variants={itemVariants}
-              transition={{ duration: 0.2 }}
-            >
-              <div className={s.itemHead}>
-                <div className={s.iconWrap}>
-                  <ShieldCheck size={15} />
-                </div>
-                <dt>Estatus</dt>
-              </div>
-
-              <dd>{formatNominaTitle(archivo.status)}</dd>
-            </motion.div>
-
-            <motion.div
-              className={`${s.item} ${s.itemWide}`}
-              variants={itemVariants}
-              transition={{ duration: 0.2 }}
-            >
-              <div className={s.itemHead}>
-                <div className={s.iconWrap}>
-                  <CalendarDays size={15} />
-                </div>
-                <dt>Fecha de carga</dt>
-              </div>
-
-              <dd>{formatNominaDateTime(archivo.uploadedAt)}</dd>
-            </motion.div>
+              {formatNominaDateTime(archivo.uploadedAt)}
+            </InfoCard>
           </motion.dl>
         </div>
       ) : null}
 
       {ejecucion ? (
         <div className={s.group}>
-          <h5 className={s.groupTitle}>Ejecución</h5>
+          <h5 className={s.groupTitle}>Ejecución generada</h5>
 
           <motion.dl
             className={s.grid}
@@ -227,53 +125,52 @@ export default function CatalogoResultadoPanel({
               },
             }}
           >
-            <motion.div
-              className={s.item}
-              variants={itemVariants}
-              transition={{ duration: 0.2 }}
-            >
-              <div className={s.itemHead}>
-                <div className={s.iconWrap}>
-                  <Hash size={15} />
-                </div>
-                <dt>Execution ID</dt>
-              </div>
+            <InfoCard label="Execution ID" icon={<Hash size={15} />}>
+              {ejecucion.executionId}
+            </InfoCard>
 
-              <dd>{ejecucion.executionId}</dd>
-            </motion.div>
+            <InfoCard label="File ID" icon={<Hash size={15} />}>
+              {ejecucion.fileId}
+            </InfoCard>
 
-            <motion.div
-              className={s.item}
-              variants={itemVariants}
-              transition={{ duration: 0.2 }}
-            >
-              <div className={s.itemHead}>
-                <div className={s.iconWrap}>
-                  <Hash size={15} />
-                </div>
-                <dt>File ID</dt>
-              </div>
-
-              <dd>{ejecucion.fileId}</dd>
-            </motion.div>
-
-            <motion.div
-              className={s.item}
-              variants={itemVariants}
-              transition={{ duration: 0.2 }}
-            >
-              <div className={s.itemHead}>
-                <div className={s.iconWrap}>
-                  <FolderCog size={15} />
-                </div>
-                <dt>Proceso</dt>
-              </div>
-
-              <dd className={s.compactValue}>{ejecucion.jobName}</dd>
-            </motion.div>
+            <InfoCard label="Proceso ejecutado" icon={<FolderCog size={15} />}>
+              {ejecucion.jobName}
+            </InfoCard>
           </motion.dl>
         </div>
       ) : null}
     </motion.section>
+  );
+}
+
+type InfoCardProps = {
+  children: React.ReactNode;
+  icon: React.ReactNode;
+  label: string;
+  wide?: boolean;
+};
+
+function InfoCard({ children, icon, label, wide = false }: InfoCardProps) {
+  return (
+    <motion.div
+      className={`${s.item} ${wide ? s.itemWide : ''}`.trim()}
+      variants={itemVariants}
+      transition={{ duration: 0.2 }}
+    >
+      <div className={s.itemHead}>
+        <div className={s.iconWrap}>{icon}</div>
+        <dt>{label}</dt>
+      </div>
+
+      <dd
+        className={
+          typeof children === 'string' && children.length > 48
+            ? s.compactValue
+            : undefined
+        }
+      >
+        {children}
+      </dd>
+    </motion.div>
   );
 }

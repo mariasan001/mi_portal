@@ -2,9 +2,10 @@
 
 import { useCallback, useMemo } from 'react';
 import { toast } from 'sonner';
-import type { useCatalogoResource } from '@/features/admin/nomina/carga/application/useCatalogoResource';
-import type { useStagingResource } from '@/features/admin/nomina/carga/application/useStagingResource';
-import type { NominaCargaEntity } from '../types/nomina-cargas.types';
+
+import type { useCatalogoResource } from './useCatalogoResource';
+import type { useStagingResource } from './useStagingResource';
+import type { NominaCargaEntity } from '../model/carga.types';
 
 type CatalogoState = ReturnType<typeof useCatalogoResource>;
 type NominaState = ReturnType<typeof useStagingResource>;
@@ -14,15 +15,13 @@ type Params = {
   searchFileId: string;
   catalogo: CatalogoState;
   nomina: NominaState;
-  setConsultMessage: (message: string | null) => void;
 };
 
-export function useNominaCargaExecution({
+export function useCargaExecution({
   activeEntity,
   searchFileId,
   catalogo,
   nomina,
-  setConsultMessage,
 }: Params) {
   const activeError = useMemo(() => {
     if (activeEntity === 'catalogo') {
@@ -40,50 +39,37 @@ export function useNominaCargaExecution({
     return nomina.loadingRun;
   }, [activeEntity, catalogo.loadingRun, catalogo.loadingUpload, nomina.loadingRun]);
 
-  const canSearch = useMemo(() => Number(searchFileId) > 0 && !currentLoading, [currentLoading, searchFileId]);
+  const canSearch = useMemo(
+    () => Number(searchFileId) > 0 && !currentLoading,
+    [currentLoading, searchFileId]
+  );
+
   const canExecute = canSearch;
-
-  const handleConsult = useCallback(async () => {
-    const parsedFileId = Number(searchFileId);
-
-    if (!Number.isFinite(parsedFileId) || parsedFileId <= 0) {
-      toast.warning('Captura un fileId valido.');
-      return;
-    }
-
-    setConsultMessage(
-      `La busqueda por fileId (${parsedFileId}) ya quedo preparada en la UI. Solo falta conectar el endpoint real de consulta.`
-    );
-
-    toast.message('Consulta preparada visualmente.', {
-      description: 'Falta enlazar el endpoint real para recuperar el detalle por fileId.',
-    });
-  }, [searchFileId, setConsultMessage]);
 
   const handleExecute = useCallback(async () => {
     const parsedFileId = Number(searchFileId);
 
     if (!Number.isFinite(parsedFileId) || parsedFileId <= 0) {
-      toast.warning('Captura un fileId valido.');
+      toast.warning('Captura un fileId válido.');
       return;
     }
 
     try {
       if (activeEntity === 'catalogo') {
         await catalogo.runCatalogo(parsedFileId);
-        toast.success('Carga de catalogo ejecutada correctamente.');
+        toast.success('Carga de catálogo ejecutada correctamente.');
         return;
       }
 
       await nomina.runStaging(parsedFileId);
-      toast.success('Staging de nomina ejecutado correctamente.');
+      toast.success('Staging de nómina ejecutado correctamente.');
     } catch {
       if (activeEntity === 'catalogo') {
-        toast.error('No se pudo ejecutar la carga de catalogo.');
+        toast.error('No se pudo ejecutar la carga de catálogo.');
         return;
       }
 
-      toast.error('No se pudo ejecutar el staging de nomina.');
+      toast.error('No se pudo ejecutar el staging de nómina.');
     }
   }, [activeEntity, catalogo, nomina, searchFileId]);
 
@@ -101,7 +87,6 @@ export function useNominaCargaExecution({
     canSearch,
     canExecute,
     shouldDimContent,
-    handleConsult,
     handleExecute,
   };
 }

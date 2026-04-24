@@ -71,11 +71,11 @@ export function useAuditoriaController() {
         setSubmittedReleaseFilters(filters);
         setReleasePage(page);
         if (shouldToast) {
-          toast.success('Auditoria de liberaciones consultada.');
+          toast.success('Auditoría de liberaciones consultada.');
         }
       } catch {
         if (shouldToast) {
-          toast.error('No se pudo consultar la auditoria de liberaciones.');
+          toast.error('No se pudo consultar la auditoría de liberaciones.');
         }
       }
     },
@@ -97,11 +97,11 @@ export function useAuditoriaController() {
         setSubmittedCancellationFilters(filters);
         setCancellationPage(page);
         if (shouldToast) {
-          toast.success('Auditoria de cancelaciones consultada.');
+          toast.success('Auditoría de cancelaciones consultada.');
         }
       } catch {
         if (shouldToast) {
-          toast.error('No se pudo consultar la auditoria de cancelaciones.');
+          toast.error('No se pudo consultar la auditoría de cancelaciones.');
         }
       }
     },
@@ -165,13 +165,13 @@ export function useAuditoriaController() {
 
   const currentTitle =
     activeAction === 'liberaciones'
-      ? 'Auditoria de liberaciones'
-      : 'Auditoria de cancelaciones';
+      ? 'Auditoría de liberaciones'
+      : 'Auditoría de cancelaciones';
 
   const currentDescription =
     activeAction === 'liberaciones'
-      ? 'Consulta la bitacora por version, periodo o etapa.'
-      : 'Consulta la bitacora por recibo o llave de negocio.';
+      ? 'Consulta la bitácora por versión, período o etapa.'
+      : 'Consulta la bitácora por recibo o llave de negocio.';
 
   const summaryItems = useMemo(
     () =>

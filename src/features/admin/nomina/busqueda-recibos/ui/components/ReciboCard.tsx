@@ -8,13 +8,16 @@ import {
   formatCurrency,
   formatDate,
   formatDateTime,
-} from '../utils/nomina-busqueda-recibos-view.utils';
+} from '@/features/admin/nomina/busqueda-recibos/model/busqueda-recibos.selectors';
+
 import ReciboTableSection from './ReciboTableSection';
 import s from './ReciboCard.module.css';
 
 type Props = {
   receipt: ReciboBusquedaItemDto;
 };
+
+const EMPTY_VALUE = '—';
 
 export default function ReciboCard({ receipt }: Props) {
   return (
@@ -45,62 +48,62 @@ export default function ReciboCard({ receipt }: Props) {
       </div>
 
       <div className={s.infoGrid}>
-        <InfoItem label="Revision ID" value={receipt.header.revisionId} />
-        <InfoItem label="Revision No" value={receipt.header.revisionNo} />
+        <InfoItem label="Revisión ID" value={receipt.header.revisionId} />
+        <InfoItem label="Revisión No." value={receipt.header.revisionNo} />
         <InfoItem label="Tipo nómina" value={receipt.header.nominaTipo} />
         <InfoItem
           label="Reexpedición"
           value={receipt.header.isReexpedition ? 'Sí' : 'No'}
         />
-        <InfoItem label="Periodo pago" value={receipt.header.payPeriodCode} />
+        <InfoItem label="Período de pago" value={receipt.header.payPeriodCode} />
         <InfoItem
-          label="Periodo recibo"
+          label="Período de recibo"
           value={receipt.header.receiptPeriodCode}
         />
-        <InfoItem label="Stage" value={receipt.header.stage} />
+        <InfoItem label="Etapa" value={receipt.header.stage} />
         <InfoItem
           label="Liberado"
           value={formatDateTime(receipt.header.releasedAt)}
         />
         <InfoItem
           label="Fuente NEG/PPA"
-          value={receipt.header.sourceNegppa || '—'}
+          value={receipt.header.sourceNegppa || EMPTY_VALUE}
         />
-        <InfoItem label="NECCHE" value={receipt.header.necche || '—'} />
-        <InfoItem label="NECREC" value={receipt.header.necrec || '—'} />
-        <InfoItem label="NECSEX" value={receipt.header.necsex || '—'} />
-        <InfoItem label="NETIPI" value={receipt.header.netipi || '—'} />
+        <InfoItem label="NECCHE" value={receipt.header.necche || EMPTY_VALUE} />
+        <InfoItem label="NECREC" value={receipt.header.necrec || EMPTY_VALUE} />
+        <InfoItem label="NECSEX" value={receipt.header.necsex || EMPTY_VALUE} />
+        <InfoItem label="NETIPI" value={receipt.header.netipi || EMPTY_VALUE} />
         <InfoItem
           label="Plaza principal"
-          value={receipt.header.plazaPrincipal || '—'}
+          value={receipt.header.plazaPrincipal || EMPTY_VALUE}
         />
         <InfoItem
           label="Adscripción principal"
-          value={receipt.header.adscripcionPrincipal || '—'}
+          value={receipt.header.adscripcionPrincipal || EMPTY_VALUE}
         />
         <InfoItem
           label="Puesto principal"
-          value={receipt.header.puestoPrincipal || '—'}
+          value={receipt.header.puestoPrincipal || EMPTY_VALUE}
         />
         <InfoItem
           label="Centro de trabajo principal"
-          value={receipt.header.centroTrabajoPrincipal || '—'}
+          value={receipt.header.centroTrabajoPrincipal || EMPTY_VALUE}
         />
         <InfoItem
           label="Categoría principal"
-          value={receipt.header.categoriaPrincipal || '—'}
+          value={receipt.header.categoriaPrincipal || EMPTY_VALUE}
         />
         <InfoItem
           label="Cuenta pagadora principal"
-          value={receipt.header.cuentaPagadoraPrincipal || '—'}
+          value={receipt.header.cuentaPagadoraPrincipal || EMPTY_VALUE}
         />
-        <InfoItem label="NEFOCU raw" value={receipt.header.nefocuRaw || '—'} />
+        <InfoItem label="NEFOCU raw" value={receipt.header.nefocuRaw || EMPTY_VALUE} />
         <InfoItem
-          label="Inicio ocupación"
+          label="Inicio de ocupación"
           value={formatDate(receipt.header.fechaOcupacionInicio)}
         />
         <InfoItem
-          label="Fin ocupación"
+          label="Fin de ocupación"
           value={formatDate(receipt.header.fechaOcupacionFin)}
         />
         <InfoItem
@@ -116,7 +119,7 @@ export default function ReciboCard({ receipt }: Props) {
           'Plaza',
           'Adscripción',
           'Puesto',
-          'Centro trabajo',
+          'Centro de trabajo',
           'Categoría',
           'Cuenta pagadora',
           'NEFOCU',

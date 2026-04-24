@@ -14,7 +14,7 @@ export default function NominaBusquedaRecibosResultsSection({
       <div className={s.group}>
         <div className={s.groupHeader}>
           <div className={s.groupHeaderCopy}>
-            <span className={s.kicker}>Busqueda</span>
+            <span className={s.kicker}>Búsqueda</span>
             <h3>Resultados localizados</h3>
             <p>
               Recibos completos localizados para los criterios consultados, con

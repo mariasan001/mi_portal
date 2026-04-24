@@ -20,7 +20,7 @@ export function useStagingResource() {
 
       return response;
     } catch (e) {
-      const message = toErrorMessage(e, 'No se pudo ejecutar el staging de nomina');
+      const message = toErrorMessage(e, 'No se pudo ejecutar el staging de nómina');
       setErrorRun(message);
       throw e;
     } finally {

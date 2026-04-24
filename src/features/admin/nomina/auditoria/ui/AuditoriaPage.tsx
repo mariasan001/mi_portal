@@ -1,17 +1,19 @@
 'use client';
 
+import { useMemo } from 'react';
+
 import AdminInlineMessage from '@/features/admin/shared/ui/AdminInlineMessage/AdminInlineMessage';
 import AdminPageShell from '@/features/admin/shared/ui/AdminPageShell/AdminPageShell';
 import AdminSurface from '@/features/admin/shared/ui/AdminSurface/AdminSurface';
 import NominaEmptyState from '@/features/admin/nomina/shared/ui/NominaEmptyState/NominaEmptyState';
 import NominaHero from '@/features/admin/nomina/shared/ui/NominaHero/NominaHero';
+import NominaSectionHeader from '@/features/admin/nomina/shared/ui/NominaSectionHeader/NominaSectionHeader';
 import type {
   AuditCancellationItemDto,
   AuditReleaseItemDto,
 } from '@/features/admin/nomina/auditoria/model/auditoria.types';
 import { FileSearch, Shield } from 'lucide-react';
 import NominaAuditoriaActionCards from './components/NominaAuditoriaActionCards';
-import NominaAuditoriaContentHeader from './components/NominaAuditoriaContentHeader';
 import NominaAuditoriaResultsSection from './components/NominaAuditoriaResultsSection';
 import NominaAuditoriaToolbar from './components/NominaAuditoriaToolbar';
 import s from './AuditoriaPage.module.css';
@@ -20,24 +22,46 @@ import { useAuditoriaController } from '../application/useAuditoriaController';
 export default function AuditoriaPage() {
   const vm = useAuditoriaController();
 
-  const releaseItems: AuditReleaseItemDto[] =
-    vm.activeAction === 'liberaciones'
-      ? ((vm.currentData?.items as AuditReleaseItemDto[] | undefined) ?? [])
-      : [];
+  const releaseItems = useMemo<AuditReleaseItemDto[]>(
+    () =>
+      vm.activeAction === 'liberaciones'
+        ? ((vm.currentData?.items as AuditReleaseItemDto[] | undefined) ?? [])
+        : [],
+    [vm.activeAction, vm.currentData]
+  );
 
-  const cancellationItems: AuditCancellationItemDto[] =
-    vm.activeAction === 'cancelaciones'
-      ? ((vm.currentData?.items as AuditCancellationItemDto[] | undefined) ?? [])
-      : [];
+  const cancellationItems = useMemo<AuditCancellationItemDto[]>(
+    () =>
+      vm.activeAction === 'cancelaciones'
+        ? ((vm.currentData?.items as AuditCancellationItemDto[] | undefined) ?? [])
+        : [],
+    [vm.activeAction, vm.currentData]
+  );
+
+  const emptyState = useMemo(
+    () =>
+      vm.activeAction === 'liberaciones'
+        ? {
+            title: 'Aún no hay liberaciones para mostrar',
+            description:
+              'Captura versión, período o etapa y ejecuta la consulta para revisar la trazabilidad administrativa.',
+          }
+        : {
+            title: 'Aún no hay cancelaciones para mostrar',
+            description:
+              'Captura los identificadores o períodos del recibo y ejecuta la consulta para revisar la trazabilidad administrativa.',
+          },
+    [vm.activeAction]
+  );
 
   return (
     <AdminPageShell>
       <NominaHero
-        kicker="Nomina"
-        title="Auditoria de Nomina"
-        subtitle="Consulta eventos de liberacion y cancelacion con filtros por version, periodo, etapa, recibo o llave de negocio."
+        kicker="Nómina"
+        title="Auditoría de nómina"
+        subtitle="Consulta eventos de liberación y cancelación con filtros por versión, período, etapa, recibo o llave de negocio."
         badges={[
-          { icon: FileSearch, label: 'Auditoria' },
+          { icon: FileSearch, label: 'Auditoría' },
           { icon: Shield, label: 'Trazabilidad y consulta' },
         ]}
       />
@@ -58,16 +82,17 @@ export default function AuditoriaPage() {
       />
 
       <AdminSurface as="section" className={s.resultContainer}>
-        <NominaAuditoriaContentHeader
+        <NominaSectionHeader
           eyebrow="Resultado"
           title={vm.currentTitle}
           description={vm.currentDescription}
           summaryItems={vm.summaryItems}
           showSummary={vm.hasResults}
+          summaryColumns={3}
         />
 
         {vm.currentError ? (
-          <AdminInlineMessage title="Ocurrio un problema" tone="error">
+          <AdminInlineMessage title="Ocurrió un problema" tone="error">
             {vm.currentError}
           </AdminInlineMessage>
         ) : null}
@@ -83,8 +108,8 @@ export default function AuditoriaPage() {
           />
         ) : (
           <NominaEmptyState
-            title="Aun no hay resultados para mostrar"
-            description="Selecciona una auditoria, captura los filtros necesarios y ejecuta la consulta."
+            title={emptyState.title}
+            description={emptyState.description}
             variant="search"
           />
         )}

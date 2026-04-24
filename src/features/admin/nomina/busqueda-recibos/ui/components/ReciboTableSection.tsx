@@ -1,11 +1,12 @@
 import s from './ReciboTableSection.module.css';
+import type { ReactNode } from 'react';
 
 type Props = {
   title: string;
   count: number;
   headers: string[];
   emptyMessage: string;
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 export default function ReciboTableSection({
@@ -23,7 +24,7 @@ export default function ReciboTableSection({
       </div>
 
       <div className={s.tableWrap}>
-        <table className={s.table}>
+        <table className={s.table} aria-label={title}>
           <thead>
             <tr>
               {headers.map((header) => (
@@ -31,13 +32,15 @@ export default function ReciboTableSection({
               ))}
             </tr>
           </thead>
-          <tbody>{children || (
-            <tr>
-              <td colSpan={headers.length} className={s.emptyCell}>
-                {emptyMessage}
-              </td>
-            </tr>
-          )}</tbody>
+          <tbody>
+            {children || (
+              <tr>
+                <td colSpan={headers.length} className={s.emptyCell}>
+                  {emptyMessage}
+                </td>
+              </tr>
+            )}
+          </tbody>
         </table>
       </div>
     </section>

@@ -1,4 +1,4 @@
-import type { NominaCargaEntity } from '../types/nomina-cargas.types';
+import type { NominaCargaEntity } from './carga.types';
 
 export function getToolbarSearchLabel(entity: NominaCargaEntity) {
   return entity === 'catalogo'

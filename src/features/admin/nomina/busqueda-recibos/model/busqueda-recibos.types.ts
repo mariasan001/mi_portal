@@ -3,6 +3,16 @@ export type BuscarRecibosSpPeriodQuery = {
   periodCode: string;
 };
 
+export type BusquedaRecibosFormState = {
+  claveSp: string;
+  periodCode: string;
+};
+
+export type BusquedaRecibosSummaryItem = {
+  label: string;
+  value: string;
+};
+
 export type ReciboBusquedaHeaderDto = {
   receiptId: number;
   revisionId: number;

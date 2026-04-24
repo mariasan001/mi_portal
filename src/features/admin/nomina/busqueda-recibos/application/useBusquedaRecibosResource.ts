@@ -28,7 +28,7 @@ export function useBusquedaRecibosResource() {
       setState({ data: response, loading: false, error: null });
       return response;
     } catch (e) {
-      const message = toErrorMessage(e, 'No se pudo consultar la busqueda de recibos');
+      const message = toErrorMessage(e, 'No se pudo consultar la búsqueda de recibos');
       setState({ data: null, loading: false, error: message });
       throw e;
     }

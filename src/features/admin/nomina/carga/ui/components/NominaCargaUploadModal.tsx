@@ -1,16 +1,14 @@
-
-
 import { LoaderCircle, X } from 'lucide-react';
 
 import type { NominaFileType } from '@/features/admin/nomina/shared/model/catalogo.types';
-
-import s from './NominaCargaUploadModal.module.css';
-import {
+import type {
   CatalogoModalForm,
   NominaCargaEntity,
   NominaCargaModalStatus,
-} from '../types/nomina-cargas.types';
+} from '../../model/carga.types';
+import { formatNominaTitle } from '../../model/carga.selectors';
 import NominaCargaDropzone from './NominaCargaDropzone';
+import s from './NominaCargaUploadModal.module.css';
 
 const FILE_TYPE_OPTIONS_CATALOGO: NominaFileType[] = ['CATALOGO'];
 
@@ -41,6 +39,27 @@ type Props = {
   onSubmit: () => void;
 };
 
+function getStatusLabel(
+  status: NominaCargaModalStatus,
+  isCatalogo: boolean
+): string {
+  switch (status) {
+    case 'selected':
+      return 'Archivo listo';
+    case 'uploading':
+      return 'Subiendo archivo';
+    case 'running':
+      return isCatalogo ? 'Ejecutando catálogo' : 'Ejecutando staging';
+    case 'success':
+      return 'Proceso completado';
+    case 'error':
+      return 'Error en el proceso';
+    case 'idle':
+    default:
+      return 'Esperando archivo';
+  }
+}
+
 export default function NominaCargaUploadModal({
   open,
   entity,
@@ -57,7 +76,6 @@ export default function NominaCargaUploadModal({
   if (!open) return null;
 
   const isCatalogo = entity === 'catalogo';
-
   const availableOptions = isCatalogo
     ? FILE_TYPE_OPTIONS_CATALOGO
     : FILE_TYPE_OPTIONS_NOMINA;
@@ -85,8 +103,8 @@ export default function NominaCargaUploadModal({
 
             <p>
               {isCatalogo
-                ? 'Sube el archivo DBF y ejecuta automáticamente la carga asociada.'
-                : 'Sube el archivo DBF y ejecuta automáticamente el staging asociado.'}
+                ? 'Selecciona la versión, sube el archivo DBF y ejecuta automáticamente la carga asociada.'
+                : 'Selecciona la versión, sube el archivo DBF y ejecuta automáticamente el staging asociado.'}
             </p>
           </div>
 
@@ -104,27 +122,27 @@ export default function NominaCargaUploadModal({
         <div className={s.body}>
           <div className={s.grid}>
             <label className={s.field}>
-              <span>versionId</span>
+              <span>Versión</span>
               <input
                 type="number"
                 min="1"
                 value={form.versionId}
-                onChange={(e) => onFieldChange('versionId', e.target.value)}
+                onChange={(event) => onFieldChange('versionId', event.target.value)}
                 placeholder="Ej. 10"
               />
             </label>
 
             <label className={s.field}>
-              <span>fileType</span>
+              <span>Tipo de archivo</span>
               <select
                 value={form.fileType}
-                onChange={(e) =>
-                  onFileTypeChange(e.target.value as NominaFileType)
+                onChange={(event) =>
+                  onFileTypeChange(event.target.value as NominaFileType)
                 }
               >
                 {availableOptions.map((option) => (
                   <option key={option} value={option}>
-                    {option}
+                    {formatNominaTitle(option)}
                   </option>
                 ))}
               </select>
@@ -140,13 +158,7 @@ export default function NominaCargaUploadModal({
             <div className={s.statusLine}>
               <span className={s.statusLabel}>Estado</span>
               <span className={s.statusValue}>
-                {status === 'idle' && 'Esperando archivo'}
-                {status === 'selected' && 'Archivo listo'}
-                {status === 'uploading' && 'Subiendo archivo'}
-                {status === 'running' &&
-                  (isCatalogo ? 'Ejecutando catálogo' : 'Ejecutando staging')}
-                {status === 'success' && 'Proceso completado'}
-                {status === 'error' && 'Error en el proceso'}
+                {getStatusLabel(status, isCatalogo)}
               </span>
             </div>
 
@@ -157,8 +169,8 @@ export default function NominaCargaUploadModal({
                   {loadingUpload
                     ? 'Subiendo archivo...'
                     : isCatalogo
-                    ? 'Ejecutando catálogo...'
-                    : 'Ejecutando staging...'}
+                      ? 'Ejecutando catálogo...'
+                      : 'Ejecutando staging...'}
                 </span>
               </div>
             ) : null}
@@ -183,11 +195,7 @@ export default function NominaCargaUploadModal({
             onClick={onSubmit}
             disabled={isBusy}
           >
-            {isBusy
-              ? 'Procesando...'
-              : isCatalogo
-              ? 'Subir y ejecutar'
-              : 'Subir y ejecutar'}
+            {isBusy ? 'Procesando...' : 'Subir y ejecutar'}
           </button>
         </div>
       </div>

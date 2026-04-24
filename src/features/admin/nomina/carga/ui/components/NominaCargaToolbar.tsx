@@ -11,8 +11,8 @@ import {
   getToolbarPrimaryLabel,
   getToolbarSearchLabel,
   getToolbarSearchPlaceholder,
-} from '../utils/nomina-cargas.utils';
-import { NominaCargaEntity } from '../types/nomina-cargas.types';
+} from '../../model/carga.selectors';
+import type { NominaCargaEntity } from '../../model/carga.types';
 
 type Props = {
   activeEntity: NominaCargaEntity;

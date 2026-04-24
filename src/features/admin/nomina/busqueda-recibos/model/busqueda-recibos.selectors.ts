@@ -1,4 +1,4 @@
-import type { NominaBusquedaRecibosSummaryItem } from '../types/nomina-busqueda-recibos-view.types';
+import type { BusquedaRecibosSummaryItem } from './busqueda-recibos.types';
 
 export function formatCurrency(value: number): string {
   return new Intl.NumberFormat('es-MX', {
@@ -36,18 +36,18 @@ export function formatDate(value: string): string {
   return date.toLocaleDateString('es-MX');
 }
 
-export function buildSummary(params: {
+export function buildBusquedaRecibosSummary(params: {
   claveSp?: string;
   searchedPeriodCode?: string;
   totalReceipts?: number;
-}): NominaBusquedaRecibosSummaryItem[] {
+}): BusquedaRecibosSummaryItem[] {
   return [
     {
       label: 'Clave SP',
       value: params.claveSp || '—',
     },
     {
-      label: 'Periodo buscado',
+      label: 'Período buscado',
       value: params.searchedPeriodCode || '—',
     },
     {

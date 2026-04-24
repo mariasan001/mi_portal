@@ -1,7 +1,7 @@
 import { Ban, ShieldCheck } from 'lucide-react';
 
 import NominaOptionCards from '@/features/admin/nomina/shared/ui/NominaOptionCards/NominaOptionCards';
-import type { NominaAuditoriaAction } from '../types/nomina-auditoria-view.types';
+import type { AuditoriaAction as NominaAuditoriaAction } from '../../model/auditoria.types';
 
 type Props = {
   activeAction: NominaAuditoriaAction;

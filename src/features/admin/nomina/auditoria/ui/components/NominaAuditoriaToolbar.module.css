@@ -33,6 +33,11 @@
   gap: 12px;
 }
 
+.blockHeaderCopy {
+  display: grid;
+  gap: 6px;
+}
+
 .blockKicker {
   display: inline-flex;
   align-items: center;
@@ -49,6 +54,13 @@
   letter-spacing: 0.04em;
   text-transform: uppercase;
   white-space: nowrap;
+}
+
+.blockDescription {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .primaryGrid,

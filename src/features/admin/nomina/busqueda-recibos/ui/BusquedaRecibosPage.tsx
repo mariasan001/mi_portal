@@ -5,65 +5,65 @@ import AdminPageShell from '@/features/admin/shared/ui/AdminPageShell/AdminPageS
 import AdminSurface from '@/features/admin/shared/ui/AdminSurface/AdminSurface';
 import NominaEmptyState from '@/features/admin/nomina/shared/ui/NominaEmptyState/NominaEmptyState';
 import NominaHero from '@/features/admin/nomina/shared/ui/NominaHero/NominaHero';
+import NominaSectionHeader from '@/features/admin/nomina/shared/ui/NominaSectionHeader/NominaSectionHeader';
 import { CalendarRange, Search } from 'lucide-react';
-import NominaBusquedaRecibosContentHeader from './components/NominaBusquedaRecibosContentHeader';
+
+import { useBusquedaRecibosController } from '../application/useBusquedaRecibosController';
 import NominaBusquedaRecibosResultsSection from './components/NominaBusquedaRecibosResultsSection';
 import NominaBusquedaRecibosToolbar from './components/NominaBusquedaRecibosToolbar';
-import { useNominaBusquedaRecibosView } from './hooks/useNominaBusquedaRecibosView';
 import s from './BusquedaRecibosPage.module.css';
 
 export default function BusquedaRecibosPage() {
-  const vm = useNominaBusquedaRecibosView();
+  const vm = useBusquedaRecibosController();
 
   return (
     <AdminPageShell>
-        <NominaHero
-          kicker="Nomina"
-          title="Busqueda por servidor"
-          subtitle="Consulta recibos completos por clave SP"
-          badges={[
-            { icon: Search, label: 'Busqueda' },
-            { icon: CalendarRange, label: 'Servidor y periodo' },
-          ]}
+      <NominaHero
+        kicker="Nómina"
+        title="Búsqueda por servidor"
+        subtitle="Consulta recibos completos por clave SP y período."
+        badges={[
+          { icon: Search, label: 'Búsqueda' },
+          { icon: CalendarRange, label: 'Servidor y período' },
+        ]}
+      />
+
+      <NominaBusquedaRecibosToolbar
+        claveSp={vm.form.claveSp}
+        periodCode={vm.form.periodCode}
+        loading={vm.loading}
+        canSearch={vm.canSearch}
+        onChangeClaveSp={(value) => vm.updateField('claveSp', value)}
+        onChangePeriodCode={(value) => vm.updateField('periodCode', value)}
+        onSearch={vm.executeSearch}
+      />
+
+      <AdminSurface className={s.resultContainer}>
+        <NominaSectionHeader
+          eyebrow="Resultado"
+          title="Recibos localizados"
+          description="Consulta recibos completos por clave SP y período."
+          summaryItems={vm.summaryItems}
+          showSummary={vm.hasResults}
+          summaryColumns={3}
         />
 
-        <NominaBusquedaRecibosToolbar
-          claveSp={vm.form.claveSp}
-          periodCode={vm.form.periodCode}
-          loading={vm.loading}
-          canSearch={vm.canSearch}
-          onChangeClaveSp={(value) => vm.updateField('claveSp', value)}
-          onChangePeriodCode={(value) => vm.updateField('periodCode', value)}
-          onSearch={vm.executeSearch}
-        />
+        {vm.error ? (
+          <AdminInlineMessage title="Ocurrió un problema" tone="error">
+            {vm.error}
+          </AdminInlineMessage>
+        ) : null}
 
-        <AdminSurface className={s.resultContainer}>
-          <NominaBusquedaRecibosContentHeader
-            eyebrow="Resultado"
-            title="Recibos localizados"
-            description="Consulta recibos completos por clave SP y periodo"
-            summaryItems={vm.summaryItems}
-            showSummary={vm.hasResults}
+        {vm.hasResults ? (
+          <NominaBusquedaRecibosResultsSection receipts={vm.data?.receipts ?? []} />
+        ) : (
+          <NominaEmptyState
+            title="Aún no hay recibos para mostrar"
+            description="Captura una clave SP y un período válido para consultar recibos."
+            variant="search"
           />
-
-          {vm.error ? (
-            <AdminInlineMessage title="Ocurrió un problema" tone="error">
-              {vm.error}
-            </AdminInlineMessage>
-          ) : null}
-
-          {vm.hasResults ? (
-            <NominaBusquedaRecibosResultsSection
-              receipts={vm.data?.receipts ?? []}
-            />
-          ) : (
-            <NominaEmptyState
-              title="Aun no hay recibos para mostrar"
-              description="Captura una clave SP y un periodo valido para consultar recibos."
-              variant="search"
-            />
-          )}
-        </AdminSurface>
+        )}
+      </AdminSurface>
     </AdminPageShell>
   );
 }

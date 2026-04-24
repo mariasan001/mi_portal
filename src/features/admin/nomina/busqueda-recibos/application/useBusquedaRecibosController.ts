@@ -2,20 +2,20 @@
 
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { useBusquedaRecibosResource } from '@/features/admin/nomina/busqueda-recibos/application/useBusquedaRecibosResource';
-import { buildSummary } from '../utils/nomina-busqueda-recibos-view.utils';
-import type { NominaBusquedaRecibosFormState } from '../types/nomina-busqueda-recibos-view.types';
 
-export function useNominaBusquedaRecibosView() {
+import { buildBusquedaRecibosSummary } from '../model/busqueda-recibos.selectors';
+import type { BusquedaRecibosFormState } from '../model/busqueda-recibos.types';
+import { useBusquedaRecibosResource } from './useBusquedaRecibosResource';
+
+export function useBusquedaRecibosController() {
   const domain = useBusquedaRecibosResource();
-
-  const [form, setForm] = useState<NominaBusquedaRecibosFormState>({
+  const [form, setForm] = useState<BusquedaRecibosFormState>({
     claveSp: '',
     periodCode: '',
   });
 
   const updateField = useCallback(
-    (key: keyof NominaBusquedaRecibosFormState, value: string) => {
+    (key: keyof BusquedaRecibosFormState, value: string) => {
       setForm((current) => ({
         ...current,
         [key]: value,
@@ -24,23 +24,24 @@ export function useNominaBusquedaRecibosView() {
     []
   );
 
-  const canSearch = useMemo(() => {
-    return Boolean(form.claveSp.trim() && form.periodCode.trim());
-  }, [form.claveSp, form.periodCode]);
+  const canSearch = useMemo(
+    () => Boolean(form.claveSp.trim() && form.periodCode.trim()),
+    [form.claveSp, form.periodCode]
+  );
 
   const executeSearch = useCallback(async () => {
-    const clave = form.claveSp.trim();
-    const period = form.periodCode.trim();
+    const claveSp = form.claveSp.trim();
+    const periodCode = form.periodCode.trim();
 
-    if (!clave || !period) {
-      toast.error('Debes capturar clave SP y period code.');
+    if (!claveSp || !periodCode) {
+      toast.error('Debes capturar la clave SP y el período a consultar.');
       return;
     }
 
     try {
       await domain.consultar({
-        claveSp: clave,
-        periodCode: period,
+        claveSp,
+        periodCode,
       });
 
       toast.success('Recibos consultados correctamente.');
@@ -51,7 +52,7 @@ export function useNominaBusquedaRecibosView() {
 
   const summaryItems = useMemo(
     () =>
-      buildSummary({
+      buildBusquedaRecibosSummary({
         claveSp: domain.data?.claveSp,
         searchedPeriodCode: domain.data?.searchedPeriodCode,
         totalReceipts: domain.data?.totalReceipts,
@@ -66,11 +67,9 @@ export function useNominaBusquedaRecibosView() {
     updateField,
     canSearch,
     executeSearch,
-
     loading: domain.loading,
     error: domain.error,
     data: domain.data,
-
     summaryItems,
     hasResults,
   };

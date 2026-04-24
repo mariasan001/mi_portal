@@ -51,11 +51,11 @@ export function buildAuditSummary(params: {
       value: String(params.total ?? 0),
     },
     {
-      label: 'Pagina actual',
+      label: 'Página actual',
       value: String(currentPage),
     },
     {
-      label: 'Por pagina',
+      label: 'Por página',
       value: String(limit),
     },
   ];

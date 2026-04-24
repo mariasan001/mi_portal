@@ -2,14 +2,15 @@
 
 import { useCallback, useState } from 'react';
 import { toast } from 'sonner';
-import type { useCatalogoResource } from '@/features/admin/nomina/carga/application/useCatalogoResource';
-import type { useStagingResource } from '@/features/admin/nomina/carga/application/useStagingResource';
+
 import type { NominaFileType } from '@/features/admin/nomina/shared/model/catalogo.types';
+import type { useCatalogoResource } from './useCatalogoResource';
+import type { useStagingResource } from './useStagingResource';
 import type {
   CatalogoModalForm,
   NominaCargaEntity,
   NominaCargaModalStatus,
-} from '../types/nomina-cargas.types';
+} from '../model/carga.types';
 
 type CatalogoState = ReturnType<typeof useCatalogoResource>;
 type NominaState = ReturnType<typeof useStagingResource>;
@@ -27,7 +28,7 @@ type Params = {
   userId?: number | null;
 };
 
-export function useNominaCargaUploadModal({
+export function useCargaUploadModal({
   activeEntity,
   catalogo,
   nomina,
@@ -75,19 +76,23 @@ export function useNominaCargaUploadModal({
 
   const handleUploadAndRun = useCallback(async () => {
     const parsedVersionId = Number(modalForm.versionId);
+    const normalizedUserId =
+      typeof userId === 'number' && Number.isFinite(userId) && userId > 0
+        ? userId
+        : undefined;
 
     if (!Number.isFinite(parsedVersionId) || parsedVersionId <= 0) {
-      setModalError('Captura un versionId valido.');
+      setModalError('Captura un versionId válido.');
       return;
     }
 
-    if (!Number.isFinite(userId) || Number(userId) <= 0) {
-      setModalError('No se encontro un usuario autenticado para registrar la carga.');
+    if (normalizedUserId === undefined) {
+      setModalError('No se encontró un usuario autenticado para registrar la carga.');
       return;
     }
 
     if (!(modalForm.file instanceof File)) {
-      setModalError('Selecciona un archivo DBF valido.');
+      setModalError('Selecciona un archivo DBF válido.');
       return;
     }
 
@@ -98,7 +103,7 @@ export function useNominaCargaUploadModal({
       const archivo = await catalogo.uploadArchivo({
         versionId: parsedVersionId,
         fileType: modalForm.fileType,
-        createdByUserId: userId,
+        createdByUserId: normalizedUserId,
         file: modalForm.file,
       });
 
@@ -106,21 +111,21 @@ export function useNominaCargaUploadModal({
 
       if (activeEntity === 'catalogo') {
         await catalogo.runCatalogo(archivo.fileId);
-        toast.success('Catalogo cargado y ejecutado correctamente.');
+        toast.success('Catálogo cargado y ejecutado correctamente.');
       } else {
         await nomina.runStaging(archivo.fileId);
-        toast.success('Archivo de nomina cargado y ejecutado correctamente.');
+        toast.success('Archivo de nómina cargado y ejecutado correctamente.');
       }
 
       setModalStatus('success');
     } catch {
       setModalStatus('error');
-      setModalError('No se pudo completar la carga automatica del archivo.');
+      setModalError('No se pudo completar la carga automática del archivo.');
 
       if (activeEntity === 'catalogo') {
-        toast.error('Fallo la carga automatica del catalogo.');
+        toast.error('Falló la carga automática del catálogo.');
       } else {
-        toast.error('Fallo la carga automatica del archivo de nomina.');
+        toast.error('Falló la carga automática del archivo de nómina.');
       }
     }
   }, [activeEntity, catalogo, modalForm, nomina, userId]);

@@ -1,9 +1,14 @@
 'use client';
 
-import { Play, Search } from 'lucide-react';
-import { motion, useReducedMotion } from 'motion/react';
+import { Search } from 'lucide-react';
 
-import s from './NominaBusquedaRecibosToolbar.module.css';
+import {
+  NominaToolbarButton,
+  NominaToolbarLabel,
+  NominaToolbarSecondaryInput,
+  NominaToolbarShell,
+  NominaToolbarSurface,
+} from '@/features/admin/nomina/shared/ui/NominaToolbar/NominaToolbar';
 
 type Props = {
   claveSp: string;
@@ -24,69 +29,47 @@ export default function NominaBusquedaRecibosToolbar({
   onChangePeriodCode,
   onSearch,
 }: Props) {
-  const shouldReduceMotion = useReducedMotion();
-
   return (
-    <motion.section
-      className={s.toolbar}
-      initial={shouldReduceMotion ? false : { opacity: 0, y: 12 }}
-      animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-      transition={{
-        duration: 0.28,
-        ease: [0.22, 1, 0.36, 1],
-      }}
+    <NominaToolbarShell
+      aside={
+        <NominaToolbarButton
+          icon={<Search size={16} />}
+          onClick={onSearch}
+          disabled={!canSearch || loading}
+        >
+          {loading ? 'Consultando...' : 'Buscar recibos'}
+        </NominaToolbarButton>
+      }
     >
-      <div className={s.left}>
-        <div className={s.searchSurface}>
-          <label className={s.field} htmlFor="nomina-busqueda-clave-sp">
-            <span className={s.label}>Clave SP</span>
+      <NominaToolbarLabel htmlFor="nomina-busqueda-clave-sp">
+        Filtros de consulta
+      </NominaToolbarLabel>
 
-            <div className={s.inputWrap}>
-              <Search size={16} className={s.icon} />
-              <input
-                id="nomina-busqueda-clave-sp"
-                value={claveSp}
-                onChange={(e) => onChangeClaveSp(e.target.value)}
-                placeholder="Ej. ABC12345"
-              />
-            </div>
-          </label>
+      <NominaToolbarSurface>
+        <NominaToolbarSecondaryInput
+          label="Clave SP"
+          input={
+            <input
+              id="nomina-busqueda-clave-sp"
+              value={claveSp}
+              onChange={(event) => onChangeClaveSp(event.target.value)}
+              placeholder="Ej. ABC12345"
+            />
+          }
+        />
 
-          <label className={s.field} htmlFor="nomina-busqueda-period-code">
-            <span className={s.label}>Periodo</span>
-
-            <div className={s.inputWrap}>
-              <Search size={16} className={s.icon} />
-              <input
-                id="nomina-busqueda-period-code"
-                value={periodCode}
-                onChange={(e) => onChangePeriodCode(e.target.value)}
-                placeholder="Ej. 2025-06"
-              />
-            </div>
-          </label>
-
-          <motion.button
-            type="button"
-            className={s.searchBtn}
-            onClick={onSearch}
-            disabled={!canSearch || loading}
-            whileHover={
-              !shouldReduceMotion && canSearch && !loading
-                ? { y: -1, transition: { duration: 0.16 } }
-                : undefined
-            }
-            whileTap={
-              !shouldReduceMotion && canSearch && !loading
-                ? { scale: 0.99 }
-                : undefined
-            }
-          >
-            <Play size={16} />
-            <span>{loading ? 'Consultando...' : 'Buscar recibos'}</span>
-          </motion.button>
-        </div>
-      </div>
-    </motion.section>
+        <NominaToolbarSecondaryInput
+          label="Período"
+          input={
+            <input
+              id="nomina-busqueda-period-code"
+              value={periodCode}
+              onChange={(event) => onChangePeriodCode(event.target.value)}
+              placeholder="Ej. 2025-06"
+            />
+          }
+        />
+      </NominaToolbarSurface>
+    </NominaToolbarShell>
   );
 }

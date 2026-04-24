@@ -4,8 +4,8 @@ import type {
   AuditCancellationItemDto,
   AuditReleaseItemDto,
 } from '@/features/admin/nomina/auditoria/model/auditoria.types';
-import type { NominaAuditoriaAction } from '../types/nomina-auditoria-view.types';
-import { formatDate } from '../utils/nomina-auditoria-view.utils';
+import type { AuditoriaAction as NominaAuditoriaAction } from '../../model/auditoria.types';
+import { formatDate } from '../../model/auditoria.selectors';
 import s from './NominaAuditoriaResultsSection.module.css';
 
 type Props = {
@@ -114,6 +114,7 @@ function Pagination({
         className={s.paginationBtn}
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
+        aria-label="Ir a la página anterior"
       >
         Anterior
       </button>
@@ -127,6 +128,8 @@ function Pagination({
               page === currentPage ? s.pageNumberActive : ''
             }`}
             onClick={() => onPageChange(page)}
+            aria-label={`Ir a la página ${page}`}
+            aria-current={page === currentPage ? 'page' : undefined}
           >
             {page}
           </button>
@@ -138,6 +141,7 @@ function Pagination({
         className={s.paginationBtn}
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
+        aria-label="Ir a la página siguiente"
       >
         Siguiente
       </button>
@@ -189,13 +193,16 @@ function ReleaseResultsGroup({
       kicker="Liberaciones"
       tone="primary"
       heading="Resultado de liberaciones"
-      description="Consulta aqui la respuesta administrativa registrada para cada evento de liberacion, junto con su contexto de periodo y trazabilidad."
+      description="Consulta aquí la respuesta administrativa registrada para cada evento de liberación, junto con su contexto de período y trazabilidad."
       currentPage={currentPage}
       totalPages={totalPages}
       onPageChange={onPageChange}
     >
       <div className={s.tableWrap}>
-        <table className={`${s.table} ${s.tableLiberaciones}`}>
+        <table
+          className={`${s.table} ${s.tableLiberaciones}`}
+          aria-label="Resultados de auditoría de liberaciones"
+        >
           <thead>
             <tr>
               <th>Evento</th>
@@ -257,13 +264,16 @@ function CancellationResultsGroup({
       kicker="Cancelaciones"
       tone="secondary"
       heading="Resultado de cancelaciones"
-      description="Consulta aqui la traza administrativa registrada para cada cancelacion encontrada, con los periodos y la razon asociada."
+      description="Consulta aquí la traza administrativa registrada para cada cancelación encontrada, con los períodos y la razón asociada."
       currentPage={currentPage}
       totalPages={totalPages}
       onPageChange={onPageChange}
     >
       <div className={s.tableWrap}>
-        <table className={`${s.table} ${s.tableCancelaciones}`}>
+        <table
+          className={`${s.table} ${s.tableCancelaciones}`}
+          aria-label="Resultados de auditoría de cancelaciones"
+        >
           <thead>
             <tr>
               <th>Evento</th>
