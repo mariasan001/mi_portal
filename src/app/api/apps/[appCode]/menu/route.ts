@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { obtenerIamBaseUrl } from '@/lib/config/entorno';
+import { upstreamUnavailable } from '@/app/api/_lib/proxy';
 
 export const dynamic = 'force-dynamic';
 
@@ -39,10 +40,7 @@ export async function GET(req: Request, ctx: Ctx) {
       status: upstream.status,
       headers: { 'content-type': contentType },
     });
-  } catch (e) {
-    return NextResponse.json(
-      { message: 'No se pudo conectar a IAM', error: String(e) },
-      { status: 502 }
-    );
+  } catch (error) {
+    return upstreamUnavailable('IAM', error);
   }
 }

@@ -8,11 +8,26 @@ type ProxyHeadersArgs = {
   extraHeaders?: HeadersInit;
 };
 
+function applyApiSecurityHeaders(response: NextResponse) {
+  response.headers.set('X-Frame-Options', 'DENY');
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  response.headers.set('Referrer-Policy', 'no-referrer');
+  response.headers.set('Cross-Origin-Resource-Policy', 'same-origin');
+  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  response.headers.set('Cache-Control', 'no-store, max-age=0');
+  response.headers.set('Pragma', 'no-cache');
+  response.headers.set('Vary', 'Cookie, Accept');
+
+  return response;
+}
+
 export function requireSession(req: Request) {
   const cookie = req.headers.get('cookie') ?? '';
 
   if (!hasSessionCookieHeader(cookie)) {
-    return NextResponse.json({ message: 'No autenticado' }, { status: 401 });
+    return applyApiSecurityHeaders(
+      NextResponse.json({ message: 'No autenticado' }, { status: 401 })
+    );
   }
 
   return null;
@@ -28,7 +43,12 @@ export async function requireAdminAccess(req: Request) {
   const hasAccess = await hasAdminAccess(cookie);
 
   if (!hasAccess) {
-    return NextResponse.json({ message: 'Sin permisos para acceder a admin' }, { status: 403 });
+    return applyApiSecurityHeaders(
+      NextResponse.json(
+        { message: 'Sin permisos para acceder a admin' },
+        { status: 403 }
+      )
+    );
   }
 
   return null;
@@ -86,29 +106,33 @@ export async function forwardResponse(
     }
   }
 
-  return response;
+  return applyApiSecurityHeaders(response);
 }
 
 export function upstreamUnavailable(serviceName: string, error: unknown) {
-  return NextResponse.json(
-    {
-      message: `No se pudo conectar a ${serviceName}`,
-      error: String(error),
-    },
-    { status: 502 }
+  void error;
+  return applyApiSecurityHeaders(
+    NextResponse.json(
+      {
+        message: `No se pudo conectar a ${serviceName}`,
+      },
+      { status: 502 }
+    )
   );
 }
 
 export function invalidJsonBody(message = 'Body JSON invalido') {
-  return NextResponse.json({ message }, { status: 400 });
+  return applyApiSecurityHeaders(NextResponse.json({ message }, { status: 400 }));
 }
 
 export function invalidPayload(message = 'Payload invalido') {
-  return NextResponse.json({ message }, { status: 400 });
+  return applyApiSecurityHeaders(NextResponse.json({ message }, { status: 400 }));
 }
 
 export function invalidParam(name: string) {
-  return NextResponse.json({ message: `${name} invalido` }, { status: 400 });
+  return applyApiSecurityHeaders(
+    NextResponse.json({ message: `${name} invalido` }, { status: 400 })
+  );
 }
 
 export async function resolveRouteParams<T>(params: T | Promise<T>): Promise<T> {
