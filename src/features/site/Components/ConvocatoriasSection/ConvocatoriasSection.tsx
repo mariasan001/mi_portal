@@ -14,10 +14,10 @@ import {
   FiChevronRight,
 } from 'react-icons/fi';
 
-import ImgOrFallback from './ui/ImgOrFallback';
-import { useToggleSet } from './hooks/useToggleSet';
-import { useConvocatoriasSearch } from './hooks/useConvocatoriasSearch';
-import { useConvocatoriasCarousel } from './hooks/useConvocatoriasCarousel';
+import ImgOrFallback from './ui/components/ImgOrFallback';
+import { useToggleSet } from './application/useToggleSet';
+import { useConvocatoriasSearch } from './application/useConvocatoriasSearch';
+import { useConvocatoriasCarousel } from './application/useConvocatoriasCarousel';
 
 type PostCard = {
   id: string;

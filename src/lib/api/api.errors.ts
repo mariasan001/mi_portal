@@ -18,12 +18,16 @@ export class ApiError extends Error {
   }
 }
 
-export function esApiError(e: unknown): e is ApiError {
+export function isApiError(e: unknown): e is ApiError {
   return e instanceof ApiError;
 }
 
-export function toErrorMessage(e: unknown, fallback = 'Ocurrió un error'): string {
-  if (esApiError(e)) return e.message || fallback;
+export function esApiError(e: unknown): e is ApiError {
+  return isApiError(e);
+}
+
+export function toErrorMessage(e: unknown, fallback = 'Ocurrio un error'): string {
+  if (isApiError(e)) return e.message || fallback;
   if (e instanceof Error) return e.message || fallback;
   if (typeof e === 'string') return e;
   return fallback;

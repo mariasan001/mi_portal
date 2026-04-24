@@ -1,5 +1,5 @@
-import { API_RUTAS } from '@/lib/api/api.rutas';
-import { ApiError, extraerMensaje } from '@/lib/api/api.errores';
+import { API_RUTAS } from '@/lib/api/api.routes';
+import { ApiError, extraerMensaje } from '@/lib/api/api.errors';
 import type {
   ArchivoNominaDto,
   EjecucionCatalogoDto,

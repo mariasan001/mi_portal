@@ -8,7 +8,7 @@ import type {
   SolicitudFirmaListItemDto,
 } from '@/features/admin/nomina/firma-electronica/model/firma-electronica.types';
 import { api } from '@/lib/api/api.cliente';
-import { API_RUTAS } from '@/lib/api/api.rutas';
+import { API_RUTAS } from '@/lib/api/api.routes';
 
 type UnknownRecord = Record<string, unknown>;
 

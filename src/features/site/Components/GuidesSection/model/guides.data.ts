@@ -1,4 +1,4 @@
-import type { DocItem } from '../types/guides.types';
+import type { DocItem } from './guides.types';
 
 export const GUIDES_DOCS: DocItem[] = [
   {

@@ -9,7 +9,7 @@ import React, {
   useState,
 } from 'react';
 
-import { esApiError, toErrorMessage } from '@/lib/api/api.errores';
+import { esApiError, toErrorMessage } from '@/lib/api/api.errors';
 
 import { iniciarSesion } from '../api/login.commands';
 import { obtenerSesion } from '../api/session.queries';

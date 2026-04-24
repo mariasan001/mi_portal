@@ -3,7 +3,7 @@
 import { useCallback, useState } from 'react';
 import { toast } from 'sonner';
 
-import { ApiError, toErrorMessage } from '@/lib/api/api.errores';
+import { ApiError, toErrorMessage } from '@/lib/api/api.errors';
 
 import { registerUser } from '../api/register.commands';
 import type {

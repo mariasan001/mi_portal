@@ -1,5 +1,6 @@
 import React from 'react';
-import s from '../GuidesSection.module.css';
+
+import s from '../../GuidesSection.module.css';
 
 type Props = {
   icon: React.ReactNode;
@@ -20,7 +21,6 @@ export default function SectionBox({ icon, title, subtitle, children }: Props) {
           {subtitle ? <div className={s.boxSub}>{subtitle}</div> : null}
         </div>
       </div>
-
       <div className={s.boxBody}>{children}</div>
     </section>
   );

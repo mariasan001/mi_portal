@@ -1,4 +1,4 @@
-import type { FaqCategory, FaqItem } from '../types/dudas.types';
+import type { FaqCategory, FaqItem } from './dudas.types';
 
 export const DUDAS_CATS: FaqCategory[] = [
   'Mas comunes',

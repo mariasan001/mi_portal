@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import { toErrorMessage } from '@/lib/api/api.errores';
+import { toErrorMessage } from '@/lib/api/api.errors';
 import { ejecutarPayrollStaging } from '@/features/admin/nomina/carga/api/staging.commands';
 import type { EjecucionPayrollStagingDto } from '@/features/admin/nomina/shared/model/staging.types';
 

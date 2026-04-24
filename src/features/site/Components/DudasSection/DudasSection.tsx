@@ -13,10 +13,10 @@ import {
 
 import { useRevealMotion } from '@/hooks/useRevealMotion';
 
-import { DUDAS_CATS, DUDAS_FAQS } from './constants/dudas.constants';
+import { DUDAS_CATS, DUDAS_FAQS } from './model/dudas.constants';
 import s from './DudasSection.module.css';
-import type { FaqCategory } from './types/dudas.types';
-import { filterFaqs, isExternalHref } from './utils/dudas.utils';
+import type { FaqCategory } from './model/dudas.types';
+import { filterFaqs, isExternalHref } from './model/dudas.utils';
 
 export default function DudasSection() {
   const [query, setQuery] = useState('');

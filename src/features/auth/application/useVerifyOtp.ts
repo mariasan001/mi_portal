@@ -3,7 +3,7 @@
 import { useCallback, useState } from 'react';
 import { toast } from 'sonner';
 
-import { toErrorMessage } from '@/lib/api/api.errores';
+import { toErrorMessage } from '@/lib/api/api.errors';
 
 import { verificarOtp } from '../api/password.commands';
 import type { VerifyOtpPurpose } from '../model/password.types';

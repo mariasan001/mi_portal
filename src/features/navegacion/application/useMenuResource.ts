@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { toErrorMessage } from '@/lib/api/api.errores';
+import { toErrorMessage } from '@/lib/api/api.errors';
 
 import { obtenerMenu } from '../api/menu.queries';
 import type { MenuResponse } from '../model/menu.types';

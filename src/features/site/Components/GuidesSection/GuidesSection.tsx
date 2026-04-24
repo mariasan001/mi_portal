@@ -4,10 +4,10 @@ import { FiFolder, FiRefreshCw, FiSearch, FiTrendingUp, FiX } from 'react-icons/
 
 import { useRevealMotion } from '@/hooks/useRevealMotion';
 
-import RowItem from './components/RowItem';
-import SectionBox from './components/SectionBox';
-import { GUIDES_DOCS } from './constants/guides.data';
-import { useGuides } from './hooks/useGuides';
+import { useGuides } from './application/useGuides';
+import { GUIDES_DOCS } from './model/guides.data';
+import RowItem from './ui/components/RowItem';
+import SectionBox from './ui/components/SectionBox';
 import s from './GuidesSection.module.css';
 
 export default function GuidesSection() {

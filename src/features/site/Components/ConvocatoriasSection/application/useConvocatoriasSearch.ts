@@ -2,7 +2,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { normalize } from '../utils/convocatoriasUtils';
+import { normalize } from '../model/convocatorias.utils';
 
 type PostCard = {
   id: string;

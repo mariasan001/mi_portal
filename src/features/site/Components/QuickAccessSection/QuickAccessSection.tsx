@@ -7,7 +7,7 @@ import { FiArrowRight, FiLock, FiUnlock } from 'react-icons/fi';
 import { useAuth } from '@/features/auth';
 import { useRevealMotion } from '@/hooks/useRevealMotion';
 
-import { QUICK_ACCESS_ITEMS } from './constants/quick-access.items';
+import { QUICK_ACCESS_ITEMS } from './model/quick-access.items';
 import s from './QuickAccessSection.module.css';
 
 const NAV_OFFSET = 118;

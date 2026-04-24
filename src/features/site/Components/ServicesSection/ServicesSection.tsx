@@ -9,11 +9,11 @@ import {
   SERVICE_CARDS,
   SERVICE_CARDS_CONSULTAS,
   SERVICE_CARDS_TRAMITES,
-} from './constants/service-cards.constants';
-import { useAssistantHint } from './hooks/useAssistantHint';
+} from './model/service-cards.constants';
+import { useAssistantHint } from './application/useAssistantHint';
 import css from './ServicesSection.module.css';
-import { getViewFromHref } from './utils/getViewFromHref';
-import { shellStyle } from './utils/shellStyle';
+import { getViewFromHref } from './model/getViewFromHref';
+import { shellStyle } from './model/shellStyle';
 
 type View = 'cards' | 'consultas' | 'tramites' | 'normativas';
 

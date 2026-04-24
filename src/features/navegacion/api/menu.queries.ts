@@ -1,5 +1,5 @@
 import { api } from '@/lib/api/api.cliente';
-import { API_RUTAS } from '@/lib/api/api.rutas';
+import { API_RUTAS } from '@/lib/api/api.routes';
 
 import type { MenuResponse } from '../model/menu.types';
 import { normalizarMenu } from '../model/menu.normalizers';
