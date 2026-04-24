@@ -8,7 +8,13 @@ export type VerifyOtpRequest = {
   purpose: VerifyOtpPurpose;
   otp: string;
 };
+
 export type VerifyOtpResponse = { ok: boolean; message?: string };
 
-export type ResetPasswordRequest = { email: string; otp: string; newPassword: string };
+export type ResetPasswordRequest = {
+  email: string;
+  otp: string;
+  newPassword: string;
+};
+
 export type ResetPasswordResponse = { ok: boolean; message?: string };

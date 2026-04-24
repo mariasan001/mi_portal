@@ -1,6 +1,6 @@
 import { cache } from 'react';
 import { obtenerIamBaseUrl } from '@/lib/config/entorno';
-import type { SesionMe } from '@/features/auth/types/me.types';
+import type { SesionMe } from '@/features/auth/model/session.types';
 import { isAdminRole, normalizeRoles } from './roles';
 
 async function fetchSessionByCookieHeader(cookieHeader: string): Promise<SesionMe | null> {

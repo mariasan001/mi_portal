@@ -9,136 +9,84 @@ import React, {
   useState,
 } from 'react';
 
-import type { SesionMe } from '../types/me.types';
-import type { LoginRequest } from '../types/login.types';
-
-import { iniciarSesion } from '../services/auth-login.service';
-import { obtenerSesion } from '../services/auth-me.service';
-
 import { esApiError, toErrorMessage } from '@/lib/api/api.errores';
-import { isAdminRole, normalizeRoles } from '@/lib/auth/roles';
 
-type AuthMode = 'admin' | 'user';
-
-type RouteDecision = {
-  path: string;
-  mode: AuthMode;
-};
-
-function hasRole(roles: readonly string[], role: string) {
-  return roles.includes(role);
-}
-
-function resolvePostLoginRoute(
-  appCode: string | null,
-  roles: readonly string[]
-): RouteDecision {
-  const code = (appCode ?? '').trim();
-
-  /**
-   * Portal de Servicios
-   * - admin -> /admin
-   * - user  -> /
-   */
-  if (!code || code === 'PLAT_SERV') {
-    if (isAdminRole(roles)) {
-      return { path: '/admin', mode: 'admin' };
-    }
-
-    return { path: '/', mode: 'user' };
-  }
-
-  /**
-   * fallback general
-   */
-  return { path: '/', mode: 'user' };
-}
-
-type AuthStatus = 'booting' | 'authenticated' | 'anonymous';
+import { iniciarSesion } from '../api/login.commands';
+import { obtenerSesion } from '../api/session.queries';
+import { DEFAULT_AUTH_APP_CODE } from '../model/auth.constants';
+import {
+  getSessionRoles,
+  hasRole as hasRoleFromList,
+  resolveAuthHome,
+} from '../model/auth.selectors';
+import type { AuthStatus, AuthMode } from '../model/auth.types';
+import type { LoginRequest } from '../model/login.types';
+import type { SesionMe } from '../model/session.types';
+import { safeTrim } from '../utils/authInput';
+import {
+  clearAuthAppCode,
+  readAuthAppCode,
+  writeAuthAppCode,
+} from '../utils/authStorage';
 
 type AuthState = {
   sesion: SesionMe | null;
   appCode: string | null;
-
   status: AuthStatus;
   loading: boolean;
   error: string | null;
-
   login: (args: LoginRequest) => Promise<boolean>;
   refresh: () => Promise<void>;
   logout: () => void;
-
   setAppCode: (code: string | null) => void;
-
   isAuthenticated: boolean;
-
   roles: readonly string[];
   hasRole: (role: string) => boolean;
-
   mode: AuthMode | null;
   homePath: string;
   resolveHome: () => string;
 };
 
-const APP_CODE_KEY = 'portal_app_code';
-
 const AuthContext = createContext<AuthState | null>(null);
 
+function resolvePostLoginRoute(appCode: string | null, roles: readonly string[]) {
+  const code = safeTrim(appCode) || DEFAULT_AUTH_APP_CODE;
+  const { home, mode } = resolveAuthHome(code, roles);
+
+  return {
+    path: home,
+    mode,
+  };
+}
+
 export function useAuth(): AuthState {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth debe usarse dentro de <AuthProvider />');
-  return ctx;
-}
+  const context = useContext(AuthContext);
 
-function leerAppCode(): string | null {
-  try {
-    return localStorage.getItem(APP_CODE_KEY);
-  } catch {
-    return null;
+  if (!context) {
+    throw new Error('useAuth debe usarse dentro de <AuthProvider />');
   }
-}
 
-function guardarAppCode(v: string) {
-  try {
-    localStorage.setItem(APP_CODE_KEY, v);
-  } catch {
-    // noop
-  }
+  return context;
 }
-
-function limpiarAppCode() {
-  try {
-    localStorage.removeItem(APP_CODE_KEY);
-  } catch {
-    // noop
-  }
-}
-
-type RoleLike =
-  | string
-  | {
-      name?: string;
-      authority?: string;
-    };
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [sesion, setSesion] = useState<SesionMe | null>(null);
-  const [appCode, _setAppCode] = useState<string | null>(null);
-
+  const [appCode, setStoredAppCode] = useState<string | null>(null);
   const [status, setStatus] = useState<AuthStatus>('booting');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const setAppCode = useCallback((code: string | null) => {
-    if (!code) {
-      limpiarAppCode();
-      _setAppCode(null);
+    const clean = safeTrim(code);
+
+    if (!clean) {
+      clearAuthAppCode();
+      setStoredAppCode(null);
       return;
     }
 
-    const clean = code.trim();
-    guardarAppCode(clean);
-    _setAppCode(clean);
+    writeAuthAppCode(clean);
+    setStoredAppCode(clean);
   }, []);
 
   const refresh = useCallback(async () => {
@@ -147,17 +95,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     try {
       const me = await obtenerSesion();
-
       setSesion(me);
       setStatus('authenticated');
-    } catch (e) {
-      if (esApiError(e) && (e.status === 401 || e.status === 403)) {
+    } catch (requestError) {
+      if (
+        esApiError(requestError) &&
+        (requestError.status === 401 || requestError.status === 403)
+      ) {
         setSesion(null);
         setError(null);
         setStatus('anonymous');
       } else {
         setSesion(null);
-        setError(toErrorMessage(e));
+        setError(toErrorMessage(requestError));
         setStatus('anonymous');
       }
     } finally {
@@ -172,23 +122,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       try {
         const payload: LoginRequest = {
-          username: args.username.trim(),
+          username: safeTrim(args.username),
           password: args.password,
-          appCode: args.appCode.trim(),
+          appCode: safeTrim(args.appCode),
         };
 
         await iniciarSesion(payload);
-
         setAppCode(payload.appCode);
-
         await refresh();
 
         return true;
-      } catch (e) {
+      } catch (requestError) {
         setSesion(null);
         setStatus('anonymous');
-        setError(toErrorMessage(e, 'No se pudo iniciar sesión'));
-
+        setError(toErrorMessage(requestError, 'No se pudo iniciar sesion'));
         return false;
       } finally {
         setLoading(false);
@@ -198,17 +145,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 
   const logout = useCallback(() => {
-    limpiarAppCode();
-    _setAppCode(null);
+    clearAuthAppCode();
+    setStoredAppCode(null);
     setSesion(null);
     setError(null);
     setStatus('anonymous');
   }, []);
 
   useEffect(() => {
-    const stored = leerAppCode();
+    const stored = readAuthAppCode();
     if (stored) {
-      _setAppCode(stored);
+      setStoredAppCode(stored);
     }
   }, []);
 
@@ -217,27 +164,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [refresh]);
 
   const isAuthenticated = Boolean(sesion?.userId);
-
-  const roles = useMemo<readonly string[]>(() => {
-    const raw = sesion?.roles as RoleLike[] | undefined;
-
-    if (!Array.isArray(raw)) return [];
-
-    return normalizeRoles(
-      raw.map((role) => {
-        if (typeof role === 'string') return role;
-        return role.name ?? role.authority ?? '';
-      })
-    );
-  }, [sesion]);
-
-  const roleCheck = useCallback((role: string) => hasRole(roles, role), [roles]);
-
+  const roles = useMemo<readonly string[]>(() => getSessionRoles(sesion), [sesion]);
+  const roleCheck = useCallback(
+    (role: string) => hasRoleFromList(roles, role),
+    [roles]
+  );
   const decision = useMemo(
     () => resolvePostLoginRoute(appCode, roles),
     [appCode, roles]
   );
-
   const resolveHome = useCallback(
     () => resolvePostLoginRoute(appCode, roles).path,
     [appCode, roles]
@@ -247,22 +182,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     () => ({
       sesion,
       appCode,
-
       status,
       loading,
       error,
-
       login,
       refresh,
       logout,
-
       setAppCode,
-
       isAuthenticated,
-
       roles,
       hasRole: roleCheck,
-
       mode: isAuthenticated ? decision.mode : null,
       homePath: decision.path,
       resolveHome,

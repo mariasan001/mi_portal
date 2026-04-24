@@ -5,14 +5,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import { useAuth } from '../context/auth.context';
-import type { UseLoginFlowResult } from '../types/loginFlow.types';
-import { obtenerSesion } from '../services/auth-me.service';
+import { obtenerSesion } from '../api/session.queries';
+import type { UseLoginFlowResult } from '../model/login-flow.types';
+import { safeTrim } from '../utils/authInput';
 import { resolveAuthDestination } from '../utils/resolveAuthDestination';
 import type { AuthModalSource } from '../ui/AuthModal/AuthModal';
-
-function safeTrim(v: string) {
-  return (v ?? '').trim();
-}
 
 type UseLoginFlowOptions = {
   source?: AuthModalSource;
@@ -24,14 +21,7 @@ export function useLoginFlow(
   options?: UseLoginFlowOptions
 ): UseLoginFlowResult & { reset: () => void } {
   const router = useRouter();
-
-  const {
-    login,
-    loading,
-    error,
-    appCode: ctxAppCode,
-    setAppCode,
-  } = useAuth();
+  const { login, loading, error, appCode: ctxAppCode, setAppCode } = useAuth();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -57,19 +47,19 @@ export function useLoginFlow(
   }, []);
 
   const onSubmit = useCallback(
-    async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
+    async (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
 
       const normalizedUsername = safeTrim(username);
 
       if (!normalizedUsername || !password) {
-        toast.warning('Completa usuario y contraseña.');
+        toast.warning('Completa usuario y contrasena.');
         return;
       }
 
       if (loading) return;
 
-      const tId = toast.loading('Validando acceso…');
+      const toastId = toast.loading('Validando acceso...');
 
       try {
         const ok = await login({
@@ -80,22 +70,24 @@ export function useLoginFlow(
 
         if (!ok) {
           toast.error(
-            error ?? 'No fue posible iniciar sesión. Verifica tus datos.',
-            { id: tId }
+            error ?? 'No fue posible iniciar sesion. Verifica tus datos.',
+            { id: toastId }
           );
           return;
         }
 
         const sesion = await obtenerSesion();
-
-        const { path: destPath, home } = resolveAuthDestination({
+        const { path: destinationPath, home } = resolveAuthDestination({
           sesion,
           appCode: effectiveAppCode,
           returnTo,
         });
 
         const shouldFocusQuickAccess =
-          source === 'nav' && !returnTo && home === '/' && destPath === '/';
+          source === 'nav' &&
+          !returnTo &&
+          home === '/' &&
+          destinationPath === '/';
 
         try {
           if (shouldFocusQuickAccess) {
@@ -109,26 +101,27 @@ export function useLoginFlow(
           // noop
         }
 
-        toast.success('Acceso autorizado.', { id: tId });
+        toast.success('Acceso autorizado.', { id: toastId });
 
         if (
           typeof window !== 'undefined' &&
-          destPath === window.location.pathname
+          destinationPath === window.location.pathname
         ) {
           if (shouldFocusQuickAccess) {
             window.dispatchEvent(new CustomEvent('portal:focus-quick-access'));
           }
+
           router.refresh();
           return;
         }
 
-        router.replace(destPath);
+        router.replace(destinationPath);
         router.refresh();
       } catch (submitError) {
         console.error('Error en login flow:', submitError);
         toast.error(
-          error ?? 'No fue posible iniciar sesión. Verifica tus datos.',
-          { id: tId }
+          error ?? 'No fue posible iniciar sesion. Verifica tus datos.',
+          { id: toastId }
         );
       }
     },

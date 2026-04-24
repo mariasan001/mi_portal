@@ -4,21 +4,15 @@ import { useCallback, useState } from 'react';
 import { toast } from 'sonner';
 
 import { toErrorMessage } from '@/lib/api/api.errores';
-import { solicitarRecuperacion } from '../services/auth-password.service';
+
+import { solicitarRecuperacion } from '../api/password.commands';
+import { isValidEmail, safeTrim } from '../utils/authInput';
 
 type State = {
   loading: boolean;
   error: string | null;
   ok: boolean;
 };
-
-function safeTrim(v: string) {
-  return (v ?? '').trim();
-}
-
-function isValidEmail(v: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
-}
 
 export function useForgotPassword() {
   const [state, setState] = useState<State>({
@@ -30,6 +24,7 @@ export function useForgotPassword() {
   const reset = useCallback(() => {
     setState((prev) => {
       if (!prev.error && !prev.ok) return prev;
+
       return {
         ...prev,
         error: null,
@@ -42,22 +37,22 @@ export function useForgotPassword() {
     const normalizedEmail = safeTrim(email);
 
     if (!normalizedEmail) {
-      const msg = 'Ingresa tu correo electrónico.';
-      setState({ loading: false, error: msg, ok: false });
-      toast.warning(msg);
+      const message = 'Ingresa tu correo electronico.';
+      setState({ loading: false, error: message, ok: false });
+      toast.warning(message);
       return false;
     }
 
     if (!isValidEmail(normalizedEmail)) {
-      const msg = 'Ingresa un correo válido.';
-      setState({ loading: false, error: msg, ok: false });
-      toast.warning(msg);
+      const message = 'Ingresa un correo valido.';
+      setState({ loading: false, error: message, ok: false });
+      toast.warning(message);
       return false;
     }
 
     setState({ loading: true, error: null, ok: false });
 
-    const tId = toast.loading('Enviando código de verificación…');
+    const toastId = toast.loading('Enviando codigo de verificacion...');
 
     try {
       await solicitarRecuperacion({ email: normalizedEmail });
@@ -65,16 +60,16 @@ export function useForgotPassword() {
       setState({ loading: false, error: null, ok: true });
 
       toast.success(
-        'Si el correo está registrado, enviaremos un código de verificación.',
-        { id: tId }
+        'Si el correo esta registrado, enviaremos un codigo de verificacion.',
+        { id: toastId }
       );
 
       return true;
-    } catch (err) {
-      const msg = toErrorMessage(err, 'No se pudo solicitar recuperación');
+    } catch (error) {
+      const message = toErrorMessage(error, 'No se pudo solicitar recuperacion');
 
-      setState({ loading: false, error: msg, ok: false });
-      toast.error(msg, { id: tId });
+      setState({ loading: false, error: message, ok: false });
+      toast.error(message, { id: toastId });
 
       return false;
     }

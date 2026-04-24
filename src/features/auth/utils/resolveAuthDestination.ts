@@ -1,8 +1,10 @@
-import type { SesionMe } from '../types/me.types';
 import { isAdminRole, normalizeRoles } from '@/lib/auth/roles';
 
-export type AuthMode = 'admin' | 'user';
-export type Home = '/admin' | '/';
+import { DEFAULT_AUTH_APP_CODE } from '../model/auth.constants';
+import { resolveAuthHome } from '../model/auth.selectors';
+import type { AuthHome as Home, AuthMode } from '../model/auth.types';
+import type { SesionMe } from '../model/session.types';
+import { safeTrim } from './authInput';
 
 type ResolveOutput = {
   home: Home;
@@ -10,39 +12,16 @@ type ResolveOutput = {
   mode: AuthMode;
 };
 
-function safeTrim(v: string | null | undefined) {
-  return (v ?? '').trim();
-}
-
-function resolveHomeByAppCode(
-  appCode: string,
-  roles: string[]
-): { home: Home; mode: AuthMode } {
-  if (appCode === 'PLAT_SERV') {
-    if (isAdminRole(roles)) {
-      return { home: '/admin', mode: 'admin' };
-    }
-
-    return { home: '/', mode: 'user' };
-  }
-
-  if (isAdminRole(roles)) {
-    return { home: '/admin', mode: 'admin' };
-  }
-
-  return { home: '/', mode: 'user' };
-}
-
 function resolveAllowedReturnTo(home: Home, returnTo?: string | null) {
-  const rt = safeTrim(returnTo) || home;
+  const nextPath = safeTrim(returnTo) || home;
 
-  if (!rt.startsWith('/')) return home;
+  if (!nextPath.startsWith('/')) return home;
 
   if (home === '/admin') {
-    return rt.startsWith('/admin') ? rt : '/admin';
+    return nextPath.startsWith('/admin') ? nextPath : '/admin';
   }
 
-  return rt.startsWith('/admin') ? '/' : rt;
+  return nextPath.startsWith('/admin') ? '/' : nextPath;
 }
 
 export function resolveAuthDestination(args: {
@@ -65,7 +44,7 @@ export function resolveAuthDestination(args: {
     };
   }
 
-  const { home, mode } = resolveHomeByAppCode(code, roles);
+  const { home, mode } = resolveAuthHome(code || DEFAULT_AUTH_APP_CODE, roles);
 
   return {
     home,

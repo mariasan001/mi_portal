@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 
 import s from './RegisterForm.module.css';
-import type { RegisterPayload } from '../../types/register.types';
+import type { RegisterPayload } from '../../model/register.types';
 
 type Props = {
   value: RegisterPayload;

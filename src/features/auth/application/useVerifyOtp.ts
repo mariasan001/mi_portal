@@ -4,18 +4,16 @@ import { useCallback, useState } from 'react';
 import { toast } from 'sonner';
 
 import { toErrorMessage } from '@/lib/api/api.errores';
-import { verificarOtp } from '../services/auth-password.service';
-import type { VerifyOtpPurpose } from '../types/password.types';
+
+import { verificarOtp } from '../api/password.commands';
+import type { VerifyOtpPurpose } from '../model/password.types';
+import { safeTrim } from '../utils/authInput';
 
 type State = {
   loading: boolean;
   error: string | null;
   ok: boolean;
 };
-
-function safeTrim(v: string) {
-  return (v ?? '').trim();
-}
 
 export function useVerifyOtp() {
   const [state, setState] = useState<State>({
@@ -27,6 +25,7 @@ export function useVerifyOtp() {
   const reset = useCallback(() => {
     setState((prev) => {
       if (!prev.error && !prev.ok) return prev;
+
       return {
         ...prev,
         error: null,
@@ -45,62 +44,60 @@ export function useVerifyOtp() {
       const normalizedOtp = safeTrim(otp);
 
       if (!normalizedIdentifier) {
-        const msg = 'Ingresa tu usuario o correo.';
-        setState({ loading: false, error: msg, ok: false });
-        toast.warning(msg);
+        const message = 'Ingresa tu usuario o correo.';
+        setState({ loading: false, error: message, ok: false });
+        toast.warning(message);
         return false;
       }
 
       if (normalizedIdentifier.length < 3) {
-        const msg = 'Ingresa un usuario o correo válido.';
-        setState({ loading: false, error: msg, ok: false });
-        toast.warning(msg);
+        const message = 'Ingresa un usuario o correo valido.';
+        setState({ loading: false, error: message, ok: false });
+        toast.warning(message);
         return false;
       }
 
       if (!normalizedOtp) {
-        const msg = 'Ingresa el código de verificación.';
-        setState({ loading: false, error: msg, ok: false });
-        toast.warning(msg);
+        const message = 'Ingresa el codigo de verificacion.';
+        setState({ loading: false, error: message, ok: false });
+        toast.warning(message);
         return false;
       }
 
       if (normalizedOtp.length < 4) {
-        const msg = 'El código de verificación no es válido.';
-        setState({ loading: false, error: msg, ok: false });
-        toast.warning(msg);
+        const message = 'El codigo de verificacion no es valido.';
+        setState({ loading: false, error: message, ok: false });
+        toast.warning(message);
         return false;
       }
 
       setState({ loading: true, error: null, ok: false });
 
-      const tId = toast.loading('Validando código…');
+      const toastId = toast.loading('Validando codigo...');
 
       try {
-        const res = await verificarOtp({
+        const response = await verificarOtp({
           usernameOrEmail: normalizedIdentifier,
           otp: normalizedOtp,
           purpose,
         });
 
-        const ok = Boolean(res?.ok);
-
-        if (ok) {
+        if (response?.ok) {
           setState({ loading: false, error: null, ok: true });
-          toast.success('Código validado correctamente.', { id: tId });
+          toast.success('Codigo validado correctamente.', { id: toastId });
           return true;
         }
 
-        const msg =
-          'Código inválido o expirado. Verifica e intenta nuevamente.';
+        const message =
+          'Codigo invalido o expirado. Verifica e intenta nuevamente.';
 
-        setState({ loading: false, error: msg, ok: false });
-        toast.error(msg, { id: tId });
+        setState({ loading: false, error: message, ok: false });
+        toast.error(message, { id: toastId });
         return false;
-      } catch (err) {
-        const msg = toErrorMessage(err, 'Código inválido o expirado.');
-        setState({ loading: false, error: msg, ok: false });
-        toast.error(msg, { id: tId });
+      } catch (error) {
+        const message = toErrorMessage(error, 'Codigo invalido o expirado.');
+        setState({ loading: false, error: message, ok: false });
+        toast.error(message, { id: toastId });
         return false;
       }
     },

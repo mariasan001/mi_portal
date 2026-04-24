@@ -12,7 +12,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 
-import { useResetPassword } from '@/features/auth/hooks/useResetPassword';
+import { useResetPassword } from '@/features/auth/application/useResetPassword';
 
 import s from './ResetPasswordForm.module.css';
 
