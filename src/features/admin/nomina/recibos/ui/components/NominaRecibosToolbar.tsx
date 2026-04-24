@@ -1,9 +1,13 @@
-
 import { Play, Search } from 'lucide-react';
-import { motion, useReducedMotion } from 'motion/react';
 
+import {
+  NominaToolbarButton,
+  NominaToolbarInput,
+  NominaToolbarLabel,
+  NominaToolbarShell,
+  NominaToolbarSurface,
+} from '@/features/admin/nomina/shared/ui/NominaToolbar/NominaToolbar';
 import type { NominaRecibosAction } from '../types/nomina-recibos-view.types';
-import s from './NominaRecibosToolbar.module.css';
 
 type Props = {
   activeAction: NominaRecibosAction;
@@ -24,7 +28,7 @@ function getButtonLabel(action: NominaRecibosAction, loading: boolean): string {
   }
 
   if (action === 'sincronizacion') {
-    return loading ? 'Sincronizando...' : 'Ejecutar sincronización';
+    return loading ? 'Sincronizando...' : 'Ejecutar sincronizacion';
   }
 
   return loading ? 'Procesando...' : 'Ejecutar';
@@ -38,27 +42,16 @@ export default function NominaRecibosToolbar({
   onChangeVersionId,
   onExecute,
 }: Props) {
-  const shouldReduceMotion = useReducedMotion();
-
   return (
-    <motion.section
-      className={s.toolbar}
-      initial={shouldReduceMotion ? false : { opacity: 0, y: 12 }}
-      animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-      transition={{
-        duration: 0.28,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-    >
-      <div className={s.left}>
-        <label className={s.label} htmlFor="nomina-recibos-version-id">
-          versionId
-        </label>
+    <NominaToolbarShell>
+      <NominaToolbarLabel htmlFor="nomina-recibos-version-id">
+        versionId
+      </NominaToolbarLabel>
 
-        <div className={s.searchSurface}>
-          <div className={s.inputWrap}>
-            <Search size={16} className={s.icon} />
-
+      <NominaToolbarSurface>
+        <NominaToolbarInput
+          icon={<Search size={16} />}
+          input={
             <input
               id="nomina-recibos-version-id"
               type="number"
@@ -67,29 +60,17 @@ export default function NominaRecibosToolbar({
               onChange={(e) => onChangeVersionId(e.target.value)}
               placeholder="Ej. 125"
             />
-          </div>
+          }
+        />
 
-          <motion.button
-            type="button"
-            className={s.searchBtn}
-            onClick={onExecute}
-            disabled={!canExecute || loading}
-            whileHover={
-              !shouldReduceMotion && canExecute && !loading
-                ? { y: -1, transition: { duration: 0.16 } }
-                : undefined
-            }
-            whileTap={
-              !shouldReduceMotion && canExecute && !loading
-                ? { scale: 0.99 }
-                : undefined
-            }
-          >
-            <Play size={16} />
-            <span>{getButtonLabel(activeAction, loading)}</span>
-          </motion.button>
-        </div>
-      </div>
-    </motion.section>
+        <NominaToolbarButton
+          icon={<Play size={16} />}
+          disabled={!canExecute || loading}
+          onClick={onExecute}
+        >
+          {getButtonLabel(activeAction, loading)}
+        </NominaToolbarButton>
+      </NominaToolbarSurface>
+    </NominaToolbarShell>
   );
-} 
+}

@@ -3,10 +3,11 @@
 import AdminInlineMessage from '@/features/admin/shared/ui/AdminInlineMessage/AdminInlineMessage';
 import AdminPageShell from '@/features/admin/shared/ui/AdminPageShell/AdminPageShell';
 import AdminSurface from '@/features/admin/shared/ui/AdminSurface/AdminSurface';
-import EmptyState from './components/EmptyState';
-import NominaConfigHero from './components/NominaConfigHero';
+import NominaEmptyState from '@/features/admin/nomina/shared/ui/NominaEmptyState/NominaEmptyState';
+import NominaHero from '@/features/admin/nomina/shared/ui/NominaHero/NominaHero';
+import NominaSectionHeader from '@/features/admin/nomina/shared/ui/NominaSectionHeader/NominaSectionHeader';
+import { CalendarRange, Layers3 } from 'lucide-react';
 import NominaConfigToolbar from './components/NominaConfigToolbar';
-import NominaContentHeader from './components/NominaContentHeader';
 import NominaEntityCards from './components/NominaEntityCards';
 import PeriodoCreateForm from './components/PeriodoCreateForm';
 import PeriodoResultadoPanel from './components/PeriodoResultadoPanel';
@@ -27,7 +28,16 @@ export default function ConfiguracionPage() {
 
   return (
     <AdminPageShell>
-      <NominaConfigHero />
+      <NominaHero
+        kicker="Nomina"
+        title="Gestion de periodo y version"
+        subtitle="Consulta, crea y organiza la configuracion base del procesamiento de nomina."
+        badges={[
+          { icon: CalendarRange, label: 'Periodo' },
+          { icon: Layers3, label: 'Version' },
+        ]}
+        spacious
+      />
 
       <NominaEntityCards
         activeEntity={vm.activeEntity}
@@ -53,17 +63,16 @@ export default function ConfiguracionPage() {
       ) : null}
 
       <AdminSurface as="section" className={s.contentShell}>
-        <NominaContentHeader
+        <NominaSectionHeader
           eyebrow={getContentEyebrow(vm.activeEntity)}
           title={getContentTitle(vm.activeEntity, 'resultados')}
-          showBackButton={false}
         />
 
         {vm.activeEntity === 'periodo' ? (
           vm.periodos.detalle ? (
             <PeriodoResultadoPanel detalle={vm.periodos.detalle} />
           ) : (
-            <EmptyState
+            <NominaEmptyState
               title="Sin consulta todavia"
               description="Usa la barra superior para buscar un periodo por ID o crea uno nuevo desde esta misma sesion."
             />
@@ -74,7 +83,7 @@ export default function ConfiguracionPage() {
           vm.versiones.detalle ? (
             <VersionResultadoPanel detalle={vm.versiones.detalle} />
           ) : (
-            <EmptyState
+            <NominaEmptyState
               title="Sin consulta todavia"
               description="Consulta una version por ID o crea una nueva version asociada a un periodo existente."
             />

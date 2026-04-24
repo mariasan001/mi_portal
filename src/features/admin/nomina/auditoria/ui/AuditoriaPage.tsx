@@ -3,14 +3,15 @@
 import AdminInlineMessage from '@/features/admin/shared/ui/AdminInlineMessage/AdminInlineMessage';
 import AdminPageShell from '@/features/admin/shared/ui/AdminPageShell/AdminPageShell';
 import AdminSurface from '@/features/admin/shared/ui/AdminSurface/AdminSurface';
+import NominaEmptyState from '@/features/admin/nomina/shared/ui/NominaEmptyState/NominaEmptyState';
+import NominaHero from '@/features/admin/nomina/shared/ui/NominaHero/NominaHero';
 import type {
   AuditCancellationItemDto,
   AuditReleaseItemDto,
 } from '@/features/admin/nomina/auditoria/model/auditoria.types';
-import EmptyState from './components/EmptyState';
+import { FileSearch, Shield } from 'lucide-react';
 import NominaAuditoriaActionCards from './components/NominaAuditoriaActionCards';
 import NominaAuditoriaContentHeader from './components/NominaAuditoriaContentHeader';
-import NominaAuditoriaHero from './components/NominaAuditoriaHero';
 import NominaAuditoriaResultsSection from './components/NominaAuditoriaResultsSection';
 import NominaAuditoriaToolbar from './components/NominaAuditoriaToolbar';
 import s from './AuditoriaPage.module.css';
@@ -31,7 +32,15 @@ export default function AuditoriaPage() {
 
   return (
     <AdminPageShell>
-      <NominaAuditoriaHero />
+      <NominaHero
+        kicker="Nomina"
+        title="Auditoria de Nomina"
+        subtitle="Consulta eventos de liberacion y cancelacion con filtros por version, periodo, etapa, recibo o llave de negocio."
+        badges={[
+          { icon: FileSearch, label: 'Auditoria' },
+          { icon: Shield, label: 'Trazabilidad y consulta' },
+        ]}
+      />
 
       <NominaAuditoriaActionCards
         activeAction={vm.activeAction}
@@ -73,7 +82,7 @@ export default function AuditoriaPage() {
             onPageChange={vm.goToPage}
           />
         ) : (
-          <EmptyState
+          <NominaEmptyState
             title="Aun no hay resultados para mostrar"
             description="Selecciona una auditoria, captura los filtros necesarios y ejecuta la consulta."
             variant="search"

@@ -1,13 +1,5 @@
 import type { NominaCargaEntity } from '../types/nomina-cargas.types';
 
-export function getNominaCargasHeroTitle() {
-  return 'Carga de archivos de nómina';
-}
-
-export function getNominaCargasHeroDescription() {
-  return 'Gestiona archivos de catálogo y ejecuciones de nómina desde una misma sesión operativa.';
-}
-
 export function getToolbarSearchLabel(entity: NominaCargaEntity) {
   return entity === 'catalogo'
     ? 'Buscar catálogo por fileId'

@@ -3,22 +3,26 @@
   gap: 10px;
 }
 
+.spacious {
+  padding: 4px 0 10px;
+}
+
 .enter {
-  animation: fadeUp 0.24s ease both;
+  animation: fadeUp 0.28s ease both;
 }
 
 .enterLeft {
-  animation: fadeLeft 0.18s ease both;
+  animation: fadeLeft 0.22s ease both;
 }
 
 .enterSoft {
-  animation: fadeUp 0.2s ease both;
+  animation: fadeUp 0.24s ease both;
   animation-delay: 0.08s;
 }
 
 .enterSoftDelay {
-  animation: fadeUp 0.2s ease both;
-  animation-delay: 0.12s;
+  animation: fadeUp 0.24s ease both;
+  animation-delay: 0.14s;
 }
 
 .headerTop {
@@ -34,8 +38,8 @@
   align-items: center;
   justify-content: center;
   width: fit-content;
-  min-height: 26px;
-  padding: 0 10px;
+  min-height: 28px;
+  padding: 0 11px;
   border-radius: 999px;
   background: rgba(188, 148, 90, 0.1);
   border: 1px solid rgba(188, 148, 90, 0.18);
@@ -45,6 +49,15 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   white-space: nowrap;
+}
+
+.spacious .kicker {
+  min-height: 30px;
+  padding: 0 12px;
+  color: var(--oro);
+  border-color: rgba(188, 148, 90, 0.2);
+  letter-spacing: 0.1em;
+  font-weight: 700;
 }
 
 .metaBadges {
@@ -70,10 +83,40 @@
   white-space: nowrap;
 }
 
+.metaBadge svg {
+  color: var(--oro);
+  flex-shrink: 0;
+}
+
+.spacious .metaBadge {
+  min-height: 30px;
+  padding: 0 11px;
+  font-size: 11.5px;
+  font-weight: 600;
+  transition:
+    transform 0.16s ease,
+    border-color 0.16s ease,
+    background 0.16s ease,
+    color 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+.spacious .metaBadge:hover {
+  transform: translateY(-1px);
+  background: #fff;
+  border-color: var(--border);
+  color: var(--text);
+  box-shadow: 0 6px 14px rgba(10, 10, 10, 0.04);
+}
+
 .content {
   display: grid;
   gap: 6px;
   max-width: 760px;
+}
+
+.spacious .content {
+  max-width: 720px;
 }
 
 .title {
@@ -86,6 +129,11 @@
   text-wrap: balance;
 }
 
+.spacious .title {
+  font-size: clamp(18px, 2vw, 24px);
+  letter-spacing: -0.03em;
+}
+
 .subtitle {
   margin: 0;
   max-width: 68ch;
@@ -95,12 +143,15 @@
   line-height: 1.55;
 }
 
+.spacious .subtitle {
+  max-width: 62ch;
+}
+
 @keyframes fadeUp {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(8px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
@@ -112,7 +163,6 @@
     opacity: 0;
     transform: translateX(-6px);
   }
-
   to {
     opacity: 1;
     transform: translateX(0);
@@ -133,6 +183,11 @@
     gap: 8px;
   }
 
+  .spacious {
+    gap: 10px;
+    padding: 2px 0 8px;
+  }
+
   .headerTop {
     flex-direction: column;
     align-items: flex-start;
@@ -149,6 +204,11 @@
 
   .title {
     font-size: clamp(18px, 5.8vw, 24px);
+  }
+
+  .spacious .title {
+    font-size: clamp(18px, 5vw, 22px);
+    line-height: 1.12;
   }
 
   .subtitle {

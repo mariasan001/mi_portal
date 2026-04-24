@@ -1,8 +1,13 @@
-
 import { RotateCcw, Search } from 'lucide-react';
-import { motion, useReducedMotion } from 'motion/react';
 
-import s from './NominaProcesamientoToolbar.module.css';
+import {
+  NominaToolbarButton,
+  NominaToolbarInput,
+  NominaToolbarLabel,
+  NominaToolbarSecondaryInput,
+  NominaToolbarShell,
+  NominaToolbarSurface,
+} from '@/features/admin/nomina/shared/ui/NominaToolbar/NominaToolbar';
 
 type ProcesamientoView = 'summary' | 'preview' | 'errors';
 
@@ -25,7 +30,7 @@ function getLabel(view: ProcesamientoView) {
 }
 
 function getLimitLabel(view: ProcesamientoView) {
-  return view === 'errors' ? 'Límite de errores' : 'Límite de preview';
+  return view === 'errors' ? 'Limite de errores' : 'Limite de preview';
 }
 
 export default function NominaProcesamientoToolbar({
@@ -39,32 +44,27 @@ export default function NominaProcesamientoToolbar({
   onConsult,
   onReset,
 }: Props) {
-  /**
-   * Accesibilidad:
-   * si el usuario prefiere reducir movimiento,
-   * suavizamos o eliminamos animaciones.
-   */
-  const shouldReduceMotion = useReducedMotion();
-
   return (
-    <motion.section
-      className={s.toolbar}
-      initial={shouldReduceMotion ? false : { opacity: 0, y: 12 }}
-      animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-      transition={{
-        duration: 0.28,
-        ease: [0.22, 1, 0.36, 1],
-      }}
+    <NominaToolbarShell
+      aside={
+        <NominaToolbarButton
+          icon={<RotateCcw size={16} />}
+          onClick={onReset}
+          disabled={loading}
+          tone="secondary"
+        >
+          Limpiar
+        </NominaToolbarButton>
+      }
     >
-      <div className={s.left}>
-        <label className={s.label} htmlFor="nomina-procesamiento-file-id">
-          fileId
-        </label>
+      <NominaToolbarLabel htmlFor="nomina-procesamiento-file-id">
+        fileId
+      </NominaToolbarLabel>
 
-        <div className={s.searchSurface}>
-          <div className={s.inputWrap}>
-            <Search size={16} className={s.icon} />
-
+      <NominaToolbarSurface>
+        <NominaToolbarInput
+          icon={<Search size={16} />}
+          input={
             <input
               id="nomina-procesamiento-file-id"
               type="number"
@@ -73,65 +73,32 @@ export default function NominaProcesamientoToolbar({
               onChange={(e) => onFileIdChange(e.target.value)}
               placeholder="Ej. 40"
             />
-          </div>
-
-          {activeView !== 'summary' ? (
-            <div className={s.limitWrap}>
-              <div className={s.limitInner}>
-                <span className={s.limitLabel}>{getLimitLabel(activeView)}</span>
-
-                <input
-                  type="number"
-                  min="1"
-                  value={limit}
-                  onChange={(e) => onLimitChange(e.target.value)}
-                  placeholder={activeView === 'errors' ? '50' : '20'}
-                />
-              </div>
-            </div>
-          ) : null}
-
-          <motion.button
-            type="button"
-            className={s.searchBtn}
-            onClick={onConsult}
-            disabled={!canSubmit || loading}
-            whileHover={
-              !shouldReduceMotion && canSubmit && !loading
-                ? { y: -1, transition: { duration: 0.16 } }
-                : undefined
-            }
-            whileTap={
-              !shouldReduceMotion && canSubmit && !loading
-                ? { scale: 0.99 }
-                : undefined
-            }
-          >
-            <Search size={16} />
-            <span>{loading ? 'Consultando...' : getLabel(activeView)}</span>
-          </motion.button>
-        </div>
-      </div>
-
-      <div className={s.right}>
-        <motion.button
-          type="button"
-          className={s.resetBtn}
-          onClick={onReset}
-          disabled={loading}
-          whileHover={
-            !shouldReduceMotion && !loading
-              ? { y: -1, transition: { duration: 0.16 } }
-              : undefined
           }
-          whileTap={
-            !shouldReduceMotion && !loading ? { scale: 0.99 } : undefined
-          }
+        />
+
+        {activeView !== 'summary' ? (
+          <NominaToolbarSecondaryInput
+            label={getLimitLabel(activeView)}
+            input={
+              <input
+                type="number"
+                min="1"
+                value={limit}
+                onChange={(e) => onLimitChange(e.target.value)}
+                placeholder={activeView === 'errors' ? '50' : '20'}
+              />
+            }
+          />
+        ) : null}
+
+        <NominaToolbarButton
+          icon={<Search size={16} />}
+          disabled={!canSubmit || loading}
+          onClick={onConsult}
         >
-          <RotateCcw size={16} />
-          <span>Limpiar</span>
-        </motion.button>
-      </div>
-    </motion.section>
+          {loading ? 'Consultando...' : getLabel(activeView)}
+        </NominaToolbarButton>
+      </NominaToolbarSurface>
+    </NominaToolbarShell>
   );
 }

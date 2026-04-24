@@ -2,10 +2,11 @@
 
 import AdminPageShell from '@/features/admin/shared/ui/AdminPageShell/AdminPageShell';
 import AdminSurface from '@/features/admin/shared/ui/AdminSurface/AdminSurface';
-import EmptyState from './components/EmptyState';
+import NominaEmptyState from '@/features/admin/nomina/shared/ui/NominaEmptyState/NominaEmptyState';
+import NominaHero from '@/features/admin/nomina/shared/ui/NominaHero/NominaHero';
+import { FileText, RefreshCw } from 'lucide-react';
 import NominaRecibosActionCards from './components/NominaRecibosActionCards';
 import NominaRecibosContentHeader from './components/NominaRecibosContentHeader';
-import NominaRecibosHero from './components/NominaRecibosHero';
 import NominaRecibosReleasePanel from './components/NominaRecibosReleasePanel';
 import NominaRecibosResultsSection from './components/NominaRecibosResultsSection';
 import NominaRecibosToolbar from './components/NominaRecibosToolbar';
@@ -17,7 +18,15 @@ export default function RecibosPage() {
 
   return (
     <AdminPageShell>
-      <NominaRecibosHero />
+      <NominaHero
+        kicker="Nomina"
+        title="Liberacion de Nomina"
+        subtitle="Gestiona la generacion, liberacion y sincronizacion de recibos de nomina."
+        badges={[
+          { icon: FileText, label: 'Recibos' },
+          { icon: RefreshCw, label: 'Liberacion y sincronizacion' },
+        ]}
+      />
 
       <NominaRecibosActionCards
         activeAction={vm.activeAction}
@@ -52,10 +61,10 @@ export default function RecibosPage() {
             coreSync={vm.results.coreSync}
           />
         ) : (
-          <EmptyState
+          <NominaEmptyState
             title="Aun no has ejecutado ninguna accion"
             description="Selecciona una opcion del flujo principal o ejecuta la liberacion cuando corresponda."
-            variant="default"
+            variant="inbox"
           />
         )}
       </AdminSurface>

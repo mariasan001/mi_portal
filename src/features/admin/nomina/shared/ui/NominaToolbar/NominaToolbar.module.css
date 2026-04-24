@@ -1,8 +1,6 @@
 .toolbar {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 16px;
-  align-items: end;
+  gap: 8px;
   padding: 18px;
   background: var(--surface);
   border: 1px solid var(--border-soft);
@@ -10,10 +8,20 @@
   box-shadow: 0 10px 24px rgba(10, 10, 10, 0.04);
 }
 
+.withAside {
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: end;
+}
+
 .left {
   min-width: 0;
   display: grid;
   gap: 8px;
+}
+
+.leftCompact {
+  gap: 0;
 }
 
 .right {
@@ -39,8 +47,8 @@
   border-radius: 18px;
 }
 
-.inputWrap,
-.limitWrap {
+.inputWrap {
+  flex: 1;
   min-width: 0;
   height: 48px;
   display: flex;
@@ -56,18 +64,7 @@
     background 0.18s ease;
 }
 
-.inputWrap {
-  flex: 1;
-}
-
-.limitWrap {
-  width: 170px;
-  flex-shrink: 0;
-  padding: 0 12px;
-}
-
-.inputWrap:focus-within,
-.limitWrap:focus-within {
+.inputWrap:focus-within {
   border-color: rgba(188, 148, 90, 0.22);
   box-shadow: 0 0 0 4px rgba(188, 148, 90, 0.08);
   background: #ffffff;
@@ -78,8 +75,7 @@
   flex-shrink: 0;
 }
 
-.inputWrap input,
-.limitInner input {
+.inputWrap input {
   flex: 1;
   min-width: 0;
   height: 100%;
@@ -92,27 +88,45 @@
   font-family: var(--font-body);
 }
 
-.inputWrap input::placeholder,
-.limitInner input::placeholder {
+.inputWrap input::placeholder {
   color: rgba(10, 10, 10, 0.4);
   font-weight: 400;
 }
 
 .inputWrap input::-webkit-outer-spin-button,
-.inputWrap input::-webkit-inner-spin-button,
-.limitInner input::-webkit-outer-spin-button,
-.limitInner input::-webkit-inner-spin-button {
+.inputWrap input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-.inputWrap input[type='number'],
-.limitInner input[type='number'] {
+.inputWrap input[type='number'] {
   -moz-appearance: textfield;
   appearance: textfield;
 }
 
-.limitInner {
+.secondaryInput {
+  min-width: 0;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  background: #ffffff;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease;
+}
+
+.secondaryInput:focus-within {
+  border-color: rgba(188, 148, 90, 0.22);
+  box-shadow: 0 0 0 4px rgba(188, 148, 90, 0.08);
+  background: #ffffff;
+}
+
+.secondaryInner {
   width: 100%;
   min-width: 0;
   height: 100%;
@@ -121,7 +135,7 @@
   gap: 1px;
 }
 
-.limitLabel {
+.secondaryLabel {
   color: rgba(10, 10, 10, 0.42);
   font-size: 9.5px;
   font-weight: 700;
@@ -130,8 +144,36 @@
   line-height: 1.2;
 }
 
-.searchBtn,
-.resetBtn {
+.secondaryInner input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font-body);
+}
+
+.secondaryInner input::placeholder {
+  color: rgba(10, 10, 10, 0.4);
+  font-weight: 400;
+}
+
+.secondaryInner input::-webkit-outer-spin-button,
+.secondaryInner input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.secondaryInner input[type='number'] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.button {
   border: 0;
   cursor: pointer;
   font-family: var(--font-body);
@@ -144,7 +186,7 @@
     color 0.18s ease;
 }
 
-.searchBtn {
+.primaryButton {
   height: 48px;
   padding: 0 16px;
   display: inline-flex;
@@ -160,13 +202,13 @@
   white-space: nowrap;
 }
 
-.searchBtn:hover:not(:disabled) {
+.primaryButton:hover:not(:disabled) {
   border-color: rgba(188, 148, 90, 0.24);
   background: rgba(188, 148, 90, 0.12);
   box-shadow: 0 8px 18px rgba(188, 148, 90, 0.08);
 }
 
-.resetBtn {
+.secondaryButton {
   height: 48px;
   padding: 0 18px;
   display: inline-flex;
@@ -183,19 +225,39 @@
   box-shadow: 0 10px 18px rgba(10, 10, 10, 0.04);
 }
 
-.resetBtn:hover:not(:disabled) {
+.secondaryButton:hover:not(:disabled) {
   border-color: rgba(10, 10, 10, 0.16);
   background: #fcfcfc;
-  box-shadow: 0 8px 18px rgba(10, 10, 10, 0.045);
+  box-shadow: 0 12px 22px rgba(10, 10, 10, 0.06);
 }
 
-.searchBtn svg,
-.resetBtn svg {
+.accentButton {
+  height: 48px;
+  padding: 0 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  border-radius: 16px;
+  background: var(--vino);
+  border: 1px solid rgba(159, 33, 65, 0.16);
+  color: #fff;
+  font-size: 12.8px;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 10px 18px rgba(159, 33, 65, 0.08);
+}
+
+.accentButton:hover:not(:disabled) {
+  border-color: rgba(159, 33, 65, 0.24);
+  box-shadow: 0 12px 22px rgba(159, 33, 65, 0.12);
+}
+
+.button svg {
   flex-shrink: 0;
 }
 
-.searchBtn:disabled,
-.resetBtn:disabled {
+.button:disabled {
   opacity: 0.52;
   cursor: not-allowed;
   transform: none;
@@ -203,7 +265,7 @@
 }
 
 @media (max-width: 960px) {
-  .toolbar {
+  .withAside {
     grid-template-columns: 1fr;
     align-items: stretch;
   }
@@ -217,12 +279,10 @@
     align-items: stretch;
   }
 
-  .limitWrap {
-    width: 100%;
-  }
-
-  .searchBtn,
-  .resetBtn {
+  .button,
+  .primaryButton,
+  .secondaryButton,
+  .accentButton {
     width: 100%;
     justify-content: center;
   }
@@ -232,7 +292,7 @@
   .toolbar {
     padding: 16px;
     border-radius: 20px;
-    gap: 14px;
+    gap: 8px;
   }
 
   .searchSurface {
@@ -241,9 +301,10 @@
   }
 
   .inputWrap,
-  .limitWrap,
-  .searchBtn,
-  .resetBtn {
+  .secondaryInput,
+  .primaryButton,
+  .secondaryButton,
+  .accentButton {
     height: 46px;
   }
 
@@ -252,11 +313,12 @@
   }
 
   .inputWrap input,
-  .limitInner input {
+  .secondaryInner input {
     font-size: 12.5px;
   }
 
-  .resetBtn {
+  .secondaryButton,
+  .accentButton {
     margin-bottom: 0;
   }
 }

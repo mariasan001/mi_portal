@@ -3,14 +3,15 @@
 import AdminInlineMessage from '@/features/admin/shared/ui/AdminInlineMessage/AdminInlineMessage';
 import AdminPageShell from '@/features/admin/shared/ui/AdminPageShell/AdminPageShell';
 import AdminSurface from '@/features/admin/shared/ui/AdminSurface/AdminSurface';
+import NominaEmptyState from '@/features/admin/nomina/shared/ui/NominaEmptyState/NominaEmptyState';
+import NominaHero from '@/features/admin/nomina/shared/ui/NominaHero/NominaHero';
+import NominaSectionHeader from '@/features/admin/nomina/shared/ui/NominaSectionHeader/NominaSectionHeader';
+import { Database, FileArchive, PlayCircle } from 'lucide-react';
 import s from './CargaPage.module.css';
 import CatalogoResultadoPanel from './components/CatalogoResultadoPanel';
-import EmptyState from './components/EmptyState';
-import NominaCargaContentHeader from './components/NominaCargaContentHeader';
 import NominaCargaEntityCards from './components/NominaCargaEntityCards';
 import NominaCargaToolbar from './components/NominaCargaToolbar';
 import NominaCargaUploadModal from './components/NominaCargaUploadModal';
-import NominaCargasHero from './components/NominaCargasHero';
 import NominaResultadoPanel from './components/NominaResultadoPanel';
 import { useNominaCargasView } from './hooks/useNominaCargasView';
 import {
@@ -25,7 +26,17 @@ export default function CargaPage() {
 
   return (
     <AdminPageShell>
-      <NominaCargasHero />
+      <NominaHero
+        kicker="Nomina"
+        title="Carga de catalogo y nomina"
+        subtitle="Sube, ejecuta y da seguimiento a archivos operativos del flujo de catalogo y staging de nomina desde una sola sesion."
+        badges={[
+          { icon: FileArchive, label: 'Catalogo' },
+          { icon: Database, label: 'Nomina' },
+          { icon: PlayCircle, label: 'Procesamiento' },
+        ]}
+        spacious
+      />
 
       <NominaCargaEntityCards
         activeEntity={vm.activeEntity}
@@ -60,7 +71,7 @@ export default function CargaPage() {
         idle={vm.shouldDimContent}
         dimmed={vm.shouldDimContent}
       >
-        <NominaCargaContentHeader
+        <NominaSectionHeader
           eyebrow={getContentEyebrow(vm.activeEntity)}
           title={getContentTitle(vm.activeEntity)}
         />
@@ -72,7 +83,7 @@ export default function CargaPage() {
               ejecucion={vm.catalogo.ejecucion}
             />
           ) : (
-            <EmptyState
+            <NominaEmptyState
               title={getEmptyTitle('catalogo')}
               description={getEmptyDescription('catalogo')}
             />
@@ -83,7 +94,7 @@ export default function CargaPage() {
           vm.nomina.ejecucion ? (
             <NominaResultadoPanel detalle={vm.nomina.ejecucion} />
           ) : (
-            <EmptyState
+            <NominaEmptyState
               title={getEmptyTitle('nomina')}
               description={getEmptyDescription('nomina')}
             />

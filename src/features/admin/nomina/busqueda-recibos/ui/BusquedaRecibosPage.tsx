@@ -3,9 +3,10 @@
 import AdminInlineMessage from '@/features/admin/shared/ui/AdminInlineMessage/AdminInlineMessage';
 import AdminPageShell from '@/features/admin/shared/ui/AdminPageShell/AdminPageShell';
 import AdminSurface from '@/features/admin/shared/ui/AdminSurface/AdminSurface';
-import EmptyState from './components/EmptyState';
+import NominaEmptyState from '@/features/admin/nomina/shared/ui/NominaEmptyState/NominaEmptyState';
+import NominaHero from '@/features/admin/nomina/shared/ui/NominaHero/NominaHero';
+import { CalendarRange, Search } from 'lucide-react';
 import NominaBusquedaRecibosContentHeader from './components/NominaBusquedaRecibosContentHeader';
-import NominaBusquedaRecibosHero from './components/NominaBusquedaRecibosHero';
 import NominaBusquedaRecibosResultsSection from './components/NominaBusquedaRecibosResultsSection';
 import NominaBusquedaRecibosToolbar from './components/NominaBusquedaRecibosToolbar';
 import { useNominaBusquedaRecibosView } from './hooks/useNominaBusquedaRecibosView';
@@ -16,7 +17,15 @@ export default function BusquedaRecibosPage() {
 
   return (
     <AdminPageShell>
-        <NominaBusquedaRecibosHero />
+        <NominaHero
+          kicker="Nomina"
+          title="Busqueda por servidor"
+          subtitle="Consulta recibos completos por clave SP"
+          badges={[
+            { icon: Search, label: 'Busqueda' },
+            { icon: CalendarRange, label: 'Servidor y periodo' },
+          ]}
+        />
 
         <NominaBusquedaRecibosToolbar
           claveSp={vm.form.claveSp}
@@ -48,7 +57,7 @@ export default function BusquedaRecibosPage() {
               receipts={vm.data?.receipts ?? []}
             />
           ) : (
-            <EmptyState
+            <NominaEmptyState
               title="Aun no hay recibos para mostrar"
               description="Captura una clave SP y un periodo valido para consultar recibos."
               variant="search"

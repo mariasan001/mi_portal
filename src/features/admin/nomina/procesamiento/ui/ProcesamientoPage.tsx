@@ -3,11 +3,12 @@
 import AdminInlineMessage from '@/features/admin/shared/ui/AdminInlineMessage/AdminInlineMessage';
 import AdminPageShell from '@/features/admin/shared/ui/AdminPageShell/AdminPageShell';
 import AdminSurface from '@/features/admin/shared/ui/AdminSurface/AdminSurface';
-import EmptyState from './components/EmptyState';
-import NominaProcesamientoContentHeader from './components/NominaProcesamientoContentHeader';
+import NominaEmptyState from '@/features/admin/nomina/shared/ui/NominaEmptyState/NominaEmptyState';
+import NominaHero from '@/features/admin/nomina/shared/ui/NominaHero/NominaHero';
+import NominaSectionHeader from '@/features/admin/nomina/shared/ui/NominaSectionHeader/NominaSectionHeader';
+import { AlertTriangle, Eye, FileSpreadsheet } from 'lucide-react';
 import NominaProcesamientoEntityCards from './components/NominaProcesamientoEntityCards';
 import NominaProcesamientoErrorsTable from './components/NominaProcesamientoErrorsTable';
-import NominaProcesamientoHero from './components/NominaProcesamientoHero';
 import NominaProcesamientoPreviewTable from './components/NominaProcesamientoPreviewTable';
 import NominaProcesamientoSummaryPanel from './components/NominaProcesamientoSummaryPanel';
 import NominaProcesamientoToolbar from './components/NominaProcesamientoToolbar';
@@ -22,10 +23,10 @@ export default function ProcesamientoPage() {
       return vm.summary ? (
         <NominaProcesamientoSummaryPanel detalle={vm.summary} />
       ) : (
-        <EmptyState
+        <NominaEmptyState
           title={vm.emptyState.title}
           description={vm.emptyState.description}
-          variant={vm.hasConsultedSummary ? 'search' : 'default'}
+          variant={vm.hasConsultedSummary ? 'search' : 'inbox'}
         />
       );
     }
@@ -34,10 +35,10 @@ export default function ProcesamientoPage() {
       return vm.previewRows.length ? (
         <NominaProcesamientoPreviewTable rows={vm.previewRows} />
       ) : (
-        <EmptyState
+        <NominaEmptyState
           title={vm.emptyState.title}
           description={vm.emptyState.description}
-          variant={vm.hasConsultedPreview ? 'search' : 'default'}
+          variant={vm.hasConsultedPreview ? 'search' : 'inbox'}
         />
       );
     }
@@ -48,7 +49,7 @@ export default function ProcesamientoPage() {
 
     if (vm.hasConsultedErrors) {
       return (
-        <EmptyState
+        <NominaEmptyState
           title="Sin errores detectados"
           description="La consulta se realizo correctamente y no se encontraron filas con incidencias para este archivo."
           variant="success"
@@ -57,17 +58,26 @@ export default function ProcesamientoPage() {
     }
 
     return (
-      <EmptyState
+      <NominaEmptyState
         title={vm.emptyState.title}
         description={vm.emptyState.description}
-        variant="default"
+        variant="inbox"
       />
     );
   };
 
   return (
     <AdminPageShell>
-      <NominaProcesamientoHero />
+      <NominaHero
+        kicker="Nomina"
+        title="Revision del procesamiento"
+        subtitle="Consulta el resumen del staging, una muestra de filas procesadas y el detalle de filas con error por archivo."
+        badges={[
+          { icon: FileSpreadsheet, label: 'Archivo' },
+          { icon: Eye, label: 'Preview' },
+          { icon: AlertTriangle, label: 'Errores' },
+        ]}
+      />
 
       <NominaProcesamientoEntityCards
         activeView={vm.activeView}
@@ -93,7 +103,7 @@ export default function ProcesamientoPage() {
       ) : null}
 
       <AdminSurface as="div" className={s.resultCard}>
-        <NominaProcesamientoContentHeader
+        <NominaSectionHeader
           eyebrow={vm.resultHeader.eyebrow}
           title={vm.resultHeader.title}
           description={vm.resultHeader.description}

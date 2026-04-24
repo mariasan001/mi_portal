@@ -1,6 +1,7 @@
 'use client';
 
-import FirmaElectronicaHero from './components/FirmaElectronicaHero';
+import { FileSignature, ShieldCheck } from 'lucide-react';
+import NominaHero from '@/features/admin/nomina/shared/ui/NominaHero/NominaHero';
 import FirmaSolicitudesPanel from './components/FirmaSolicitudesPanel';
 import FirmaCrearSolicitudModal from './components/FirmaCrearSolicitudModal';
 import FirmaDetallesModal from './components/FirmaDetallesModal';
@@ -13,7 +14,15 @@ export default function FirmaElectronicaPage() {
   return (
     <section className={s.page}>
       <div className={s.stack}>
-        <FirmaElectronicaHero />
+        <NominaHero
+          kicker="Firma electronica"
+          title="Firma electronica"
+          subtitle="Gestiona solicitudes de firma, consulta su estatus"
+          badges={[
+            { icon: FileSignature, label: 'Solicitudes' },
+            { icon: ShieldCheck, label: 'Estatus y detalle' },
+          ]}
+        />
 
         <div className={s.workspace}>
           <section className={s.tableSection}>

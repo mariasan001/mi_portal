@@ -1,9 +1,12 @@
-
-
 import { Plus, Play, Search } from 'lucide-react';
-import { motion, useReducedMotion } from 'motion/react';
 
-import s from './NominaCargaToolbar.module.css';
+import {
+  NominaToolbarButton,
+  NominaToolbarInput,
+  NominaToolbarLabel,
+  NominaToolbarShell,
+  NominaToolbarSurface,
+} from '@/features/admin/nomina/shared/ui/NominaToolbar/NominaToolbar';
 import {
   getToolbarPrimaryLabel,
   getToolbarSearchLabel,
@@ -30,32 +33,27 @@ export default function NominaCargaToolbar({
   onExecute,
   onPrimaryAction,
 }: Props) {
-  /**
-   * Accesibilidad:
-   * si el usuario prefiere reducir movimiento,
-   * suavizamos o eliminamos animaciones.
-   */
-  const shouldReduceMotion = useReducedMotion();
-
   return (
-    <motion.section
-      className={s.toolbar}
-      initial={shouldReduceMotion ? false : { opacity: 0, y: 12 }}
-      animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-      transition={{
-        duration: 0.28,
-        ease: [0.22, 1, 0.36, 1],
-      }}
+    <NominaToolbarShell
+      aside={
+        <NominaToolbarButton
+          icon={<Plus size={16} />}
+          onClick={onPrimaryAction}
+          disabled={loading}
+          tone="accent"
+        >
+          {getToolbarPrimaryLabel(activeEntity)}
+        </NominaToolbarButton>
+      }
     >
-      <div className={s.left}>
-        <label className={s.label} htmlFor="nomina-carga-search-id">
-          {getToolbarSearchLabel(activeEntity)}
-        </label>
+      <NominaToolbarLabel htmlFor="nomina-carga-search-id">
+        {getToolbarSearchLabel(activeEntity)}
+      </NominaToolbarLabel>
 
-        <div className={s.searchSurface}>
-          <div className={s.inputWrap}>
-            <Search size={16} className={s.icon} />
-
+      <NominaToolbarSurface>
+        <NominaToolbarInput
+          icon={<Search size={16} />}
+          input={
             <input
               id="nomina-carga-search-id"
               type="number"
@@ -64,49 +62,17 @@ export default function NominaCargaToolbar({
               onChange={(e) => onSearchFileIdChange(e.target.value)}
               placeholder={getToolbarSearchPlaceholder(activeEntity)}
             />
-          </div>
-
-          <motion.button
-            type="button"
-            className={s.executeBtn}
-            disabled={!canExecute || loading}
-            onClick={onExecute}
-            whileHover={
-              !shouldReduceMotion && canExecute && !loading
-                ? { y: -1, transition: { duration: 0.16 } }
-                : undefined
-            }
-            whileTap={
-              !shouldReduceMotion && canExecute && !loading
-                ? { scale: 0.99 }
-                : undefined
-            }
-          >
-            <Play size={16} />
-            <span>{loading ? 'Ejecutando...' : 'Ejecutar'}</span>
-          </motion.button>
-        </div>
-      </div>
-
-      <div className={s.right}>
-        <motion.button
-          type="button"
-          className={s.createBtn}
-          onClick={onPrimaryAction}
-          disabled={loading}
-          whileHover={
-            !shouldReduceMotion && !loading
-              ? { y: -1, transition: { duration: 0.16 } }
-              : undefined
           }
-          whileTap={
-            !shouldReduceMotion && !loading ? { scale: 0.99 } : undefined
-          }
+        />
+
+        <NominaToolbarButton
+          icon={<Play size={16} />}
+          disabled={!canExecute || loading}
+          onClick={onExecute}
         >
-          <Plus size={16} />
-          <span>{getToolbarPrimaryLabel(activeEntity)}</span>
-        </motion.button>
-      </div>
-    </motion.section>
+          {loading ? 'Ejecutando...' : 'Ejecutar'}
+        </NominaToolbarButton>
+      </NominaToolbarSurface>
+    </NominaToolbarShell>
   );
 }
