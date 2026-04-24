@@ -1,5 +1,15 @@
-import { NextResponse } from 'next/server';
 import { obtenerBatchBaseUrl } from '@/lib/config/entorno';
+import {
+  buildProxyHeaders,
+  forwardResponse,
+  invalidParam,
+  requireAdminAccess,
+  resolveRouteParams,
+  upstreamUnavailable,
+} from '@/app/api/_lib/proxy';
+
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 type RouteContext = {
   params: Promise<{
@@ -8,37 +18,29 @@ type RouteContext = {
 };
 
 export async function POST(req: Request, context: RouteContext) {
-  const { versionId } = await context.params;
-
-  if (!Number.isFinite(Number(versionId)) || Number(versionId) <= 0) {
-    return NextResponse.json(
-      { message: 'versionId inválido' },
-      { status: 400 }
-    );
+  const forbidden = await requireAdminAccess(req);
+  if (forbidden) {
+    return forbidden;
   }
 
-  const baseUrl = obtenerBatchBaseUrl();
-  const cookie = req.headers.get('cookie') ?? '';
+  const { versionId } = await resolveRouteParams(context.params);
 
-  const upstream = await fetch(
-    `${baseUrl}/api/admin/nomina/core-sync/versions/${encodeURIComponent(versionId)}`,
-    {
-      method: 'POST',
-      headers: {
-        accept: 'application/json',
-        cookie,
-      },
-      cache: 'no-store',
-    }
-  );
+  if (!Number.isFinite(Number(versionId)) || Number(versionId) <= 0) {
+    return invalidParam('versionId');
+  }
 
-  const contentType = upstream.headers.get('content-type') ?? 'application/json';
-  const text = await upstream.text();
+  try {
+    const upstream = await fetch(
+      `${obtenerBatchBaseUrl()}/api/admin/nomina/core-sync/versions/${encodeURIComponent(versionId)}`,
+      {
+        method: 'POST',
+        headers: buildProxyHeaders({ req }),
+        cache: 'no-store',
+      }
+    );
 
-  return new NextResponse(text, {
-    status: upstream.status,
-    headers: {
-      'content-type': contentType,
-    },
-  });
+    return forwardResponse(upstream);
+  } catch (error) {
+    return upstreamUnavailable('BATCH', error);
+  }
 }

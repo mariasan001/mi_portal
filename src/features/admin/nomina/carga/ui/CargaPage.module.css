@@ -1,0 +1,23 @@
+.contentShell {
+  transition:
+    opacity 0.2s ease,
+    filter 0.2s ease,
+    transform 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.contentShellIdle {
+  border-color: var(--border-soft);
+}
+
+.contentShellIdle > :not(:first-child) {
+  opacity: 0.68;
+  filter: grayscale(0.08);
+}
+
+@media (max-width: 1080px) {
+}
+
+@media (max-width: 640px) {
+}

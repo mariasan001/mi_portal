@@ -60,10 +60,6 @@ const blockVariants = {
   },
 };
 
-/**
- * Sanitiza el concepto para aceptar únicamente números
- * y limitarlo a 4 caracteres.
- */
 function sanitizeConcept(value: string) {
   return value.replace(/\D/g, '').slice(0, 4);
 }
@@ -71,11 +67,6 @@ function sanitizeConcept(value: string) {
 export default function ComprobanteQuincenalForm() {
   const [quincena, setQuincena] = useState('');
   const [anio, setAnio] = useState('2026');
-
-  /**
-   * El concepto se almacena ya sanitizado para mantener una sola
-   * fuente de verdad entre estado e input visible.
-   */
   const [concepto, setConcepto] = useState('');
 
   const isSubmitDisabled = useMemo(() => {
@@ -117,7 +108,7 @@ export default function ComprobanteQuincenalForm() {
           <div>
             <h3 className={s.sectionTitle}>Periodo de consulta</h3>
             <p className={s.sectionText}>
-              Selecciona la quincena y el año correspondientes.
+              Selecciona la quincena y el ano correspondientes.
             </p>
           </div>
         </div>
@@ -148,7 +139,7 @@ export default function ComprobanteQuincenalForm() {
           </label>
 
           <label className={s.field}>
-            <span className={s.label}>Año</span>
+            <span className={s.label}>Ano</span>
 
             <div className={s.controlWrap}>
               <span className={s.controlIcon} aria-hidden="true">
@@ -173,7 +164,7 @@ export default function ComprobanteQuincenalForm() {
 
       <motion.section
         className={s.infoCard}
-        aria-label="Aclaración de conceptos"
+        aria-label="Aclaracion de conceptos"
         variants={blockVariants}
       >
         <div className={s.infoHead}>
@@ -183,11 +174,11 @@ export default function ComprobanteQuincenalForm() {
 
           <div className={s.infoCopy}>
             <h3 className={s.infoTitle}>
-              Aclaración de conceptos de percepciones y deducciones
+              Aclaracion de conceptos de percepciones y deducciones
             </h3>
 
             <p className={s.infoText}>
-              Captura los 4 dígitos del concepto que deseas consultar.
+              Captura los 4 digitos del concepto que deseas consultar.
             </p>
           </div>
         </div>
@@ -214,7 +205,7 @@ export default function ComprobanteQuincenalForm() {
               <span className={s.inlineCounter}>{concepto.length}/4</span>
             </div>
 
-            <span className={s.helper}>Ingresa únicamente números.</span>
+            <span className={s.helper}>Ingresa unicamente numeros.</span>
           </label>
         </div>
       </motion.section>

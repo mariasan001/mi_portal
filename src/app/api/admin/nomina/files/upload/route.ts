@@ -1,5 +1,12 @@
 import { NextResponse } from 'next/server';
 import { obtenerBatchBaseUrl } from '@/lib/config/entorno';
+import {
+  buildProxyHeaders,
+  forwardResponse,
+  invalidPayload,
+  requireAdminAccess,
+  upstreamUnavailable,
+} from '@/app/api/_lib/proxy';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -20,14 +27,18 @@ function isValidFileType(value: string): boolean {
 }
 
 export async function POST(req: Request) {
-  const base = obtenerBatchBaseUrl();
-  const cookie = req.headers.get('cookie') ?? '';
+  const forbidden = await requireAdminAccess(req);
+  if (forbidden) {
+    return forbidden;
+  }
+
+  const baseUrl = obtenerBatchBaseUrl();
 
   let form: FormData;
   try {
     form = await req.formData();
   } catch {
-    return NextResponse.json({ message: 'FormData inválido' }, { status: 400 });
+    return invalidPayload('FormData invalido');
   }
 
   const versionId = form.get('versionId');
@@ -42,15 +53,15 @@ export async function POST(req: Request) {
       : Number(createdByUserId);
 
   if (!Number.isFinite(versionIdNum) || versionIdNum <= 0) {
-    return NextResponse.json({ message: 'versionId inválido' }, { status: 400 });
+    return NextResponse.json({ message: 'versionId invalido' }, { status: 400 });
   }
 
   if (typeof fileType !== 'string' || !isValidFileType(fileType)) {
-    return NextResponse.json({ message: 'fileType inválido' }, { status: 400 });
+    return NextResponse.json({ message: 'fileType invalido' }, { status: 400 });
   }
 
   if (!(file instanceof File) || file.size <= 0) {
-    return NextResponse.json({ message: 'Archivo inválido' }, { status: 400 });
+    return NextResponse.json({ message: 'Archivo invalido' }, { status: 400 });
   }
 
   if (
@@ -58,7 +69,7 @@ export async function POST(req: Request) {
     (!Number.isFinite(createdByUserIdNum) || createdByUserIdNum <= 0)
   ) {
     return NextResponse.json(
-      { message: 'createdByUserId inválido' },
+      { message: 'createdByUserId invalido' },
       { status: 400 }
     );
   }
@@ -73,28 +84,15 @@ export async function POST(req: Request) {
       upstreamForm.set('createdByUserId', String(createdByUserIdNum));
     }
 
-    const upstream = await fetch(`${base}/api/admin/nomina/files/upload`, {
+    const upstream = await fetch(`${baseUrl}/api/admin/nomina/files/upload`, {
       method: 'POST',
-      headers: {
-        accept: 'application/json',
-        cookie,
-      },
+      headers: buildProxyHeaders({ req }),
       body: upstreamForm,
       cache: 'no-store',
     });
 
-    const contentType =
-      upstream.headers.get('content-type') ?? 'application/json';
-    const text = await upstream.text();
-
-    return new NextResponse(text, {
-      status: upstream.status,
-      headers: { 'content-type': contentType },
-    });
-  } catch (e) {
-    return NextResponse.json(
-      { message: 'No se pudo conectar a BATCH', error: String(e) },
-      { status: 502 }
-    );
+    return forwardResponse(upstream);
+  } catch (error) {
+    return upstreamUnavailable('BATCH', error);
   }
 }

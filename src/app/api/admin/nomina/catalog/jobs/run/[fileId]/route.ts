@@ -1,5 +1,11 @@
-import { NextResponse } from 'next/server';
 import { obtenerBatchBaseUrl } from '@/lib/config/entorno';
+import {
+  buildProxyHeaders,
+  forwardResponse,
+  invalidParam,
+  requireAdminAccess,
+  upstreamUnavailable,
+} from '@/app/api/_lib/proxy';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -8,48 +14,38 @@ type Params = { fileId: string };
 type Ctx = { params: Params | Promise<Params> };
 
 async function getParams(ctx: Ctx): Promise<Params> {
-  const p = ctx.params;
-  return typeof (p as { then?: unknown })?.then === 'function'
-    ? await (p as Promise<Params>)
-    : (p as Params);
+  const params = ctx.params;
+  return typeof (params as { then?: unknown })?.then === 'function'
+    ? await (params as Promise<Params>)
+    : (params as Params);
 }
 
 export async function POST(req: Request, ctx: Ctx) {
-  const base = obtenerBatchBaseUrl();
-  const cookie = req.headers.get('cookie') ?? '';
+  const forbidden = await requireAdminAccess(req);
+  if (forbidden) {
+    return forbidden;
+  }
 
+  const baseUrl = obtenerBatchBaseUrl();
   const { fileId } = await getParams(ctx);
   const fileIdNum = Number(fileId);
 
   if (!Number.isFinite(fileIdNum) || fileIdNum <= 0) {
-    return NextResponse.json({ message: 'fileId inválido' }, { status: 400 });
+    return invalidParam('fileId');
   }
 
   try {
     const upstream = await fetch(
-      `${base}/api/admin/nomina/catalog/jobs/run/${encodeURIComponent(fileId)}`,
+      `${baseUrl}/api/admin/nomina/catalog/jobs/run/${encodeURIComponent(fileId)}`,
       {
         method: 'POST',
-        headers: {
-          accept: 'application/json',
-          cookie,
-        },
+        headers: buildProxyHeaders({ req }),
         cache: 'no-store',
       }
     );
 
-    const contentType =
-      upstream.headers.get('content-type') ?? 'application/json';
-    const text = await upstream.text();
-
-    return new NextResponse(text, {
-      status: upstream.status,
-      headers: { 'content-type': contentType },
-    });
-  } catch (e) {
-    return NextResponse.json(
-      { message: 'No se pudo conectar a BATCH', error: String(e) },
-      { status: 502 }
-    );
+    return forwardResponse(upstream);
+  } catch (error) {
+    return upstreamUnavailable('BATCH', error);
   }
 }

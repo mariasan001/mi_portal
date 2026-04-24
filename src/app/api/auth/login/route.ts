@@ -1,5 +1,11 @@
-import { NextResponse } from 'next/server';
 import { obtenerIamBaseUrl } from '@/lib/config/entorno';
+import {
+  buildProxyHeaders,
+  forwardResponse,
+  invalidJsonBody,
+  invalidPayload,
+  upstreamUnavailable,
+} from '@/app/api/_lib/proxy';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -10,61 +16,47 @@ type LoginRequest = {
   appCode: string;
 };
 
-function esLoginRequest(v: unknown): v is LoginRequest {
-  if (!v || typeof v !== 'object') return false;
-  const o = v as Record<string, unknown>;
+function isLoginRequest(value: unknown): value is LoginRequest {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+
+  const body = value as Record<string, unknown>;
+
   return (
-    typeof o.username === 'string' &&
-    typeof o.password === 'string' &&
-    typeof o.appCode === 'string' &&
-    o.username.trim().length > 0 &&
-    o.password.trim().length > 0 &&
-    o.appCode.trim().length > 0
+    typeof body.username === 'string' &&
+    body.username.trim().length > 0 &&
+    typeof body.password === 'string' &&
+    body.password.trim().length > 0 &&
+    typeof body.appCode === 'string' &&
+    body.appCode.trim().length > 0
   );
 }
 
 export async function POST(req: Request) {
-  const base = obtenerIamBaseUrl();
+  const baseUrl = obtenerIamBaseUrl();
 
   let payload: unknown;
   try {
     payload = await req.json();
   } catch {
-    return NextResponse.json({ message: 'Body inválido' }, { status: 400 });
+    return invalidJsonBody('Body invalido');
   }
 
-  if (!esLoginRequest(payload)) {
-    return NextResponse.json({ message: 'Payload inválido' }, { status: 400 });
+  if (!isLoginRequest(payload)) {
+    return invalidPayload('Payload invalido');
   }
 
   try {
-    const upstream = await fetch(`${base}/auth/login`, {
+    const upstream = await fetch(`${baseUrl}/auth/login`, {
       method: 'POST',
-      headers: { 'content-type': 'application/json', accept: 'application/json' },
+      headers: buildProxyHeaders({ req, withJsonContentType: true }),
       body: JSON.stringify(payload),
       cache: 'no-store',
     });
 
-    const contentType = upstream.headers.get('content-type') ?? 'application/json';
-    const text = await upstream.text();
-
-    const res = new NextResponse(text, {
-      status: upstream.status,
-      headers: { 'content-type': contentType },
-    });
-
-    // Reenvío robusto de cookies
-    const hdrs = upstream.headers as Headers & { getSetCookie?: () => string[] };
-    const cookies = typeof hdrs.getSetCookie === 'function' ? hdrs.getSetCookie() : [];
-    if (cookies.length) {
-      for (const c of cookies) res.headers.append('set-cookie', c);
-    } else {
-      const single = upstream.headers.get('set-cookie');
-      if (single) res.headers.set('set-cookie', single);
-    }
-
-    return res;
-  } catch (e) {
-    return NextResponse.json({ message: 'No se pudo conectar a IAM', error: String(e) }, { status: 502 });
+    return forwardResponse(upstream, { forwardSetCookie: true });
+  } catch (error) {
+    return upstreamUnavailable('IAM', error);
   }
 }

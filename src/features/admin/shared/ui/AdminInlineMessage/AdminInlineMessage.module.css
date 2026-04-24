@@ -1,0 +1,47 @@
+.message {
+  display: grid;
+  gap: 6px;
+  padding: 14px 16px;
+  border-radius: 16px;
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.body {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.error {
+  background: rgba(180, 35, 24, 0.05);
+  border: 1px solid rgba(180, 35, 24, 0.14);
+}
+
+.error .title,
+.error .body {
+  color: var(--danger);
+}
+
+.info {
+  background: rgba(10, 10, 10, 0.03);
+  border: 1px solid rgba(10, 10, 10, 0.08);
+}
+
+.info .title {
+  color: var(--text);
+}
+
+.info .body {
+  color: var(--muted);
+}
+
+@media (max-width: 640px) {
+  .message {
+    padding: 12px 14px;
+    border-radius: 14px;
+  }
+}

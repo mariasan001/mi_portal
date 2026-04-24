@@ -1,20 +1,22 @@
 import { NextResponse } from 'next/server';
+
+import { upstreamUnavailable } from '@/app/api/_lib/proxy';
 import { obtenerIamBaseUrl } from '@/lib/config/entorno';
 
 export const dynamic = 'force-dynamic';
 
 type ResetReq = { email: string; otp: string; newPassword: string };
 
-function isResetReq(v: unknown): v is ResetReq {
-  if (!v || typeof v !== 'object') return false;
-  const o = v as Record<string, unknown>;
+function isResetReq(value: unknown): value is ResetReq {
+  if (!value || typeof value !== 'object') return false;
+  const candidate = value as Record<string, unknown>;
   return (
-    typeof o.email === 'string' &&
-    o.email.trim().length > 3 &&
-    typeof o.otp === 'string' &&
-    o.otp.trim().length >= 4 &&
-    typeof o.newPassword === 'string' &&
-    o.newPassword.trim().length >= 8
+    typeof candidate.email === 'string' &&
+    candidate.email.trim().length > 3 &&
+    typeof candidate.otp === 'string' &&
+    candidate.otp.trim().length >= 4 &&
+    typeof candidate.newPassword === 'string' &&
+    candidate.newPassword.trim().length >= 8
   );
 }
 
@@ -25,11 +27,11 @@ export async function POST(req: Request) {
   try {
     payload = await req.json();
   } catch {
-    return NextResponse.json({ message: 'Body inválido' }, { status: 400 });
+    return NextResponse.json({ message: 'Body invalido' }, { status: 400 });
   }
 
   if (!isResetReq(payload)) {
-    return NextResponse.json({ message: 'Payload inválido' }, { status: 400 });
+    return NextResponse.json({ message: 'Payload invalido' }, { status: 400 });
   }
 
   try {
@@ -40,11 +42,14 @@ export async function POST(req: Request) {
       cache: 'no-store',
     });
 
-    const ct = upstream.headers.get('content-type') ?? 'application/json';
+    const contentType = upstream.headers.get('content-type') ?? 'application/json';
     const text = await upstream.text();
 
-    return new NextResponse(text, { status: upstream.status, headers: { 'content-type': ct } });
-  } catch (e) {
-    return NextResponse.json({ message: 'No se pudo conectar a IAM', error: String(e) }, { status: 502 });
+    return new NextResponse(text, {
+      status: upstream.status,
+      headers: { 'content-type': contentType },
+    });
+  } catch (error) {
+    return upstreamUnavailable('IAM', error);
   }
 }

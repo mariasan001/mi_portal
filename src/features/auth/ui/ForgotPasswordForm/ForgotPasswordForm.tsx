@@ -9,7 +9,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 
-import { useForgotPassword } from '@/features/auth/hooks/useForgotPassword';
+import { useForgotPassword } from '@/features/auth/application/useForgotPassword';
 
 import s from './ForgotPasswordForm.module.css';
 

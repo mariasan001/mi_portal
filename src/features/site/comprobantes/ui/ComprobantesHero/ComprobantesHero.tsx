@@ -63,11 +63,6 @@ const heroTextItemVariants = {
   },
 };
 
-/**
- * Hero principal del módulo de comprobantes.
- * Combina el reveal inicial al entrar al viewport con
- * una transición interna del copy cuando cambia la vista activa.
- */
 export default function ComprobantesHero({
   title,
   accent,

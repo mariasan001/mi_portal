@@ -1,41 +1,39 @@
-import { NextResponse } from 'next/server';
 import { obtenerBatchBaseUrl } from '@/lib/config/entorno';
+import {
+  buildProxyHeaders,
+  copySearchParams,
+  forwardResponse,
+  requireAdminAccess,
+  upstreamUnavailable,
+} from '@/app/api/_lib/proxy';
+
+const AUDIT_RELEASES_QUERY_KEYS = [
+  'versionId',
+  'payPeriodCode',
+  'stage',
+  'limit',
+  'offset',
+] as const;
 
 export async function GET(req: Request) {
-  const baseUrl = obtenerBatchBaseUrl();
-  const cookie = req.headers.get('cookie') ?? '';
-  const url = new URL(req.url);
+  const forbidden = await requireAdminAccess(req);
+  if (forbidden) {
+    return forbidden;
+  }
 
-  const upstreamUrl = new URL(`${baseUrl}/api/admin/nomina/audit/releases`);
+  const requestUrl = new URL(req.url);
+  const upstreamUrl = new URL(`${obtenerBatchBaseUrl()}/api/admin/nomina/audit/releases`);
+  copySearchParams(requestUrl, upstreamUrl, AUDIT_RELEASES_QUERY_KEYS);
 
-  const versionId = url.searchParams.get('versionId');
-  const payPeriodCode = url.searchParams.get('payPeriodCode');
-  const stage = url.searchParams.get('stage');
-  const limit = url.searchParams.get('limit');
-  const offset = url.searchParams.get('offset');
+  try {
+    const upstream = await fetch(upstreamUrl.toString(), {
+      method: 'GET',
+      headers: buildProxyHeaders({ req }),
+      cache: 'no-store',
+    });
 
-  if (versionId) upstreamUrl.searchParams.set('versionId', versionId);
-  if (payPeriodCode) upstreamUrl.searchParams.set('payPeriodCode', payPeriodCode);
-  if (stage) upstreamUrl.searchParams.set('stage', stage);
-  if (limit) upstreamUrl.searchParams.set('limit', limit);
-  if (offset) upstreamUrl.searchParams.set('offset', offset);
-
-  const upstream = await fetch(upstreamUrl.toString(), {
-    method: 'GET',
-    headers: {
-      accept: 'application/json',
-      cookie,
-    },
-    cache: 'no-store',
-  });
-
-  const contentType = upstream.headers.get('content-type') ?? 'application/json';
-  const text = await upstream.text();
-
-  return new NextResponse(text, {
-    status: upstream.status,
-    headers: {
-      'content-type': contentType,
-    },
-  });
+    return forwardResponse(upstream);
+  } catch (error) {
+    return upstreamUnavailable('BATCH', error);
+  }
 }

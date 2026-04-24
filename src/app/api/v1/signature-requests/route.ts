@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
+
+import { upstreamUnavailable } from '@/app/api/_lib/proxy';
 import { obtenerSignatureBaseUrl } from '@/lib/config/entorno';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
-const ESTATUS_VALIDOS = ['PENDING', 'PROCESSING', 'SIGNED', 'FAILED'] as const;
-type SignatureRequestStatus = (typeof ESTATUS_VALIDOS)[number];
+const VALID_STATUSES = ['PENDING', 'PROCESSING', 'SIGNED', 'FAILED'] as const;
+type SignatureRequestStatus = (typeof VALID_STATUSES)[number];
 
 function isValidStatus(value: string): value is SignatureRequestStatus {
-  return ESTATUS_VALIDOS.includes(value as SignatureRequestStatus);
+  return VALID_STATUSES.includes(value as SignatureRequestStatus);
 }
 
 export async function GET(req: NextRequest) {
@@ -16,13 +18,11 @@ export async function GET(req: NextRequest) {
   const cookie = req.headers.get('cookie') ?? '';
 
   const status = req.nextUrl.searchParams.get('status');
-  const qs =
-    status && isValidStatus(status)
-      ? `?status=${encodeURIComponent(status)}`
-      : '';
+  const queryString =
+    status && isValidStatus(status) ? `?status=${encodeURIComponent(status)}` : '';
 
   try {
-    const upstream = await fetch(`${base}/api/v1/signature-requests${qs}`, {
+    const upstream = await fetch(`${base}/api/v1/signature-requests${queryString}`, {
       method: 'GET',
       headers: {
         accept: 'application/json',
@@ -31,19 +31,15 @@ export async function GET(req: NextRequest) {
       cache: 'no-store',
     });
 
-    const contentType =
-      upstream.headers.get('content-type') ?? 'application/json';
+    const contentType = upstream.headers.get('content-type') ?? 'application/json';
     const text = await upstream.text();
 
     return new NextResponse(text, {
       status: upstream.status,
       headers: { 'content-type': contentType },
     });
-  } catch (e) {
-    return NextResponse.json(
-      { message: 'No se pudo conectar a SIGNATURE', error: String(e) },
-      { status: 502 }
-    );
+  } catch (error) {
+    return upstreamUnavailable('SIGNATURE', error);
   }
 }
 
@@ -57,7 +53,7 @@ export async function POST(req: NextRequest) {
     formData = await req.formData();
   } catch {
     return NextResponse.json(
-      { message: 'Body multipart/form-data inválido' },
+      { message: 'Body multipart/form-data invalido' },
       { status: 400 }
     );
   }
@@ -69,17 +65,11 @@ export async function POST(req: NextRequest) {
   const descripcion = formData.get('descripcion');
 
   if (!(file instanceof File)) {
-    return NextResponse.json(
-      { message: 'El archivo es obligatorio' },
-      { status: 400 }
-    );
+    return NextResponse.json({ message: 'El archivo es obligatorio' }, { status: 400 });
   }
 
   if (typeof cuts !== 'string' || !cuts.trim()) {
-    return NextResponse.json(
-      { message: 'cuts es obligatorio' },
-      { status: 400 }
-    );
+    return NextResponse.json({ message: 'cuts es obligatorio' }, { status: 400 });
   }
 
   if (typeof contrasena !== 'string' || !contrasena.trim()) {
@@ -113,18 +103,14 @@ export async function POST(req: NextRequest) {
       cache: 'no-store',
     });
 
-    const contentType =
-      upstream.headers.get('content-type') ?? 'application/json';
+    const contentType = upstream.headers.get('content-type') ?? 'application/json';
     const text = await upstream.text();
 
     return new NextResponse(text, {
       status: upstream.status,
       headers: { 'content-type': contentType },
     });
-  } catch (e) {
-    return NextResponse.json(
-      { message: 'No se pudo conectar a SIGNATURE', error: String(e) },
-      { status: 502 }
-    );
+  } catch (error) {
+    return upstreamUnavailable('SIGNATURE', error);
   }
 }

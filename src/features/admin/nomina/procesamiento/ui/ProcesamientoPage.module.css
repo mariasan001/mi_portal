@@ -1,0 +1,10 @@
+.resultCard {
+  display: grid;
+  gap: 18px;
+}
+
+@media (max-width: 640px) {
+  .resultCard {
+    gap: 16px;
+  }
+}

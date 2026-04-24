@@ -1,0 +1,167 @@
+.formCard {
+  display: grid;
+  gap: 18px;
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.intro {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  min-width: 0;
+}
+
+.grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  min-width: 0;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.fieldLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.iconWrap {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 14px;
+  background: rgba(159, 33, 65, 0.05);
+  color: var(--vino);
+}
+
+.field input {
+  width: 100%;
+  min-width: 0;
+  height: 50px;
+  padding: 0 16px;
+  border-radius: 16px;
+  border: 1px solid var(--border-soft);
+  background: #fff;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font-body);
+  outline: none;
+  transition:
+    border-color 0.16s ease,
+    box-shadow 0.16s ease,
+    background 0.16s ease;
+  box-sizing: border-box;
+}
+
+.field input:hover {
+  border-color: rgba(10, 10, 10, 0.12);
+}
+
+.field input:focus {
+  border-color: rgba(188, 148, 90, 0.3);
+  box-shadow: 0 0 0 4px rgba(188, 148, 90, 0.1);
+}
+
+.field input::placeholder {
+  color: rgba(10, 10, 10, 0.42);
+  font-weight: 400;
+}
+
+.helper {
+  color: var(--muted);
+  font-size: 11.5px;
+  line-height: 1.45;
+}
+
+.validation {
+  margin: 0;
+  color: var(--danger);
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  padding-top: 6px;
+}
+
+.submitBtn {
+  min-height: 44px;
+  min-width: 240px;
+  padding: 0 22px;
+  border-radius: 15px;
+  border: 1px solid rgba(159, 33, 65, 0.18);
+  background: var(--vino);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    background 0.16s ease,
+    border-color 0.16s ease,
+    opacity 0.16s ease;
+  box-shadow: 0 10px 22px rgba(159, 33, 65, 0.14);
+}
+
+.submitBtn:hover:not(:disabled) {
+  background: #8e1c39;
+  border-color: rgba(159, 33, 65, 0.26);
+  box-shadow: 0 12px 24px rgba(159, 33, 65, 0.17);
+}
+
+.submitBtn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+@media (max-width: 920px) {
+  .grid3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .grid2 {
+    grid-template-columns: 1fr;
+  }
+
+  .field input {
+    height: 48px;
+  }
+
+  .submitBtn {
+    width: 100%;
+    min-width: 0;
+  }
+}

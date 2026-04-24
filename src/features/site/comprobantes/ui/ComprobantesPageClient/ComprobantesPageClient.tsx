@@ -4,36 +4,30 @@ import { useEffect, useMemo } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { useAuth } from '@/features/auth';
-import SiteNav from '@/features/site/Components/Nav/SiteNav';
+import { buildAuthModalHref } from '@/features/auth/utils/authRedirect';
+import { SiteNav } from '@/features/site';
 
+import { useComprobantesAccessController } from '../../application/useComprobantesAccessController';
+import { buildHeroCopy } from '../../model/comprobantes.selectors';
 import ComprobantesAccessGrid from '../ComprobantesAccessGrid/ComprobantesAccessGrid';
 import ComprobantesHero from '../ComprobantesHero/ComprobantesHero';
-
 import s from './ComprobantesPageClient.module.css';
-import { useComprobantesAccessState } from '../../hook/useComprobantesAccessState';
-import { buildHeroCopy } from '../../helper/comprobantesHeroCopy';
 
 export default function ComprobantesPageClient() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const { isAuthenticated, loading, sesion } = useAuth();
-
+  const { isAuthenticated, loading } = useAuth();
   const {
     selectedKey,
     phase,
     heroView,
     handleSelectView,
     handleBack,
-  } = useComprobantesAccessState();
+  } = useComprobantesAccessController();
 
-  const displayName = sesion?.username ?? 'Usuario';
-
-  const heroCopy = useMemo(
-    () => buildHeroCopy(heroView, displayName),
-    [heroView, displayName]
-  );
+  const heroCopy = useMemo(() => buildHeroCopy(heroView), [heroView]);
 
   useEffect(() => {
     if (loading) return;
@@ -42,14 +36,16 @@ export default function ComprobantesPageClient() {
       const query = searchParams.toString();
       const fullPath = query ? `${pathname}?${query}` : pathname;
 
-      router.replace(`/login?redirect=${encodeURIComponent(fullPath)}`);
+      router.replace(
+        buildAuthModalHref({ returnTo: fullPath, appCode: 'PLAT_SERV' })
+      );
     }
   }, [isAuthenticated, loading, pathname, router, searchParams]);
 
   if (loading) {
     return (
       <main className={s.page}>
-        <div className={s.centerBox}>Validando sesión...</div>
+        <div className={s.centerBox}>Validando sesion...</div>
       </main>
     );
   }

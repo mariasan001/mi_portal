@@ -1,43 +1,25 @@
-import { NextResponse } from 'next/server';
 import { obtenerIamBaseUrl } from '@/lib/config/entorno';
+import {
+  buildProxyHeaders,
+  forwardResponse,
+  upstreamUnavailable,
+} from '@/app/api/_lib/proxy';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
 export async function GET(req: Request) {
-  const base = obtenerIamBaseUrl();
-  const cookie = req.headers.get('cookie') ?? '';
+  const baseUrl = obtenerIamBaseUrl();
 
   try {
-    const upstream = await fetch(`${base}/auth/me`, {
+    const upstream = await fetch(`${baseUrl}/auth/me`, {
       method: 'GET',
-      headers: { accept: 'application/json', cookie },
+      headers: buildProxyHeaders({ req }),
       cache: 'no-store',
     });
 
-    const contentType = upstream.headers.get('content-type') ?? 'application/json';
-    const text = await upstream.text();
-
-    const res = new NextResponse(text, {
-      status: upstream.status,
-      headers: { 'content-type': contentType },
-    });
-
-    // ✅ Reenvío robusto de cookies (por refresh de sesión)
-    const hdrs = upstream.headers as Headers & { getSetCookie?: () => string[] };
-    const cookies = typeof hdrs.getSetCookie === 'function' ? hdrs.getSetCookie() : [];
-    if (cookies.length) {
-      for (const c of cookies) res.headers.append('set-cookie', c);
-    } else {
-      const single = upstream.headers.get('set-cookie');
-      if (single) res.headers.set('set-cookie', single);
-    }
-
-    return res;
-  } catch (e) {
-    return NextResponse.json(
-      { message: 'No se pudo conectar a IAM', error: String(e) },
-      { status: 502 }
-    );
+    return forwardResponse(upstream, { forwardSetCookie: true });
+  } catch (error) {
+    return upstreamUnavailable('IAM', error);
   }
 }

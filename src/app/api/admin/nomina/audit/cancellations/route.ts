@@ -1,45 +1,43 @@
-import { NextResponse } from 'next/server';
 import { obtenerBatchBaseUrl } from '@/lib/config/entorno';
+import {
+  buildProxyHeaders,
+  copySearchParams,
+  forwardResponse,
+  requireAdminAccess,
+  upstreamUnavailable,
+} from '@/app/api/_lib/proxy';
+
+const AUDIT_CANCELLATIONS_QUERY_KEYS = [
+  'receiptId',
+  'claveSp',
+  'payPeriodCode',
+  'receiptPeriodCode',
+  'nominaTipo',
+  'limit',
+  'offset',
+] as const;
 
 export async function GET(req: Request) {
-  const baseUrl = obtenerBatchBaseUrl();
-  const cookie = req.headers.get('cookie') ?? '';
-  const url = new URL(req.url);
+  const forbidden = await requireAdminAccess(req);
+  if (forbidden) {
+    return forbidden;
+  }
 
-  const upstreamUrl = new URL(`${baseUrl}/api/admin/nomina/audit/cancellations`);
+  const requestUrl = new URL(req.url);
+  const upstreamUrl = new URL(
+    `${obtenerBatchBaseUrl()}/api/admin/nomina/audit/cancellations`
+  );
+  copySearchParams(requestUrl, upstreamUrl, AUDIT_CANCELLATIONS_QUERY_KEYS);
 
-  const receiptId = url.searchParams.get('receiptId');
-  const claveSp = url.searchParams.get('claveSp');
-  const payPeriodCode = url.searchParams.get('payPeriodCode');
-  const receiptPeriodCode = url.searchParams.get('receiptPeriodCode');
-  const nominaTipo = url.searchParams.get('nominaTipo');
-  const limit = url.searchParams.get('limit');
-  const offset = url.searchParams.get('offset');
+  try {
+    const upstream = await fetch(upstreamUrl.toString(), {
+      method: 'GET',
+      headers: buildProxyHeaders({ req }),
+      cache: 'no-store',
+    });
 
-  if (receiptId) upstreamUrl.searchParams.set('receiptId', receiptId);
-  if (claveSp) upstreamUrl.searchParams.set('claveSp', claveSp);
-  if (payPeriodCode) upstreamUrl.searchParams.set('payPeriodCode', payPeriodCode);
-  if (receiptPeriodCode) upstreamUrl.searchParams.set('receiptPeriodCode', receiptPeriodCode);
-  if (nominaTipo) upstreamUrl.searchParams.set('nominaTipo', nominaTipo);
-  if (limit) upstreamUrl.searchParams.set('limit', limit);
-  if (offset) upstreamUrl.searchParams.set('offset', offset);
-
-  const upstream = await fetch(upstreamUrl.toString(), {
-    method: 'GET',
-    headers: {
-      accept: 'application/json',
-      cookie,
-    },
-    cache: 'no-store',
-  });
-
-  const contentType = upstream.headers.get('content-type') ?? 'application/json';
-  const text = await upstream.text();
-
-  return new NextResponse(text, {
-    status: upstream.status,
-    headers: {
-      'content-type': contentType,
-    },
-  });
+    return forwardResponse(upstream);
+  } catch (error) {
+    return upstreamUnavailable('BATCH', error);
+  }
 }

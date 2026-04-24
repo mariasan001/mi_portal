@@ -10,7 +10,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 
-import { useVerifyOtp } from '@/features/auth/hooks/useVerifyOtp';
+import { useVerifyOtp } from '@/features/auth/application/useVerifyOtp';
 
 import s from './VerifyOtpForm.module.css';
 

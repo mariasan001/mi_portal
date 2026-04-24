@@ -1,0 +1,264 @@
+.panel {
+  display: grid;
+  gap: 10px;
+}
+
+.tableShell {
+  border: 1px solid rgba(10, 10, 10, 0.06);
+  border-radius: 18px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.tableWrap {
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+.table {
+  width: 100%;
+  min-width: 920px;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table thead th {
+  padding: 12px 14px;
+  background: linear-gradient(180deg, #fbfbfb 0%, #f4f4f4 100%);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(10, 10, 10, 0.06);
+  text-align: left;
+  color: rgba(10, 10, 10, 0.85);
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.actionsHeader {
+  text-align: center;
+}
+
+.table tbody tr {
+  transition: background 0.14s ease;
+}
+
+.table tbody tr:hover {
+  background: rgba(188, 148, 90, 0.03);
+}
+
+.table tbody td {
+  padding: 12px 14px;
+  font-size: 12px;
+  border-bottom: 1px solid rgba(10, 10, 10, 0.04);
+  white-space: nowrap;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.activeRow {
+  background: rgba(188, 148, 90, 0.05);
+}
+
+.activeRow:hover {
+  background: rgba(188, 148, 90, 0.06);
+}
+
+.nameCell {
+  position: relative;
+  min-width: 280px;
+  max-width: 320px;
+  overflow: hidden;
+}
+
+.nameText {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: all 0.15s ease;
+}
+
+.table tbody tr:hover .nameText {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: normal;
+  overflow: visible;
+  background: #fff;
+  padding: 6px 8px;
+  border-radius: 6px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+  z-index: 10;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.providerCell {
+  min-width: 170px;
+  max-width: 190px;
+}
+
+.providerStack {
+  display: grid;
+  gap: 3px;
+}
+
+.providerText {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.providerMeta {
+  color: rgba(10, 10, 10, 0.46);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.dateCell {
+  min-width: 140px;
+}
+
+.dateMain {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.35;
+}
+
+.dateSub {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+  line-height: 1.3;
+}
+
+.statusBadge {
+  min-height: 30px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pending {
+  color: #9a6a16;
+  background: rgba(183, 121, 31, 0.1);
+}
+
+.processing {
+  color: #285ea8;
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.signed {
+  color: #0b7d57;
+  background: rgba(25, 135, 84, 0.1);
+}
+
+.failed {
+  color: #b42318;
+  background: rgba(180, 35, 24, 0.1);
+}
+
+.defaultStatus {
+  color: var(--muted);
+  background: rgba(10, 10, 10, 0.05);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.actionsCell {
+  min-width: 150px;
+}
+
+.detailsButton {
+  color: var(--vino);
+  border-color: rgba(159, 33, 65, 0.16);
+  background: rgba(159, 33, 65, 0.08);
+}
+
+.detailsButton:hover {
+  background: rgba(159, 33, 65, 0.12);
+  border-color: rgba(159, 33, 65, 0.22);
+  color: var(--vino);
+}
+
+.iconButton {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  border: 1px solid rgba(10, 10, 10, 0.08);
+  background: #ffffff;
+  color: rgba(10, 10, 10, 0.78);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    transform 0.16s ease,
+    background 0.16s ease,
+    border-color 0.16s ease,
+    color 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+.iconButton:hover {
+  transform: translateY(-1px);
+  background: #fafafa;
+  border-color: rgba(10, 10, 10, 0.14);
+  color: var(--text);
+  box-shadow: 0 6px 16px rgba(10, 10, 10, 0.06);
+}
+
+.downloadButton {
+  color: #7b5a2f;
+  border-color: rgba(188, 148, 90, 0.16);
+  background: rgba(188, 148, 90, 0.08);
+}
+
+.downloadButton:hover {
+  background: rgba(188, 148, 90, 0.12);
+  border-color: rgba(188, 148, 90, 0.22);
+  color: #7b5a2f;
+}
+
+@media (max-width: 900px) {
+  .table thead th {
+    padding: 11px 12px;
+  }
+
+  .table tbody td {
+    padding: 11px 12px;
+  }
+}

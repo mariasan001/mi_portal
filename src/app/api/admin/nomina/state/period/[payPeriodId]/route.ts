@@ -1,5 +1,12 @@
-import { NextResponse } from 'next/server';
 import { obtenerBatchBaseUrl } from '@/lib/config/entorno';
+import {
+  buildProxyHeaders,
+  forwardResponse,
+  invalidParam,
+  requireAdminAccess,
+  resolveRouteParams,
+  upstreamUnavailable,
+} from '@/app/api/_lib/proxy';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -7,52 +14,31 @@ export const runtime = 'nodejs';
 type Params = { payPeriodId: string };
 type Ctx = { params: Params | Promise<Params> };
 
-async function getParams(ctx: Ctx): Promise<Params> {
-  const p = ctx.params;
-  return typeof (p as { then?: unknown })?.then === 'function'
-    ? await (p as Promise<Params>)
-    : (p as Params);
-}
-
 export async function GET(req: Request, ctx: Ctx) {
-  const base = obtenerBatchBaseUrl();
-  const cookie = req.headers.get('cookie') ?? '';
+  const forbidden = await requireAdminAccess(req);
+  if (forbidden) {
+    return forbidden;
+  }
 
-  const { payPeriodId } = await getParams(ctx);
+  const { payPeriodId } = await resolveRouteParams(ctx.params);
   const payPeriodIdNum = Number(payPeriodId);
 
   if (!Number.isFinite(payPeriodIdNum) || payPeriodIdNum <= 0) {
-    return NextResponse.json(
-      { message: 'payPeriodId inválido' },
-      { status: 400 }
-    );
+    return invalidParam('payPeriodId');
   }
 
   try {
     const upstream = await fetch(
-      `${base}/api/admin/nomina/state/period/${encodeURIComponent(String(payPeriodIdNum))}`,
+      `${obtenerBatchBaseUrl()}/api/admin/nomina/state/period/${encodeURIComponent(String(payPeriodIdNum))}`,
       {
         method: 'GET',
-        headers: {
-          accept: 'application/json',
-          cookie,
-        },
+        headers: buildProxyHeaders({ req }),
         cache: 'no-store',
       }
     );
 
-    const contentType =
-      upstream.headers.get('content-type') ?? 'application/json';
-    const text = await upstream.text();
-
-    return new NextResponse(text, {
-      status: upstream.status,
-      headers: { 'content-type': contentType },
-    });
-  } catch (e) {
-    return NextResponse.json(
-      { message: 'No se pudo conectar a BATCH', error: String(e) },
-      { status: 502 }
-    );
+    return forwardResponse(upstream);
+  } catch (error) {
+    return upstreamUnavailable('BATCH', error);
   }
 }
