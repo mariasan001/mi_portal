@@ -10,64 +10,37 @@
 
 .header {
   display: grid;
-  gap: 18px;
+  gap: 16px;
 }
 
 .topRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 18px;
+  gap: 16px;
 }
 
 .titleBlock {
   display: grid;
-  gap: 8px;
+  gap: 6px;
   min-width: 0;
-}
-
-.titleMeta {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.countBadge {
-  display: inline-flex;
-  align-items: center;
-  min-height: 28px;
-  padding: 0 10px;
-  border-radius: 999px;
-  background: rgba(188, 148, 90, 0.1);
-  color: #7b5a2f;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-}
-
-.contextText {
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 600;
 }
 
 .titleBlock h2 {
   margin: 0;
   color: var(--text);
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 800;
-  line-height: 1.15;
-  letter-spacing: -0.02em;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
 }
 
 .subtitle {
   margin: 0;
-  max-width: 74ch;
+  max-width: 56ch;
   color: var(--muted);
-  font-size: 13px;
-  line-height: 1.65;
+  font-size: 12px;
+  line-height: 1.55;
 }
 
 .primaryBtn {
@@ -106,7 +79,7 @@
   justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
-  padding: 18px 18px 0;
+  padding: 16px 0 0;
   border-top: 1px solid rgba(10, 10, 10, 0.06);
 }
 
@@ -128,10 +101,15 @@
   letter-spacing: -0.01em;
 }
 
-.filtersHint {
+.filtersSummary {
   color: var(--muted);
   font-size: 12px;
   line-height: 1.5;
+}
+
+.filtersSummary strong {
+  color: var(--text);
+  font-weight: 800;
 }
 
 .chips {

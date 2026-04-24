@@ -47,26 +47,18 @@ export default function FirmaSolicitudesPanel({
 }: Props) {
   const activeStatusLabel =
     STATUS_OPTIONS.find((option) => option.value === status)?.label ?? 'Todos';
+  const resultLabel =
+    items.length === 1 ? 'solicitud encontrada' : 'solicitudes encontradas';
 
   return (
     <section className={s.panel}>
       <header className={s.header}>
         <div className={s.topRow}>
           <div className={s.titleBlock}>
-            <div className={s.titleMeta}>
-              <span className={s.countBadge}>
-                {items.length} {items.length === 1 ? 'resultado' : 'resultados'}
-              </span>
-              <span className={s.contextText}>
-                Filtro activo: {activeStatusLabel}
-              </span>
-            </div>
-
             <h2>Solicitudes registradas</h2>
             <p className={s.subtitle}>
               Consulta el estado de cada solicitud y accede al PDF firmado
-              cuando este disponible. Revisa el detalle funcional, valida el
-              estado y descarga el archivo final desde una sola vista.
+              cuando este disponible.
             </p>
           </div>
 
@@ -84,9 +76,8 @@ export default function FirmaSolicitudesPanel({
           <div className={s.filtersBlock}>
             <div className={s.filtersHeading}>
               <span className={s.filtersLabel}>Estatus</span>
-              <span className={s.filtersHint}>
-                Cambia la vista para concentrarte en solicitudes pendientes,
-                firmadas o con error.
+              <span className={s.filtersSummary}>
+                {items.length} {resultLabel} en <strong>{activeStatusLabel}</strong>
               </span>
             </div>
 
