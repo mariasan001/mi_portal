@@ -1,5 +1,5 @@
-import NominaMonitoreoView from "@/features/admin/ui/NominaMonitoreoView/NominaMonitoreoView";
+import MonitoreoNominaPage from '@/features/admin/nomina/monitoreo/ui/MonitoreoPage';
 
 export default function MonitoreoPage() {
-  return <NominaMonitoreoView />;
+  return <MonitoreoNominaPage />;
 }

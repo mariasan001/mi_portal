@@ -4,7 +4,7 @@ import type {
   ArchivoNominaDto,
   EjecucionCatalogoDto,
   UploadArchivoNominaPayload,
-} from '@/features/admin/types/nomina-catalogo.types';
+} from '@/features/admin/nomina/shared/model/catalogo.types';
 
 async function readJsonSafe(res: Response): Promise<unknown> {
   const ct = res.headers.get('content-type') ?? '';

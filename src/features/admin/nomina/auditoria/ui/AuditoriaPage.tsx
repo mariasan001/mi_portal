@@ -7,13 +7,13 @@ import type {
   AuditCancellationItemDto,
   AuditReleaseItemDto,
 } from '@/features/admin/nomina/auditoria/model/auditoria.types';
-import EmptyState from '@/features/admin/ui/NominaAuditoriaView/components/EmptyState';
-import NominaAuditoriaActionCards from '@/features/admin/ui/NominaAuditoriaView/components/NominaAuditoriaActionCards';
-import NominaAuditoriaContentHeader from '@/features/admin/ui/NominaAuditoriaView/components/NominaAuditoriaContentHeader';
-import NominaAuditoriaHero from '@/features/admin/ui/NominaAuditoriaView/components/NominaAuditoriaHero';
-import NominaAuditoriaResultsSection from '@/features/admin/ui/NominaAuditoriaView/components/NominaAuditoriaResultsSection';
-import NominaAuditoriaToolbar from '@/features/admin/ui/NominaAuditoriaView/components/NominaAuditoriaToolbar';
-import s from '@/features/admin/ui/NominaAuditoriaView/NominaAuditoriaView.module.css';
+import EmptyState from './components/EmptyState';
+import NominaAuditoriaActionCards from './components/NominaAuditoriaActionCards';
+import NominaAuditoriaContentHeader from './components/NominaAuditoriaContentHeader';
+import NominaAuditoriaHero from './components/NominaAuditoriaHero';
+import NominaAuditoriaResultsSection from './components/NominaAuditoriaResultsSection';
+import NominaAuditoriaToolbar from './components/NominaAuditoriaToolbar';
+import s from './AuditoriaPage.module.css';
 import { useAuditoriaController } from '../application/useAuditoriaController';
 
 export default function AuditoriaPage() {

@@ -37,6 +37,37 @@
   max-width: 760px;
 }
 
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--border-soft);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    transform 0.16s ease,
+    border-color 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+.button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(188, 148, 90, 0.28);
+  box-shadow: 0 10px 20px rgba(10, 10, 10, 0.04);
+}
+
+.button:active {
+  transform: translateY(0);
+}
+
 .eyebrow {
   display: inline-flex;
   align-items: center;

@@ -12,12 +12,12 @@ import {
   loadingState,
   successState,
   type AsyncState,
-} from '@/features/admin/hooks/request-state';
+} from '@/features/admin/nomina/shared/lib/request-state';
 import type {
   ArchivoNominaDto,
   EjecucionCatalogoDto,
   UploadArchivoNominaPayload,
-} from '@/features/admin/types/nomina-catalogo.types';
+} from '@/features/admin/nomina/shared/model/catalogo.types';
 
 export function useCatalogoResource() {
   const [archivo, setArchivo] = useState<AsyncState<ArchivoNominaDto>>(idleState());

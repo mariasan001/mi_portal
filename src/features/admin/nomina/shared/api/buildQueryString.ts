@@ -14,3 +14,4 @@ export function buildQueryString(
   const query = qs.toString();
   return query ? `?${query}` : '';
 }
+

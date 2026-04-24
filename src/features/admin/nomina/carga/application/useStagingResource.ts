@@ -3,7 +3,7 @@
 import { useCallback, useState } from 'react';
 import { toErrorMessage } from '@/lib/api/api.errores';
 import { ejecutarPayrollStaging } from '@/features/admin/nomina/carga/api/staging.commands';
-import type { EjecucionPayrollStagingDto } from '@/features/admin/types/nomina-staging.types';
+import type { EjecucionPayrollStagingDto } from '@/features/admin/nomina/shared/model/staging.types';
 
 export function useStagingResource() {
   const [ejecucion, setEjecucion] = useState<EjecucionPayrollStagingDto | null>(null);

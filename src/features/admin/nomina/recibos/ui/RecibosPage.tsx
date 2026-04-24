@@ -2,14 +2,14 @@
 
 import AdminPageShell from '@/features/admin/shared/ui/AdminPageShell/AdminPageShell';
 import AdminSurface from '@/features/admin/shared/ui/AdminSurface/AdminSurface';
-import EmptyState from '@/features/admin/ui/NominaRecibosView/components/EmptyState';
-import NominaRecibosActionCards from '@/features/admin/ui/NominaRecibosView/components/NominaRecibosActionCards';
-import NominaRecibosContentHeader from '@/features/admin/ui/NominaRecibosView/components/NominaRecibosContentHeader';
-import NominaRecibosHero from '@/features/admin/ui/NominaRecibosView/components/NominaRecibosHero';
-import NominaRecibosReleasePanel from '@/features/admin/ui/NominaRecibosView/components/NominaRecibosReleasePanel';
-import NominaRecibosResultsSection from '@/features/admin/ui/NominaRecibosView/components/NominaRecibosResultsSection';
-import NominaRecibosToolbar from '@/features/admin/ui/NominaRecibosView/components/NominaRecibosToolbar';
-import s from '@/features/admin/ui/NominaRecibosView/NominaRecibosView.module.css';
+import EmptyState from './components/EmptyState';
+import NominaRecibosActionCards from './components/NominaRecibosActionCards';
+import NominaRecibosContentHeader from './components/NominaRecibosContentHeader';
+import NominaRecibosHero from './components/NominaRecibosHero';
+import NominaRecibosReleasePanel from './components/NominaRecibosReleasePanel';
+import NominaRecibosResultsSection from './components/NominaRecibosResultsSection';
+import NominaRecibosToolbar from './components/NominaRecibosToolbar';
+import s from './RecibosPage.module.css';
 import { useRecibosController } from '../application/useRecibosController';
 
 export default function RecibosPage() {

@@ -12,7 +12,7 @@ import {
   loadingState,
   successState,
   type AsyncState,
-} from '@/features/admin/hooks/request-state';
+} from '@/features/admin/nomina/shared/lib/request-state';
 import type {
   AuditCancellationsQuery,
   AuditCancellationsResponseDto,

@@ -9,7 +9,7 @@ import {
 import type {
   CrearPeriodoNominaPayload,
   PeriodoNominaDto,
-} from '@/features/admin/types/nomina-periodos.types';
+} from '@/features/admin/nomina/shared/model/periodos.types';
 
 export function usePeriodosResource() {
   const [detalle, setDetalle] = useState<PeriodoNominaDto | null>(null);

@@ -1,5 +1,8 @@
-import type { NominaFileType } from '@/features/admin/types/nomina-catalogo.types';
-import type { NominaStage, NominaStatus } from '@/features/admin/types/nomina-versiones.types';
+import type { NominaFileType } from '@/features/admin/nomina/shared/model/catalogo.types';
+import type {
+  NominaStage,
+  NominaStatus,
+} from '@/features/admin/nomina/shared/model/versiones.types';
 
 export type ProcesamientoView = 'summary' | 'preview' | 'errors';
 

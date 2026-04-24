@@ -121,10 +121,10 @@ Compatibilidades temporales conectadas:
 - `features/admin/hooks/*`
 - `features/admin/services/*`
 - `features/admin/types/*`
-- `features/admin/ui/NominaRecibosView/*`
-- `features/admin/ui/NominaProcesamientoView/*`
-- `features/admin/ui/NominaConfiguracion/*`
-- `features/admin/ui/NominaAuditoriaView/*`
+- `features/admin/nomina/recibos/ui/*`
+- `features/admin/nomina/procesamiento/ui/*`
+- `features/admin/nomina/configuracion/ui/*`
+- `features/admin/nomina/auditoria/ui/*`
 
 Siguiente prioridad recomendada:
 

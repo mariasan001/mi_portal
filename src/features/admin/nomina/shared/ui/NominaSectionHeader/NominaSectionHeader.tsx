@@ -1,3 +1,4 @@
+import { ArrowLeft } from 'lucide-react';
 import { cx } from '@/utils/cx';
 import s from './NominaSectionHeader.module.css';
 
@@ -14,6 +15,8 @@ type Props = {
   summaryItems?: SummaryItem[];
   showSummary?: boolean;
   summaryColumns?: 2 | 3;
+  actionLabel?: string;
+  onAction?: () => void;
 };
 
 export default function NominaSectionHeader({
@@ -24,8 +27,11 @@ export default function NominaSectionHeader({
   summaryItems = [],
   showSummary = false,
   summaryColumns = 3,
+  actionLabel,
+  onAction,
 }: Props) {
   const shouldShowSummary = showSummary && (Boolean(status) || summaryItems.length > 0);
+  const shouldShowAction = Boolean(actionLabel && onAction);
 
   return (
     <section className={s.wrapper}>
@@ -35,6 +41,13 @@ export default function NominaSectionHeader({
           <h3 className={cx(s.title, s.enterSoft)}>{title}</h3>
           {description ? <p className={cx(s.description, s.enterSoftDelay)}>{description}</p> : null}
         </div>
+
+        {shouldShowAction ? (
+          <button type="button" className={cx(s.button, s.enterSoft)} onClick={onAction}>
+            <ArrowLeft size={15} />
+            {actionLabel}
+          </button>
+        ) : null}
       </div>
 
       {shouldShowSummary ? (

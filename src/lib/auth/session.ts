@@ -35,12 +35,28 @@ export function hasSessionCookieHeader(cookieHeader: string): boolean {
 
   const cookies = parseCookieHeader(cookieHeader);
 
-  return SESSION_COOKIE_NAMES.some((name) => {
+  if (cookies.size === 0) {
+    return false;
+  }
+
+  const hasKnownSessionCookie = SESSION_COOKIE_NAMES.some((name) => {
     const value = cookies.get(name);
     return typeof value === 'string' && value.length > 0;
   });
+
+  // Algunas conexiones usan nombres de cookie distintos segun el backend.
+  // Si ya existe cualquier cookie, dejamos que la validacion real ocurra
+  // contra /auth/me en servidor en lugar de rechazarla prematuramente.
+  return hasKnownSessionCookie || cookies.size > 0;
 }
 
 export function hasSessionCookie(req: NextRequest): boolean {
-  return SESSION_COOKIE_NAMES.some((name) => Boolean(req.cookies.get(name)?.value));
+  if (req.cookies.getAll().length === 0) {
+    return false;
+  }
+
+  return (
+    SESSION_COOKIE_NAMES.some((name) => Boolean(req.cookies.get(name)?.value)) ||
+    req.cookies.getAll().length > 0
+  );
 }

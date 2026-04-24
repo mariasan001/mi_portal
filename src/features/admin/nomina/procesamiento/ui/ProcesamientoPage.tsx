@@ -3,15 +3,15 @@
 import AdminInlineMessage from '@/features/admin/shared/ui/AdminInlineMessage/AdminInlineMessage';
 import AdminPageShell from '@/features/admin/shared/ui/AdminPageShell/AdminPageShell';
 import AdminSurface from '@/features/admin/shared/ui/AdminSurface/AdminSurface';
-import EmptyState from '@/features/admin/ui/NominaProcesamientoView/components/EmptyState';
-import NominaProcesamientoContentHeader from '@/features/admin/ui/NominaProcesamientoView/components/NominaProcesamientoContentHeader';
-import NominaProcesamientoEntityCards from '@/features/admin/ui/NominaProcesamientoView/components/NominaProcesamientoEntityCards';
-import NominaProcesamientoErrorsTable from '@/features/admin/ui/NominaProcesamientoView/components/NominaProcesamientoErrorsTable';
-import NominaProcesamientoHero from '@/features/admin/ui/NominaProcesamientoView/components/NominaProcesamientoHero';
-import NominaProcesamientoPreviewTable from '@/features/admin/ui/NominaProcesamientoView/components/NominaProcesamientoPreviewTable';
-import NominaProcesamientoSummaryPanel from '@/features/admin/ui/NominaProcesamientoView/components/NominaProcesamientoSummaryPanel';
-import NominaProcesamientoToolbar from '@/features/admin/ui/NominaProcesamientoView/components/NominaProcesamientoToolbar';
-import s from '@/features/admin/ui/NominaProcesamientoView/NominaProcesamientoView.module.css';
+import EmptyState from './components/EmptyState';
+import NominaProcesamientoContentHeader from './components/NominaProcesamientoContentHeader';
+import NominaProcesamientoEntityCards from './components/NominaProcesamientoEntityCards';
+import NominaProcesamientoErrorsTable from './components/NominaProcesamientoErrorsTable';
+import NominaProcesamientoHero from './components/NominaProcesamientoHero';
+import NominaProcesamientoPreviewTable from './components/NominaProcesamientoPreviewTable';
+import NominaProcesamientoSummaryPanel from './components/NominaProcesamientoSummaryPanel';
+import NominaProcesamientoToolbar from './components/NominaProcesamientoToolbar';
+import s from './ProcesamientoPage.module.css';
 import { useProcesamientoController } from '../application/useProcesamientoController';
 
 export default function ProcesamientoPage() {

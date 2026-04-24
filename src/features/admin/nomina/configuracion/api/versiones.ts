@@ -3,7 +3,7 @@ import { API_RUTAS } from '@/lib/api/api.rutas';
 import type {
   CrearVersionNominaPayload,
   VersionNominaDto,
-} from '@/features/admin/types/nomina-versiones.types';
+} from '@/features/admin/nomina/shared/model/versiones.types';
 
 export function obtenerVersionNomina(
   versionId: number,

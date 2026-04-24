@@ -3,16 +3,16 @@
 import AdminInlineMessage from '@/features/admin/shared/ui/AdminInlineMessage/AdminInlineMessage';
 import AdminPageShell from '@/features/admin/shared/ui/AdminPageShell/AdminPageShell';
 import AdminSurface from '@/features/admin/shared/ui/AdminSurface/AdminSurface';
-import EmptyState from '@/features/admin/ui/NominaConfiguracion/components/EmptyState';
-import NominaConfigHero from '@/features/admin/ui/NominaConfiguracion/components/NominaConfigHero';
-import NominaConfigToolbar from '@/features/admin/ui/NominaConfiguracion/components/NominaConfigToolbar';
-import NominaContentHeader from '@/features/admin/ui/NominaConfiguracion/components/NominaContentHeader';
-import NominaEntityCards from '@/features/admin/ui/NominaConfiguracion/components/NominaEntityCards';
-import PeriodoCreateForm from '@/features/admin/ui/NominaConfiguracion/components/PeriodoCreateForm';
-import PeriodoResultadoPanel from '@/features/admin/ui/NominaConfiguracion/components/PeriodoResultadoPanel';
-import VersionCreateForm from '@/features/admin/ui/NominaConfiguracion/components/VersionCreateForm';
-import VersionResultadoPanel from '@/features/admin/ui/NominaConfiguracion/components/VersionResultadoPanel';
-import s from '@/features/admin/ui/NominaConfiguracion/NominaConfiguracionView.module.css';
+import EmptyState from './components/EmptyState';
+import NominaConfigHero from './components/NominaConfigHero';
+import NominaConfigToolbar from './components/NominaConfigToolbar';
+import NominaContentHeader from './components/NominaContentHeader';
+import NominaEntityCards from './components/NominaEntityCards';
+import PeriodoCreateForm from './components/PeriodoCreateForm';
+import PeriodoResultadoPanel from './components/PeriodoResultadoPanel';
+import VersionCreateForm from './components/VersionCreateForm';
+import VersionResultadoPanel from './components/VersionResultadoPanel';
+import s from './ConfiguracionPage.module.css';
 import {
   getContentEyebrow,
   getContentTitle,

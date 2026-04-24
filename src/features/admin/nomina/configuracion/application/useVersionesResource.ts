@@ -12,11 +12,11 @@ import {
   loadingState,
   successState,
   type AsyncState,
-} from '@/features/admin/hooks/request-state';
+} from '@/features/admin/nomina/shared/lib/request-state';
 import type {
   CrearVersionNominaPayload,
   VersionNominaDto,
-} from '@/features/admin/types/nomina-versiones.types';
+} from '@/features/admin/nomina/shared/model/versiones.types';
 
 export function useVersionesResource() {
   const [detalle, setDetalle] = useState<AsyncState<VersionNominaDto>>(idleState());
