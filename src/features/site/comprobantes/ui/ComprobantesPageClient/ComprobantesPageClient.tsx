@@ -4,15 +4,14 @@ import { useEffect, useMemo } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { useAuth } from '@/features/auth';
-import SiteNav from '@/features/site/Components/Nav/SiteNav';
+import { buildAuthModalHref } from '@/features/auth/utils/authRedirect';
+import { SiteNav } from '@/features/site';
 
+import { useComprobantesAccessController } from '../../application/useComprobantesAccessController';
+import { buildHeroCopy } from '../../model/comprobantes.selectors';
 import ComprobantesAccessGrid from '../ComprobantesAccessGrid/ComprobantesAccessGrid';
 import ComprobantesHero from '../ComprobantesHero/ComprobantesHero';
-
 import s from './ComprobantesPageClient.module.css';
-import { useComprobantesAccessState } from '../../hook/useComprobantesAccessState';
-import { buildHeroCopy } from '../../helper/comprobantesHeroCopy';
-import { buildAuthModalHref } from '@/features/auth/utils/authRedirect';
 
 export default function ComprobantesPageClient() {
   const router = useRouter();
@@ -20,14 +19,13 @@ export default function ComprobantesPageClient() {
   const searchParams = useSearchParams();
 
   const { isAuthenticated, loading } = useAuth();
-
   const {
     selectedKey,
     phase,
     heroView,
     handleSelectView,
     handleBack,
-  } = useComprobantesAccessState();
+  } = useComprobantesAccessController();
 
   const heroCopy = useMemo(() => buildHeroCopy(heroView), [heroView]);
 
@@ -47,7 +45,7 @@ export default function ComprobantesPageClient() {
   if (loading) {
     return (
       <main className={s.page}>
-        <div className={s.centerBox}>Validando sesión...</div>
+        <div className={s.centerBox}>Validando sesion...</div>
       </main>
     );
   }

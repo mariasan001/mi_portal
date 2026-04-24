@@ -1,4 +1,4 @@
-import type { DocKind, DocItem } from './guides.types';
+import type { DocKind, DocItem } from '../types/guides.types';
 
 export function isExternalUrl(href: string) {
   return /^https?:\/\//i.test(href.trim());

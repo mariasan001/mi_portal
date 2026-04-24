@@ -3,11 +3,12 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowUpLeft, ArrowUpRight } from 'lucide-react';
 
-import type { ComprobanteAccessItem } from '../../constants/comprobantesConstants';
-import type { ComprobanteAccessKey } from '../../types/comprobantes.types';
-
+import type {
+  ComprobanteAccessItem,
+  ComprobanteAccessKey,
+} from '../../model/comprobantes.types';
+import ComprobanteModuleContent from '../ComprobanteModuleContent/ComprobanteModuleContent';
 import s from './ComprobantesAccessCard.module.css';
-import ComprobanteModuleContent from '../ComprobanteModuleContent.tsx/ComprobanteModuleContent';
 
 type Props = {
   item: ComprobanteAccessItem;
@@ -91,27 +92,13 @@ export default function ComprobantesAccessCard({
   onSelect,
   onBack,
 }: Props) {
-  const {
-    icon: Icon,
-    title,
-    desc,
-    cta,
-    key: moduleKey,
-  } = item;
-
-  const handleSelect = () => {
-    onSelect(moduleKey);
-  };
+  const { icon: Icon, title, desc, cta, key: moduleKey } = item;
 
   return (
     <motion.article
       layout
       transition={shellTransition}
-      className={cx(
-        s.card,
-        isSelected && s.cardSelected,
-        isExpanded && s.cardExpanded
-      )}
+      className={cx(s.card, isSelected && s.cardSelected, isExpanded && s.cardExpanded)}
     >
       <motion.div
         layout
@@ -159,7 +146,7 @@ export default function ComprobantesAccessCard({
               key="cta"
               type="button"
               className={s.cardCta}
-              onClick={handleSelect}
+              onClick={() => onSelect(moduleKey)}
               initial={ctaMotion.initial}
               animate={ctaMotion.animate}
               exit={ctaMotion.exit}
@@ -172,10 +159,6 @@ export default function ComprobantesAccessCard({
               </span>
             </motion.button>
           ) : (
-            /**
-             * Este espacio mantiene estabilidad visual cuando el CTA desaparece
-             * y la tarjeta pasa a estado seleccionado/expandido.
-             */
             <motion.div
               key="selectedSpacer"
               className={s.selectedSpacer}

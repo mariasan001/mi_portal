@@ -8,8 +8,9 @@ type Ctx = { params: Params | Promise<Params> };
 
 async function getParams(ctx: Ctx): Promise<Params> {
   const p = ctx.params;
-  // compatible con Promise o objeto
-  return typeof (p as { then?: unknown })?.then === 'function' ? await (p as Promise<Params>) : (p as Params);
+  return typeof (p as { then?: unknown })?.then === 'function'
+    ? await (p as Promise<Params>)
+    : (p as Params);
 }
 
 export async function GET(req: Request, ctx: Ctx) {
@@ -40,7 +41,7 @@ export async function GET(req: Request, ctx: Ctx) {
     });
   } catch (e) {
     return NextResponse.json(
-      { message: 'No se pudo conectar a IAM', error: String(e), upstreamUrl },
+      { message: 'No se pudo conectar a IAM', error: String(e) },
       { status: 502 }
     );
   }

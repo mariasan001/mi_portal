@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import type { DocItem, PanelKey } from '../utils/guides.types';
+import type { DocItem, PanelKey } from '../types/guides.types';
 import { matchesQuery, sortByUpdatedDesc } from '../utils/guides.utils';
 
 type Params = {

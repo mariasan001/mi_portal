@@ -1,11 +1,9 @@
-// src/features/site/Components/DudasSection/types/dudas.types.ts
-
 export type FaqCategory =
-  | 'Más comunes'
+  | 'Mas comunes'
   | 'Cuenta'
   | 'Constancias'
-  | 'Nómina'
-  | 'Trámites'
+  | 'Nomina'
+  | 'Tramites'
   | 'Soporte';
 
 export type FaqItem = {

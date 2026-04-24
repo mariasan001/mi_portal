@@ -2,7 +2,7 @@ import React from 'react';
 import s from '../GuidesSection.module.css';
 import { FiDownload, FiExternalLink, FiFileText, FiFile, FiGrid } from 'react-icons/fi';
 
-import type { DocItem, DocKind } from '../utils/guides.types';
+import type { DocItem, DocKind } from '../types/guides.types';
 import { formatDate, isExternalUrl, kindLabel } from '../utils/guides.utils';
 
 function kindIcon(k: DocKind) {

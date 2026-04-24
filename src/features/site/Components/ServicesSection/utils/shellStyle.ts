@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import type { CardItem } from '../constants/ServiceConstants';
+import type { CardItem } from '../constants/service-cards.constants';
 
 type ShellVars = CSSProperties & {
   ['--flor-url']?: string;

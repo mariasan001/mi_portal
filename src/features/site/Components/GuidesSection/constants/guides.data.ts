@@ -1,11 +1,11 @@
-import type { DocItem } from '../utils/guides.types';
+import type { DocItem } from '../types/guides.types';
 
 export const GUIDES_DOCS: DocItem[] = [
   {
     id: 'g1',
-    title: 'Guía rápida: Recuperación de contraseña',
+    title: 'Guia rapida: Recuperacion de contrasena',
     desc: 'Pasos para restablecer tu acceso al portal y validar tu correo.',
-    category: 'Trámites',
+    category: 'Tramites',
     kind: 'pdf',
     href: '/docs/guia-recuperacion.pdf',
     updatedAt: '2026-02-10',
@@ -16,7 +16,7 @@ export const GUIDES_DOCS: DocItem[] = [
   {
     id: 'g2',
     title: 'Formato: Solicitud de constancia',
-    desc: 'Formato oficial para iniciar el trámite de constancia.',
+    desc: 'Formato oficial para iniciar el tramite de constancia.',
     category: 'Formatos',
     kind: 'doc',
     href: '/docs/formato-constancia.docx',
@@ -26,9 +26,9 @@ export const GUIDES_DOCS: DocItem[] = [
   },
   {
     id: 'g3',
-    title: 'Manual: Consulta de recibos de nómina',
-    desc: 'Cómo ubicar, descargar y validar tus recibos.',
-    category: 'Nómina',
+    title: 'Manual: Consulta de recibos de nomina',
+    desc: 'Como ubicar, descargar y validar tus recibos.',
+    category: 'Nomina',
     kind: 'pdf',
     href: '/docs/manual-recibos-nomina.pdf',
     updatedAt: '2026-02-02',
@@ -47,9 +47,9 @@ export const GUIDES_DOCS: DocItem[] = [
   },
   {
     id: 'g5',
-    title: 'Directorio de apoyo técnico',
-    desc: 'Canales de soporte por área y horarios.',
-    category: 'Tecnología',
+    title: 'Directorio de apoyo tecnico',
+    desc: 'Canales de soporte por area y horarios.',
+    category: 'Tecnologia',
     kind: 'link',
     href: 'https://example.com/soporte',
     updatedAt: '2026-02-15',
@@ -57,9 +57,9 @@ export const GUIDES_DOCS: DocItem[] = [
   },
   {
     id: 'g6',
-    title: 'Checklist de documentos para crédito',
+    title: 'Checklist de documentos para credito',
     desc: 'Plantilla para preparar tu expediente.',
-    category: 'Créditos',
+    category: 'Creditos',
     kind: 'xls',
     href: '/docs/checklist-credito.xlsx',
     updatedAt: '2026-01-08',
@@ -67,8 +67,8 @@ export const GUIDES_DOCS: DocItem[] = [
   },
   {
     id: 'g7',
-    title: 'Guía: Descarga de constancias',
-    desc: 'Cómo generar y descargar constancias disponibles.',
+    title: 'Guia: Descarga de constancias',
+    desc: 'Como generar y descargar constancias disponibles.',
     category: 'Constancias',
     kind: 'pdf',
     href: '/docs/guia-constancias.pdf',

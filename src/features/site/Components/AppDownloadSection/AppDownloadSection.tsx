@@ -1,32 +1,30 @@
-// src/features/site/Components/AppDownloadSection/AppDownloadSection.tsx
 'use client';
 
 import Image from 'next/image';
-import s from './AppDownloadSection.module.css';
-import { FiSmartphone, FiCheck, FiArrowUpRight } from 'react-icons/fi';
-import { useRevealMotion } from '@/hooks/useRevealMotion';
-import { isExternalHref } from '../DudasSection/utils/dudas.utils';
-import { APP_DOWNLOAD_BENEFITS } from './constants/constants';
+import { FiArrowUpRight, FiCheck, FiSmartphone } from 'react-icons/fi';
 
+import { useRevealMotion } from '@/hooks/useRevealMotion';
+
+import s from './AppDownloadSection.module.css';
+import { APP_DOWNLOAD_BENEFITS } from './constants/app-download.benefits';
+import { isExternalHref } from './utils/isExternalHref';
 
 export type AppDownloadSectionProps = {
   title?: string;
   subtitle?: string;
   androidHref?: string;
   iosHref?: string;
-
-  // ✅ imagen real (screenshot/mock)
   phoneImg?: string;
   phoneAlt?: string;
 };
 
 export default function AppDownloadSection({
   title = 'Lleva el portal en tu bolsillo',
-  subtitle = 'Consulta tu descuento, revisa recibos de nómina y da seguimiento a trámites desde la aplicación.',
+  subtitle = 'Consulta tu descuento, revisa recibos de nomina y da seguimiento a tramites desde la aplicacion.',
   androidHref = '#',
   iosHref = '#',
   phoneImg = '/img/app_movil.png',
-  phoneAlt = 'Vista previa de la aplicación móvil',
+  phoneAlt = 'Vista previa de la aplicacion movil',
 }: AppDownloadSectionProps) {
   const { ref: sectionRef, className } = useRevealMotion<HTMLElement>({
     threshold: 0.25,
@@ -40,7 +38,7 @@ export default function AppDownloadSection({
     <section
       ref={sectionRef}
       className={className(s.wrap, s.isIn, s.dirDown, s.dirUp)}
-      aria-label="Descargar aplicación móvil"
+      aria-label="Descargar aplicacion movil"
     >
       <div className={s.inner}>
         <div className={s.left}>
@@ -48,7 +46,7 @@ export default function AppDownloadSection({
             <span className={s.kickerIcon} aria-hidden="true">
               <FiSmartphone />
             </span>
-            Aplicación móvil
+            Aplicacion movil
           </div>
 
           <h2 className={s.title}>{title}</h2>
@@ -96,7 +94,7 @@ export default function AppDownloadSection({
           </div>
 
           <p className={s.note} aria-hidden="true">
-            Tip: inicia sesión con tu cuenta y verás tu información sincronizada.
+            Tip: inicia sesion con tu cuenta y veras tu informacion sincronizada.
           </p>
         </div>
 

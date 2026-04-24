@@ -2,17 +2,17 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { COMPROBANTES_ACCESS_ITEMS } from '../../constants/comprobantesConstants';
-import type { ComprobanteAccessKey } from '../../types/comprobantes.types';
-
+import { COMPROBANTES_ACCESS_ITEMS } from '../../model/comprobantes.constants';
+import type {
+  ComprobanteAccessKey,
+  ComprobantesTransitionPhase,
+} from '../../model/comprobantes.types';
 import ComprobantesAccessCard from '../ComprobantesAccessCard/ComprobantesAccessCard';
 import s from './ComprobantesAccessGrid.module.css';
 
-type TransitionPhase = 'idle' | 'collapsing' | 'expanded';
-
 type Props = {
   selectedKey: ComprobanteAccessKey | null;
-  phase: TransitionPhase;
+  phase: ComprobantesTransitionPhase;
   onSelect: (key: ComprobanteAccessKey) => void;
   onBack: () => void;
 };
@@ -56,23 +56,13 @@ export default function ComprobantesAccessGrid({
   onBack,
 }: Props) {
   const isExpanded = phase === 'expanded';
-
-  /**
-   * Cuando no hay selección se muestran todas las tarjetas.
-   * Cuando existe una selección, la grilla conserva únicamente
-   * la tarjeta activa para permitir la transición expandida.
-   */
   const visibleItems =
     selectedKey === null
       ? COMPROBANTES_ACCESS_ITEMS
       : COMPROBANTES_ACCESS_ITEMS.filter((item) => item.key === selectedKey);
 
   return (
-    <motion.div
-      layout
-      transition={gridTransition}
-      className={s.grid}
-    >
+    <motion.div layout transition={gridTransition} className={s.grid}>
       <AnimatePresence initial={false} mode="popLayout">
         {visibleItems.map((item, index) => {
           const isSelected = selectedKey === item.key;

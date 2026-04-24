@@ -1,33 +1,31 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import s from './DudasSection.module.css';
-
 import {
-  FiSearch,
   FiChevronDown,
   FiClock,
-  FiFileText,
   FiExternalLink,
-  FiX,
+  FiFileText,
   FiHelpCircle,
+  FiSearch,
+  FiX,
 } from 'react-icons/fi';
 
+import { useRevealMotion } from '@/hooks/useRevealMotion';
+
 import { DUDAS_CATS, DUDAS_FAQS } from './constants/dudas.constants';
+import s from './DudasSection.module.css';
 import type { FaqCategory } from './types/dudas.types';
 import { filterFaqs, isExternalHref } from './utils/dudas.utils';
-import { useRevealMotion } from '@/hooks/useRevealMotion';
 
 export default function DudasSection() {
   const [query, setQuery] = useState('');
-  const [activeCat, setActiveCat] = useState<FaqCategory>('Más comunes');
+  const [activeCat, setActiveCat] = useState<FaqCategory>('Mas comunes');
   const [openId, setOpenId] = useState<string | null>(null);
   const [assistantHint, setAssistantHint] = useState('');
 
   const hasQuery = query.trim().length > 0;
-
   const faqs = useMemo(() => DUDAS_FAQS, []);
-
   const filtered = useMemo(
     () =>
       filterFaqs({
@@ -40,12 +38,8 @@ export default function DudasSection() {
   );
 
   const subtitle = hasQuery
-    ? `${filtered.length} resultado(s) para “${query.trim()}”`
-    : 'Busca por palabra clave o explora por categoría.';
-
-  const toggle = (id: string) => {
-    setOpenId((prev) => (prev === id ? null : id));
-  };
+    ? `${filtered.length} resultado(s) para "${query.trim()}"`
+    : 'Busca por palabra clave o explora por categoria.';
 
   const { ref: sectionRef, className } = useRevealMotion<HTMLElement>({
     threshold: 0.25,
@@ -54,19 +48,21 @@ export default function DudasSection() {
 
   useEffect(() => {
     const handleNavigate = (event: Event) => {
-      const customEvent = event as CustomEvent<{ action: 'tramite' | 'consulta' | 'password' }>;
-      const action = customEvent.detail?.action;
+      const customEvent = event as CustomEvent<{
+        action: 'tramite' | 'consulta' | 'password';
+      }>;
 
-      if (action !== 'password') return;
+      if (customEvent.detail?.action !== 'password') return;
 
       const section = document.getElementById('dudas-section');
       if (!section) return;
 
       section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-      setActiveCat('Más comunes');
-      setQuery('contraseña');
-      setAssistantHint('Aquí puedes encontrar ayuda relacionada con recuperación de contraseña.');
+      setActiveCat('Mas comunes');
+      setQuery('contrasena');
+      setAssistantHint(
+        'Aqui puedes encontrar ayuda relacionada con recuperacion de contrasena.'
+      );
 
       window.setTimeout(() => {
         setAssistantHint('');
@@ -76,7 +72,10 @@ export default function DudasSection() {
     window.addEventListener('portal-assistant:navigate', handleNavigate as EventListener);
 
     return () => {
-      window.removeEventListener('portal-assistant:navigate', handleNavigate as EventListener);
+      window.removeEventListener(
+        'portal-assistant:navigate',
+        handleNavigate as EventListener
+      );
     };
   }, []);
 
@@ -109,8 +108,8 @@ export default function DudasSection() {
             <input
               className={s.searchInput}
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Busca por palabra clave… (ej. contraseña, constancia, recibo)"
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Busca por palabra clave... (ej. contrasena, constancia, recibo)"
               aria-label="Buscar"
               inputMode="search"
               autoComplete="off"
@@ -122,7 +121,7 @@ export default function DudasSection() {
                 type="button"
                 className={s.clearBtn}
                 onClick={() => setQuery('')}
-                aria-label="Limpiar búsqueda"
+                aria-label="Limpiar busqueda"
               >
                 <FiX aria-hidden="true" />
               </button>
@@ -136,18 +135,18 @@ export default function DudasSection() {
             <span className={s.helperText}>{subtitle}</span>
           </div>
 
-          <div className={s.chips} role="tablist" aria-label="Categorías">
-            {DUDAS_CATS.map((c) => (
+          <div className={s.chips} role="tablist" aria-label="Categorias">
+            {DUDAS_CATS.map((category) => (
               <button
-                key={c}
+                key={category}
                 type="button"
                 className={s.chip}
-                data-active={activeCat === c ? '1' : '0'}
-                onClick={() => setActiveCat(c)}
+                data-active={activeCat === category ? '1' : '0'}
+                onClick={() => setActiveCat(category)}
                 role="tab"
-                aria-selected={activeCat === c}
+                aria-selected={activeCat === category}
               >
-                {c}
+                {category}
               </button>
             ))}
           </div>
@@ -155,26 +154,27 @@ export default function DudasSection() {
 
         <div className={s.list} role="list" aria-label="Lista de preguntas">
           {filtered.length ? (
-            filtered.map((f) => {
-              const isOpen = openId === f.id;
-              const guideIsExternal = !!f.guide?.href && isExternalHref(f.guide.href);
+            filtered.map((faq) => {
+              const isOpen = openId === faq.id;
+              const guideIsExternal =
+                !!faq.guide?.href && isExternalHref(faq.guide.href);
 
               return (
-                <article key={f.id} className={s.item} role="listitem">
+                <article key={faq.id} className={s.item} role="listitem">
                   <button
                     type="button"
                     className={s.qRow}
-                    onClick={() => toggle(f.id)}
+                    onClick={() => setOpenId((prev) => (prev === faq.id ? null : faq.id))}
                     aria-expanded={isOpen}
-                    aria-controls={`faq-${f.id}`}
+                    aria-controls={`faq-${faq.id}`}
                   >
                     <span className={s.qIcon} aria-hidden="true">
                       <FiHelpCircle />
                     </span>
 
                     <span className={s.qText}>
-                      <span className={s.qTitle}>{f.q}</span>
-                      <span className={s.qMeta}>{f.category}</span>
+                      <span className={s.qTitle}>{faq.q}</span>
+                      <span className={s.qMeta}>{faq.category}</span>
                     </span>
 
                     <span className={s.chev} data-open={isOpen ? '1' : '0'} aria-hidden="true">
@@ -182,45 +182,45 @@ export default function DudasSection() {
                     </span>
                   </button>
 
-                  <div id={`faq-${f.id}`} className={s.aWrap} data-open={isOpen ? '1' : '0'}>
-                    <p className={s.answer}>{f.a}</p>
+                  <div id={`faq-${faq.id}`} className={s.aWrap} data-open={isOpen ? '1' : '0'}>
+                    <p className={s.answer}>{faq.a}</p>
 
                     <div className={s.extra}>
-                      {f.guide ? (
+                      {faq.guide ? (
                         <a
                           className={s.guideLink}
-                          href={f.guide.href}
+                          href={faq.guide.href}
                           target={guideIsExternal ? '_blank' : undefined}
                           rel={guideIsExternal ? 'noreferrer' : undefined}
-                          aria-label={`Abrir guía: ${f.guide.label}`}
+                          aria-label={`Abrir guia: ${faq.guide.label}`}
                         >
                           <FiFileText aria-hidden="true" />
-                          <span>{f.guide.label}</span>
+                          <span>{faq.guide.label}</span>
                           <FiExternalLink aria-hidden="true" />
                         </a>
                       ) : null}
 
                       <div className={s.metaGrid}>
-                        {f.eta ? (
+                        {faq.eta ? (
                           <div className={s.metaCard}>
                             <span className={s.metaIcon} aria-hidden="true">
                               <FiClock />
                             </span>
                             <div className={s.metaText}>
                               <div className={s.metaLabel}>Tiempo estimado</div>
-                              <div className={s.metaValue}>{f.eta}</div>
+                              <div className={s.metaValue}>{faq.eta}</div>
                             </div>
                           </div>
                         ) : null}
 
-                        {f.docs?.length ? (
+                        {faq.docs?.length ? (
                           <div className={s.metaCard}>
                             <span className={s.metaIcon} aria-hidden="true">
                               <FiFileText />
                             </span>
                             <div className={s.metaText}>
                               <div className={s.metaLabel}>Documentos / Requisitos</div>
-                              <div className={s.metaValue}>{f.docs.join(' · ')}</div>
+                              <div className={s.metaValue}>{faq.docs.join(' · ')}</div>
                             </div>
                           </div>
                         ) : null}
@@ -234,14 +234,14 @@ export default function DudasSection() {
             <div className={s.empty} role="status" aria-live="polite">
               <div className={s.emptyTitle}>Sin resultados</div>
               <div className={s.emptyDesc}>
-                Prueba con otra palabra (ej. “token”, “descarga”, “PDF”) o revisa una categoría.
+                Prueba con otra palabra (ej. &quot;token&quot;, &quot;descarga&quot;, &quot;PDF&quot;) o revisa una categoria.
               </div>
             </div>
           )}
         </div>
 
         <footer className={s.footerNote} aria-hidden="true">
-          Tip: escribe “contraseña”, “constancia” o “recibo”.
+          Tip: escribe &quot;contrasena&quot;, &quot;constancia&quot; o &quot;recibo&quot;.
         </footer>
       </div>
     </section>
