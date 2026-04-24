@@ -1,5 +1,5 @@
 export function formatDateTime(value: string | null | undefined): string {
-  if (!value) return '—';
+  if (!value) return '-';
 
   const date = new Date(value);
 
@@ -15,7 +15,7 @@ export function formatDateTime(value: string | null | undefined): string {
 
 export function formatUnknown(value: unknown): string {
   if (value === null || value === undefined || value === '') {
-    return '—';
+    return '-';
   }
 
   if (typeof value === 'object') {
@@ -24,10 +24,22 @@ export function formatUnknown(value: unknown): string {
 
   return String(value);
 }
-export type FirmaCreateFormState = {
-  file: File | null;
-  cuts: string;
-  contrasena: string;
-  nombre: string;
-  descripcion: string;
-};
+
+export function normalizeSignatureStatus(status?: string | null): string {
+  return status?.trim().toUpperCase() ?? '';
+}
+
+export function getSignatureStatusLabel(status?: string | null): string {
+  switch (normalizeSignatureStatus(status)) {
+    case 'PENDING':
+      return 'Pendiente';
+    case 'PROCESSING':
+      return 'Procesando';
+    case 'SIGNED':
+      return 'Firmado';
+    case 'FAILED':
+      return 'Fallido';
+    default:
+      return 'Sin estatus';
+  }
+}

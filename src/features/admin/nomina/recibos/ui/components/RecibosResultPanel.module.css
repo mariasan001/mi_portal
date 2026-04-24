@@ -31,6 +31,20 @@
   min-width: 0;
 }
 
+.countBadge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: rgba(188, 148, 90, 0.08);
+  border: 1px solid rgba(188, 148, 90, 0.14);
+  color: #8a6a3d;
+  font-size: 10.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
 .header h3 {
   margin: 0;
   color: var(--text);
@@ -128,6 +142,8 @@
   }
 
   .header {
+    align-items: stretch;
+    flex-direction: column;
     padding-bottom: 10px;
   }
 

@@ -6,14 +6,9 @@ import AdminSurface from '@/features/admin/shared/ui/AdminSurface/AdminSurface';
 import NominaEmptyState from '@/features/admin/nomina/shared/ui/NominaEmptyState/NominaEmptyState';
 import NominaHero from '@/features/admin/nomina/shared/ui/NominaHero/NominaHero';
 import NominaSectionHeader from '@/features/admin/nomina/shared/ui/NominaSectionHeader/NominaSectionHeader';
-import { CalendarRange, Layers3 } from 'lucide-react';
-import NominaConfigToolbar from './components/NominaConfigToolbar';
-import NominaEntityCards from './components/NominaEntityCards';
-import PeriodoCreateForm from './components/PeriodoCreateForm';
-import PeriodoResultadoPanel from './components/PeriodoResultadoPanel';
-import VersionCreateForm from './components/VersionCreateForm';
-import VersionResultadoPanel from './components/VersionResultadoPanel';
-import s from './ConfiguracionPage.module.css';
+import { CalendarRange, Layers3, X } from 'lucide-react';
+
+import { useConfiguracionController } from '../application/useConfiguracionController';
 import {
   getContentEyebrow,
   getContentTitle,
@@ -21,7 +16,13 @@ import {
   getSearchLabel,
   getSearchPlaceholder,
 } from '../model/configuracion.selectors';
-import { useConfiguracionController } from '../application/useConfiguracionController';
+import NominaConfigToolbar from './components/NominaConfigToolbar';
+import NominaEntityCards from './components/NominaEntityCards';
+import PeriodoCreateForm from './components/PeriodoCreateForm';
+import PeriodoResultadoPanel from './components/PeriodoResultadoPanel';
+import VersionCreateForm from './components/VersionCreateForm';
+import VersionResultadoPanel from './components/VersionResultadoPanel';
+import s from './ConfiguracionPage.module.css';
 
 export default function ConfiguracionPage() {
   const vm = useConfiguracionController();
@@ -29,12 +30,12 @@ export default function ConfiguracionPage() {
   return (
     <AdminPageShell>
       <NominaHero
-        kicker="Nomina"
-        title="Gestion de periodo y version"
-        subtitle="Consulta, crea y organiza la configuracion base del procesamiento de nomina."
+        kicker="Nómina"
+        title="Gestión de períodos y versiones"
+        subtitle="Consulta, crea y organiza la configuración base del procesamiento de nómina."
         badges={[
-          { icon: CalendarRange, label: 'Periodo' },
-          { icon: Layers3, label: 'Version' },
+          { icon: CalendarRange, label: 'Período' },
+          { icon: Layers3, label: 'Versión' },
         ]}
         spacious
       />
@@ -57,7 +58,7 @@ export default function ConfiguracionPage() {
       />
 
       {vm.activeError ? (
-        <AdminInlineMessage title="Ocurrio un problema" tone="error">
+        <AdminInlineMessage title="Ocurrió un problema" tone="error">
           {vm.activeError}
         </AdminInlineMessage>
       ) : null}
@@ -73,8 +74,8 @@ export default function ConfiguracionPage() {
             <PeriodoResultadoPanel detalle={vm.periodos.detalle} />
           ) : (
             <NominaEmptyState
-              title="Sin consulta todavia"
-              description="Usa la barra superior para buscar un periodo por ID o crea uno nuevo desde esta misma sesion."
+              title="Sin consulta todavía"
+              description="Usa la barra superior para buscar un período por ID o crea uno nuevo desde esta misma sesión."
             />
           )
         ) : null}
@@ -84,8 +85,8 @@ export default function ConfiguracionPage() {
             <VersionResultadoPanel detalle={vm.versiones.detalle} />
           ) : (
             <NominaEmptyState
-              title="Sin consulta todavia"
-              description="Consulta una version por ID o crea una nueva version asociada a un periodo existente."
+              title="Sin consulta todavía"
+              description="Consulta una versión por ID o crea una nueva versión asociada a un período existente."
             />
           )
         ) : null}
@@ -112,6 +113,11 @@ export default function ConfiguracionPage() {
                 <h3 id="nomina-create-modal-title">
                   {getContentTitle(vm.activeEntity, 'crear')}
                 </h3>
+                <p className={s.modalDescription}>
+                  {vm.activeEntity === 'periodo'
+                    ? 'Captura las fechas clave para registrar o recuperar el período de nómina.'
+                    : 'Define el período de pago, la etapa y las notas para crear una nueva versión.'}
+                </p>
               </div>
 
               <button
@@ -120,7 +126,7 @@ export default function ConfiguracionPage() {
                 onClick={vm.closeCreateModal}
                 aria-label="Cerrar modal"
               >
-                x
+                <X size={18} />
               </button>
             </div>
 

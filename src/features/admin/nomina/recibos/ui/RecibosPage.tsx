@@ -4,9 +4,9 @@ import AdminPageShell from '@/features/admin/shared/ui/AdminPageShell/AdminPageS
 import AdminSurface from '@/features/admin/shared/ui/AdminSurface/AdminSurface';
 import NominaEmptyState from '@/features/admin/nomina/shared/ui/NominaEmptyState/NominaEmptyState';
 import NominaHero from '@/features/admin/nomina/shared/ui/NominaHero/NominaHero';
+import NominaSectionHeader from '@/features/admin/nomina/shared/ui/NominaSectionHeader/NominaSectionHeader';
 import { FileText, RefreshCw } from 'lucide-react';
 import NominaRecibosActionCards from './components/NominaRecibosActionCards';
-import NominaRecibosContentHeader from './components/NominaRecibosContentHeader';
 import NominaRecibosReleasePanel from './components/NominaRecibosReleasePanel';
 import NominaRecibosResultsSection from './components/NominaRecibosResultsSection';
 import NominaRecibosToolbar from './components/NominaRecibosToolbar';
@@ -19,12 +19,12 @@ export default function RecibosPage() {
   return (
     <AdminPageShell>
       <NominaHero
-        kicker="Nomina"
-        title="Liberacion de Nomina"
-        subtitle="Gestiona la generacion, liberacion y sincronizacion de recibos de nomina."
+        kicker="Nómina"
+        title="Liberación de nómina"
+        subtitle="Gestiona la generación, liberación y sincronización de recibos de nómina."
         badges={[
           { icon: FileText, label: 'Recibos' },
-          { icon: RefreshCw, label: 'Liberacion y sincronizacion' },
+          { icon: RefreshCw, label: 'Liberación y sincronización' },
         ]}
       />
 
@@ -43,7 +43,7 @@ export default function RecibosPage() {
       />
 
       <AdminSurface as="section" className={s.resultCard}>
-        <NominaRecibosContentHeader
+        <NominaSectionHeader
           eyebrow="Resultado"
           title={vm.currentTitle}
           description={vm.currentDescription}
@@ -62,8 +62,8 @@ export default function RecibosPage() {
           />
         ) : (
           <NominaEmptyState
-            title="Aun no has ejecutado ninguna accion"
-            description="Selecciona una opcion del flujo principal o ejecuta la liberacion cuando corresponda."
+            title="Aún no has ejecutado ninguna acción"
+            description="Selecciona una opción del flujo principal o ejecuta la liberación cuando corresponda."
             variant="inbox"
           />
         )}

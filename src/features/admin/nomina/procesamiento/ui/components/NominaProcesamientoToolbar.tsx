@@ -25,12 +25,12 @@ type Props = {
 
 function getLabel(view: ProcesamientoView) {
   if (view === 'summary') return 'Consultar resumen';
-  if (view === 'preview') return 'Consultar preview';
+  if (view === 'preview') return 'Consultar vista previa';
   return 'Consultar errores';
 }
 
 function getLimitLabel(view: ProcesamientoView) {
-  return view === 'errors' ? 'Limite de errores' : 'Limite de preview';
+  return view === 'errors' ? 'Limite de errores' : 'Limite de filas';
 }
 
 export default function NominaProcesamientoToolbar({
@@ -58,7 +58,7 @@ export default function NominaProcesamientoToolbar({
       }
     >
       <NominaToolbarLabel htmlFor="nomina-procesamiento-file-id">
-        fileId
+        ID del archivo
       </NominaToolbarLabel>
 
       <NominaToolbarSurface>

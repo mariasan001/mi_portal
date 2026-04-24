@@ -23,7 +23,7 @@ export function useMonitoreoResource() {
       setEstadoPeriodo(successState(response));
       return response;
     } catch (e) {
-      const message = toErrorMessage(e, 'No se pudo consultar el estado del periodo');
+      const message = toErrorMessage(e, 'No se pudo consultar el estado del período');
       setEstadoPeriodo((current) => errorState(message, current.data));
       throw e;
     }

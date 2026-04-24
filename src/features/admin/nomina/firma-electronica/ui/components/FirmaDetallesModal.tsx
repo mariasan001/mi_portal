@@ -1,11 +1,14 @@
-
 import { X } from 'lucide-react';
 
 import type {
   FirmaDetalleTecnicoDto,
   SolicitudFirmaDetalleDto,
 } from '@/features/admin/nomina/firma-electronica/model/firma-electronica.types';
-import { formatDateTime } from '../utils/firma-electronica-view.utils';
+import {
+  formatDateTime,
+  getSignatureStatusLabel,
+} from '@/features/admin/nomina/firma-electronica/model/firma-electronica.selectors';
+
 import FirmaDetalleTecnicoCard from './FirmaDetalleTecnicoCard';
 import FirmaSolicitudDetalleCard from './FirmaSolicitudDetalleCard';
 import s from './FirmaDetallesModal.module.css';
@@ -20,21 +23,6 @@ type Props = {
   detalleTecnicoError: string | null;
   onClose: () => void;
 };
-
-function getStatusLabel(status?: string | null): string {
-  switch (status?.trim().toUpperCase()) {
-    case 'PENDING':
-      return 'Pendiente';
-    case 'PROCESSING':
-      return 'Procesando';
-    case 'SIGNED':
-      return 'Firmado';
-    case 'FAILED':
-      return 'Fallido';
-    default:
-      return 'Sin estatus';
-  }
-}
 
 export default function FirmaDetallesModal({
   isOpen,
@@ -90,7 +78,7 @@ export default function FirmaDetallesModal({
               <div className={s.metaItem}>
                 <span className={s.metaLabel}>Estatus</span>
                 <span className={s.metaBadge}>
-                  {getStatusLabel(detalle?.status)}
+                  {getSignatureStatusLabel(detalle?.status)}
                 </span>
               </div>
 

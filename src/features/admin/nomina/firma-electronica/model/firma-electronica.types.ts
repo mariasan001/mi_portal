@@ -18,6 +18,14 @@ export type CrearSolicitudFirmaPayload = {
   descripcion?: string;
 };
 
+export type FirmaCreateFormState = {
+  file: File | null;
+  cuts: string;
+  contrasena: string;
+  nombre: string;
+  descripcion: string;
+};
+
 export type CrearSolicitudFirmaResultDto = {
   requestId: string;
   status: SignatureRequestStatus;

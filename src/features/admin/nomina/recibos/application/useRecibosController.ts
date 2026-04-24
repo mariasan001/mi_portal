@@ -2,16 +2,14 @@
 
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { useRecibosActions } from './useRecibosActions';
+
+import type { RecibosAction, RecibosFormState } from '../model/recibos.types';
 import {
   buildSummary,
   getGeneralFlowStatus,
   parsePositiveInt,
 } from '../model/recibos.selectors';
-import type {
-  RecibosAction,
-  RecibosFormState,
-} from '../model/recibos.types';
+import { useRecibosActions } from './useRecibosActions';
 
 export function useRecibosController() {
   const domain = useRecibosActions();
@@ -22,7 +20,10 @@ export function useRecibosController() {
   });
   const [activeAction, setActiveAction] = useState<RecibosAction>('snapshots');
 
-  const versionIdParsed = useMemo(() => parsePositiveInt(form.versionId), [form.versionId]);
+  const versionIdParsed = useMemo(
+    () => parsePositiveInt(form.versionId),
+    [form.versionId]
+  );
   const releasedByUserIdParsed = useMemo(
     () => parsePositiveInt(form.releasedByUserId),
     [form.releasedByUserId]
@@ -42,7 +43,7 @@ export function useRecibosController() {
 
   const runSnapshots = useCallback(async () => {
     if (!versionIdParsed) {
-      toast.error('Debes capturar un Version ID valido.');
+      toast.error('Debes capturar un ID de version valido.');
       return;
     }
 
@@ -56,7 +57,7 @@ export function useRecibosController() {
 
   const runReceipts = useCallback(async () => {
     if (!versionIdParsed) {
-      toast.error('Debes capturar un Version ID valido.');
+      toast.error('Debes capturar un ID de version valido.');
       return;
     }
 
@@ -75,7 +76,7 @@ export function useRecibosController() {
 
   const runCoreSync = useCallback(async () => {
     if (!versionIdParsed) {
-      toast.error('Debes capturar un Version ID valido.');
+      toast.error('Debes capturar un ID de version valido.');
       return;
     }
 
@@ -94,12 +95,12 @@ export function useRecibosController() {
 
   const runRelease = useCallback(async () => {
     if (!versionIdParsed) {
-      toast.error('Debes capturar un Version ID valido.');
+      toast.error('Debes capturar un ID de version valido.');
       return;
     }
 
     if (!releasedByUserIdParsed) {
-      toast.error('Debes capturar un Released By User ID valido.');
+      toast.error('Debes capturar un ID de usuario valido para la liberacion.');
       return;
     }
 
@@ -137,7 +138,12 @@ export function useRecibosController() {
       case 'sincronizacion':
         return domain.coreSync.loading;
     }
-  }, [activeAction, domain.coreSync.loading, domain.receipts.loading, domain.snapshots.loading]);
+  }, [
+    activeAction,
+    domain.coreSync.loading,
+    domain.receipts.loading,
+    domain.snapshots.loading,
+  ]);
 
   const currentTitle = useMemo(() => {
     switch (activeAction) {
@@ -204,7 +210,10 @@ export function useRecibosController() {
   );
 
   const hasAnyResult = Boolean(
-    domain.snapshots.data || domain.receipts.data || domain.release.data || domain.coreSync.data
+    domain.snapshots.data ||
+      domain.receipts.data ||
+      domain.release.data ||
+      domain.coreSync.data
   );
 
   return {

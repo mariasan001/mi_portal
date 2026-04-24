@@ -1,9 +1,10 @@
-import type { NominaRecibosAction } from '../types/nomina-recibos-view.types';
+import type { RecibosAction } from '@/features/admin/nomina/recibos/model/recibos.types';
+
 import RecibosResultPanel from './RecibosResultPanel';
 import s from './NominaRecibosResultsSection.module.css';
 
 type Props = {
-  activeAction: NominaRecibosAction;
+  activeAction: RecibosAction;
   snapshots: Record<string, unknown> | null;
   receipts: Record<string, unknown> | null;
   release: Record<string, unknown> | null;
@@ -67,7 +68,7 @@ export default function NominaRecibosResultsSection({
 }
 
 function getMainPanelConfig(params: {
-  activeAction: NominaRecibosAction;
+  activeAction: RecibosAction;
   snapshots: Record<string, unknown> | null;
   receipts: Record<string, unknown> | null;
   coreSync: Record<string, unknown> | null;

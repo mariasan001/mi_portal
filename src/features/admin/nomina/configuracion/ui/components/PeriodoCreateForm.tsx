@@ -1,4 +1,3 @@
-
 import {
   CalendarDays,
   CalendarRange,
@@ -17,6 +16,19 @@ type Props = {
   onSubmit: (payload: CrearPeriodoNominaPayload) => Promise<void>;
 };
 
+function getRangeMessage(form: CrearPeriodoNominaPayload) {
+  if (!form.fechaInicio || !form.fechaFin) return null;
+  if (form.fechaFin < form.fechaInicio) {
+    return 'La fecha de fin no puede ser anterior a la fecha de inicio.';
+  }
+
+  if (form.fechaPagoEstimada && form.fechaPagoEstimada < form.fechaFin) {
+    return 'La fecha de pago estimada suele ser igual o posterior a la fecha de fin.';
+  }
+
+  return null;
+}
+
 export default function PeriodoCreateForm({
   loading,
   onSubmit,
@@ -31,6 +43,8 @@ export default function PeriodoCreateForm({
     fechaPagoEstimada: '',
   });
 
+  const validationMessage = useMemo(() => getRangeMessage(form), [form]);
+
   const canSubmit = useMemo(() => {
     return (
       Number.isFinite(form.anio) &&
@@ -41,9 +55,10 @@ export default function PeriodoCreateForm({
       form.fechaInicio.trim().length > 0 &&
       form.fechaFin.trim().length > 0 &&
       form.fechaPagoEstimada.trim().length > 0 &&
+      !validationMessage &&
       !loading
     );
-  }, [form, loading]);
+  }, [form, loading, validationMessage]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -60,6 +75,10 @@ export default function PeriodoCreateForm({
       animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
       transition={{ duration: 0.22 }}
     >
+      <p className={s.intro}>
+        Define el año, la quincena y las fechas operativas que identifican el período.
+      </p>
+
       <div className={s.grid2}>
         <label className={s.field}>
           <span className={s.fieldLabel}>
@@ -81,6 +100,7 @@ export default function PeriodoCreateForm({
             }
             placeholder="Ej. 2026"
           />
+          <small className={s.helper}>Usa el año fiscal o administrativo del período.</small>
         </label>
 
         <label className={s.field}>
@@ -104,6 +124,7 @@ export default function PeriodoCreateForm({
             }
             placeholder="Ej. 1"
           />
+          <small className={s.helper}>Captura un valor entre 1 y 24.</small>
         </label>
       </div>
 
@@ -169,6 +190,10 @@ export default function PeriodoCreateForm({
         </label>
       </div>
 
+      {validationMessage ? (
+        <p className={s.validation}>{validationMessage}</p>
+      ) : null}
+
       <div className={s.actions}>
         <motion.button
           type="submit"
@@ -177,7 +202,7 @@ export default function PeriodoCreateForm({
           whileHover={!shouldReduceMotion && canSubmit ? { y: -1 } : undefined}
           whileTap={!shouldReduceMotion && canSubmit ? { scale: 0.99 } : undefined}
         >
-          {loading ? 'Procesando...' : 'Crear / recuperar periodo'}
+          {loading ? 'Procesando...' : 'Crear / recuperar período'}
         </motion.button>
       </div>
     </motion.form>

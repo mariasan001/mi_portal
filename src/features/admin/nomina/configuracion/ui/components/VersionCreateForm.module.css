@@ -9,6 +9,13 @@
   box-shadow: none;
 }
 
+.intro {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
 .grid2 {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -129,10 +136,24 @@
   padding-right: 42px;
 }
 
-.actions {
+.helper {
+  color: var(--muted);
+  font-size: 11.5px;
+  line-height: 1.45;
+}
+
+.footerRow {
   display: flex;
-  justify-content: center;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   padding-top: 6px;
+}
+
+.counter {
+  color: var(--muted);
+  font-size: 11.5px;
+  font-weight: 700;
 }
 
 .submitBtn {
@@ -172,6 +193,15 @@
   .grid2,
   .grid1Compact {
     grid-template-columns: 1fr;
+  }
+
+  .footerRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .counter {
+    text-align: center;
   }
 
   .field input,

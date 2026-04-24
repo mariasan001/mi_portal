@@ -1,5 +1,4 @@
-
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import {
   AlertTriangle,
   CheckCircle2,
@@ -13,39 +12,20 @@ import {
 } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';
 
-import s from './NominaMonitoreoResultadoPanel.module.css';
 import type { NominaPeriodoEstadoDto } from '@/features/admin/nomina/monitoreo/model/monitoreo.types';
+import {
+  boolLabel,
+  formatMonitoreoDate,
+  formatNullable,
+  getMonitoreoMainStatus,
+  getMonitoreoOperationStats,
+} from '@/features/admin/nomina/monitoreo/model/monitoreo.selectors';
+
+import s from './NominaMonitoreoResultadoPanel.module.css';
 
 type Props = {
   detalle: NominaPeriodoEstadoDto;
 };
-
-function boolLabel(value: boolean) {
-  return value ? 'Sí' : 'No';
-}
-
-function formatDate(value: string | null) {
-  if (!value) return 'Sin fecha registrada';
-
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) return value;
-
-  return new Intl.DateTimeFormat('es-MX', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-  }).format(parsed);
-}
-
-function formatNullable(value: number | string | null | undefined) {
-  if (value === null || value === undefined || value === '') {
-    return 'Sin registro';
-  }
-
-  return String(value);
-}
 
 function getToneClass(value: boolean, warn = false) {
   if (warn) return s.warn;
@@ -94,42 +74,14 @@ export default function NominaMonitoreoResultadoPanel({ detalle }: Props) {
   const shouldReduceMotion = useReducedMotion();
   const [isOperationOpen, setIsOperationOpen] = useState(true);
 
-  const mainStatus = detalle.released
-    ? 'Periodo liberado'
-    : detalle.validated
-      ? 'Periodo validado'
-      : 'Periodo en revisión';
-
-  const mainStatusClass = detalle.released
-    ? s.statusPillOk
-    : detalle.validated
-      ? s.statusPillNeutral
-      : s.statusPillWarn;
-
-  const operationStats = useMemo(() => {
-    const okCount = [
-      detalle.previaLoaded,
-      detalle.integradaLoaded,
-      detalle.catalogLoaded,
-      detalle.validated,
-      detalle.released,
-      !detalle.hasCancellations,
-      !detalle.hasReexpeditions,
-    ].filter(Boolean).length;
-
-    return {
-      okCount,
-      total: 7,
-    };
-  }, [
-    detalle.previaLoaded,
-    detalle.integradaLoaded,
-    detalle.catalogLoaded,
-    detalle.validated,
-    detalle.released,
-    detalle.hasCancellations,
-    detalle.hasReexpeditions,
-  ]);
+  const mainStatus = getMonitoreoMainStatus(detalle);
+  const operationStats = getMonitoreoOperationStats(detalle);
+  const statusClass =
+    mainStatus.tone === 'ok'
+      ? s.statusPillOk
+      : mainStatus.tone === 'neutral'
+        ? s.statusPillNeutral
+        : s.statusPillWarn;
 
   return (
     <motion.section
@@ -162,14 +114,14 @@ export default function NominaMonitoreoResultadoPanel({ detalle }: Props) {
             </div>
 
             <div className={s.topBarCopy}>
-              <span className={s.topBarLabel}>Código del periodo</span>
+              <span className={s.topBarLabel}>Código del período</span>
               <strong>{formatNullable(detalle.periodCode)}</strong>
             </div>
           </div>
 
-          <div className={`${s.statusPill} ${mainStatusClass}`}>
+          <div className={`${s.statusPill} ${statusClass}`}>
             <span className={s.statusDot} />
-            {mainStatus}
+            {mainStatus.label}
           </div>
         </motion.div>
 
@@ -183,7 +135,7 @@ export default function NominaMonitoreoResultadoPanel({ detalle }: Props) {
               <div className={s.avatar}>P</div>
 
               <div className={s.primaryCopy}>
-                <span className={s.cardEyebrow}>Periodo de nómina</span>
+                <span className={s.cardEyebrow}>Período de nómina</span>
                 <h4>{formatNullable(detalle.periodCode)}</h4>
               </div>
             </div>
@@ -207,7 +159,7 @@ export default function NominaMonitoreoResultadoPanel({ detalle }: Props) {
                 <Clock3 size={14} />
                 <span>Fecha de liberación</span>
               </div>
-              <strong>{formatDate(detalle.releasedAt)}</strong>
+              <strong>{formatMonitoreoDate(detalle.releasedAt)}</strong>
             </div>
 
             <div className={s.infoRow}>
@@ -270,7 +222,7 @@ export default function NominaMonitoreoResultadoPanel({ detalle }: Props) {
             <div className={s.accordionCopy}>
               <span className={s.blockEyebrow}>Operación</span>
               <h4>Estado operativo</h4>
-              <p>Lista rápida del flujo actual del periodo.</p>
+              <p>Lista rápida del flujo actual del período.</p>
             </div>
 
             <div className={s.accordionSide}>
@@ -305,7 +257,7 @@ export default function NominaMonitoreoResultadoPanel({ detalle }: Props) {
                 <StatusItem
                   icon={<CheckCircle2 size={14} />}
                   label="Integrada cargada"
-                  hint="Versión integrada registrada en el periodo."
+                  hint="Versión integrada registrada en el período."
                   value={detalle.integradaLoaded}
                 />
 
@@ -319,14 +271,14 @@ export default function NominaMonitoreoResultadoPanel({ detalle }: Props) {
                 <StatusItem
                   icon={<CheckCircle2 size={14} />}
                   label="Validado"
-                  hint="La validación operativa del periodo fue completada."
+                  hint="La validación operativa del período fue completada."
                   value={detalle.validated}
                 />
 
                 <StatusItem
                   icon={<ShieldCheck size={14} />}
                   label="Liberado"
-                  hint="El periodo ya fue liberado para su salida."
+                  hint="El período ya fue liberado para su salida."
                   value={detalle.released}
                 />
 
@@ -341,7 +293,7 @@ export default function NominaMonitoreoResultadoPanel({ detalle }: Props) {
                 <StatusItem
                   icon={<AlertTriangle size={14} />}
                   label="Reexpediciones"
-                  hint="Muestra si existen reexpediciones en el periodo."
+                  hint="Muestra si existen reexpediciones en el período."
                   value={detalle.hasReexpeditions}
                   warn={detalle.hasReexpeditions}
                 />

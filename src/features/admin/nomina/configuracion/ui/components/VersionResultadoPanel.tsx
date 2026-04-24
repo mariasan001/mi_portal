@@ -1,4 +1,3 @@
-
 import {
   CalendarDays,
   CheckCircle2,
@@ -10,9 +9,12 @@ import {
 import { motion, useReducedMotion } from 'motion/react';
 
 import type { VersionNominaDto } from '@/features/admin/nomina/shared/model/versiones.types';
-
+import {
+  formatNominaBool,
+  formatNominaDateTimeLong,
+  formatNominaTitle,
+} from '../../model/configuracion.selectors';
 import s from './VersionResultadoPanel.module.css';
-import { formatNominaBool, formatNominaDateTimeLong, formatNominaTitle } from '../utils/nomina-configuracion_tex.utils';
 
 type Props = {
   detalle: VersionNominaDto;
@@ -81,7 +83,7 @@ export default function VersionResultadoPanel({ detalle }: Props) {
                 <div className={`${s.signalIcon} ${s.iconDefault}`}>
                   <Layers3 size={14} />
                 </div>
-                <span>Periodo de pago</span>
+                <span>Período de pago</span>
               </div>
 
               <strong className={s.signalValue}>{detalle.payPeriodId}</strong>
@@ -124,7 +126,7 @@ export default function VersionResultadoPanel({ detalle }: Props) {
                 <div className={s.inlineIcon}>
                   <Hash size={13} />
                 </div>
-                <span>Código del periodo</span>
+                <span>Código del período</span>
               </div>
               <strong>{detalle.periodCode || '—'}</strong>
             </div>

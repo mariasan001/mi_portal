@@ -1,11 +1,11 @@
 import { CalendarRange, Layers3 } from 'lucide-react';
 
 import NominaOptionCards from '@/features/admin/nomina/shared/ui/NominaOptionCards/NominaOptionCards';
-import { NominaEntity } from '../types/nomina-configuracion.types';
+import type { ConfiguracionEntity } from '../../model/configuracion.types';
 
 type Props = {
-  activeEntity: NominaEntity;
-  onSelect: (entity: NominaEntity) => void;
+  activeEntity: ConfiguracionEntity;
+  onSelect: (entity: ConfiguracionEntity) => void;
 };
 
 const options = [
@@ -20,7 +20,7 @@ const options = [
     value: 'version',
     title: 'Versiones',
     description:
-      'Consulta versiones por ID y crea una nueva version asociada al periodo y etapa correspondiente.',
+      'Consulta versiones por ID y crea una nueva versión asociada al período y etapa correspondiente.',
     icon: Layers3,
   },
 ] as const;

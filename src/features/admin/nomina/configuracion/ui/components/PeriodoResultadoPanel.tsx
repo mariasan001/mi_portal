@@ -1,4 +1,3 @@
-
 import {
   CalendarDays,
   CalendarRange,
@@ -8,7 +7,7 @@ import {
 import { motion, useReducedMotion } from 'motion/react';
 
 import type { PeriodoNominaDto } from '@/features/admin/nomina/shared/model/periodos.types';
-import { formatNominaDate } from '../utils/nomina-configuracion.utils';
+import { formatNominaDate } from '../../model/configuracion.selectors';
 import s from './PeriodoResultadoPanel.module.css';
 
 type Props = {
@@ -31,7 +30,7 @@ export default function PeriodoResultadoPanel({ detalle }: Props) {
 
           <div className={s.identityContent}>
             <div className={s.identityHeader}>
-              <h5>Periodo de nómina</h5>
+              <h5>Período de nómina</h5>
             </div>
 
             <div className={s.identityMeta}>
@@ -88,7 +87,7 @@ export default function PeriodoResultadoPanel({ detalle }: Props) {
               <div className={s.codeInlineIcon}>
                 <Hash size={13} />
               </div>
-              <span>Código del periodo</span>
+              <span>Código del período</span>
             </div>
 
             <strong>{detalle.periodoCode || '—'}</strong>
@@ -103,7 +102,7 @@ export default function PeriodoResultadoPanel({ detalle }: Props) {
 
           <div className={s.kpiCard}>
             <span className={s.kpiLabel}>Registro</span>
-            <strong className={s.kpiValueText}>Periodo</strong>
+            <strong className={s.kpiValueText}>Período</strong>
           </div>
         </div>
       </div>

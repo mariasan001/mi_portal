@@ -39,7 +39,7 @@ export default function NominaMonitoreoToolbar({
       }
     >
       <NominaToolbarLabel htmlFor="nomina-monitoreo-period-id">
-        payPeriodId
+        Período a monitorear
       </NominaToolbarLabel>
 
       <NominaToolbarSurface>

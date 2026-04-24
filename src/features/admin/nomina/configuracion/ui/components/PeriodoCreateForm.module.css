@@ -9,6 +9,13 @@
   box-shadow: none;
 }
 
+.intro {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
 .grid2 {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -83,6 +90,20 @@
 .field input::placeholder {
   color: rgba(10, 10, 10, 0.42);
   font-weight: 400;
+}
+
+.helper {
+  color: var(--muted);
+  font-size: 11.5px;
+  line-height: 1.45;
+}
+
+.validation {
+  margin: 0;
+  color: var(--danger);
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.5;
 }
 
 .actions {

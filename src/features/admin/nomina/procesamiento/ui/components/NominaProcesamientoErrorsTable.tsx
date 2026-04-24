@@ -13,12 +13,12 @@ const columns: Array<{
   label: string;
 }> = [
   { key: 'rowNum', label: 'Fila' },
-  { key: 'fileType', label: 'Tipo archivo' },
-  { key: 'payPeriodCode', label: 'Periodo nomina' },
-  { key: 'receiptPeriodCode', label: 'Periodo recibo' },
+  { key: 'fileType', label: 'Tipo de archivo' },
+  { key: 'payPeriodCode', label: 'Periodo de nomina' },
+  { key: 'receiptPeriodCode', label: 'Periodo del recibo' },
   { key: 'neyemp', label: 'Empleado' },
   { key: 'necpza', label: 'Plaza' },
-  { key: 'nominaTipo', label: 'Tipo nomina' },
+  { key: 'nominaTipo', label: 'Tipo de nomina' },
   { key: 'reexpeditionBadge', label: 'Reexpedicion' },
   { key: 'errorDetailCell', label: 'Detalle del error' },
 ];

@@ -2,9 +2,10 @@ import {
   PDFDocument,
   StandardFonts,
   rgb,
-  type PDFPage,
   type PDFFont,
+  type PDFPage,
 } from 'pdf-lib';
+
 import type { FirmaDetalleTecnicoDto } from '@/features/admin/nomina/firma-electronica/model/firma-electronica.types';
 
 type BuildSignedPdfParams = {
@@ -121,7 +122,7 @@ function drawPageHeader(
   margin: number,
   y: number
 ): number {
-  page.drawText('ANEXO TÉCNICO DE FIRMA ELECTRÓNICA', {
+  page.drawText('ANEXO TECNICO DE FIRMA ELECTRONICA', {
     x: margin,
     y,
     size: 12,
@@ -132,7 +133,7 @@ function drawPageHeader(
   const subtitleY = y - 18;
 
   page.drawText(
-    'Documento complementario con evidencia técnica de validación',
+    'Documento complementario con evidencia tecnica de validacion',
     {
       x: margin,
       y: subtitleY,
@@ -317,171 +318,66 @@ function buildSections(detalleTecnico: FirmaDetalleTecnicoDto): Array<{
     {
       title: 'Resumen',
       rows: [
-        {
-          label: 'Identificador',
-          value: normalize(detalleTecnico.identificadorFirma),
-        },
-        {
-          label: 'Archivo',
-          value: normalize(detalleTecnico.archivo?.nombreArchivo),
-        },
-        {
-          label: 'Mime Type',
-          value: normalize(detalleTecnico.archivo?.mimeType),
-        },
+        { label: 'Identificador', value: normalize(detalleTecnico.identificadorFirma) },
+        { label: 'Archivo', value: normalize(detalleTecnico.archivo?.nombreArchivo) },
+        { label: 'Mime Type', value: normalize(detalleTecnico.archivo?.mimeType) },
         {
           label: 'Contenido Base64',
-          value: detalleTecnico.archivo?.contenidoBase64
-            ? 'Disponible'
-            : 'No disponible',
+          value: detalleTecnico.archivo?.contenidoBase64 ? 'Disponible' : 'No disponible',
         },
       ],
     },
     {
       title: 'Firmante',
       rows: [
-        {
-          label: 'Nombre',
-          value: normalize(detalleTecnico.firmante?.nombre),
-        },
-        {
-          label: 'Correo',
-          value: normalize(detalleTecnico.firmante?.correo),
-        },
-        {
-          label: 'Organización',
-          value: normalize(detalleTecnico.firmante?.organizacion),
-        },
-        {
-          label: 'Serie',
-          value: normalize(detalleTecnico.firmante?.serieCertificado),
-        },
-        {
-          label: 'Inicio vigencia',
-          value: normalize(detalleTecnico.firmante?.vigenciaInicio),
-        },
-        {
-          label: 'Fin vigencia',
-          value: normalize(detalleTecnico.firmante?.vigenciaFin),
-        },
+        { label: 'Nombre', value: normalize(detalleTecnico.firmante?.nombre) },
+        { label: 'Correo', value: normalize(detalleTecnico.firmante?.correo) },
+        { label: 'Organizacion', value: normalize(detalleTecnico.firmante?.organizacion) },
+        { label: 'Serie', value: normalize(detalleTecnico.firmante?.serieCertificado) },
+        { label: 'Inicio vigencia', value: normalize(detalleTecnico.firmante?.vigenciaInicio) },
+        { label: 'Fin vigencia', value: normalize(detalleTecnico.firmante?.vigenciaFin) },
       ],
     },
     {
       title: 'Autoridad certificadora',
       rows: [
-        {
-          label: 'Nombre',
-          value: normalize(detalleTecnico.autoridadCertificadora?.nombre),
-        },
-        {
-          label: 'Unidad',
-          value: normalize(
-            detalleTecnico.autoridadCertificadora?.unidadOrganizacional
-          ),
-        },
-        {
-          label: 'Organización',
-          value: normalize(
-            detalleTecnico.autoridadCertificadora?.organizacion
-          ),
-        },
+        { label: 'Nombre', value: normalize(detalleTecnico.autoridadCertificadora?.nombre) },
+        { label: 'Unidad', value: normalize(detalleTecnico.autoridadCertificadora?.unidadOrganizacional) },
+        { label: 'Organizacion', value: normalize(detalleTecnico.autoridadCertificadora?.organizacion) },
       ],
     },
     {
-      title: 'Firma criptográfica',
+      title: 'Firma criptografica',
       rows: [
-        {
-          label: 'Hash',
-          value: normalize(
-            detalleTecnico.firmaCriptografica?.hashAlgoritmoDetectado
-          ),
-        },
-        {
-          label: 'Algoritmo',
-          value: normalize(
-            detalleTecnico.firmaCriptografica?.algoritmoFirma
-          ),
-        },
-        {
-          label: 'Firma bytes',
-          value: normalize(
-            detalleTecnico.firmaCriptografica?.firmaCrudaBytes
-          ),
-        },
-        {
-          label: 'Hex',
-          value: normalize(detalleTecnico.firmaCriptografica?.firmaHex),
-        },
+        { label: 'Hash', value: normalize(detalleTecnico.firmaCriptografica?.hashAlgoritmoDetectado) },
+        { label: 'Algoritmo', value: normalize(detalleTecnico.firmaCriptografica?.algoritmoFirma) },
+        { label: 'Firma bytes', value: normalize(detalleTecnico.firmaCriptografica?.firmaCrudaBytes) },
+        { label: 'Hex', value: normalize(detalleTecnico.firmaCriptografica?.firmaHex) },
       ],
     },
     {
       title: 'OCSP',
       rows: [
-        {
-          label: 'Tipo detectado',
-          value: normalize(detalleTecnico.ocsp?.tipoDetectado),
-        },
-        {
-          label: 'Fecha producción',
-          value: normalize(detalleTecnico.ocsp?.fechaProduccion),
-        },
-        {
-          label: 'Hash cert. consultado',
-          value: normalize(detalleTecnico.ocsp?.hashCertConsultado),
-        },
-        {
-          label: 'Serie consultada',
-          value: normalize(detalleTecnico.ocsp?.serieConsultada),
-        },
-        {
-          label: 'Issuer Name Hash',
-          value: normalize(detalleTecnico.ocsp?.issuerNameHash),
-        },
-        {
-          label: 'Issuer Key Hash',
-          value: normalize(detalleTecnico.ocsp?.issuerKeyHash),
-        },
-        {
-          label: 'This Update',
-          value: normalize(detalleTecnico.ocsp?.thisUpdate),
-        },
-        {
-          label: 'Nonce',
-          value: normalize(detalleTecnico.ocsp?.nonce),
-        },
+        { label: 'Tipo detectado', value: normalize(detalleTecnico.ocsp?.tipoDetectado) },
+        { label: 'Fecha produccion', value: normalize(detalleTecnico.ocsp?.fechaProduccion) },
+        { label: 'Hash cert. consultado', value: normalize(detalleTecnico.ocsp?.hashCertConsultado) },
+        { label: 'Serie consultada', value: normalize(detalleTecnico.ocsp?.serieConsultada) },
+        { label: 'Issuer Name Hash', value: normalize(detalleTecnico.ocsp?.issuerNameHash) },
+        { label: 'Issuer Key Hash', value: normalize(detalleTecnico.ocsp?.issuerKeyHash) },
+        { label: 'This Update', value: normalize(detalleTecnico.ocsp?.thisUpdate) },
+        { label: 'Nonce', value: normalize(detalleTecnico.ocsp?.nonce) },
       ],
     },
     {
       title: 'TSP',
       rows: [
-        {
-          label: 'Tipo detectado',
-          value: normalize(detalleTecnico.tsp?.tipoDetectado),
-        },
-        {
-          label: 'Estado',
-          value: normalize(detalleTecnico.tsp?.estado),
-        },
-        {
-          label: 'Hash algorithm',
-          value: normalize(detalleTecnico.tsp?.hashAlgorithm),
-        },
-        {
-          label: 'Message imprint',
-          value: normalize(detalleTecnico.tsp?.messageImprint),
-        },
-        {
-          label: 'Número serie sello',
-          value: normalize(detalleTecnico.tsp?.numeroSerieSello),
-        },
-        {
-          label: 'Fecha sello',
-          value: normalize(detalleTecnico.tsp?.fechaSello),
-        },
-        {
-          label: 'TSA',
-          value: normalize(detalleTecnico.tsp?.tsa),
-        },
+        { label: 'Tipo detectado', value: normalize(detalleTecnico.tsp?.tipoDetectado) },
+        { label: 'Estado', value: normalize(detalleTecnico.tsp?.estado) },
+        { label: 'Hash algorithm', value: normalize(detalleTecnico.tsp?.hashAlgorithm) },
+        { label: 'Message imprint', value: normalize(detalleTecnico.tsp?.messageImprint) },
+        { label: 'Numero serie sello', value: normalize(detalleTecnico.tsp?.numeroSerieSello) },
+        { label: 'Fecha sello', value: normalize(detalleTecnico.tsp?.fechaSello) },
+        { label: 'TSA', value: normalize(detalleTecnico.tsp?.tsa) },
       ],
     },
   ];
@@ -539,7 +435,7 @@ export async function buildSignedPdfWithTechnicalAppendix({
         y = drawPageHeader(page, regular, bold, margin, 800);
         y = drawSectionTitle(
           page,
-          `${section.title} (continuación)`,
+          `${section.title} (continuacion)`,
           margin,
           y,
           contentWidth,

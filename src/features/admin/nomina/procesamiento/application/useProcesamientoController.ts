@@ -2,13 +2,14 @@
 
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { useProcesamientoResource } from './useProcesamientoResource';
+
+import type { ProcesamientoView } from '../model/procesamiento.types';
 import {
   getProcesamientoDefaultLimit,
   getProcesamientoEmptyState,
   getProcesamientoResultHeader,
 } from '../model/procesamiento.selectors';
-import type { ProcesamientoView } from '../model/procesamiento.types';
+import { useProcesamientoResource } from './useProcesamientoResource';
 
 export function useProcesamientoController() {
   const domain = useProcesamientoResource();
@@ -77,7 +78,7 @@ export function useProcesamientoController() {
     const numericLimit = Number(limit);
 
     if (!Number.isFinite(numericFileId) || numericFileId <= 0) {
-      toast.warning('Captura un fileId valido.');
+      toast.warning('Captura un identificador de archivo valido.');
       return;
     }
 
@@ -99,7 +100,7 @@ export function useProcesamientoController() {
         preview: async () => {
           await domain.consultarPreview(numericFileId, numericLimit);
           setHasConsultedPreview(true);
-          toast.success('Preview consultado correctamente.');
+          toast.success('Vista previa consultada correctamente.');
         },
         errors: async () => {
           await domain.consultarErrors(numericFileId, numericLimit);
@@ -112,7 +113,7 @@ export function useProcesamientoController() {
     } catch {
       const errorMessages = {
         summary: 'No se pudo consultar el resumen.',
-        preview: 'No se pudo consultar el preview.',
+        preview: 'No se pudo consultar la vista previa.',
         errors: 'No se pudo consultar el detalle de errores.',
       };
 

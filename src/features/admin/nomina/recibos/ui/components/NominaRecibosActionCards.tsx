@@ -1,18 +1,19 @@
 import { FileStack, ReceiptText, RefreshCw } from 'lucide-react';
 
+import type { RecibosAction } from '@/features/admin/nomina/recibos/model/recibos.types';
 import NominaOptionCards from '@/features/admin/nomina/shared/ui/NominaOptionCards/NominaOptionCards';
-import type { NominaRecibosAction } from '../types/nomina-recibos-view.types';
 
 type Props = {
-  activeAction: NominaRecibosAction;
-  onSelect: (action: NominaRecibosAction) => void;
+  activeAction: RecibosAction;
+  onSelect: (action: RecibosAction) => void;
 };
 
 const options = [
   {
     value: 'snapshots',
     title: 'Snapshots',
-    description: 'Genera snapshots consolidados desde staging para la version seleccionada.',
+    description:
+      'Genera snapshots consolidados desde staging para la version seleccionada.',
     icon: FileStack,
   },
   {

@@ -1,5 +1,3 @@
-
-
 import { ChevronUp, ShieldCheck, X } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
@@ -99,15 +97,15 @@ export default function NominaRecibosReleasePanel({
                   : { y: -2, transition: { duration: 0.16 } }
               }
               whileTap={shouldReduceMotion ? undefined : { scale: 0.985 }}
-              aria-label="Abrir liberación de versión"
+              aria-label="Abrir liberacion de version"
             >
               <span className={s.bubbleIcon}>
                 <ShieldCheck size={16} />
               </span>
 
               <span className={s.bubbleCopy}>
-                <strong>Liberación de versión</strong>
-                <small>Acción independiente</small>
+                <strong>Liberacion de version</strong>
+                <small>Accion independiente</small>
               </span>
 
               <span className={s.bubbleArrow}>
@@ -131,7 +129,7 @@ export default function NominaRecibosReleasePanel({
               transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
               role="dialog"
               aria-modal="true"
-              aria-label="Liberación de versión"
+              aria-label="Liberacion de version"
             >
               <div className={s.panelTop}>
                 <div className={s.panelHead}>
@@ -140,10 +138,10 @@ export default function NominaRecibosReleasePanel({
                   </div>
 
                   <div className={s.headerCopy}>
-                    <span className={s.kicker}>Acción independiente</span>
-                    <h3>Liberación de versión</h3>
+                    <span className={s.kicker}>Accion independiente</span>
+                    <h3>Liberacion de version</h3>
                     <p>
-                      Ejecuta la liberación cuando operación lo determine, sin
+                      Ejecuta la liberacion cuando operacion lo determine, sin
                       depender del flujo principal.
                     </p>
                   </div>
@@ -153,7 +151,7 @@ export default function NominaRecibosReleasePanel({
                   type="button"
                   className={s.closeBtn}
                   onClick={() => setIsOpen(false)}
-                  aria-label="Cerrar liberación"
+                  aria-label="Cerrar liberacion"
                 >
                   <X size={16} />
                 </button>
@@ -162,8 +160,12 @@ export default function NominaRecibosReleasePanel({
               <div className={s.grid}>
                 <div className={s.field}>
                   <label className={s.label} htmlFor="nomina-release-version-id">
-                    Version ID
+                    ID de version
                   </label>
+                  <p className={s.helperText}>
+                    Usa la misma version objetivo del flujo principal para evitar
+                    inconsistencias.
+                  </p>
 
                   <div className={s.inputWrap}>
                     <input
@@ -182,8 +184,11 @@ export default function NominaRecibosReleasePanel({
                     className={s.label}
                     htmlFor="nomina-released-by-user-id"
                   >
-                    Released By User ID
+                    ID de usuario que libera
                   </label>
+                  <p className={s.helperText}>
+                    Registra el usuario responsable de autorizar la liberacion.
+                  </p>
 
                   <div className={s.inputWrap}>
                     <input
@@ -201,6 +206,10 @@ export default function NominaRecibosReleasePanel({
                   <label className={s.label} htmlFor="nomina-release-comments">
                     Comentarios
                   </label>
+                  <p className={s.helperText}>
+                    Agrega una referencia breve del corte, motivo o validacion
+                    operativa.
+                  </p>
 
                   <div className={s.textareaWrap}>
                     <textarea
@@ -209,7 +218,17 @@ export default function NominaRecibosReleasePanel({
                       value={comments}
                       onChange={(e) => onChangeComments(e.target.value)}
                       placeholder="Comentario opcional o referencia operativa."
+                      maxLength={240}
                     />
+                  </div>
+
+                  <div className={s.metaRow}>
+                    <span>
+                      {canExecute
+                        ? 'La liberacion ya cuenta con los datos minimos requeridos.'
+                        : 'Completa la version y el usuario que libera para continuar.'}
+                    </span>
+                    <span>{comments.trim().length}/240</span>
                   </div>
                 </div>
               </div>
@@ -231,7 +250,7 @@ export default function NominaRecibosReleasePanel({
                       : { scale: 0.99 }
                   }
                 >
-                  {loading ? 'Liberando...' : 'Liberar versión'}
+                  {loading ? 'Liberando...' : 'Liberar version'}
                 </motion.button>
               </div>
             </motion.section>

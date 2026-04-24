@@ -51,7 +51,7 @@ export default function ProcesamientoPage() {
       return (
         <NominaEmptyState
           title="Sin errores detectados"
-          description="La consulta se realizo correctamente y no se encontraron filas con incidencias para este archivo."
+          description="La consulta se realizó correctamente y no se encontraron filas con incidencias para este archivo."
           variant="success"
         />
       );
@@ -69,8 +69,8 @@ export default function ProcesamientoPage() {
   return (
     <AdminPageShell>
       <NominaHero
-        kicker="Nomina"
-        title="Revision del procesamiento"
+        kicker="Nómina"
+        title="Revisión del procesamiento"
         subtitle="Consulta el resumen del staging, una muestra de filas procesadas y el detalle de filas con error por archivo."
         badges={[
           { icon: FileSpreadsheet, label: 'Archivo' },
@@ -97,7 +97,7 @@ export default function ProcesamientoPage() {
       />
 
       {vm.currentError ? (
-        <AdminInlineMessage title="Ocurrio un problema" tone="error">
+        <AdminInlineMessage title="Ocurrió un problema" tone="error">
           {vm.currentError}
         </AdminInlineMessage>
       ) : null}

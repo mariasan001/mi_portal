@@ -1,10 +1,13 @@
-
-
 import { Download, Eye, FileText } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';
 
 import type { SolicitudFirmaListItemDto } from '@/features/admin/nomina/firma-electronica/model/firma-electronica.types';
-import { formatDateTime } from '../utils/firma-electronica-view.utils';
+import {
+  formatDateTime,
+  getSignatureStatusLabel,
+  normalizeSignatureStatus,
+} from '@/features/admin/nomina/firma-electronica/model/firma-electronica.selectors';
+
 import s from './FirmaSolicitudesTable.module.css';
 
 type Props = {
@@ -30,25 +33,10 @@ function getStatusClass(status: string): string {
   }
 }
 
-function getStatusLabel(status: string): string {
-  switch (status) {
-    case 'PENDING':
-      return 'Pendiente';
-    case 'PROCESSING':
-      return 'Procesando';
-    case 'SIGNED':
-      return 'Firmado';
-    case 'FAILED':
-      return 'Fallido';
-    default:
-      return status || 'Sin estatus';
-  }
-}
-
 function getDateParts(value: string | null): { date: string; time: string } {
   const formatted = formatDateTime(value);
 
-  if (formatted === '-' || formatted === '—') {
+  if (formatted === '-') {
     return {
       date: 'No disponible',
       time: '',
@@ -61,6 +49,18 @@ function getDateParts(value: string | null): { date: string; time: string } {
     date: date?.trim() || formatted,
     time: time?.trim() || '',
   };
+}
+
+function getProviderPreview(value: string | null): string {
+  if (!value) {
+    return 'Sin folio externo';
+  }
+
+  if (value.length <= 18) {
+    return value;
+  }
+
+  return `${value.slice(0, 8)}...${value.slice(-6)}`;
 }
 
 export default function FirmaSolicitudesTable({
@@ -96,7 +96,7 @@ export default function FirmaSolicitudesTable({
             <tbody>
               {items.map((item, index) => {
                 const isActive = selectedRequestId === item.requestId;
-                const normalizedStatus = item.status?.trim().toUpperCase() ?? '';
+                const normalizedStatus = normalizeSignatureStatus(item.status);
                 const isSigned = normalizedStatus === 'SIGNED';
                 const requestedAt = getDateParts(item.requestedAt);
                 const completedAt = getDateParts(item.completedAt);
@@ -119,17 +119,20 @@ export default function FirmaSolicitudesTable({
                       <span
                         className={`${s.statusBadge} ${getStatusClass(normalizedStatus)}`}
                       >
-                        {getStatusLabel(normalizedStatus)}
+                        {getSignatureStatusLabel(normalizedStatus)}
                       </span>
                     </td>
 
                     <td className={s.providerCell}>
-                      <span
-                        className={s.providerText}
-                        title={item.providerSignatureId || '—'}
-                      >
-                        {item.providerSignatureId || '—'}
-                      </span>
+                      <div className={s.providerStack}>
+                        <span
+                          className={s.providerText}
+                          title={item.providerSignatureId || 'Sin folio externo'}
+                        >
+                          {getProviderPreview(item.providerSignatureId)}
+                        </span>
+                        <span className={s.providerMeta}>Folio del proveedor</span>
+                      </div>
                     </td>
 
                     <td className={s.dateCell}>
@@ -146,7 +149,7 @@ export default function FirmaSolicitudesTable({
                       ) : null}
                     </td>
 
-                    <td>
+                    <td className={s.actionsCell}>
                       <div className={s.actions}>
                         <button
                           type="button"

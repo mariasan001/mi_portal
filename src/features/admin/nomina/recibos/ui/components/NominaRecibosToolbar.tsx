@@ -1,5 +1,6 @@
 import { Play, Search } from 'lucide-react';
 
+import type { RecibosAction } from '@/features/admin/nomina/recibos/model/recibos.types';
 import {
   NominaToolbarButton,
   NominaToolbarInput,
@@ -7,10 +8,9 @@ import {
   NominaToolbarShell,
   NominaToolbarSurface,
 } from '@/features/admin/nomina/shared/ui/NominaToolbar/NominaToolbar';
-import type { NominaRecibosAction } from '../types/nomina-recibos-view.types';
 
 type Props = {
-  activeAction: NominaRecibosAction;
+  activeAction: RecibosAction;
   versionId: string;
   loading: boolean;
   canExecute: boolean;
@@ -18,7 +18,7 @@ type Props = {
   onExecute: () => void;
 };
 
-function getButtonLabel(action: NominaRecibosAction, loading: boolean): string {
+function getButtonLabel(action: RecibosAction, loading: boolean): string {
   if (action === 'snapshots') {
     return loading ? 'Generando...' : 'Generar snapshots';
   }
@@ -45,7 +45,7 @@ export default function NominaRecibosToolbar({
   return (
     <NominaToolbarShell>
       <NominaToolbarLabel htmlFor="nomina-recibos-version-id">
-        versionId
+        ID de version
       </NominaToolbarLabel>
 
       <NominaToolbarSurface>

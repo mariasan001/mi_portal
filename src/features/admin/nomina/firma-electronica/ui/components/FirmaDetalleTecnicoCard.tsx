@@ -65,10 +65,6 @@ type Props = {
   data: FirmaDetalleTecnicoData | null;
 };
 
-/**
- * Normaliza cualquier valor vacío o nulo
- * para que la UI muestre un valor consistente.
- */
 function getValue(value?: string | number | null): string {
   if (value === null || value === undefined) {
     return 'No disponible';
@@ -81,10 +77,6 @@ function getValue(value?: string | number | null): string {
   return String(value);
 }
 
-/**
- * Acorta cadenas muy largas para que la UI
- * no se rompa visualmente.
- */
 function getLongValue(value?: string | null, max = 120): string {
   const normalized = getValue(value);
 
@@ -109,8 +101,8 @@ export default function FirmaDetalleTecnicoCard({
       <article className={s.card}>
         <div className={s.header}>
           <div>
-            <h3>Detalle técnico</h3>
-            <p>Cargando información técnica de la solicitud.</p>
+            <h3>Detalle tecnico</h3>
+            <p>Cargando informacion tecnica de la solicitud.</p>
           </div>
         </div>
       </article>
@@ -122,8 +114,8 @@ export default function FirmaDetalleTecnicoCard({
       <article className={s.card}>
         <div className={s.header}>
           <div>
-            <h3>Detalle técnico</h3>
-            <p>No fue posible cargar la información técnica.</p>
+            <h3>Detalle tecnico</h3>
+            <p>No fue posible cargar la informacion tecnica.</p>
           </div>
         </div>
       </article>
@@ -135,8 +127,8 @@ export default function FirmaDetalleTecnicoCard({
       <article className={s.card}>
         <div className={s.header}>
           <div>
-            <h3>Detalle técnico</h3>
-            <p>No hay información técnica disponible para esta solicitud.</p>
+            <h3>Detalle tecnico</h3>
+            <p>No hay informacion tecnica disponible para esta solicitud.</p>
           </div>
         </div>
       </article>
@@ -147,8 +139,8 @@ export default function FirmaDetalleTecnicoCard({
     <article className={s.card}>
       <div className={s.header}>
         <div>
-          <h3>Detalle técnico</h3>
-          <p>Información técnica relacionada con el archivo, certificado y evidencia de firma.</p>
+          <h3>Detalle tecnico</h3>
+          <p>Informacion tecnica relacionada con el archivo, certificado y evidencia de firma.</p>
         </div>
       </div>
 
@@ -162,17 +154,17 @@ export default function FirmaDetalleTecnicoCard({
             </div>
 
             <div className={s.item}>
-              <dt>Nombre archivo</dt>
+              <dt>Nombre del archivo</dt>
               <dd>{getValue(data.archivo?.nombreArchivo)}</dd>
             </div>
 
             <div className={s.item}>
-              <dt>Mime Type</dt>
+              <dt>Mime type</dt>
               <dd>{getValue(data.archivo?.mimeType)}</dd>
             </div>
 
             <div className={s.item}>
-              <dt>Contenido Base64</dt>
+              <dt>Contenido base64</dt>
               <dd>{data.archivo?.contenidoBase64 ? 'Disponible' : 'No disponible'}</dd>
             </div>
           </dl>
@@ -192,22 +184,22 @@ export default function FirmaDetalleTecnicoCard({
             </div>
 
             <div className={s.item}>
-              <dt>Organización</dt>
+              <dt>Organizacion</dt>
               <dd>{getValue(data.firmante?.organizacion)}</dd>
             </div>
 
             <div className={s.item}>
-              <dt>Serie certificado</dt>
+              <dt>Serie del certificado</dt>
               <dd>{getValue(data.firmante?.serieCertificado)}</dd>
             </div>
 
             <div className={s.item}>
-              <dt>Vigencia inicio</dt>
+              <dt>Vigencia inicial</dt>
               <dd>{getValue(data.firmante?.vigenciaInicio)}</dd>
             </div>
 
             <div className={s.item}>
-              <dt>Vigencia fin</dt>
+              <dt>Vigencia final</dt>
               <dd>{getValue(data.firmante?.vigenciaFin)}</dd>
             </div>
           </dl>
@@ -227,17 +219,17 @@ export default function FirmaDetalleTecnicoCard({
             </div>
 
             <div className={s.item}>
-              <dt>Organización</dt>
+              <dt>Organizacion</dt>
               <dd>{getValue(data.autoridadCertificadora?.organizacion)}</dd>
             </div>
           </dl>
         </section>
 
         <section className={s.section}>
-          <h4 className={s.sectionTitle}>Firma criptográfica</h4>
+          <h4 className={s.sectionTitle}>Firma criptografica</h4>
           <dl className={s.grid}>
             <div className={s.item}>
-              <dt>Hash algoritmo detectado</dt>
+              <dt>Hash detectado</dt>
               <dd>{getValue(data.firmaCriptografica?.hashAlgoritmoDetectado)}</dd>
             </div>
 
@@ -247,12 +239,12 @@ export default function FirmaDetalleTecnicoCard({
             </div>
 
             <div className={s.item}>
-              <dt>Firma cruda bytes</dt>
+              <dt>Bytes de firma</dt>
               <dd>{getValue(data.firmaCriptografica?.firmaCrudaBytes)}</dd>
             </div>
 
             <div className={`${s.item} ${s.itemFull}`}>
-              <dt>Firma Hex</dt>
+              <dt>Firma hexadecimal</dt>
               <dd title={getValue(data.firmaCriptografica?.firmaHex)}>
                 {getLongValue(data.firmaCriptografica?.firmaHex, 220)}
               </dd>
@@ -269,12 +261,12 @@ export default function FirmaDetalleTecnicoCard({
             </div>
 
             <div className={s.item}>
-              <dt>Fecha producción</dt>
+              <dt>Fecha de produccion</dt>
               <dd>{getValue(data.ocsp?.fechaProduccion)}</dd>
             </div>
 
             <div className={s.item}>
-              <dt>Hash cert. consultado</dt>
+              <dt>Hash consultado</dt>
               <dd>{getValue(data.ocsp?.hashCertConsultado)}</dd>
             </div>
 
@@ -284,17 +276,17 @@ export default function FirmaDetalleTecnicoCard({
             </div>
 
             <div className={s.item}>
-              <dt>Issuer Name Hash</dt>
+              <dt>Issuer name hash</dt>
               <dd>{getValue(data.ocsp?.issuerNameHash)}</dd>
             </div>
 
             <div className={s.item}>
-              <dt>Issuer Key Hash</dt>
+              <dt>Issuer key hash</dt>
               <dd>{getValue(data.ocsp?.issuerKeyHash)}</dd>
             </div>
 
             <div className={s.item}>
-              <dt>This Update</dt>
+              <dt>This update</dt>
               <dd>{getValue(data.ocsp?.thisUpdate)}</dd>
             </div>
 
@@ -329,12 +321,12 @@ export default function FirmaDetalleTecnicoCard({
             </div>
 
             <div className={s.item}>
-              <dt>Número serie sello</dt>
+              <dt>Numero de serie del sello</dt>
               <dd>{getValue(data.tsp?.numeroSerieSello)}</dd>
             </div>
 
             <div className={s.item}>
-              <dt>Fecha sello</dt>
+              <dt>Fecha del sello</dt>
               <dd>{getValue(data.tsp?.fechaSello)}</dd>
             </div>
 

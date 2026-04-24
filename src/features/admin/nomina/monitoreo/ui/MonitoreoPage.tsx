@@ -1,82 +1,47 @@
 'use client';
 
-import { useMemo, useState } from 'react';
 import { Activity, CalendarRange, ShieldCheck } from 'lucide-react';
-import { toast } from 'sonner';
 
 import AdminInlineMessage from '@/features/admin/shared/ui/AdminInlineMessage/AdminInlineMessage';
 import AdminPageShell from '@/features/admin/shared/ui/AdminPageShell/AdminPageShell';
 import AdminSurface from '@/features/admin/shared/ui/AdminSurface/AdminSurface';
-import { useMonitoreoResource } from '@/features/admin/nomina/monitoreo/application/useMonitoreoResource';
 import NominaEmptyState from '@/features/admin/nomina/shared/ui/NominaEmptyState/NominaEmptyState';
 import NominaHero from '@/features/admin/nomina/shared/ui/NominaHero/NominaHero';
 import NominaSectionHeader from '@/features/admin/nomina/shared/ui/NominaSectionHeader/NominaSectionHeader';
-import s from './MonitoreoPage.module.css';
-import NominaMonitoreoToolbar from './components/NominaMonitoreoToolbar';
+
+import { useMonitoreoController } from '../application/useMonitoreoController';
 import NominaMonitoreoResultadoPanel from './components/NominaMonitoreoResultadoPanel';
+import NominaMonitoreoToolbar from './components/NominaMonitoreoToolbar';
+import s from './MonitoreoPage.module.css';
 
 export default function MonitoreoPage() {
-  const {
-    estadoPeriodo,
-    loadingEstado,
-    errorEstado,
-    consultarEstadoPeriodo,
-    resetEstadoPeriodo,
-  } = useMonitoreoResource();
-
-  const [payPeriodId, setPayPeriodId] = useState('');
-
-  const canSubmit = useMemo(
-    () => Number(payPeriodId) > 0 && !loadingEstado,
-    [payPeriodId, loadingEstado]
-  );
-
-  const handleConsult = async () => {
-    const periodoId = Number(payPeriodId);
-
-    if (!Number.isFinite(periodoId) || periodoId <= 0) {
-      toast.warning('Captura un payPeriodId valido.');
-      return;
-    }
-
-    try {
-      await consultarEstadoPeriodo(periodoId);
-      toast.success('Estado del periodo consultado correctamente.');
-    } catch {
-      toast.error('No se pudo consultar el estado del periodo.');
-    }
-  };
-
-  const handleReset = () => {
-    setPayPeriodId('');
-    resetEstadoPeriodo();
-  };
+  const vm = useMonitoreoController();
 
   return (
     <AdminPageShell>
       <NominaHero
-        kicker="Nomina"
-        title="Monitoreo del periodo"
-        subtitle="Consulta el estado resumido del periodo de nomina, incluyendo banderas de carga, validacion y liberacion."
+        kicker="Nómina"
+        title="Monitoreo del período"
+        subtitle="Consulta el estado resumido del período de nómina, incluyendo banderas de carga, validación y liberación."
         badges={[
-          { icon: CalendarRange, label: 'Periodo' },
+          { icon: CalendarRange, label: 'Período' },
           { icon: Activity, label: 'Monitoreo' },
           { icon: ShieldCheck, label: 'Estado' },
         ]}
       />
 
       <NominaMonitoreoToolbar
-        payPeriodId={payPeriodId}
-        loading={loadingEstado}
-        canSubmit={canSubmit}
-        onChange={setPayPeriodId}
-        onSubmit={handleConsult}
-        onReset={handleReset}
+        payPeriodId={vm.payPeriodId}
+        loading={vm.loadingEstado}
+        canSubmit={vm.canSubmit}
+        onChange={vm.setPayPeriodId}
+        onSubmit={vm.handleConsult}
+        onReset={vm.handleReset}
       />
 
-      {errorEstado ? (
-        <AdminInlineMessage title="Ocurrio un problema" tone="error">
-          {errorEstado}
+      {vm.errorEstado ? (
+        <AdminInlineMessage title="Ocurrió un problema" tone="error">
+          {vm.errorEstado}
         </AdminInlineMessage>
       ) : null}
 
@@ -84,23 +49,23 @@ export default function MonitoreoPage() {
         <NominaSectionHeader
           eyebrow="Resultado"
           title={
-            estadoPeriodo
-              ? 'Estado del periodo consultado'
+            vm.estadoPeriodo
+              ? 'Estado del período consultado'
               : 'Resultado del monitoreo'
           }
           description={
-            estadoPeriodo
-              ? 'Revisa el estado consolidado, versiones activas y banderas operativas del periodo.'
-              : 'Aqui se mostrara el resumen general del periodo una vez que realices una consulta.'
+            vm.estadoPeriodo
+              ? 'Revisa el estado consolidado, las versiones activas y las banderas operativas del período.'
+              : 'Aquí se mostrará el resumen general del período una vez que realices una consulta.'
           }
         />
 
-        {estadoPeriodo ? (
-          <NominaMonitoreoResultadoPanel detalle={estadoPeriodo} />
+        {vm.estadoPeriodo ? (
+          <NominaMonitoreoResultadoPanel detalle={vm.estadoPeriodo} />
         ) : (
           <NominaEmptyState
-            title="Aun no has consultado ningun periodo"
-            description="Captura un payPeriodId valido para revisar el estado general del proceso de nomina."
+            title="Aún no has consultado ningún período"
+            description="Captura un payPeriodId válido para revisar el estado general del proceso de nómina."
             variant="inbox"
             tone="compact"
           />

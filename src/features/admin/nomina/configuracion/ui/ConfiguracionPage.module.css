@@ -85,6 +85,14 @@
   gap: 8px;
 }
 
+.modalDescription {
+  margin: 0;
+  max-width: 60ch;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
 .modalEyebrow {
   width: fit-content;
   display: inline-flex;
@@ -113,12 +121,12 @@
 .modalClose {
   width: 42px;
   height: 42px;
+  display: grid;
+  place-items: center;
   border: 1px solid var(--border);
   border-radius: 14px;
   background: #fff;
   color: var(--text);
-  font-size: 26px;
-  line-height: 1;
   cursor: pointer;
   transition:
     transform 0.18s ease,
@@ -191,6 +199,10 @@
 
   .modalHeaderCopy h3 {
     font-size: 22px;
+  }
+
+  .modalDescription {
+    font-size: 12.5px;
   }
 
   .modalBody {

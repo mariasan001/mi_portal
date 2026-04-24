@@ -1,9 +1,11 @@
 import { Plus } from 'lucide-react';
+
 import type {
   SignatureRequestStatus,
   SolicitudFirmaListItemDto,
 } from '@/features/admin/nomina/firma-electronica/model/firma-electronica.types';
-import EmptyFirmaState from './EmptyFirmaState';
+import NominaEmptyState from '@/features/admin/nomina/shared/ui/NominaEmptyState/NominaEmptyState';
+
 import FirmaSolicitudesTable from './FirmaSolicitudesTable';
 import s from './FirmaSolicitudesPanel.module.css';
 
@@ -43,15 +45,28 @@ export default function FirmaSolicitudesPanel({
   onDownloadSignedPdf,
   onOpenCreateModal,
 }: Props) {
+  const activeStatusLabel =
+    STATUS_OPTIONS.find((option) => option.value === status)?.label ?? 'Todos';
+
   return (
     <section className={s.panel}>
       <header className={s.header}>
         <div className={s.topRow}>
           <div className={s.titleBlock}>
+            <div className={s.titleMeta}>
+              <span className={s.countBadge}>
+                {items.length} {items.length === 1 ? 'resultado' : 'resultados'}
+              </span>
+              <span className={s.contextText}>
+                Filtro activo: {activeStatusLabel}
+              </span>
+            </div>
+
             <h2>Solicitudes registradas</h2>
             <p className={s.subtitle}>
               Consulta el estado de cada solicitud y accede al PDF firmado
-              cuando esté disponible.
+              cuando este disponible. Revisa el detalle funcional, valida el
+              estado y descarga el archivo final desde una sola vista.
             </p>
           </div>
 
@@ -67,7 +82,13 @@ export default function FirmaSolicitudesPanel({
 
         <div className={s.filtersRow}>
           <div className={s.filtersBlock}>
-            <span className={s.filtersLabel}>Estatus</span>
+            <div className={s.filtersHeading}>
+              <span className={s.filtersLabel}>Estatus</span>
+              <span className={s.filtersHint}>
+                Cambia la vista para concentrarte en solicitudes pendientes,
+                firmadas o con error.
+              </span>
+            </div>
 
             <div className={s.chips}>
               {STATUS_OPTIONS.map((option) => {
@@ -80,6 +101,7 @@ export default function FirmaSolicitudesPanel({
                     className={`${s.chip} ${isActive ? s.chipActive : ''}`}
                     onClick={() => onChangeStatus(option.value)}
                     disabled={loading}
+                    aria-pressed={isActive}
                   >
                     {option.label}
                   </button>
@@ -88,7 +110,7 @@ export default function FirmaSolicitudesPanel({
             </div>
           </div>
 
-          {loading ? <span className={s.loadingText}>Actualizando…</span> : null}
+          {loading ? <span className={s.loadingText}>Actualizando...</span> : null}
         </div>
       </header>
 
@@ -96,9 +118,10 @@ export default function FirmaSolicitudesPanel({
 
       {!items.length ? (
         <div className={s.emptyWrap}>
-          <EmptyFirmaState
+          <NominaEmptyState
             title="Sin solicitudes registradas"
             description="No hay resultados para el filtro seleccionado. Ajusta el estatus o crea una nueva solicitud."
+            variant="search"
           />
         </div>
       ) : (

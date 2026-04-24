@@ -25,17 +25,21 @@ export function getProcesamientoResultHeader(params: {
   if (activeView === 'summary') {
     return {
       eyebrow: 'Resultado',
-      title: summary ? 'Resumen del procesamiento consultado' : 'Resumen del procesamiento',
+      title: summary
+        ? 'Resumen del procesamiento consultado'
+        : 'Resumen del procesamiento',
       description: summary
         ? 'Aqui se muestran los indicadores principales y el estado general del archivo procesado.'
-        : 'Consulta un fileId para visualizar metricas generales, estatus y conteos clave del procesamiento.',
+        : 'Consulta un ID de archivo para visualizar metricas generales, estatus y conteos clave del procesamiento.',
     };
   }
 
   if (activeView === 'preview') {
     return {
       eyebrow: 'Resultado',
-      title: previewRows.length ? 'Vista previa del archivo consultado' : 'Preview del archivo',
+      title: previewRows.length
+        ? 'Vista previa del archivo consultado'
+        : 'Vista previa del archivo',
       description:
         'Revisa una muestra de filas procesadas para validar la informacion operativa del archivo.',
     };
@@ -49,24 +53,29 @@ export function getProcesamientoResultHeader(params: {
   };
 }
 
-export function getProcesamientoEmptyState(activeView: ProcesamientoView): EmptyStateContent {
+export function getProcesamientoEmptyState(
+  activeView: ProcesamientoView
+): EmptyStateContent {
   if (activeView === 'summary') {
     return {
       title: 'Aun no has consultado ningun resumen',
-      description: 'Captura un fileId valido para revisar las metricas generales del archivo procesado.',
+      description:
+        'Captura un ID de archivo valido para revisar las metricas generales del archivo procesado.',
     };
   }
 
   if (activeView === 'preview') {
     return {
       title: 'Aun no has cargado una vista previa',
-      description: 'Consulta un fileId y un limite para visualizar una muestra de filas procesadas.',
+      description:
+        'Consulta un ID de archivo y un limite para visualizar una muestra de filas procesadas.',
     };
   }
 
   return {
     title: 'Aun no has consultado filas con error',
-    description: 'Consulta un fileId y un limite para revisar las incidencias detectadas en el procesamiento.',
+    description:
+      'Consulta un ID de archivo y un limite para revisar las incidencias detectadas en el procesamiento.',
   };
 }
 
@@ -135,7 +144,10 @@ export function getPreviewStatusTone(value: string): SummaryTone {
   return 'neutral';
 }
 
-export function getErrorTone(errorRows: number, processedRows: number): SummaryTone {
+export function getErrorTone(
+  errorRows: number,
+  processedRows: number
+): SummaryTone {
   if (errorRows === 0) return 'ok';
   if (processedRows > 0) return 'warn';
   return 'danger';
@@ -147,7 +159,7 @@ export function getSummaryKpis(detalle: PayrollSummaryDto): SummaryKpi[] {
   return [
     {
       key: 'totalRowsInFile',
-      label: 'Total filas',
+      label: 'Total de filas',
       value: detalle.totalRowsInFile,
     },
     {
@@ -171,7 +183,7 @@ export function getSummaryFields(detalle: PayrollSummaryDto): SummaryField[] {
   return [
     {
       key: 'fileId',
-      label: 'fileId',
+      label: 'ID del archivo',
       value: detalle.fileId,
       icon: 'hash',
     },
@@ -205,7 +217,7 @@ export function getSummaryFields(detalle: PayrollSummaryDto): SummaryField[] {
     },
     {
       key: 'versionId',
-      label: 'versionId',
+      label: 'ID de version',
       value: detalle.versionId,
       icon: 'layers',
     },
@@ -225,13 +237,13 @@ export function getSummaryFields(detalle: PayrollSummaryDto): SummaryField[] {
     },
     {
       key: 'payPeriodId',
-      label: 'payPeriodId',
+      label: 'ID del periodo',
       value: detalle.payPeriodId,
       icon: 'hash',
     },
     {
       key: 'periodCode',
-      label: 'periodCode',
+      label: 'Codigo del periodo',
       value: detalle.periodCode,
       icon: 'hash',
     },

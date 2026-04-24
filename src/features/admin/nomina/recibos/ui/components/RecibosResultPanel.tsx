@@ -1,6 +1,5 @@
+import { formatUnknownValue } from '@/features/admin/nomina/recibos/model/recibos.selectors';
 
-
-import { formatUnknownValue } from '../utils/nomina-recibos-view.utils';
 import s from './RecibosResultPanel.module.css';
 
 type Props = {
@@ -15,13 +14,13 @@ function formatLabel(key: string) {
     .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
     .replace(/[_-]+/g, ' ')
     .trim()
-    .toUpperCase();
+    .replace(/\b\w/g, (match) => match.toUpperCase());
 }
 
 export default function RecibosResultPanel({
   title,
   data,
-  emptyText = 'Aún no hay resultado disponible para esta acción.',
+  emptyText = 'Aun no hay resultado disponible para esta accion.',
   tone = 'primary',
 }: Props) {
   const toneClass = tone === 'secondary' ? s.secondary : s.primary;
@@ -33,10 +32,14 @@ export default function RecibosResultPanel({
           <h3>{title}</h3>
           <p>
             {data
-              ? 'Se muestra la respuesta técnica registrada para esta operación.'
-              : 'Todavía no hay información registrada en este bloque.'}
+              ? 'Se muestra la respuesta tecnica registrada para esta operacion.'
+              : 'Todavia no hay informacion registrada en este bloque.'}
           </p>
         </div>
+
+        {data ? (
+          <span className={s.countBadge}>{Object.keys(data).length} campos</span>
+        ) : null}
       </header>
 
       {!data ? (

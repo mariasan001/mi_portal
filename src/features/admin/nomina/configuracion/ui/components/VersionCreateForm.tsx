@@ -1,4 +1,3 @@
-
 import { FormEvent, useMemo, useState } from 'react';
 import {
   FileText,
@@ -38,6 +37,8 @@ export default function VersionCreateForm({
     notes: '',
   });
 
+  const notesLength = form.notes.trim().length;
+
   const canSubmit = useMemo(() => {
     return (
       Number.isFinite(form.payPeriodId) &&
@@ -67,13 +68,17 @@ export default function VersionCreateForm({
       animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
       transition={{ duration: 0.22 }}
     >
+      <p className={s.intro}>
+        Crea una nueva versión vinculándola a un período de pago y a la etapa operativa correspondiente.
+      </p>
+
       <div className={s.grid2}>
         <label className={s.field}>
           <span className={s.fieldLabel}>
             <span className={s.iconWrap}>
               <Hash size={13} />
             </span>
-            Periodo de pago
+            Período de pago
           </span>
 
           <input
@@ -88,6 +93,7 @@ export default function VersionCreateForm({
             }
             placeholder="Ej. 4"
           />
+          <small className={s.helper}>Captura el ID del período al que pertenecerá la versión.</small>
         </label>
 
         <label className={s.field}>
@@ -107,9 +113,10 @@ export default function VersionCreateForm({
               }))
             }
           >
-            <option value="PREVIA">PREVIA</option>
-            <option value="INTEGRADA">INTEGRADA</option>
+            <option value="PREVIA">Previa</option>
+            <option value="INTEGRADA">Integrada</option>
           </select>
+          <small className={s.helper}>Selecciona la etapa funcional de la versión.</small>
         </label>
       </div>
 
@@ -133,10 +140,15 @@ export default function VersionCreateForm({
             }
             placeholder="Escribe aquí observaciones de la versión"
           />
+          <small className={s.helper}>
+            Campo opcional. Úsalo para dejar contexto operativo o comentarios relevantes.
+          </small>
         </label>
       </div>
 
-      <div className={s.actions}>
+      <div className={s.footerRow}>
+        <span className={s.counter}>{notesLength} caracteres</span>
+
         <motion.button
           type="submit"
           className={s.submitBtn}

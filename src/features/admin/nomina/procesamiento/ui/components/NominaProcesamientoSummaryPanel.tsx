@@ -1,5 +1,3 @@
-
-
 import {
   AlertTriangle,
   CheckCircle2,
@@ -10,13 +8,14 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 
-import s from './NominaProcesamientoSummaryPanel.module.css';
 import type { PayrollSummaryDto } from '@/features/admin/nomina/procesamiento/model/procesamiento.types';
 import {
   getSummaryFields,
   getSummaryKpis,
   type SummaryField,
 } from '@/features/admin/nomina/procesamiento/model/procesamiento.selectors';
+
+import s from './NominaProcesamientoSummaryPanel.module.css';
 
 type Props = {
   detalle: PayrollSummaryDto;
@@ -117,7 +116,7 @@ export default function NominaProcesamientoSummaryPanel({ detalle }: Props) {
 
                 <div className={s.heroCopy}>
                   <span className={s.cardLabel}>Archivo procesado</span>
-                  <strong>{periodCode?.value ?? '—'}</strong>
+                  <strong>{periodCode?.value ?? '-'}</strong>
                   <small>Resumen base del procesamiento consultado</small>
                 </div>
               </div>
@@ -128,9 +127,9 @@ export default function NominaProcesamientoSummaryPanel({ detalle }: Props) {
                 <div className={s.iconWrap}>
                   {getFieldIcon(fileId?.icon ?? 'hash')}
                 </div>
-                <dt>{fileId?.label ?? 'fileId'}</dt>
+                <dt>{fileId?.label ?? 'ID del archivo'}</dt>
               </div>
-              <dd>{fileId?.value ?? '—'}</dd>
+              <dd>{fileId?.value ?? '-'}</dd>
             </article>
 
             <article className={s.infoCard}>
@@ -138,9 +137,9 @@ export default function NominaProcesamientoSummaryPanel({ detalle }: Props) {
                 <div className={s.iconWrap}>
                   {getFieldIcon(fileType?.icon ?? 'file')}
                 </div>
-                <dt>{fileType?.label ?? 'Tipo'}</dt>
+                <dt>{fileType?.label ?? 'Tipo de archivo'}</dt>
               </div>
-              <dd>{fileType?.value ?? '—'}</dd>
+              <dd>{fileType?.value ?? '-'}</dd>
             </article>
 
             <article className={s.infoCard}>
@@ -156,7 +155,7 @@ export default function NominaProcesamientoSummaryPanel({ detalle }: Props) {
                     {fileStatus.value}
                   </span>
                 ) : (
-                  fileStatus?.value ?? '—'
+                  fileStatus?.value ?? '-'
                 )}
               </dd>
             </article>
@@ -166,7 +165,7 @@ export default function NominaProcesamientoSummaryPanel({ detalle }: Props) {
                 <div className={s.iconWrap}>
                   <ShieldCheck size={15} />
                 </div>
-                <dt>Estatus de versión</dt>
+                <dt>Estatus de version</dt>
               </div>
               <dd>
                 {versionStatus?.asBadge && versionStatus.tone ? (
@@ -174,7 +173,7 @@ export default function NominaProcesamientoSummaryPanel({ detalle }: Props) {
                     {versionStatus.value}
                   </span>
                 ) : (
-                  versionStatus?.value ?? '—'
+                  versionStatus?.value ?? '-'
                 )}
               </dd>
             </article>
@@ -190,7 +189,7 @@ export default function NominaProcesamientoSummaryPanel({ detalle }: Props) {
                 </div>
                 <dt>{fileName?.label ?? 'Nombre del archivo'}</dt>
               </div>
-              <dd className={s.fileValue}>{fileName?.value ?? '—'}</dd>
+              <dd className={s.fileValue}>{fileName?.value ?? '-'}</dd>
             </article>
 
             <article className={`${s.fileCard} ${s.fileCardWide}`}>
@@ -200,7 +199,7 @@ export default function NominaProcesamientoSummaryPanel({ detalle }: Props) {
                 </div>
                 <dt>{filePath?.label ?? 'Ruta del archivo'}</dt>
               </div>
-              <dd className={s.pathValue}>{filePath?.value ?? '—'}</dd>
+              <dd className={s.pathValue}>{filePath?.value ?? '-'}</dd>
             </article>
           </div>
 
@@ -210,9 +209,9 @@ export default function NominaProcesamientoSummaryPanel({ detalle }: Props) {
                 <div className={s.iconWrap}>
                   {getFieldIcon(versionId?.icon ?? 'layers')}
                 </div>
-                <dt>{versionId?.label ?? 'versionId'}</dt>
+                <dt>{versionId?.label ?? 'ID de version'}</dt>
               </div>
-              <dd>{versionId?.value ?? '—'}</dd>
+              <dd>{versionId?.value ?? '-'}</dd>
             </article>
 
             <article className={s.miniCard}>
@@ -222,7 +221,7 @@ export default function NominaProcesamientoSummaryPanel({ detalle }: Props) {
                 </div>
                 <dt>{stage?.label ?? 'Etapa'}</dt>
               </div>
-              <dd>{stage?.value ?? '—'}</dd>
+              <dd>{stage?.value ?? '-'}</dd>
             </article>
 
             <article className={s.miniCard}>
@@ -230,9 +229,9 @@ export default function NominaProcesamientoSummaryPanel({ detalle }: Props) {
                 <div className={s.iconWrap}>
                   {getFieldIcon(payPeriodId?.icon ?? 'hash')}
                 </div>
-                <dt>{payPeriodId?.label ?? 'payPeriodId'}</dt>
+                <dt>{payPeriodId?.label ?? 'ID del periodo'}</dt>
               </div>
-              <dd>{payPeriodId?.value ?? '—'}</dd>
+              <dd>{payPeriodId?.value ?? '-'}</dd>
             </article>
           </div>
         </div>

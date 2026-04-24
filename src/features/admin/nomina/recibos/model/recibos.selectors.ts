@@ -39,7 +39,7 @@ export function getGeneralFlowStatus(params: {
   const { snapshotsDone, receiptsDone, releaseDone, coreSyncDone } = params;
 
   if (releaseDone && coreSyncDone) {
-    return 'La version ya fue sincronizada y ademas cuenta con liberacion registrada.';
+    return 'La version ya fue sincronizada y ademas cuenta con una liberacion registrada.';
   }
 
   if (coreSyncDone) {

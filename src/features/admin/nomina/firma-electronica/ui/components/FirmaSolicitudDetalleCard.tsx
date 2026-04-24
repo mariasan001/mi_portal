@@ -1,5 +1,6 @@
 import type { SolicitudFirmaDetalleDto } from '@/features/admin/nomina/firma-electronica/model/firma-electronica.types';
-import { formatDateTime } from '../utils/firma-electronica-view.utils';
+import { formatDateTime } from '@/features/admin/nomina/firma-electronica/model/firma-electronica.selectors';
+
 import s from './FirmaSolicitudDetalleCard.module.css';
 
 type Props = {
@@ -84,12 +85,12 @@ export default function FirmaSolicitudDetalleCard({
             </div>
 
             <div className={s.item}>
-              <dt>Provider Signature ID</dt>
+              <dt>ID de firma del proveedor</dt>
               <dd>{data.providerSignatureId || 'No disponible'}</dd>
             </div>
 
             <div className={s.item}>
-              <dt>Nombre documento</dt>
+              <dt>Nombre del documento</dt>
               <dd>{data.documentName || 'No disponible'}</dd>
             </div>
 
@@ -99,12 +100,12 @@ export default function FirmaSolicitudDetalleCard({
             </div>
 
             <div className={s.item}>
-              <dt>Error code</dt>
+              <dt>Codigo de error</dt>
               <dd>{data.errorCode || 'No disponible'}</dd>
             </div>
 
             <div className={s.item}>
-              <dt>Error message</dt>
+              <dt>Mensaje de error</dt>
               <dd>{data.errorMessage || 'No disponible'}</dd>
             </div>
 

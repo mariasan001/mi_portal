@@ -1,6 +1,5 @@
+import { FileText, LockKeyhole, Upload, UserRound, X } from 'lucide-react';
 
-
-import { FileText, LockKeyhole, UserRound, AlignLeft, Upload, X } from 'lucide-react';
 import s from './FirmaCrearSolicitudModal.module.css';
 
 type Props = {
@@ -61,9 +60,9 @@ export default function FirmaCrearSolicitudModal({
       >
         <div className={s.header}>
           <div className={s.headerText}>
-            <span className={s.kicker}>Firma electrónica</span>
+            <span className={s.kicker}>Firma electronica</span>
             <h3 id="firma-modal-title">Nueva solicitud de firma</h3>
-            <p>Carga el archivo y registra la solicitud de firma electrónica.</p>
+            <p>Carga el archivo y registra la solicitud de firma electronica.</p>
           </div>
 
           <button
@@ -101,10 +100,12 @@ export default function FirmaCrearSolicitudModal({
 
                   <div className={s.uploadText}>
                     <span className={s.uploadTitle}>
-                      {file ? file.name : 'Arrastra un archivo aquí o selecciónalo'}
+                      {file ? file.name : 'Arrastra un archivo aqui o seleccionalo'}
                     </span>
                     <span className={s.uploadHint}>
-                      {file ? 'Archivo listo para enviarse.' : 'Selecciona el documento a firmar.'}
+                      {file
+                        ? 'Archivo listo para enviarse.'
+                        : 'Selecciona el documento a firmar.'}
                     </span>
                   </div>
                 </div>
@@ -130,7 +131,7 @@ export default function FirmaCrearSolicitudModal({
             </div>
 
             <div className={s.field}>
-              <label htmlFor="firma-contrasena">Contraseña</label>
+              <label htmlFor="firma-contrasena">Contrasena</label>
               <div className={s.inputWrap}>
                 <LockKeyhole size={15} />
                 <input
@@ -138,7 +139,7 @@ export default function FirmaCrearSolicitudModal({
                   type="password"
                   value={contrasena}
                   onChange={(e) => onChangeContrasena(e.target.value)}
-                  placeholder="Contraseña de firma"
+                  placeholder="Contrasena de firma"
                 />
               </div>
             </div>
@@ -157,22 +158,8 @@ export default function FirmaCrearSolicitudModal({
               </div>
             </div>
 
-            <div className={s.field}>
-              <label htmlFor="firma-descripcion-breve">Descripción breve</label>
-              <div className={s.inputWrap}>
-                <AlignLeft size={15} />
-                <input
-                  id="firma-descripcion-breve"
-                  type="text"
-                  placeholder="Opcional"
-                  value=""
-                  readOnly
-                />
-              </div>
-            </div>
-
             <div className={`${s.field} ${s.full}`}>
-              <label htmlFor="firma-descripcion">Descripción</label>
+              <label htmlFor="firma-descripcion">Descripcion</label>
               <textarea
                 id="firma-descripcion"
                 rows={5}

@@ -1,5 +1,3 @@
-import { api } from '@/lib/api/api.cliente';
-import { API_RUTAS } from '@/lib/api/api.rutas';
 import type {
   CrearSolicitudFirmaPayload,
   CrearSolicitudFirmaResultDto,
@@ -9,6 +7,8 @@ import type {
   SolicitudFirmaDetalleDto,
   SolicitudFirmaListItemDto,
 } from '@/features/admin/nomina/firma-electronica/model/firma-electronica.types';
+import { api } from '@/lib/api/api.cliente';
+import { API_RUTAS } from '@/lib/api/api.rutas';
 
 type UnknownRecord = Record<string, unknown>;
 
@@ -45,34 +45,6 @@ function unwrapApiResult<T>(response: unknown): T {
   return response as T;
 }
 
-function debugApiResponse<T>(label: string, response: unknown): T {
-  console.group(`ðŸ“¡ ${label}`);
-  console.log('RAW RESPONSE:', response);
-
-  try {
-    console.log('RAW RESPONSE JSON:', JSON.stringify(response, null, 2));
-  } catch {
-    console.log('RAW RESPONSE JSON: no se pudo serializar');
-  }
-
-  const normalized = unwrapApiResult<T>(response);
-
-  console.log('NORMALIZED RESPONSE:', normalized);
-
-  try {
-    console.log(
-      'NORMALIZED RESPONSE JSON:',
-      JSON.stringify(normalized, null, 2)
-    );
-  } catch {
-    console.log('NORMALIZED RESPONSE JSON: no se pudo serializar');
-  }
-
-  console.groupEnd();
-
-  return normalized;
-}
-
 function buildCrearSolicitudFormData(
   payload: CrearSolicitudFirmaPayload
 ): FormData {
@@ -107,10 +79,7 @@ export async function crearSolicitudFirma(
     }
   );
 
-  return debugApiResponse<CrearSolicitudFirmaResultDto>(
-    'CREAR SOLICITUD FIRMA',
-    response
-  );
+  return unwrapApiResult<CrearSolicitudFirmaResultDto>(response);
 }
 
 export async function listarSolicitudesFirma(
@@ -126,10 +95,7 @@ export async function listarSolicitudesFirma(
     }
   );
 
-  return debugApiResponse<SolicitudFirmaListItemDto[]>(
-    'LISTADO SOLICITUDES FIRMA',
-    response
-  );
+  return unwrapApiResult<SolicitudFirmaListItemDto[]>(response);
 }
 
 export async function obtenerDetalleSolicitudFirma(
@@ -143,10 +109,7 @@ export async function obtenerDetalleSolicitudFirma(
     }
   );
 
-  return debugApiResponse<SolicitudFirmaDetalleDto>(
-    `DETALLE SOLICITUD FIRMA - ${requestId}`,
-    response
-  );
+  return unwrapApiResult<SolicitudFirmaDetalleDto>(response);
 }
 
 export async function obtenerDetalleTecnicoFirma(
@@ -160,10 +123,7 @@ export async function obtenerDetalleTecnicoFirma(
     }
   );
 
-  return debugApiResponse<FirmaDetalleTecnicoDto>(
-    `DETALLE TECNICO FIRMA - ${requestId}`,
-    response
-  );
+  return unwrapApiResult<FirmaDetalleTecnicoDto>(response);
 }
 
 export async function descargarPdfFirmado(
@@ -191,7 +151,7 @@ export async function descargarPdfFirmado(
     throw new Error(
       detail?.trim()
         ? `No se pudo descargar el PDF firmado. ${detail}`
-        : `No se pudo descargar el PDF firmado. CÃ³digo ${response.status}.`
+        : `No se pudo descargar el PDF firmado. Codigo ${response.status}.`
     );
   }
 

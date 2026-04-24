@@ -3,16 +3,17 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { useFirmaElectronicaResource } from '@/features/admin/nomina/firma-electronica/application/useFirmaElectronicaResource';
 import { descargarPdfFirmado } from '@/features/admin/nomina/firma-electronica/api/firma-electronica.commands';
 import type {
   CrearSolicitudFirmaPayload,
+  FirmaCreateFormState,
   FirmaDetalleTecnicoDto,
   SignatureRequestStatus,
   SolicitudFirmaDetalleDto,
 } from '@/features/admin/nomina/firma-electronica/model/firma-electronica.types';
-import type { FirmaCreateFormState } from '../types/firma-electronica-view.types';
-import { buildSignedPdfWithTechnicalAppendix } from '../utils/buildSignedPdfWithTechnicalAppendix';
+
+import { buildSignedPdfWithTechnicalAppendix } from './buildSignedPdfWithTechnicalAppendix';
+import { useFirmaElectronicaResource } from './useFirmaElectronicaResource';
 
 function normalizeStatus(status?: string | null): string {
   return status?.trim() ?? '';
@@ -42,7 +43,7 @@ type BuildSignedPdfInput = {
   detalleTecnico: FirmaDetalleTecnicoDto | null;
 };
 
-export function useFirmaElectronicaView() {
+export function useFirmaElectronicaController() {
   const {
     consultarListado,
     consultarDetalle,
@@ -156,15 +157,6 @@ export function useFirmaElectronicaView() {
     });
   }, []);
 
-  const handleLoadList = useCallback(async () => {
-    try {
-      await consultarListado(statusFilter || undefined);
-      toast.success('Listado consultado correctamente.');
-    } catch {
-      toast.error('No se pudo consultar el listado.');
-    }
-  }, [consultarListado, statusFilter]);
-
   const loadRequestDetails = useCallback(
     async (selectedRequestId: string) => {
       setRequestId(selectedRequestId);
@@ -181,13 +173,6 @@ export function useFirmaElectronicaView() {
     [consultarDetalle, consultarDetalleTecnico]
   );
 
-  const handleSelectRequest = useCallback(
-    async (selectedRequestId: string) => {
-      await loadRequestDetails(selectedRequestId);
-    },
-    [loadRequestDetails]
-  );
-
   const handleOpenDetailsModal = useCallback(
     async (selectedRequestId: string) => {
       setIsDetailsModalOpen(true);
@@ -200,41 +185,9 @@ export function useFirmaElectronicaView() {
     setIsDetailsModalOpen(false);
   }, []);
 
-  const handleLoadDetail = useCallback(async () => {
-    const id = requestId.trim();
-
-    if (!id) {
-      toast.error('Debes capturar un Request ID válido.');
-      return;
-    }
-
-    try {
-      await consultarDetalle(id);
-      toast.success('Detalle consultado correctamente.');
-    } catch {
-      toast.error('No se pudo consultar el detalle.');
-    }
-  }, [consultarDetalle, requestId]);
-
-  const handleLoadTechnicalDetail = useCallback(async () => {
-    const id = requestId.trim();
-
-    if (!id) {
-      toast.error('Debes capturar un Request ID válido.');
-      return;
-    }
-
-    try {
-      await consultarDetalleTecnico(id);
-      toast.success('Detalle técnico consultado correctamente.');
-    } catch {
-      toast.error('No se pudo consultar el detalle técnico.');
-    }
-  }, [consultarDetalleTecnico, requestId]);
-
   const handleCreate = useCallback(async () => {
     if (!createPayload) {
-      toast.error('Debes capturar archivo, CUTS y contraseña.');
+      toast.error('Debes capturar archivo, CUTS y contrasena.');
       return;
     }
 
@@ -314,7 +267,7 @@ export function useFirmaElectronicaView() {
 
       if (!detalleTecnico) {
         throw new Error(
-          'No hay detalle técnico disponible para generar el PDF.'
+          'No hay detalle tecnico disponible para generar el PDF.'
         );
       }
 
@@ -329,16 +282,6 @@ export function useFirmaElectronicaView() {
     },
     [resolvePdfData]
   );
-
-  const generateSignedPdfBlob = useCallback(async (): Promise<Blob> => {
-    const id = requestId.trim();
-
-    if (!id) {
-      throw new Error('No hay una solicitud seleccionada.');
-    }
-
-    return generateSignedPdfBlobByRequestId(id);
-  }, [generateSignedPdfBlobByRequestId, requestId]);
 
   const handleViewSignedPdfByRequestId = useCallback(
     async (selectedRequestId: string) => {
@@ -405,28 +348,6 @@ export function useFirmaElectronicaView() {
     [generateSignedPdfBlobByRequestId, resolvePdfData]
   );
 
-  const handleViewSignedPdf = useCallback(async () => {
-    const id = requestId.trim();
-
-    if (!id) {
-      toast.error('Debes seleccionar una solicitud válida.');
-      return;
-    }
-
-    await handleViewSignedPdfByRequestId(id);
-  }, [handleViewSignedPdfByRequestId, requestId]);
-
-  const handleDownloadSignedPdf = useCallback(async () => {
-    const id = requestId.trim();
-
-    if (!id) {
-      toast.error('Debes seleccionar una solicitud válida.');
-      return;
-    }
-
-    await handleDownloadSignedPdfByRequestId(id);
-  }, [handleDownloadSignedPdfByRequestId, requestId]);
-
   return {
     isCreateModalOpen,
     isDetailsModalOpen,
@@ -443,16 +364,8 @@ export function useFirmaElectronicaView() {
     handleOpenDetailsModal,
     handleCloseDetailsModal,
     handleCreate,
-    handleLoadList,
-    handleSelectRequest,
-    handleLoadDetail,
-    handleLoadTechnicalDetail,
-    handleViewSignedPdf,
-    handleDownloadSignedPdf,
     handleViewSignedPdfByRequestId,
     handleDownloadSignedPdfByRequestId,
-    generateSignedPdfBlob,
-    generateSignedPdfBlobByRequestId,
     creacion,
     listado,
     detalle,
