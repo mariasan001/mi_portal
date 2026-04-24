@@ -1,25 +1,27 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { toErrorMessage } from '@/lib/api/api.errores';
-import { obtenerMenu } from '../services/menu.service';
-import type { MenuResponse } from '../types/menu.types';
 
-type UseMenuResult = {
+import { toErrorMessage } from '@/lib/api/api.errores';
+
+import { obtenerMenu } from '../api/menu.queries';
+import type { MenuResponse } from '../model/menu.types';
+
+type UseMenuResourceResult = {
   data: MenuResponse | null;
   loading: boolean;
   error: string | null;
   refresh: (force?: boolean) => Promise<void>;
 };
 
-export function useMenu(appCode: string | null): UseMenuResult {
+export function useMenuResource(appCode: string | null): UseMenuResourceResult {
   const [data, setData] = useState<MenuResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const code = useMemo(() => (appCode ?? '').trim(), [appCode]);
 
-  const cargarMenu = useCallback(
+  const loadMenu = useCallback(
     async (force = false) => {
       if (!code) {
         setData(null);
@@ -34,9 +36,9 @@ export function useMenu(appCode: string | null): UseMenuResult {
       try {
         const response = await obtenerMenu(code, { force });
         setData(response);
-      } catch (e) {
+      } catch (error) {
         setData(null);
-        setError(toErrorMessage(e, 'No se pudo cargar el menú.'));
+        setError(toErrorMessage(error, 'No se pudo cargar el menu.'));
       } finally {
         setLoading(false);
       }
@@ -45,43 +47,14 @@ export function useMenu(appCode: string | null): UseMenuResult {
   );
 
   useEffect(() => {
-    let alive = true;
-
-    if (!code) {
-      setData(null);
-      setError(null);
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    obtenerMenu(code)
-      .then((response) => {
-        if (!alive) return;
-        setData(response);
-      })
-      .catch((e) => {
-        if (!alive) return;
-        setData(null);
-        setError(toErrorMessage(e, 'No se pudo cargar el menú.'));
-      })
-      .finally(() => {
-        if (!alive) return;
-        setLoading(false);
-      });
-
-    return () => {
-      alive = false;
-    };
-  }, [code]);
+    void loadMenu(false);
+  }, [loadMenu]);
 
   const refresh = useCallback(
     async (force = true) => {
-      await cargarMenu(force);
+      await loadMenu(force);
     },
-    [cargarMenu]
+    [loadMenu]
   );
 
   return useMemo(

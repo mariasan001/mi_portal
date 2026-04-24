@@ -1,25 +1,16 @@
 import { api } from '@/lib/api/api.cliente';
 import { API_RUTAS } from '@/lib/api/api.rutas';
-import type { MenuResponse } from '../types/menu.types';
-import { normalizarMenu } from '../utils/menu.normalizar';
 
-/**
- * Cache simple por appCode.
- */
-const cache = new Map<string, MenuResponse>();
+import type { MenuResponse } from '../model/menu.types';
+import { normalizarMenu } from '../model/menu.normalizers';
 
-/**
- * Requests en vuelo para dedupe.
- */
-const inflight = new Map<string, Promise<MenuResponse>>();
+const menuCache = new Map<string, MenuResponse>();
+const inflightMenuRequests = new Map<string, Promise<MenuResponse>>();
 
 export type GetMenuOptions = {
   force?: boolean;
 };
 
-/**
- * Obtiene el menú dinámico de una app y lo normaliza.
- */
 export async function obtenerMenu(
   appCode: string,
   opts?: GetMenuOptions
@@ -27,18 +18,16 @@ export async function obtenerMenu(
   const code = appCode.trim();
 
   if (!code) {
-    throw new Error('appCode inválido');
+    throw new Error('appCode invalido');
   }
 
-  // 1) Cache
   if (!opts?.force) {
-    const cached = cache.get(code);
+    const cached = menuCache.get(code);
     if (cached) return cached;
   }
 
-  // 2) Dedupe
   if (!opts?.force) {
-    const currentInflight = inflight.get(code);
+    const currentInflight = inflightMenuRequests.get(code);
     if (currentInflight) return currentInflight;
   }
 
@@ -47,30 +36,27 @@ export async function obtenerMenu(
   const request = (async () => {
     const raw = await api.get<unknown>(url);
     const normalized = normalizarMenu(raw);
-    cache.set(code, normalized);
+    menuCache.set(code, normalized);
     return normalized;
   })();
 
-  inflight.set(code, request);
+  inflightMenuRequests.set(code, request);
 
   try {
     return await request;
   } finally {
-    inflight.delete(code);
+    inflightMenuRequests.delete(code);
   }
 }
 
-/**
- * Limpia cache de menú.
- */
 export function limpiarMenuCache(appCode?: string) {
   if (appCode) {
     const code = appCode.trim();
-    cache.delete(code);
-    inflight.delete(code);
+    menuCache.delete(code);
+    inflightMenuRequests.delete(code);
     return;
   }
 
-  cache.clear();
-  inflight.clear();
+  menuCache.clear();
+  inflightMenuRequests.clear();
 }

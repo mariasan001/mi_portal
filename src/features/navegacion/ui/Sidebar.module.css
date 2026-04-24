@@ -75,7 +75,7 @@
 
 .brandEyebrow {
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted-2);
@@ -142,7 +142,7 @@
   display: inline-flex;
   align-items: center;
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted-2);
@@ -191,7 +191,7 @@
   flex: 1;
   min-width: 0;
   min-height: 47px;
-  border-radius: 18px;
+  border-radius: 20px;
   border: 1px solid transparent;
   background: transparent;
   cursor: pointer;
@@ -199,7 +199,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 0 12px;
+  padding: 0 13px;
 
   color: var(--text);
   text-decoration: none;
@@ -314,7 +314,7 @@
 .children {
   margin-left: 18px;
   padding-left: 14px;
-  border-left: 1px dashed rgba(10, 10, 10, 0.08);
+  border-left: 1px dashed rgba(188, 148, 90, 0.2);
   overflow: hidden;
 }
 
@@ -474,7 +474,7 @@
   align-items: center;
   gap: 12px;
   padding: 12px;
-  border-radius: 18px;
+  border-radius: 20px;
   border: 1px solid var(--border-soft);
   background: #fff;
   box-shadow: 0 8px 18px rgba(10, 10, 10, 0.04);

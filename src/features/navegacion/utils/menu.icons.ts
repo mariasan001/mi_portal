@@ -29,8 +29,7 @@ import {
   Workflow,
 } from 'lucide-react';
 
-const ICONOS: Record<string, LucideIcon> = {
-
+const MENU_ICON_REGISTRY: Record<string, LucideIcon> = {
   home: Home,
   users: Users,
   workflow: Workflow,
@@ -81,24 +80,19 @@ const ICONOS: Record<string, LucideIcon> = {
   ShieldCheck,
 };
 
-function normalizeIconName(value: string | null | undefined) {
-  return (value ?? '').trim();
+function normalizeIconName(iconName: string | null | undefined) {
+  return (iconName ?? '').trim();
 }
 
-/**
- * Devuelve un ReactNode ya construido.
- * Así evitamos crear componentes inline en pleno render del sidebar.
- */
-export function renderIcon(
-  name: string | null | undefined,
+export function renderMenuIcon(
+  iconName: string | null | undefined,
   props?: LucideProps
 ): ReactNode {
-  const raw = normalizeIconName(name);
-
-  const Comp =
-    ICONOS[raw] ??
-    ICONOS[raw.toLowerCase()] ??
+  const normalizedName = normalizeIconName(iconName);
+  const IconComponent =
+    MENU_ICON_REGISTRY[normalizedName] ??
+    MENU_ICON_REGISTRY[normalizedName.toLowerCase()] ??
     CircleHelp;
 
-  return React.createElement(Comp, props);
+  return React.createElement(IconComponent, props);
 }

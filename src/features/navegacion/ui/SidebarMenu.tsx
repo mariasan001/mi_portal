@@ -1,7 +1,7 @@
 'use client';
 
+import { useMenuResource } from '../application/useMenuResource';
 import { Sidebar } from './Sidebar';
-import { useMenu } from '../hooks/useMenu';
 
 type SidebarMenuProps = {
   appCode: string | null;
@@ -20,13 +20,18 @@ export function SidebarMenu({
   onLogout,
   onCollapsedChange,
 }: SidebarMenuProps) {
-  const { data, loading, error } = useMenu(appCode);
+  const { data, loading, error } = useMenuResource(appCode);
+  const resolvedUserLabel = loading
+    ? 'Cargando menu...'
+    : error
+      ? 'Menu no disponible'
+      : userLabel;
 
   return (
     <Sidebar
       items={data?.items ?? []}
       defaultCollapsed={defaultCollapsed}
-      userLabel={loading ? 'Cargando menú...' : error ? 'Menú no disponible' : userLabel}
+      userLabel={resolvedUserLabel}
       userName={userName}
       onLogout={onLogout}
       onCollapsedChange={onCollapsedChange}

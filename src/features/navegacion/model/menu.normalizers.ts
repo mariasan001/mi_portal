@@ -1,25 +1,19 @@
-import type { MenuItem, MenuResponse } from '../types/menu.types';
+import type { MenuItem, MenuResponse } from './menu.types';
 
-/**
- * Convierte cualquier valor a string seguro.
- */
 function toSafeString(value: unknown, fallback = ''): string {
   if (typeof value === 'string') return value.trim();
-  if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+  if (typeof value === 'number' || typeof value === 'boolean') {
+    return String(value);
+  }
+
   return fallback;
 }
 
-/**
- * Convierte cualquier valor a boolean opcional.
- */
 function toOptionalBoolean(value: unknown): boolean | undefined {
   if (typeof value === 'boolean') return value;
   return undefined;
 }
 
-/**
- * Convierte cualquier valor numérico a number opcional.
- */
 function toOptionalNumber(value: unknown): number | undefined {
   if (typeof value === 'number' && Number.isFinite(value)) return value;
 
@@ -31,16 +25,10 @@ function toOptionalNumber(value: unknown): number | undefined {
   return undefined;
 }
 
-/**
- * Verifica si el valor es un objeto.
- */
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
 }
 
-/**
- * Busca un arreglo dentro de varias posibles llaves.
- */
 function getArrayFromRecord(
   input: Record<string, unknown>,
   keys: string[]
@@ -53,9 +41,6 @@ function getArrayFromRecord(
   return [];
 }
 
-/**
- * Normaliza un item individual del menú.
- */
 function normalizarItem(raw: unknown, index = 0): MenuItem | null {
   if (!isRecord(raw)) return null;
 
@@ -122,12 +107,9 @@ function normalizarItem(raw: unknown, index = 0): MenuItem | null {
   };
 }
 
-/**
- * Normaliza la respuesta completa del backend.
- */
 export function normalizarMenu(raw: unknown): MenuResponse {
   if (!isRecord(raw)) {
-    throw new Error('La respuesta del menú no tiene un formato válido.');
+    throw new Error('La respuesta del menu no tiene un formato valido.');
   }
 
   const appCode =
