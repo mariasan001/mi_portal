@@ -1,4 +1,3 @@
-// src/lib/hooks/useScrollDir.ts
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
@@ -25,18 +24,18 @@ export function useScrollDir(options: Options = {}): ScrollDir {
       const y = window.scrollY || 0;
       const delta = y - lastY.current;
 
-      // ✅ ignora micro-deltas
+      // Ignore micro-deltas to avoid noisy direction changes.
       if (Math.abs(delta) < thresholdPx) return;
 
       const next: ScrollDir = delta > 0 ? 'down' : 'up';
 
-      // ✅ solo setState si cambió la dirección
+      // Only update state when the direction actually changes.
       if (next !== lastDir.current) {
         lastDir.current = next;
         setDir(next);
       }
 
-      // ✅ IMPORTANTÍSIMO: actualizar referencia para el próximo delta
+      // Keep the current position for the next delta calculation.
       lastY.current = y;
     };
 

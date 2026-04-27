@@ -6,8 +6,8 @@ import { FiArrowUpRight, FiCheck, FiSmartphone } from 'react-icons/fi';
 import { useRevealMotion } from '@/hooks/useRevealMotion';
 
 import s from './AppDownloadSection.module.css';
-import { APP_DOWNLOAD_BENEFITS } from './constants/app-download.benefits';
-import { isExternalHref } from './utils/isExternalHref';
+import { APP_DOWNLOAD_BENEFITS } from './model/app-download.benefits';
+import { isExternalHref } from './model/isExternalHref';
 
 export type AppDownloadSectionProps = {
   title?: string;

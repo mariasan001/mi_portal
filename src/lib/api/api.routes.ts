@@ -20,9 +20,9 @@ export const API_RUTAS = {
     periodDetalle: (periodId: number | string) =>
       `/api/admin/nomina/periods/${encodeURIComponent(String(periodId))}`,
 
-    versiones: '/api/admin/nomina/versiones',
-    versionDetalle: (versionId: number | string) =>
-      `/api/admin/nomina/versiones/${encodeURIComponent(String(versionId))}`,
+    versions: '/api/admin/nomina/versions',
+    versionDetail: (versionId: number | string) =>
+      `/api/admin/nomina/versions/${encodeURIComponent(String(versionId))}`,
 
     uploadArchivo: '/api/admin/nomina/files/upload',
 

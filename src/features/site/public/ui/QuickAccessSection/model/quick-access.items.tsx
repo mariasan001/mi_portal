@@ -1,4 +1,4 @@
-import type { QuickAccessItem } from '../types/quick-access.types';
+import type { QuickAccessItem } from './quick-access.types';
 import {
   FiActivity,
   FiAward,

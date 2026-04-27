@@ -9,7 +9,7 @@ export function obtenerVersionNomina(
   versionId: number,
   opts?: { signal?: AbortSignal }
 ) {
-  return api.get<VersionNominaDto>(API_RUTAS.nomina.versionDetalle(versionId), {
+  return api.get<VersionNominaDto>(API_RUTAS.nomina.versionDetail(versionId), {
     signal: opts?.signal,
   });
 }
@@ -18,7 +18,7 @@ export function crearVersionNomina(
   payload: CrearVersionNominaPayload,
   opts?: { signal?: AbortSignal }
 ) {
-  return api.post<VersionNominaDto>(API_RUTAS.nomina.versiones, payload, {
+  return api.post<VersionNominaDto>(API_RUTAS.nomina.versions, payload, {
     signal: opts?.signal,
   });
 }

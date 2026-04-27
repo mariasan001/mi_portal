@@ -1,24 +1,21 @@
-// src/features/site/Components/FooterSection/FooterSection.tsx
 'use client';
 
 import Image from 'next/image';
-import s from './FooterSection.module.css';
 import { FiExternalLink } from 'react-icons/fi';
+
+import s from './SiteFooter.module.css';
 
 type LinkItem = { label: string; href: string; external?: boolean };
 
 type Props = {
   brandTitle?: string;
   brandDesc?: string;
-
   col1Title?: string;
   col2Title?: string;
   col3Title?: string;
-
   col1Links?: LinkItem[];
   col2Links?: LinkItem[];
   col3Links?: LinkItem[];
-
   bottomLeft?: string;
   bottomRightLinks?: LinkItem[];
 };
@@ -26,16 +23,16 @@ type Props = {
 function FooterLinks({ items }: { items: LinkItem[] }) {
   return (
     <ul className={s.list}>
-      {items.map((l) => (
-        <li key={l.label}>
+      {items.map((item) => (
+        <li key={item.label}>
           <a
             className={s.link}
-            href={l.href}
-            target={l.external ? '_blank' : undefined}
-            rel={l.external ? 'noreferrer' : undefined}
+            href={item.href}
+            target={item.external ? '_blank' : undefined}
+            rel={item.external ? 'noreferrer' : undefined}
           >
-            <span>{l.label}</span>
-            {l.external ? (
+            <span>{item.label}</span>
+            {item.external ? (
               <span className={s.ext} aria-hidden="true">
                 <FiExternalLink />
               </span>
@@ -47,37 +44,34 @@ function FooterLinks({ items }: { items: LinkItem[] }) {
   );
 }
 
-export default function FooterSection({
+export default function SiteFooter({
   brandTitle = 'Portal de Servicios',
   brandDesc =
-    'Atención y orientación para servidoras y servidores públicos. Accesos, guías y trámites en un solo lugar.',
-
+    'Atencion y orientacion para servidoras y servidores publicos. Accesos, guias y tramites en un solo lugar.',
   col1Title = 'Portal',
   col2Title = 'Recursos',
   col3Title = 'Institucional',
-
   col1Links = [
-    { label: 'Guías y Descargas', href: '#guias' },
+    { label: 'Guias y Descargas', href: '#guias' },
     { label: 'Avisos', href: '#avisos' },
-    { label: 'Accesos rápidos', href: '#accesos' },
+    { label: 'Accesos rapidos', href: '#accesos' },
     { label: 'Centro de ayuda', href: '#ayuda' },
   ],
   col2Links = [
-    { label: 'Recuperar contraseña', href: '#recuperacion' },
+    { label: 'Recuperar contrasena', href: '#recuperacion' },
     { label: 'Preguntas frecuentes', href: '#faq' },
-    { label: 'Soporte técnico', href: '#soporte' },
+    { label: 'Soporte tecnico', href: '#soporte' },
     { label: 'Formatos', href: '#formatos' },
   ],
   col3Links = [
     { label: 'Aviso de privacidad', href: '#privacidad' },
-    { label: 'Términos de uso', href: '#terminos' },
+    { label: 'Terminos de uso', href: '#terminos' },
     { label: 'Transparencia', href: '#transparencia' },
     { label: 'Contacto', href: '#contacto' },
   ],
-
-  bottomLeft = '© 2026 Gobierno del Estado de México. Dirección General de Personal',
+  bottomLeft = '(c) 2026 Gobierno del Estado de Mexico. Direccion General de Personal',
   bottomRightLinks = [
-    { label: 'Términos', href: '#terminos' },
+    { label: 'Terminos', href: '#terminos' },
     { label: 'Privacidad', href: '#privacidad' },
   ],
 }: Props) {
@@ -85,7 +79,6 @@ export default function FooterSection({
     <footer className={s.wrap} aria-label="Footer del portal">
       <div className={s.card}>
         <div className={s.top}>
-          {/* Brand */}
           <div className={s.brand}>
             <div className={s.brandRow}>
               <div className={s.logoWrap} aria-hidden="true">
@@ -105,7 +98,6 @@ export default function FooterSection({
             </div>
           </div>
 
-          {/* Columns */}
           <nav className={s.cols} aria-label="Enlaces del footer">
             <div className={s.col}>
               <div className={s.colTitle}>{col1Title}</div>
@@ -128,10 +120,12 @@ export default function FooterSection({
           <div className={s.bottomLeft}>{bottomLeft}</div>
 
           <div className={s.bottomRight} aria-label="Enlaces legales">
-            {bottomRightLinks.map((l, i) => (
-              <a key={l.label} className={s.bottomLink} href={l.href}>
-                {l.label}
-                {i < bottomRightLinks.length - 1 ? <span className={s.sep}>•</span> : null}
+            {bottomRightLinks.map((item, index) => (
+              <a key={item.label} className={s.bottomLink} href={item.href}>
+                {item.label}
+                {index < bottomRightLinks.length - 1 ? (
+                  <span className={s.sep}>•</span>
+                ) : null}
               </a>
             ))}
           </div>
