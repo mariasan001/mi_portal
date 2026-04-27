@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+
+import { upstreamUnavailable } from '@/app/api/_lib/proxy';
 import { obtenerSignatureBaseUrl } from '@/lib/config/entorno';
 
 export const dynamic = 'force-dynamic';
@@ -25,18 +27,14 @@ export async function GET(
       }
     );
 
-    const contentType =
-      upstream.headers.get('content-type') ?? 'application/json';
+    const contentType = upstream.headers.get('content-type') ?? 'application/json';
     const text = await upstream.text();
 
     return new NextResponse(text, {
       status: upstream.status,
       headers: { 'content-type': contentType },
     });
-  } catch (e) {
-    return NextResponse.json(
-      { message: 'No se pudo conectar a SIGNATURE', error: String(e) },
-      { status: 502 }
-    );
+  } catch (error) {
+    return upstreamUnavailable('SIGNATURE', error);
   }
 }

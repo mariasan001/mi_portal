@@ -1,5 +1,5 @@
-import NominaAuditoriaView from '@/features/admin/ui/NominaAuditoriaView/NominaAuditoriaView';
+import AuditoriaPage from '@/features/admin/nomina/auditoria/ui/AuditoriaPage';
 
 export default function NominaAuditoriaPage() {
-  return <NominaAuditoriaView />;
+  return <AuditoriaPage />;
 }

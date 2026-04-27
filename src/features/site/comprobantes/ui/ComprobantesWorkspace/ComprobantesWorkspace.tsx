@@ -3,9 +3,8 @@
 import type { ComponentType } from 'react';
 import { ArrowUpLeft } from 'lucide-react';
 
-import { COMPROBANTES_ACCESS_ITEMS } from '../../constants/comprobantesConstants';
-import type { ComprobantesView } from '../../types/comprobantes.types';
-
+import { COMPROBANTES_ACCESS_ITEMS } from '../../model/comprobantes.constants';
+import type { ComprobantesView } from '../../model/comprobantes.types';
 import ComprobanteQuincenalForm from '../ComprobanteQuincenalForm/ComprobanteQuincenalForm';
 import s from './ComprobantesWorkspace.module.css';
 
@@ -16,31 +15,21 @@ type Props = {
 
 type WorkspaceRenderableView = Exclude<ComprobantesView, 'menu'>;
 
-const WORKSPACE_COMPONENTS: Partial<
-  Record<WorkspaceRenderableView, ComponentType>
-> = {
+const WORKSPACE_COMPONENTS: Partial<Record<WorkspaceRenderableView, ComponentType>> = {
   'comprobante-quincenal': ComprobanteQuincenalForm,
 };
 
 function WorkspacePlaceholder() {
   return (
     <div className={s.placeholder}>
-      <h3 className={s.placeholderTitle}>Módulo en construcción</h3>
+      <h3 className={s.placeholderTitle}>Modulo en construccion</h3>
       <p className={s.placeholderText}>
-        Esta sección estará disponible próximamente con su formulario correspondiente.
+        Esta seccion estara disponible proximamente con su formulario correspondiente.
       </p>
     </div>
   );
 }
 
-/**
- * Renderiza el panel expandido del módulo seleccionado.
- *
- * Nueva lógica UX:
- * - Ya no existe preview lateral.
- * - Ya no existen dos columnas para formulario + preview.
- * - La opción elegida se convierte en un panel activo a ancho completo.
- */
 export default function ComprobantesWorkspace({ view, onBack }: Props) {
   const selectedItem = COMPROBANTES_ACCESS_ITEMS.find((item) => item.key === view);
 

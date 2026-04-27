@@ -1,4 +1,4 @@
-import { ApiError, extraerMensaje } from './api.errores';
+import { ApiError, extraerMensaje } from './api.errors';
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 

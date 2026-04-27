@@ -3,17 +3,17 @@
 import { createPortal } from 'react-dom';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import s from './AuthModal.module.css';
-
-import RegisterForm from '../RegisterForm/RegisterForm';
-import ForgotPasswordForm from '../ForgotPasswordForm/ForgotPasswordForm';
-import VerifyOtpForm from '../VerifyOtpForm/VerifyOtpForm';
-import ResetPasswordForm from '../ResetPasswordForm/ResetPasswordForm';
-import { useLoginFlow } from '@/features/auth/hooks/useLoginFlow';
-import { useRegister } from '@/features/auth/hooks/useRegister';
 import { useAuth } from '@/features/auth/context/auth.context';
-import type { RegisterPayload } from '@/features/auth/types/register.types';
+import { useLoginFlow } from '@/features/auth/application/useLoginFlow';
+import { useRegister } from '@/features/auth/application/useRegister';
+import type { RegisterPayload } from '@/features/auth/model/register.types';
+
+import ForgotPasswordForm from '../ForgotPasswordForm/ForgotPasswordForm';
 import LoginForm from '../LoginForm/LoginForm';
+import RegisterForm from '../RegisterForm/RegisterForm';
+import ResetPasswordForm from '../ResetPasswordForm/ResetPasswordForm';
+import VerifyOtpForm from '../VerifyOtpForm/VerifyOtpForm';
+import s from './AuthModal.module.css';
 
 export type AuthModalSource = 'nav' | 'quick-access';
 export type AuthView = 'login' | 'register' | 'forgot' | 'otp' | 'reset';
@@ -47,8 +47,9 @@ export default function AuthModal({
   const [view, setView] = useState<AuthView>(initialView);
   const [recoveryIdentifier, setRecoveryIdentifier] = useState('');
   const [verifiedOtp, setVerifiedOtp] = useState('');
-  const [registerValue, setRegisterValue] =
-    useState<RegisterPayload>(INITIAL_REGISTER_VALUE);
+  const [registerValue, setRegisterValue] = useState<RegisterPayload>(
+    INITIAL_REGISTER_VALUE
+  );
 
   const {
     username,
@@ -77,7 +78,7 @@ export default function AuthModal({
 
   const registerSuccess = useMemo(() => {
     if (!registerData) return null;
-    return registerData.message ?? 'Registro exitoso. Ya puedes iniciar sesión.';
+    return registerData.message ?? 'Registro exitoso. Ya puedes iniciar sesion.';
   }, [registerData]);
 
   const resetFlowState = useCallback(() => {
@@ -133,8 +134,8 @@ export default function AuthModal({
   }
 
   async function handleRegisterSubmit() {
-    const res = await submitRegister(registerValue);
-    if (!res) return;
+    const result = await submitRegister(registerValue);
+    if (!result) return;
 
     setUsername(registerValue.email);
     setPassword('');
@@ -148,19 +149,18 @@ export default function AuthModal({
   useEffect(() => {
     if (!open) return;
 
-    const esc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+    const onEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
         handleClose();
       }
     };
 
-    window.addEventListener('keydown', esc);
-    return () => window.removeEventListener('keydown', esc);
+    window.addEventListener('keydown', onEscape);
+    return () => window.removeEventListener('keydown', onEscape);
   }, [open, handleClose]);
 
   useEffect(() => {
     if (!open || !isAuthenticated) return;
-
     onClose();
   }, [open, isAuthenticated, onClose]);
 
@@ -168,7 +168,7 @@ export default function AuthModal({
 
   return createPortal(
     <div className={s.overlay} onClick={handleClose}>
-      <div className={s.modal} onClick={(e) => e.stopPropagation()}>
+      <div className={s.modal} onClick={(event) => event.stopPropagation()}>
         {view === 'login' && (
           <LoginForm
             username={username}

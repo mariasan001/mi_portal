@@ -1,7 +1,6 @@
-import NominaBusquedaRecibosView from '@/features/admin/ui/NominaBusquedaRecibosView/NominaBusquedaRecibosView';
+import BusquedaRecibosPage from '@/features/admin/nomina/busqueda-recibos/ui/BusquedaRecibosPage';
 
 export default function NominaBusquedaRecibosPage() {
-  return <NominaBusquedaRecibosView />;
+  return <BusquedaRecibosPage />;
 }
-
 

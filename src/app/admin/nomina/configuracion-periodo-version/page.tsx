@@ -1,5 +1,5 @@
-import NominaConfiguracionView from "@/features/admin/ui/NominaConfiguracion/NominaConfiguracionView";
+import ConfiguracionPage from '@/features/admin/nomina/configuracion/ui/ConfiguracionPage';
 
 export default function ConfiguracionPeriodoServiciosPage() {
-  return <NominaConfiguracionView />;
+  return <ConfiguracionPage />;
 }

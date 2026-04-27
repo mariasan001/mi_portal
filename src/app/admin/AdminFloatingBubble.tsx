@@ -1,5 +1,3 @@
-'use client';
-
 import { MessageCircleMore } from 'lucide-react';
 
 import s from './AdminFloatingBubble.module.css';

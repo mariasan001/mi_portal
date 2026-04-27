@@ -1,13 +1,14 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { FiArrowRight, FiLock, FiUnlock } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
+import { FiArrowRight, FiLock, FiUnlock } from 'react-icons/fi';
 
-import s from './QuickAccessSection.module.css';
-import { useRevealMotion } from '@/hooks/useRevealMotion';
-import { QUICK_ACCESS_ITEMS } from './constants/quickAccess.items';
 import { useAuth } from '@/features/auth';
+import { useRevealMotion } from '@/hooks/useRevealMotion';
+
+import { QUICK_ACCESS_ITEMS } from './model/quick-access.items';
+import s from './QuickAccessSection.module.css';
 
 const NAV_OFFSET = 118;
 
@@ -35,10 +36,7 @@ export default function QuickAccessSection() {
   const scrollToSection = useCallback(() => {
     if (!sectionRef.current) return;
 
-    const top =
-      window.scrollY +
-      sectionRef.current.getBoundingClientRect().top -
-      NAV_OFFSET;
+    const top = window.scrollY + sectionRef.current.getBoundingClientRect().top - NAV_OFFSET;
 
     window.scrollTo({
       top,
@@ -118,10 +116,7 @@ export default function QuickAccessSection() {
     window.addEventListener('portal:focus-quick-access', onFocusQuickAccess);
 
     return () => {
-      window.removeEventListener(
-        'portal:focus-quick-access',
-        onFocusQuickAccess
-      );
+      window.removeEventListener('portal:focus-quick-access', onFocusQuickAccess);
       cleanup?.();
     };
   }, [runUnlockExperience]);
@@ -155,14 +150,11 @@ export default function QuickAccessSection() {
       id="quick-access"
       ref={sectionRef}
       className={`${s.wrap} ${sectionPulse ? s.sectionPulse : ''}`}
-      aria-label="Accesos rápidos"
+      aria-label="Accesos rapidos"
     >
-      <div
-        ref={motionRef}
-        className={className(s.inner, s.isIn, s.dirDown, s.dirUp)}
-      >
+      <div ref={motionRef} className={className(s.inner, s.isIn, s.dirDown, s.dirUp)}>
         <header className={s.header}>
-          <h2>Accesos Rápidos</h2>
+          <h2>Accesos rapidos</h2>
           <p>Ingresa directamente a los sistemas institucionales.</p>
         </header>
 
@@ -191,16 +183,8 @@ export default function QuickAccessSection() {
                       isActuallyLocked ? s.locked : '',
                       isActuallyUnlocked ? s.unlocked : '',
                     ].join(' ')}
-                    aria-label={
-                      isActuallyLocked
-                        ? 'Acceso bloqueado'
-                        : 'Acceso desbloqueado'
-                    }
-                    title={
-                      isActuallyLocked
-                        ? 'Acceso bloqueado'
-                        : 'Acceso desbloqueado'
-                    }
+                    aria-label={isActuallyLocked ? 'Acceso bloqueado' : 'Acceso desbloqueado'}
+                    title={isActuallyLocked ? 'Acceso bloqueado' : 'Acceso desbloqueado'}
                   >
                     <span
                       className={`${s.miniLockSwap} ${

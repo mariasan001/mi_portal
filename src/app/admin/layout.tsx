@@ -1,20 +1,32 @@
-'use client';
-
 import type { ReactNode } from 'react';
-import { useAuth } from '@/features/auth/context/auth.context';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { buildAuthModalHref } from '@/features/auth/utils/authRedirect';
+import { hasAdminAccess } from '@/lib/auth/server';
+
 import AdminShell from './AdminShell';
+import { APP_ROUTES } from '../_lib/routes';
 
-export default function AdminLayout({ children }: { children: ReactNode }) {
-  const { status, appCode } = useAuth();
+export default async function AdminLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  const cookieStore = await cookies();
+  const cookieHeader = cookieStore
+    .getAll()
+    .map(({ name, value }) => `${name}=${value}`)
+    .join('; ');
 
-  if (status === 'booting') {
-    return <main style={{ padding: 24 }}>Cargando sesión…</main>;
+  if (!cookieHeader) {
+    redirect(buildAuthModalHref({ returnTo: APP_ROUTES.admin.root }));
   }
 
-  if (status === 'anonymous') {
-    return <main style={{ padding: 24 }}>Sin sesión. Ve a login.</main>;
+  const canAccessAdmin = await hasAdminAccess(cookieHeader);
+
+  if (!canAccessAdmin) {
+    redirect(APP_ROUTES.home);
   }
 
-  // authenticated
-  return <AdminShell appCode={appCode}>{children}</AdminShell>;
+  return <AdminShell appCode={null}>{children}</AdminShell>;
 }

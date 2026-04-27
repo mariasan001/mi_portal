@@ -1,0 +1,9 @@
+export { default as Hero } from '../Components/Hero/Hero';
+export { default as ServicesSection } from '../Components/ServicesSection/ServicesSection';
+export { default as ConvocatoriasSection } from '../Components/ConvocatoriasSection/ConvocatoriasSection';
+export { default as GuidesSection } from '../Components/GuidesSection/GuidesSection';
+export { default as DudasSection } from '../Components/DudasSection/DudasSection';
+export { default as AppDownloadSection } from '../Components/AppDownloadSection/AppDownloadSection';
+export { default as QuickAccessSection } from '../Components/QuickAccessSection/QuickAccessSection';
+export { default as PortalAssistant } from '../Components/PortalAssistant/PortalAssistant';
+export { default as SiteFooter } from '../Components/FooterSection/SiteFooter';

@@ -1,5 +1,5 @@
-import NominaCargasView from "@/features/admin/ui/NominaCargaNomina/NominaCargasView";
+import CargaPage from '@/features/admin/nomina/carga/ui/CargaPage';
 
 export default function Page() {
-  return <NominaCargasView />;
+  return <CargaPage />;
 }

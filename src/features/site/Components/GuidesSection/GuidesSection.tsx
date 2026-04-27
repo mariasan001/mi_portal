@@ -1,17 +1,14 @@
-// src/features/site/Components/GuidesSection/GuidesSection.tsx
 'use client';
 
-import s from './GuidesSection.module.css';
-import { FiSearch, FiTrendingUp, FiRefreshCw, FiFolder, FiX } from 'react-icons/fi';
+import { FiFolder, FiRefreshCw, FiSearch, FiTrendingUp, FiX } from 'react-icons/fi';
 
-import { GUIDES_DOCS } from './constants/guides.data';
-import { useGuides } from './hooks/useGuides';
-
-import RowItem from './components/RowItem';
-import SectionBox from './components/SectionBox';
 import { useRevealMotion } from '@/hooks/useRevealMotion';
 
-// ✅ Animación premium (re-trigger + dirección)
+import { useGuides } from './application/useGuides';
+import { GUIDES_DOCS } from './model/guides.data';
+import RowItem from './ui/components/RowItem';
+import SectionBox from './ui/components/SectionBox';
+import s from './GuidesSection.module.css';
 
 export default function GuidesSection() {
   const { ref: sectionRef, className } = useRevealMotion<HTMLElement>({
@@ -34,14 +31,14 @@ export default function GuidesSection() {
     <section
       ref={sectionRef}
       className={className(s.wrap, s.isIn, s.dirDown, s.dirUp)}
-      aria-label="Guías y descargas"
+      aria-label="Guias y descargas"
     >
       <div className={s.inner}>
         <header className={s.header}>
           <div className={s.kicker}>Centro de Documentos</div>
-          <h2 className={s.title}>Guías y Descargas</h2>
+          <h2 className={s.title}>Guias y Descargas</h2>
           <p className={s.subtitle}>
-            Manuales, instructivos y formatos oficiales para realizar tus trámites.
+            Manuales, instructivos y formatos oficiales para realizar tus tramites.
           </p>
 
           <div className={s.searchRow} role="search" aria-label="Buscar documentos">
@@ -52,8 +49,8 @@ export default function GuidesSection() {
             <input
               className={s.searchInput}
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Buscar guía, formato o palabra clave…"
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Buscar guia, formato o palabra clave..."
               aria-label="Buscar"
               inputMode="search"
               autoComplete="off"
@@ -65,7 +62,7 @@ export default function GuidesSection() {
                 type="button"
                 className={s.clearBtn}
                 onClick={() => setQuery('')}
-                aria-label="Limpiar búsqueda"
+                aria-label="Limpiar busqueda"
               >
                 <FiX aria-hidden="true" />
               </button>
@@ -77,7 +74,7 @@ export default function GuidesSection() {
           <SectionBox
             icon={<FiSearch aria-hidden="true" />}
             title="Resultados"
-            subtitle={`${results.length} resultado(s) para “${query.trim()}”`}
+            subtitle={`${results.length} resultado(s) para "${query.trim()}"`}
           >
             {results.length ? (
               <div className={s.rows}>
@@ -104,7 +101,7 @@ export default function GuidesSection() {
                 aria-selected={openPanel === 'top'}
               >
                 <FiTrendingUp aria-hidden="true" />
-                <span>Más consultados</span>
+                <span>Mas consultados</span>
               </button>
 
               <button
@@ -135,8 +132,8 @@ export default function GuidesSection() {
             {openPanel === 'top' ? (
               <SectionBox
                 icon={<FiTrendingUp aria-hidden="true" />}
-                title="Más consultados"
-                subtitle="Documentos más utilizados"
+                title="Mas consultados"
+                subtitle="Documentos mas utilizados"
               >
                 <div className={s.rows}>
                   {topDocs.map((doc) => (
@@ -177,7 +174,7 @@ export default function GuidesSection() {
         )}
 
         <footer className={s.footerNote} aria-hidden="true">
-          Tip: busca por “formato”, “manual” o “constancia”.
+          Tip: busca por &quot;formato&quot;, &quot;manual&quot; o &quot;constancia&quot;.
         </footer>
       </div>
     </section>

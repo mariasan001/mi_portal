@@ -1,7 +1,7 @@
-import FirmaElectronicaView from "@/features/admin/ui/FirmaElectronicaView/FirmaElectronicaView";
+import FirmaElectronicaNominaPage from '@/features/admin/nomina/firma-electronica/ui/FirmaElectronicaPage';
 
 export const dynamic = 'force-dynamic';
 
 export default function FirmaElectronicaPage() {
-  return <FirmaElectronicaView />;
+  return <FirmaElectronicaNominaPage />;
 }

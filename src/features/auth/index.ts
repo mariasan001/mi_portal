@@ -1,29 +1,36 @@
-// hooks
-export * from './hooks/useRegister';
-export * from './hooks/useLoginFlow'; 
-export * from './hooks/useForgotPassword';
-export * from './hooks/useVerifyOtp';
-export * from './hooks/useResetPassword'
+// application
+export * from './application/useRegister';
+export * from './application/useLoginFlow';
+export * from './application/useForgotPassword';
+export * from './application/useVerifyOtp';
+export * from './application/useResetPassword';
 
-// services
-export * from './services/auth-register.service';
-export * from './services/auth-login.service'; 
-export * from './services/auth-me.service';    
-export * from './services/auth-password.service';
-// types
-export * from './types/register.types';
-export * from './types/login.types';          
-export * from './types/me.types';              
-export * from './types/loginFlow.types';     
-export * from './types/password.types'; 
+// api
+export * from './api/register.commands';
+export * from './api/login.commands';
+export * from './api/session.queries';
+export * from './api/password.commands';
 
-// context 
-export * from './context/auth.context';        
+// model
+export * from './model/auth.constants';
+export * from './model/auth.selectors';
+export * from './model/auth.types';
+export * from './model/register.types';
+export * from './model/login.types';
+export * from './model/session.types';
+export * from './model/login-flow.types';
+export * from './model/password.types';
+
+// context
+export * from './context/auth.context';
+
+// utils
+export * from './utils/authInput';
+export * from './utils/authStorage';
+export * from './utils/authQuery';
+export * from './utils/authRedirect';
+export * from './utils/resolveAuthDestination';
+export * from './utils/resolveDefaultUserLanding';
 
 // ui
 export * from './ui';
-
-
-
-
-;

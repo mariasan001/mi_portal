@@ -1,0 +1,33 @@
+.surface {
+  display: grid;
+  gap: 18px;
+  padding: 20px 22px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  box-shadow: var(--shadow-sm);
+  min-width: 0;
+}
+
+.idle {
+  border-color: var(--border-soft);
+}
+
+.dimmed > :not(:first-child) {
+  opacity: 0.68;
+  filter: grayscale(0.08);
+}
+
+@media (max-width: 1080px) {
+  .surface {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .surface {
+    gap: 16px;
+    padding: 16px;
+    border-radius: 18px;
+  }
+}

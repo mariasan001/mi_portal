@@ -81,12 +81,6 @@ export default function PortalAssistant() {
     };
   }, [isAuthenticated, dismissed]);
 
-  useEffect(() => {
-    if (!open) {
-      setQuery('');
-    }
-  }, [open]);
-
   if (!isAuthenticated || dismissed || !visible) return null;
 
   const hasQuery = query.trim().length > 0;
@@ -110,7 +104,10 @@ export default function PortalAssistant() {
             type="button"
             className={s.iconBtn}
             aria-label="Cerrar asistente"
-            onClick={() => setOpen(false)}
+            onClick={() => {
+              setOpen(false);
+              setQuery('');
+            }}
           >
             <FiX />
           </button>
@@ -147,6 +144,7 @@ export default function PortalAssistant() {
                             onClick={() => {
                               emitAssistantNavigate(item.id);
                               setOpen(false);
+                              setQuery('');
                             }}
                           >
                             <span className={s.suggestionMain}>
@@ -205,7 +203,15 @@ export default function PortalAssistant() {
           type="button"
           className={`${s.trigger} ${open ? s.triggerActive : ''}`}
           aria-label={open ? 'Cerrar asistente' : 'Abrir asistente'}
-          onClick={() => setOpen((prev) => !prev)}
+          onClick={() =>
+            setOpen((prev) => {
+              const nextOpen = !prev;
+              if (!nextOpen) {
+                setQuery('');
+              }
+              return nextOpen;
+            })
+          }
         >
           <span className={s.triggerIcon}>
             <FiMessageCircle />

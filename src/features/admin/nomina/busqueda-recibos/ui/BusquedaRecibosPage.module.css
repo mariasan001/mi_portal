@@ -1,0 +1,12 @@
+.resultContainer {
+  position: relative;
+  display: grid;
+  gap: 18px;
+  overflow: hidden;
+}
+
+@media (max-width: 640px) {
+  .resultContainer {
+    gap: 16px;
+  }
+}

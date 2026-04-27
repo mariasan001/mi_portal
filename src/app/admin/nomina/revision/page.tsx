@@ -1,5 +1,5 @@
-import NominaProcesamientoView from "@/features/admin/ui/NominaProcesamientoView/NominaProcesamientoView";
+import ProcesamientoPage from '@/features/admin/nomina/procesamiento/ui/ProcesamientoPage';
 
-export default function RevicionPage() {
-  return <NominaProcesamientoView />;
+export default function RevisionPage() {
+  return <ProcesamientoPage />;
 }

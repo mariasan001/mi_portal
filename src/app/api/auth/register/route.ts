@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+
+import { upstreamUnavailable } from '@/app/api/_lib/proxy';
 import { obtenerIamBaseUrl } from '@/lib/config/entorno';
 
 export const dynamic = 'force-dynamic';
@@ -11,7 +13,7 @@ export async function POST(req: Request) {
   try {
     payload = await req.json();
   } catch {
-    return NextResponse.json({ message: 'Body inválido' }, { status: 400 });
+    return NextResponse.json({ message: 'Body invalido' }, { status: 400 });
   }
 
   try {
@@ -25,26 +27,29 @@ export async function POST(req: Request) {
     const contentType = upstream.headers.get('content-type') ?? 'application/json';
     const text = await upstream.text();
 
-    const res = new NextResponse(text, {
+    const response = new NextResponse(text, {
       status: upstream.status,
       headers: { 'content-type': contentType },
     });
 
-    // ✅ Por si register también setea cookies/sesión
-    const hdrs = upstream.headers as Headers & { getSetCookie?: () => string[] };
-    const cookies = typeof hdrs.getSetCookie === 'function' ? hdrs.getSetCookie() : [];
-    if (cookies.length) {
-      for (const c of cookies) res.headers.append('set-cookie', c);
+    // Forward cookies too in case register also creates a session.
+    const headers = upstream.headers as Headers & { getSetCookie?: () => string[] };
+    const cookies =
+      typeof headers.getSetCookie === 'function' ? headers.getSetCookie() : [];
+
+    if (cookies.length > 0) {
+      for (const cookie of cookies) {
+        response.headers.append('set-cookie', cookie);
+      }
     } else {
-      const single = upstream.headers.get('set-cookie');
-      if (single) res.headers.set('set-cookie', single);
+      const singleCookie = upstream.headers.get('set-cookie');
+      if (singleCookie) {
+        response.headers.set('set-cookie', singleCookie);
+      }
     }
 
-    return res;
-  } catch (e) {
-    return NextResponse.json(
-      { message: 'No se pudo conectar a IAM', error: String(e) },
-      { status: 502 }
-    );
+    return response;
+  } catch (error) {
+    return upstreamUnavailable('IAM', error);
   }
 }
