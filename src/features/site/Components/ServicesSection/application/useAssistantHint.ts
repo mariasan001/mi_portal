@@ -20,21 +20,27 @@ export function useAssistantHint() {
       section.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
       if (action === 'tramite') {
-        setAssistantHint('Aquí podrás realizar trámites relacionados con lo que buscas.');
+        setAssistantHint('Aqui podras realizar tramites relacionados con lo que buscas.');
       }
 
       if (action === 'consulta') {
-        setAssistantHint('Aquí podrás consultar información y acceder al servicio adecuado.');
+        setAssistantHint('Aqui podras consultar informacion y acceder al servicio adecuado.');
       }
 
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => setAssistantHint(''), 5000);
     };
 
-    window.addEventListener('portal-assistant:navigate', handleNavigate as EventListener);
+    window.addEventListener(
+      'portal-assistant:navigate',
+      handleNavigate as EventListener
+    );
 
     return () => {
-      window.removeEventListener('portal-assistant:navigate', handleNavigate as EventListener);
+      window.removeEventListener(
+        'portal-assistant:navigate',
+        handleNavigate as EventListener
+      );
       clearTimeout(timeoutId);
     };
   }, []);
