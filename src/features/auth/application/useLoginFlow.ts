@@ -5,7 +5,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import { useAuth } from '../context/auth.context';
-import { obtenerSesion } from '../api/session.queries';
 import type { UseLoginFlowResult } from '../model/login-flow.types';
 import { safeTrim } from '../utils/authInput';
 import { resolveAuthDestination } from '../utils/resolveAuthDestination';
@@ -62,23 +61,22 @@ export function useLoginFlow(
       const toastId = toast.loading('Validando acceso...');
 
       try {
-        const ok = await login({
+        const result = await login({
           username: normalizedUsername,
           password,
           appCode: effectiveAppCode,
         });
 
-        if (!ok) {
+        if (!result.ok || !result.session) {
           toast.error(
-            error ?? 'No fue posible iniciar sesion. Verifica tus datos.',
+            result.error ?? 'No fue posible iniciar sesion. Verifica tus datos.',
             { id: toastId }
           );
           return;
         }
 
-        const sesion = await obtenerSesion();
         const { path: destinationPath, home } = resolveAuthDestination({
-          sesion,
+          sesion: result.session,
           appCode: effectiveAppCode,
           returnTo,
         });
@@ -119,10 +117,9 @@ export function useLoginFlow(
         router.refresh();
       } catch (submitError) {
         console.error('Error en login flow:', submitError);
-        toast.error(
-          error ?? 'No fue posible iniciar sesion. Verifica tus datos.',
-          { id: toastId }
-        );
+        toast.error('No fue posible iniciar sesion. Verifica tus datos.', {
+          id: toastId,
+        });
       }
     },
     [
@@ -131,7 +128,6 @@ export function useLoginFlow(
       loading,
       login,
       effectiveAppCode,
-      error,
       returnTo,
       source,
       router,

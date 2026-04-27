@@ -35,8 +35,10 @@ type AuthState = {
   status: AuthStatus;
   loading: boolean;
   error: string | null;
-  login: (args: LoginRequest) => Promise<boolean>;
-  refresh: () => Promise<void>;
+  login: (
+    args: LoginRequest
+  ) => Promise<{ ok: boolean; error: string | null; session: SesionMe | null }>;
+  refresh: () => Promise<SesionMe | null>;
   logout: () => void;
   setAppCode: (code: string | null) => void;
   isAuthenticated: boolean;
@@ -97,6 +99,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const me = await obtenerSesion();
       setSesion(me);
       setStatus('authenticated');
+      return me;
     } catch (requestError) {
       if (
         esApiError(requestError) &&
@@ -110,6 +113,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setError(toErrorMessage(requestError));
         setStatus('anonymous');
       }
+
+      return null;
     } finally {
       setLoading(false);
     }
@@ -129,14 +134,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         await iniciarSesion(payload);
         setAppCode(payload.appCode);
-        await refresh();
+        const session = await refresh();
 
-        return true;
+        return {
+          ok: true,
+          error: null,
+          session,
+        };
       } catch (requestError) {
+        const message = toErrorMessage(
+          requestError,
+          'No se pudo iniciar sesion'
+        );
         setSesion(null);
         setStatus('anonymous');
-        setError(toErrorMessage(requestError, 'No se pudo iniciar sesion'));
-        return false;
+        setError(message);
+        return {
+          ok: false,
+          error: message,
+          session: null,
+        };
       } finally {
         setLoading(false);
       }

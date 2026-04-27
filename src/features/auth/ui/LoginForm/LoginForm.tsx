@@ -49,9 +49,11 @@ export default function LoginForm({
         <span className={s.kicker}>Portal institucional</span>
 
         <div className={s.titleBlock}>
-          <h1 className={s.title}>Accede al portal</h1>
+          <h1 id="auth-modal-title" className={s.title}>
+            Accede al portal
+          </h1>
           <p className={s.sub}>
-            Consulta servicios, trámites y documentos desde un solo acceso
+            Consulta servicios, tramites y documentos desde un solo acceso
             institucional.
           </p>
         </div>
@@ -74,27 +76,19 @@ export default function LoginForm({
             </span>
 
             <input
+              id="auth-username"
               className={s.input}
               value={username}
               onChange={(e) => onUsernameChange(e.target.value)}
               placeholder="Tu usuario o correo"
               autoComplete="username"
+              data-autofocus="true"
             />
           </div>
         </label>
 
         <label className={s.label}>
-          <div className={s.row}>
-            <span className={s.labelText}>Contraseña</span>
-
-            <button
-              type="button"
-              className={s.forgot}
-              onClick={onGoToForgot}
-            >
-              Recuperar acceso
-            </button>
-          </div>
+          <span className={s.labelText}>Contrasena</span>
 
           <div className={s.inputWrap}>
             <span className={s.icon} aria-hidden="true">
@@ -102,11 +96,12 @@ export default function LoginForm({
             </span>
 
             <input
+              id="auth-password"
               className={s.input}
               type={showPass ? 'text' : 'password'}
               value={password}
               onChange={(e) => onPasswordChange(e.target.value)}
-              placeholder="Tu contraseña"
+              placeholder="Tu contrasena"
               autoComplete="current-password"
             />
 
@@ -114,11 +109,19 @@ export default function LoginForm({
               type="button"
               className={s.eye}
               onClick={() => setShowPass((x) => !x)}
-              aria-label={
-                showPass ? 'Ocultar contraseña' : 'Mostrar contraseña'
-              }
+              aria-label={showPass ? 'Ocultar contrasena' : 'Mostrar contrasena'}
             >
               {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
+          </div>
+
+          <div className={s.fieldMeta}>
+            <button
+              type="button"
+              className={s.forgot}
+              onClick={onGoToForgot}
+            >
+              Recuperar acceso
             </button>
           </div>
         </label>
@@ -132,7 +135,7 @@ export default function LoginForm({
           aria-busy={loading}
         >
           <span className={s.btnText}>
-            {loading ? 'Entrando…' : 'Entrar al portal'}
+            {loading ? 'Entrando...' : 'Entrar al portal'}
           </span>
 
           <span className={s.btnIconCircle} aria-hidden="true">
@@ -141,7 +144,7 @@ export default function LoginForm({
         </button>
 
         <p className={s.registerRow}>
-          <span className={s.registerText}>¿No tienes cuenta?</span>{' '}
+          <span className={s.registerText}>No tienes cuenta?</span>{' '}
           <button
             type="button"
             className={s.registerLink}
@@ -152,11 +155,13 @@ export default function LoginForm({
         </p>
       </div>
 
-      <div id="login-hint" className={s.securityNote}>
-        <span className={s.securityIcon} aria-hidden="true">
-          <ShieldCheck size={14} />
-        </span>
-        <p>Acceso protegido bajo estándares de seguridad institucional.</p>
+      <div className={s.securityBlock}>
+        <div id="login-hint" className={s.securityNote}>
+          <span className={s.securityIcon} aria-hidden="true">
+            <ShieldCheck size={14} />
+          </span>
+          <p>Acceso protegido bajo estandares de seguridad institucional.</p>
+        </div>
       </div>
     </form>
   );

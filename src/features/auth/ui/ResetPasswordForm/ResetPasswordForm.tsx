@@ -59,15 +59,20 @@ export default function ResetPasswordForm({
   }
 
   return (
-    <form className={s.form} onSubmit={handleSubmit} aria-describedby="reset-hint" noValidate>
+    <form
+      className={s.form}
+      onSubmit={handleSubmit}
+      aria-describedby="reset-hint"
+      noValidate
+    >
       <header className={s.head}>
-        <span className={s.kicker}>Actualización de acceso</span>
+        <span className={s.kicker}>Actualizacion de acceso</span>
 
         <div className={s.titleBlock}>
-          <h1 className={s.title}>Crear nueva contraseña</h1>
+          <h1 className={s.title}>Crear nueva contrasena</h1>
           <p className={s.sub}>
-            Confirma tu correo, ingresa el código de verificación y define una
-            contraseña segura para recuperar tu acceso.
+            Confirma tu correo, ingresa el codigo de verificacion y define una
+            contrasena segura para recuperar tu acceso.
           </p>
         </div>
       </header>
@@ -83,14 +88,15 @@ export default function ResetPasswordForm({
         <div className={s.alertOk} role="status" aria-live="polite">
           <CheckCircle2 size={16} aria-hidden="true" />
           <span>
-            Contraseña actualizada correctamente. Regresando al inicio de sesión…
+            Contrasena actualizada correctamente. Regresando al inicio de
+            sesion...
           </span>
         </div>
       ) : null}
 
       <div className={s.fields}>
         <label className={s.label}>
-          <span className={s.labelText}>Correo electrónico</span>
+          <span className={s.labelText}>Correo electronico</span>
 
           <div className={s.inputWrap}>
             <span className={s.icon} aria-hidden="true">
@@ -109,7 +115,7 @@ export default function ResetPasswordForm({
         </label>
 
         <label className={s.label}>
-          <span className={s.labelText}>Código de verificación</span>
+          <span className={s.labelText}>Codigo de verificacion</span>
 
           <div className={s.inputWrap}>
             <span className={s.icon} aria-hidden="true">
@@ -128,7 +134,7 @@ export default function ResetPasswordForm({
         </label>
 
         <label className={s.label}>
-          <span className={s.labelText}>Nueva contraseña</span>
+          <span className={s.labelText}>Nueva contrasena</span>
 
           <div className={s.inputWrap}>
             <span className={s.icon} aria-hidden="true">
@@ -140,7 +146,7 @@ export default function ResetPasswordForm({
               type={showPassword ? 'text' : 'password'}
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              placeholder="Mínimo 8 caracteres"
+              placeholder="Minimo 8 caracteres"
               autoComplete="new-password"
             />
 
@@ -148,9 +154,7 @@ export default function ResetPasswordForm({
               type="button"
               className={s.eye}
               onClick={() => setShowPassword((x) => !x)}
-              aria-label={
-                showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'
-              }
+              aria-label={showPassword ? 'Ocultar contrasena' : 'Mostrar contrasena'}
             >
               {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
@@ -161,7 +165,7 @@ export default function ResetPasswordForm({
       <div className={s.actions}>
         <button className={s.btnPrimary} type="submit" disabled={loading} aria-busy={loading}>
           <span className={s.btnText}>
-            {loading ? 'Guardando…' : 'Guardar cambios'}
+            {loading ? 'Guardando...' : 'Guardar cambios'}
           </span>
 
           <span className={s.btnIconCircle} aria-hidden="true">
@@ -170,30 +174,32 @@ export default function ResetPasswordForm({
         </button>
 
         <p className={s.loginRow}>
-          <span className={s.loginText}>¿Quieres regresar?</span>{' '}
+          <span className={s.loginText}>Quieres regresar?</span>{' '}
           <button
             type="button"
             className={s.loginLink}
             onClick={onBackToLogin}
           >
-            Volver al inicio de sesión
+            Volver al inicio de sesion
           </button>
         </p>
       </div>
 
-      <div className={s.securityNote} role="note" aria-label="Seguridad">
-        <span className={s.securityIcon} aria-hidden="true">
-          <ShieldCheck size={14} />
-        </span>
+      <div className={s.securityBlock}>
+        <div className={s.securityNote} role="note" aria-label="Seguridad">
+          <span className={s.securityIcon} aria-hidden="true">
+            <ShieldCheck size={14} />
+          </span>
 
-        <p>
-          Tus credenciales se utilizan únicamente para autenticar tu acceso y
-          proteger tu información institucional.
-        </p>
+          <p>
+            Tus credenciales se utilizan unicamente para autenticar tu acceso y
+            proteger tu informacion institucional.
+          </p>
+        </div>
       </div>
 
       <p id="reset-hint" className={s.small}>
-        Recomendación: usa una contraseña única y evita compartirla.
+        Recomendacion: usa una contrasena unica y evita compartirla.
       </p>
     </form>
   );

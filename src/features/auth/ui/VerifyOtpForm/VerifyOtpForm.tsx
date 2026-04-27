@@ -15,14 +15,7 @@ import { useVerifyOtp } from '@/features/auth/application/useVerifyOtp';
 import s from './VerifyOtpForm.module.css';
 
 type Props = {
-  /**
-   * Prefill del correo/usuario recibido desde forgot.
-   */
   initialUsernameOrEmail?: string;
-
-  /**
-   * Navegación interna del modal.
-   */
   onBackToForgot: () => void;
   onGoToReset: (identifier: string, otp: string) => void;
 };
@@ -47,7 +40,6 @@ export default function VerifyOtpForm({
 
   useEffect(() => {
     if (!ok) return;
-
     onGoToReset(safeTrim(usernameOrEmail), safeTrim(otp));
   }, [ok, usernameOrEmail, otp, onGoToReset]);
 
@@ -72,13 +64,12 @@ export default function VerifyOtpForm({
       noValidate
     >
       <header className={s.head}>
-        <span className={s.kicker}>Verificación de identidad</span>
+        <span className={s.kicker}>Verificacion de identidad</span>
 
         <div className={s.titleBlock}>
-          <h1 className={s.title}>Validar código</h1>
+          <h1 className={s.title}>Validar codigo</h1>
           <p className={s.sub}>
-            Ingresa el código de verificación enviado a tu correo para continuar
-            con la recuperación de tu acceso.
+            Ingresa el codigo enviado a tu correo para continuar.
           </p>
         </div>
       </header>
@@ -93,23 +84,13 @@ export default function VerifyOtpForm({
       {ok ? (
         <div className={s.info} role="status" aria-live="polite">
           <Info size={16} aria-hidden="true" />
-          <span>Código válido. Continuando al siguiente paso…</span>
+          <span>Codigo valido. Continuando al siguiente paso...</span>
         </div>
       ) : null}
 
       <div className={s.fields}>
         <label className={s.label}>
-          <div className={s.row}>
-            <span className={s.labelText}>Usuario o correo</span>
-
-            <button
-              type="button"
-              className={s.secondaryLink}
-              onClick={onBackToForgot}
-            >
-              Reenviar código
-            </button>
-          </div>
+          <span className={s.labelText}>Usuario o correo</span>
 
           <div className={s.inputWrap}>
             <span className={s.icon} aria-hidden="true">
@@ -120,14 +101,24 @@ export default function VerifyOtpForm({
               className={s.input}
               value={usernameOrEmail}
               onChange={(e) => setUsernameOrEmail(e.target.value)}
-              placeholder="usuario o correo"
+              placeholder="Usuario o correo"
               autoComplete="username"
             />
+          </div>
+
+          <div className={s.fieldMeta}>
+            <button
+              type="button"
+              className={s.secondaryLink}
+              onClick={onBackToForgot}
+            >
+              Reenviar codigo
+            </button>
           </div>
         </label>
 
         <label className={s.label}>
-          <span className={s.labelText}>Código de verificación</span>
+          <span className={s.labelText}>Codigo de verificacion</span>
 
           <div className={s.inputWrap}>
             <span className={s.icon} aria-hidden="true">
@@ -154,7 +145,7 @@ export default function VerifyOtpForm({
           aria-busy={loading}
         >
           <span className={s.btnText}>
-            {loading ? 'Validando…' : 'Validar código'}
+            {loading ? 'Validando...' : 'Validar codigo'}
           </span>
 
           <span className={s.btnIconCircle} aria-hidden="true">
@@ -163,7 +154,7 @@ export default function VerifyOtpForm({
         </button>
 
         <p className={s.loginRow}>
-          <span className={s.loginText}>¿Ya lo verificaste?</span>{' '}
+          <span className={s.loginText}>Ya lo verificaste?</span>{' '}
           <button
             type="button"
             className={s.loginLink}
@@ -174,15 +165,16 @@ export default function VerifyOtpForm({
         </p>
       </div>
 
-      <div className={s.securityNote} role="note" aria-label="Seguridad">
-        <span className={s.securityIcon} aria-hidden="true">
-          <ShieldCheck size={14} />
-        </span>
+      <div className={s.securityBlock}>
+        <div className={s.securityNote} role="note" aria-label="Seguridad">
+          <span className={s.securityIcon} aria-hidden="true">
+            <ShieldCheck size={14} />
+          </span>
 
-        <p>
-          El código es temporal y forma parte del proceso de validación para
-          proteger el acceso a tu cuenta.
-        </p>
+          <p>
+            El codigo es temporal y protege el acceso a tu cuenta.
+          </p>
+        </div>
       </div>
 
       <p id="otp-hint" className={s.small}>

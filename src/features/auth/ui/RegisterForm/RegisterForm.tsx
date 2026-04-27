@@ -60,8 +60,8 @@ export default function RegisterForm({
         <div className={s.titleBlock}>
           <h1 className={s.title}>Crea tu cuenta</h1>
           <p className={s.sub}>
-            Registra tus datos para habilitar tu acceso al portal. La validación
-            se realiza con información institucional.
+            Completa tus datos institucionales para habilitar tu acceso al
+            portal.
           </p>
         </div>
       </header>
@@ -99,7 +99,7 @@ export default function RegisterForm({
             icon={<Hash size={16} />}
             value={value.plaza}
             onChange={(v) => onChange('plaza', v)}
-            placeholder="Ej: 234000000002125"
+            placeholder="Ej: 234000..."
             inputMode="numeric"
             autoComplete="off"
           />
@@ -110,7 +110,7 @@ export default function RegisterForm({
           icon={<BriefcaseBusiness size={16} />}
           value={value.puesto}
           onChange={(v) => onChange('puesto', v)}
-          placeholder="Ej: ANALISTA ESPECIALIZADO B"
+          placeholder="Puesto institucional"
           autoComplete="organization-title"
         />
 
@@ -126,7 +126,7 @@ export default function RegisterForm({
 
         <div className={s.row2}>
           <label className={s.label}>
-            <span className={s.labelText}>Contraseña</span>
+            <span className={s.labelText}>Contrasena</span>
 
             <div className={s.inputWrap}>
               <span className={s.icon} aria-hidden="true">
@@ -138,7 +138,7 @@ export default function RegisterForm({
                 type={showPass ? 'text' : 'password'}
                 value={value.password}
                 onChange={(e) => onChange('password', e.target.value)}
-                placeholder="Mínimo 8 caracteres"
+                placeholder="Minimo 8 caracteres"
                 autoComplete="new-password"
               />
 
@@ -146,9 +146,7 @@ export default function RegisterForm({
                 type="button"
                 className={s.eye}
                 onClick={() => setShowPass((x) => !x)}
-                aria-label={
-                  showPass ? 'Ocultar contraseña' : 'Mostrar contraseña'
-                }
+                aria-label={showPass ? 'Ocultar contrasena' : 'Mostrar contrasena'}
               >
                 {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
@@ -156,11 +154,11 @@ export default function RegisterForm({
           </label>
 
           <Field
-            label="Teléfono"
+            label="Telefono"
             icon={<Phone size={16} />}
             value={value.phone}
             onChange={(v) => onChange('phone', v)}
-            placeholder="Ej: 7221234567"
+            placeholder="7221234567"
             type="tel"
             inputMode="tel"
             autoComplete="tel"
@@ -171,7 +169,7 @@ export default function RegisterForm({
       <div className={s.actions}>
         <button className={s.btnPrimary} type="submit" disabled={loading}>
           <span className={s.btnText}>
-            {loading ? 'Registrando…' : 'Crear cuenta'}
+            {loading ? 'Registrando...' : 'Crear cuenta'}
           </span>
 
           <span className={s.btnIconCircle} aria-hidden="true">
@@ -180,26 +178,27 @@ export default function RegisterForm({
         </button>
 
         <p className={s.loginRow}>
-          <span className={s.loginText}>¿Ya tienes acceso?</span>{' '}
+          <span className={s.loginText}>Ya tienes acceso?</span>{' '}
           <button
             type="button"
             className={s.loginLink}
             onClick={onBackToLogin}
           >
-            Volver al inicio de sesión
+            Iniciar sesion
           </button>
         </p>
       </div>
 
-      <div id="register-hint" className={s.securityNote}>
-        <span className={s.securityIcon} aria-hidden="true">
-          <ShieldCheck size={14} />
-        </span>
+      <div className={s.securityBlock}>
+        <div id="register-hint" className={s.securityNote}>
+          <span className={s.securityIcon} aria-hidden="true">
+            <ShieldCheck size={14} />
+          </span>
 
-        <p>
-          Tus datos se procesan bajo lineamientos de seguridad y validación
-          institucional.
-        </p>
+          <p>
+            Tus datos se validan bajo lineamientos de seguridad institucional.
+          </p>
+        </div>
       </div>
     </form>
   );

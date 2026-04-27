@@ -1,31 +1,72 @@
 .overlay{
   position: fixed;
   inset: 0;
-  background: rgba(10,10,10,.35);
-  backdrop-filter: blur(4px);
-
+  background: rgba(10,10,10,.46);
+  backdrop-filter: blur(6px);
+  padding: 24px;
+  overflow: auto;
   display: grid;
   place-items: center;
-
   z-index: 200;
 }
 
 .modal{
   position: relative;
-
-  width: 420px;
+  width: 404px;
   max-width: 92vw;
-
+  max-height: min(90vh, 720px);
+  overflow: auto;
   background: #fff;
-  border-radius: 18px;
-
+  border-radius: 20px;
   border: 1px solid var(--border);
-
   box-shadow:
-    0 40px 80px rgba(10,10,10,.18),
-    0 12px 30px rgba(10,10,10,.12);
+    0 26px 54px rgba(10,10,10,.18),
+    0 8px 22px rgba(10,10,10,.1);
+  padding: 22px;
+  z-index: 201;
+}
 
-  padding: 28px;
+.closeButton{
+  appearance: none;
+  -webkit-appearance: none;
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border-soft);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  color: var(--muted-2);
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background .18s ease, border-color .18s ease, color .18s ease;
+}
 
-  z-index: 201;  
+.closeButton:hover{
+  background: color-mix(in srgb, var(--surface) 100%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 28%, transparent);
+  color: var(--text);
+}
+
+.closeButton:focus-visible{
+  outline: none;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+@media (max-width: 640px){
+  .overlay{
+    padding: 14px;
+    align-items: start;
+  }
+
+  .modal{
+    width: min(100%, 420px);
+    max-width: 100%;
+    border-radius: 18px;
+    padding: 18px 15px 16px;
+  }
 }

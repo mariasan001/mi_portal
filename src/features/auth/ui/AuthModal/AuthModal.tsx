@@ -1,7 +1,7 @@
 'use client';
 
 import { createPortal } from 'react-dom';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { useAuth } from '@/features/auth/context/auth.context';
 import { useLoginFlow } from '@/features/auth/application/useLoginFlow';
@@ -44,6 +44,7 @@ export default function AuthModal({
   appCode = null,
   initialView = 'login',
 }: Props) {
+  const dialogRef = useRef<HTMLDivElement | null>(null);
   const [view, setView] = useState<AuthView>(initialView);
   const [recoveryIdentifier, setRecoveryIdentifier] = useState('');
   const [verifiedOtp, setVerifiedOtp] = useState('');
@@ -160,6 +161,55 @@ export default function AuthModal({
   }, [open, handleClose]);
 
   useEffect(() => {
+    if (!open) return;
+
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    const autofocusTarget = dialog.querySelector<HTMLElement>(
+      '[data-autofocus="true"]'
+    );
+    autofocusTarget?.focus();
+  }, [open, view]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    const handleTab = (event: KeyboardEvent) => {
+      if (event.key !== 'Tab') return;
+
+      const focusable = Array.from(
+        dialog.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((element) => !element.hasAttribute('aria-hidden'));
+
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+
+      if (event.shiftKey && active === first) {
+        event.preventDefault();
+        last.focus();
+        return;
+      }
+
+      if (!event.shiftKey && active === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    window.addEventListener('keydown', handleTab);
+    return () => window.removeEventListener('keydown', handleTab);
+  }, [open, view]);
+
+  useEffect(() => {
     if (!open || !isAuthenticated) return;
     onClose();
   }, [open, isAuthenticated, onClose]);
@@ -167,8 +217,23 @@ export default function AuthModal({
   if (!open) return null;
 
   return createPortal(
-    <div className={s.overlay} onClick={handleClose}>
-      <div className={s.modal} onClick={(event) => event.stopPropagation()}>
+    <div className={s.overlay}>
+      <div
+        ref={dialogRef}
+        className={s.modal}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="auth-modal-title"
+      >
+        <button
+          type="button"
+          className={s.closeButton}
+          aria-label="Cerrar acceso institucional"
+          onClick={handleClose}
+        >
+          ×
+        </button>
+
         {view === 'login' && (
           <LoginForm
             username={username}

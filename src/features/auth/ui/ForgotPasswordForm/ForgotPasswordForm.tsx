@@ -61,13 +61,13 @@ export default function ForgotPasswordForm({
       noValidate
     >
       <header className={s.head}>
-        <span className={s.kicker}>Recuperación de acceso</span>
+        <span className={s.kicker}>Recuperacion de acceso</span>
 
         <div className={s.titleBlock}>
-          <h1 className={s.title}>Restablecer contraseña</h1>
+          <h1 className={s.title}>Restablecer contrasena</h1>
           <p className={s.sub}>
-            Ingresa tu correo institucional para recibir un código de verificación
-            y continuar con la recuperación de tu acceso.
+            Ingresa tu correo institucional para enviarte un codigo de
+            verificacion.
           </p>
         </div>
       </header>
@@ -83,25 +83,15 @@ export default function ForgotPasswordForm({
         <div className={s.info} role="status" aria-live="polite">
           <Info size={16} aria-hidden="true" />
           <span>
-            Si el correo está registrado, enviaremos un código de verificación.
-            Continuando al siguiente paso…
+            Si el correo esta registrado, enviaremos un codigo de verificacion.
+            Continuando al siguiente paso...
           </span>
         </div>
       ) : null}
 
       <div className={s.fields}>
         <label className={s.label}>
-          <div className={s.row}>
-            <span className={s.labelText}>Correo electrónico</span>
-
-            <button
-              type="button"
-              className={s.secondaryLink}
-              onClick={handleGoToOtp}
-            >
-              Ya tengo código
-            </button>
-          </div>
+          <span className={s.labelText}>Correo electronico</span>
 
           <div className={s.inputWrap}>
             <span className={s.icon} aria-hidden="true">
@@ -117,6 +107,16 @@ export default function ForgotPasswordForm({
               inputMode="email"
             />
           </div>
+
+          <div className={s.fieldMeta}>
+            <button
+              type="button"
+              className={s.secondaryLink}
+              onClick={handleGoToOtp}
+            >
+              Ya tengo codigo
+            </button>
+          </div>
         </label>
       </div>
 
@@ -128,7 +128,7 @@ export default function ForgotPasswordForm({
           aria-busy={loading}
         >
           <span className={s.btnText}>
-            {loading ? 'Enviando…' : 'Enviar código'}
+            {loading ? 'Enviando...' : 'Enviar codigo'}
           </span>
 
           <span className={s.btnIconCircle} aria-hidden="true">
@@ -137,30 +137,31 @@ export default function ForgotPasswordForm({
         </button>
 
         <p className={s.loginRow}>
-          <span className={s.loginText}>¿Recordaste tu acceso?</span>{' '}
+          <span className={s.loginText}>Recordaste tu acceso?</span>{' '}
           <button
             type="button"
             className={s.loginLink}
             onClick={onBackToLogin}
           >
-            Volver al inicio de sesión
+            Volver al inicio de sesion
           </button>
         </p>
       </div>
 
-      <div className={s.securityNote} role="note" aria-label="Seguridad">
-        <span className={s.securityIcon} aria-hidden="true">
-          <ShieldCheck size={14} />
-        </span>
+      <div className={s.securityBlock}>
+        <div className={s.securityNote} role="note" aria-label="Seguridad">
+          <span className={s.securityIcon} aria-hidden="true">
+            <ShieldCheck size={14} />
+          </span>
 
-        <p>
-          Por seguridad, la respuesta puede ser la misma aunque el correo no
-          exista. Esto ayuda a proteger la información de las cuentas.
-        </p>
+          <p>
+            La respuesta puede ser la misma aunque el correo no exista.
+          </p>
+        </div>
       </div>
 
       <p id="forgot-hint" className={s.small}>
-        Revisa tu bandeja de entrada y también spam o promociones.
+        Revisa entrada, spam y promociones.
       </p>
     </form>
   );
