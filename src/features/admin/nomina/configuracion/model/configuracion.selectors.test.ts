@@ -1,0 +1,55 @@
+import { describe, expect, it } from 'vitest';
+
+import {
+  formatNominaBool,
+  formatNominaDate,
+  formatNominaDateTimeLong,
+  formatNominaTitle,
+  getContentEyebrow,
+  getContentTitle,
+  getSearchButtonLabel,
+  getSearchLabel,
+  getSearchPlaceholder,
+} from './configuracion.selectors';
+
+describe('configuracion.selectors', () => {
+  it('formats short dates and keeps invalid values untouched', () => {
+    expect(formatNominaDate('2026-04-08T12:00:00')).toBe('08/04/2026');
+    expect(formatNominaDate('no-date')).toBe('no-date');
+    expect(formatNominaDate('')).toBe('-');
+  });
+
+  it('formats booleans and humanizes titles', () => {
+    expect(formatNominaBool(true)).toBe('Si');
+    expect(formatNominaBool(false)).toBe('No');
+    expect(formatNominaTitle('  VERSION_GENERAL  ')).toBe('Version General');
+    expect(formatNominaTitle(null)).toBe('-');
+  });
+
+  it('builds a long date-time string and keeps invalid input untouched', () => {
+    const result = formatNominaDateTimeLong('2026-04-08T18:06:00');
+
+    expect(result).toContain('de');
+    expect(result).not.toBe('2026-04-08T18:06:00');
+    expect(formatNominaDateTimeLong('bad-input')).toBe('bad-input');
+    expect(formatNominaDateTimeLong(undefined)).toBe('-');
+  });
+
+  it('returns the right labels and placeholders by entity', () => {
+    expect(getSearchLabel('periodo')).toBe('Buscar periodo por ID');
+    expect(getSearchLabel('version')).toBe('Buscar version por ID');
+    expect(getSearchPlaceholder('periodo')).toBe('Ej. 12');
+    expect(getSearchPlaceholder('version')).toBe('Ej. 15');
+    expect(getSearchButtonLabel('periodo')).toBe('Consultar periodo');
+    expect(getSearchButtonLabel('version')).toBe('Consultar version');
+  });
+
+  it('returns the right eyebrow and content titles by entity and mode', () => {
+    expect(getContentEyebrow('periodo')).toBe('Periodo');
+    expect(getContentEyebrow('version')).toBe('Version');
+    expect(getContentTitle('periodo', 'resultados')).toBe('Resultado de consulta');
+    expect(getContentTitle('version', 'resultados')).toBe('Resultado de version');
+    expect(getContentTitle('periodo', 'crear')).toBe('Crear o recuperar periodo');
+    expect(getContentTitle('version', 'crear')).toBe('Crear version');
+  });
+});

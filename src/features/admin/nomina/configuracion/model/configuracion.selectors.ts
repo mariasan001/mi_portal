@@ -1,10 +1,9 @@
 import type { ConfiguracionEntity } from './configuracion.types';
 
 export function formatNominaDate(value: string) {
-  if (!value) return '—';
+  if (!value) return '-';
 
   const date = new Date(value);
-
   if (Number.isNaN(date.getTime())) return value;
 
   return new Intl.DateTimeFormat('es-MX', {
@@ -15,11 +14,11 @@ export function formatNominaDate(value: string) {
 }
 
 export function formatNominaBool(value: boolean) {
-  return value ? 'Sí' : 'No';
+  return value ? 'Si' : 'No';
 }
 
 export function formatNominaTitle(value?: string | null) {
-  if (!value) return '—';
+  if (!value) return '-';
 
   return String(value)
     .trim()
@@ -31,10 +30,9 @@ export function formatNominaTitle(value?: string | null) {
 }
 
 export function formatNominaDateTimeLong(value?: string | null) {
-  if (!value) return '—';
+  if (!value) return '-';
 
   const date = new Date(value);
-
   if (Number.isNaN(date.getTime())) return value;
 
   const weekday = new Intl.DateTimeFormat('es-MX', {
@@ -59,9 +57,7 @@ export function formatNominaDateTimeLong(value?: string | null) {
 }
 
 export function getSearchLabel(entity: ConfiguracionEntity) {
-  return entity === 'periodo'
-    ? 'Buscar período por ID'
-    : 'Buscar versión por ID';
+  return entity === 'periodo' ? 'Buscar periodo por ID' : 'Buscar version por ID';
 }
 
 export function getSearchPlaceholder(entity: ConfiguracionEntity) {
@@ -69,11 +65,11 @@ export function getSearchPlaceholder(entity: ConfiguracionEntity) {
 }
 
 export function getSearchButtonLabel(entity: ConfiguracionEntity) {
-  return entity === 'periodo' ? 'Consultar período' : 'Consultar versión';
+  return entity === 'periodo' ? 'Consultar periodo' : 'Consultar version';
 }
 
 export function getContentEyebrow(entity: ConfiguracionEntity) {
-  return entity === 'periodo' ? 'Período' : 'Versión';
+  return entity === 'periodo' ? 'Periodo' : 'Version';
 }
 
 export function getContentTitle(
@@ -83,10 +79,10 @@ export function getContentTitle(
   if (mode === 'resultados') {
     return entity === 'periodo'
       ? 'Resultado de consulta'
-      : 'Resultado de versión';
+      : 'Resultado de version';
   }
 
   return entity === 'periodo'
-    ? 'Crear o recuperar período'
-    : 'Crear versión';
+    ? 'Crear o recuperar periodo'
+    : 'Crear version';
 }
