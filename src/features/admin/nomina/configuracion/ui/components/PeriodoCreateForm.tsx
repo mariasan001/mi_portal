@@ -3,11 +3,11 @@ import { FormEvent, useMemo, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 
 import type { CrearPeriodoNominaPayload } from '@/features/admin/nomina/shared/model/periodos.types';
+
 import s from './PeriodoCreateForm.module.css';
 
 type Props = {
   loading: boolean;
-  ultimoCreado: null;
   onSubmit: (payload: CrearPeriodoNominaPayload) => Promise<void>;
 };
 
@@ -75,14 +75,12 @@ export default function PeriodoCreateForm({ loading, onSubmit }: Props) {
           <span className={s.guideIcon}>
             <Sparkles size={14} />
           </span>
-          <p>
-            Captura la identidad del período y luego define sus fechas operativas.
-          </p>
+          <p>Captura la identidad del período y luego define sus fechas operativas.</p>
         </div>
 
         <div className={s.metaPills}>
-          <span className={s.metaPill}>Año {form.anio || '—'}</span>
-          <span className={s.metaPill}>Quincena {form.quincena || '—'}</span>
+          <span className={s.metaPill}>Año {form.anio || '-'}</span>
+          <span className={s.metaPill}>Quincena {form.quincena || '-'}</span>
         </div>
       </div>
 

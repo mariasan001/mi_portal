@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { CalendarDays, CalendarRange, CreditCard } from 'lucide-react';
 
 import type { PeriodoNominaDto } from '@/features/admin/nomina/shared/model/periodos.types';
+
 import {
   formatNominaCompactPeriod,
   formatNominaDate,

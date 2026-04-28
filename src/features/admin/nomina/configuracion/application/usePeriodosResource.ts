@@ -1,11 +1,12 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+
 import { toErrorMessage } from '@/lib/api/api.errors';
+
 import {
   crearORecuperarPeriodoNomina,
   listarPeriodosNomina,
-  obtenerPeriodoNomina,
 } from '@/features/admin/nomina/configuracion/api/periodos';
 import type {
   CrearPeriodoNominaPayload,
@@ -15,14 +16,11 @@ import type {
 export function usePeriodosResource() {
   const [lista, setLista] = useState<PeriodoNominaDto[]>([]);
   const [detalle, setDetalle] = useState<PeriodoNominaDto | null>(null);
-  const [ultimoCreado, setUltimoCreado] = useState<PeriodoNominaDto | null>(null);
 
   const [loadingLista, setLoadingLista] = useState(false);
-  const [loadingDetalle, setLoadingDetalle] = useState(false);
   const [loadingCreate, setLoadingCreate] = useState(false);
 
   const [errorLista, setErrorLista] = useState<string | null>(null);
-  const [errorDetalle, setErrorDetalle] = useState<string | null>(null);
   const [errorCreate, setErrorCreate] = useState<string | null>(null);
 
   const cargarLista = useCallback(async () => {
@@ -35,71 +33,46 @@ export function usePeriodosResource() {
 
       setDetalle((current) => {
         if (current) {
-          return (
-            response.find((item) => item.periodId === current.periodId) ?? current
-          );
+          return response.find((item) => item.periodId === current.periodId) ?? current;
         }
 
         return response[0] ?? null;
       });
 
       return response;
-    } catch (e) {
-      const message = toErrorMessage(e, 'No se pudo cargar la lista de periodos');
+    } catch (error) {
+      const message = toErrorMessage(error, 'No se pudo cargar la lista de períodos.');
       setErrorLista(message);
-      throw e;
+      throw error;
     } finally {
       setLoadingLista(false);
     }
   }, []);
 
-  const consultarPorId = useCallback(async (periodId: number) => {
-    try {
-      setLoadingDetalle(true);
-      setErrorDetalle(null);
+  const crearPeriodo = useCallback(
+    async (payload: CrearPeriodoNominaPayload) => {
+      try {
+        setLoadingCreate(true);
+        setErrorCreate(null);
 
-      const response = await obtenerPeriodoNomina(periodId);
-      setDetalle(response);
-      setLista((current) => {
-        const exists = current.some((item) => item.periodId === response.periodId);
-        if (exists) {
-          return current.map((item) =>
-            item.periodId === response.periodId ? { ...item, ...response } : item
-          );
-        }
+        const response = await crearORecuperarPeriodoNomina(payload);
+        setDetalle(response);
+        await cargarLista();
 
-        return [response, ...current];
-      });
-
-      return response;
-    } catch (e) {
-      const message = toErrorMessage(e, 'No se pudo consultar el periodo');
-      setErrorDetalle(message);
-      throw e;
-    } finally {
-      setLoadingDetalle(false);
-    }
-  }, []);
-
-  const crearPeriodo = useCallback(async (payload: CrearPeriodoNominaPayload) => {
-    try {
-      setLoadingCreate(true);
-      setErrorCreate(null);
-
-      const response = await crearORecuperarPeriodoNomina(payload);
-      setUltimoCreado(response);
-      setDetalle(response);
-      await cargarLista();
-
-      return response;
-    } catch (e) {
-      const message = toErrorMessage(e, 'No se pudo crear o recuperar el periodo');
-      setErrorCreate(message);
-      throw e;
-    } finally {
-      setLoadingCreate(false);
-    }
-  }, [cargarLista]);
+        return response;
+      } catch (error) {
+        const message = toErrorMessage(
+          error,
+          'No se pudo crear o recuperar el período.'
+        );
+        setErrorCreate(message);
+        throw error;
+      } finally {
+        setLoadingCreate(false);
+      }
+    },
+    [cargarLista]
+  );
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
@@ -116,16 +89,12 @@ export function usePeriodosResource() {
   return {
     lista,
     detalle,
-    ultimoCreado,
     loadingLista,
-    loadingDetalle,
     loadingCreate,
     errorLista,
-    errorDetalle,
     errorCreate,
     cargarLista,
     seleccionarDetalle,
-    consultarPorId,
     crearPeriodo,
   };
 }

@@ -2,17 +2,16 @@ import { FormEvent, useMemo, useState } from 'react';
 import { FileText, Hash, Layers3 } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';
 
+import type { PeriodoNominaDto } from '@/features/admin/nomina/shared/model/periodos.types';
 import type {
   CrearVersionNominaPayload,
   NominaStage,
 } from '@/features/admin/nomina/shared/model/versiones.types';
-import type { PeriodoNominaDto } from '@/features/admin/nomina/shared/model/periodos.types';
 
 import s from './VersionCreateForm.module.css';
 
 type Props = {
   loading: boolean;
-  ultimaCreada: null;
   periodos: PeriodoNominaDto[];
   onSubmit: (
     payload: Omit<CrearVersionNominaPayload, 'createdByUserId'>

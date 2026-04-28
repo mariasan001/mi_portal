@@ -1,11 +1,12 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+
 import { toErrorMessage } from '@/lib/api/api.errors';
+
 import {
   crearVersionNomina,
   listarVersionesNomina,
-  obtenerVersionNomina,
 } from '@/features/admin/nomina/configuracion/api/versiones';
 import {
   errorState,
@@ -22,13 +23,14 @@ import type {
 export function useVersionesResource() {
   const [lista, setLista] = useState<AsyncState<VersionNominaDto[]>>(idleState([]));
   const [detalle, setDetalle] = useState<AsyncState<VersionNominaDto>>(idleState());
-  const [ultimaCreada, setUltimaCreada] = useState<AsyncState<VersionNominaDto>>(idleState());
+  const [creacion, setCreacion] = useState<AsyncState<VersionNominaDto>>(idleState());
 
   const cargarLista = useCallback(async () => {
     try {
       setLista((current) => loadingState(current.data ?? []));
       const response = await listarVersionesNomina();
       setLista(successState(response));
+
       setDetalle((current) => {
         if (current.data) {
           const updated =
@@ -39,51 +41,32 @@ export function useVersionesResource() {
 
         return response[0] ? successState(response[0]) : idleState();
       });
+
       return response;
-    } catch (e) {
-      const message = toErrorMessage(e, 'No se pudo cargar la lista de versiones');
+    } catch (error) {
+      const message = toErrorMessage(error, 'No se pudo cargar la lista de versiones.');
       setLista((current) => errorState(message, current.data ?? []));
-      throw e;
+      throw error;
     }
   }, []);
 
-  const consultarPorId = useCallback(async (versionId: number) => {
-    try {
-      setDetalle((current) => loadingState(current.data));
-      const response = await obtenerVersionNomina(versionId);
-      setDetalle(successState(response));
-      setLista((current) => {
-        const data = current.data ?? [];
-        const exists = data.some((item) => item.versionId === response.versionId);
-        const next = exists
-          ? data.map((item) =>
-              item.versionId === response.versionId ? { ...item, ...response } : item
-            )
-          : [response, ...data];
-        return successState(next);
-      });
-      return response;
-    } catch (e) {
-      const message = toErrorMessage(e, 'No se pudo consultar la version');
-      setDetalle((current) => errorState(message, current.data));
-      throw e;
-    }
-  }, []);
-
-  const crearVersion = useCallback(async (payload: CrearVersionNominaPayload) => {
-    try {
-      setUltimaCreada((current) => loadingState(current.data));
-      const response = await crearVersionNomina(payload);
-      setUltimaCreada(successState(response));
-      setDetalle(successState(response));
-      await cargarLista();
-      return response;
-    } catch (e) {
-      const message = toErrorMessage(e, 'No se pudo crear la version');
-      setUltimaCreada((current) => errorState(message, current.data));
-      throw e;
-    }
-  }, [cargarLista]);
+  const crearVersion = useCallback(
+    async (payload: CrearVersionNominaPayload) => {
+      try {
+        setCreacion((current) => loadingState(current.data));
+        const response = await crearVersionNomina(payload);
+        setCreacion(successState(response));
+        setDetalle(successState(response));
+        await cargarLista();
+        return response;
+      } catch (error) {
+        const message = toErrorMessage(error, 'No se pudo crear la versión.');
+        setCreacion((current) => errorState(message, current.data));
+        throw error;
+      }
+    },
+    [cargarLista]
+  );
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
@@ -100,16 +83,12 @@ export function useVersionesResource() {
   return {
     lista: lista.data ?? [],
     detalle: detalle.data,
-    ultimaCreada: ultimaCreada.data,
     loadingLista: lista.loading,
-    loadingDetalle: detalle.loading,
-    loadingCreate: ultimaCreada.loading,
+    loadingCreate: creacion.loading,
     errorLista: lista.error,
-    errorDetalle: detalle.error,
-    errorCreate: ultimaCreada.error,
+    errorCreate: creacion.error,
     cargarLista,
     seleccionarDetalle,
-    consultarPorId,
     crearVersion,
   };
 }

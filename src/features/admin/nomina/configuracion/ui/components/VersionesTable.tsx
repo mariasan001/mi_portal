@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 
 import type { VersionNominaDto } from '@/features/admin/nomina/shared/model/versiones.types';
+
 import {
   formatNominaDate,
   formatNominaStatusLabel,
@@ -77,17 +78,13 @@ export default function VersionesTable({
                     <span>Señales</span>
                     <div className={s.signalChips}>
                       <span
-                        className={`${s.signalChip} ${
-                          item.isCurrent ? s.signalActive : ''
-                        }`}
+                        className={`${s.signalChip} ${item.isCurrent ? s.signalActive : ''}`}
                       >
                         {item.isCurrent ? 'Vigente' : 'Histórica'}
                       </span>
 
                       <span
-                        className={`${s.signalChip} ${
-                          item.released ? s.signalActive : ''
-                        }`}
+                        className={`${s.signalChip} ${item.released ? s.signalActive : ''}`}
                       >
                         {item.released ? 'Liberada' : 'Por liberar'}
                       </span>

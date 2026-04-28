@@ -2,47 +2,31 @@
 
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
+
 import { useAuth } from '@/features/auth/context/auth.context';
+
 import type { ConfiguracionEntity } from '../model/configuracion.types';
 import { usePeriodosResource } from './usePeriodosResource';
 import { useVersionesResource } from './useVersionesResource';
 
 export function useConfiguracionController() {
   const [activeEntity, setActiveEntity] = useState<ConfiguracionEntity>('periodo');
-  const [searchId, setSearchId] = useState('');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
   const { sesion } = useAuth();
   const periodos = usePeriodosResource();
   const versiones = useVersionesResource();
 
-  const currentLoadingSearch =
-    activeEntity === 'periodo'
-      ? periodos.loadingDetalle
-      : versiones.loadingDetalle;
-
-  const canSearch = useMemo(() => {
-    return searchId.trim().length > 0 && !currentLoadingSearch;
-  }, [searchId, currentLoadingSearch]);
-
   const activeError = useMemo(() => {
     if (activeEntity === 'periodo') {
-      return periodos.errorLista || periodos.errorDetalle || periodos.errorCreate;
+      return periodos.errorLista || periodos.errorCreate;
     }
 
-    return versiones.errorLista || versiones.errorDetalle || versiones.errorCreate;
-  }, [
-    activeEntity,
-    periodos.errorCreate,
-    periodos.errorDetalle,
-    periodos.errorLista,
-    versiones.errorCreate,
-    versiones.errorDetalle,
-    versiones.errorLista,
-  ]);
+    return versiones.errorLista || versiones.errorCreate;
+  }, [activeEntity, periodos.errorCreate, periodos.errorLista, versiones.errorCreate, versiones.errorLista]);
 
   function handleSelectEntity(entity: ConfiguracionEntity) {
     setActiveEntity(entity);
-    setSearchId('');
     setIsCreateModalOpen(false);
   }
 
@@ -60,35 +44,6 @@ export function useConfiguracionController() {
 
   function closeCreateModal() {
     setIsCreateModalOpen(false);
-  }
-
-  async function handleSearch() {
-    const id = Number(searchId);
-
-    if (!Number.isFinite(id) || id <= 0) {
-      toast.warning(
-        activeEntity === 'periodo'
-          ? 'Captura un periodId válido.'
-          : 'Captura un versionId válido.'
-      );
-      return;
-    }
-
-    try {
-      if (activeEntity === 'periodo') {
-        await periodos.consultarPorId(id);
-        toast.success('Período consultado correctamente.');
-      } else {
-        await versiones.consultarPorId(id);
-        toast.success('Versión consultada correctamente.');
-      }
-    } catch {
-      toast.error(
-        activeEntity === 'periodo'
-          ? 'No se pudo consultar el período.'
-          : 'No se pudo consultar la versión.'
-      );
-    }
   }
 
   async function handleCreatePeriodo(
@@ -128,19 +83,14 @@ export function useConfiguracionController() {
 
   return {
     activeEntity,
-    searchId,
-    canSearch,
     activeError,
     isCreateModalOpen,
     periodos,
     versiones,
-    currentLoadingSearch,
     sesion,
-    setSearchId,
     handleSelectPeriodo,
     handleSelectVersion,
     handleSelectEntity,
-    handleSearch,
     handleCreatePeriodo,
     handleCreateVersion,
     openCreateModal,

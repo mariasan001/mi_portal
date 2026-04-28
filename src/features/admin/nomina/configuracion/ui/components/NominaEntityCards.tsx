@@ -1,6 +1,7 @@
 import { CalendarRange, Layers3 } from 'lucide-react';
 
 import NominaOptionCards from '@/features/admin/nomina/shared/ui/NominaOptionCards/NominaOptionCards';
+
 import type { ConfiguracionEntity } from '../../model/configuracion.types';
 
 type Props = {
@@ -37,11 +38,5 @@ export default function NominaEntityCards({
     },
   ] as const;
 
-  return (
-    <NominaOptionCards
-      activeValue={activeEntity}
-      onSelect={onSelect}
-      options={options}
-    />
-  );
+  return <NominaOptionCards activeValue={activeEntity} onSelect={onSelect} options={options} />;
 }
