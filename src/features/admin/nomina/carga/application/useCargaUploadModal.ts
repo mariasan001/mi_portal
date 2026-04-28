@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 
 import type { NominaFileType } from '@/features/admin/nomina/shared/model/catalogo.types';
 import type { useCatalogoResource } from './useCatalogoResource';
+import type { useNominaFilesResource } from './useNominaFilesResource';
 import type { useStagingResource } from './useStagingResource';
 import type {
   CatalogoModalForm,
@@ -13,6 +14,7 @@ import type {
 } from '../model/carga.types';
 
 type CatalogoState = ReturnType<typeof useCatalogoResource>;
+type FilesState = ReturnType<typeof useNominaFilesResource>;
 type NominaState = ReturnType<typeof useStagingResource>;
 
 const INITIAL_MODAL_FORM: CatalogoModalForm = {
@@ -24,6 +26,7 @@ const INITIAL_MODAL_FORM: CatalogoModalForm = {
 type Params = {
   activeEntity: NominaCargaEntity;
   catalogo: CatalogoState;
+  files: FilesState;
   nomina: NominaState;
   userId?: number | null;
 };
@@ -31,6 +34,7 @@ type Params = {
 export function useCargaUploadModal({
   activeEntity,
   catalogo,
+  files,
   nomina,
   userId,
 }: Params) {
@@ -111,9 +115,11 @@ export function useCargaUploadModal({
 
       if (activeEntity === 'catalogo') {
         await catalogo.runCatalogo(archivo.fileId);
+        await files.cargarLista();
         toast.success('Catálogo cargado y ejecutado correctamente.');
       } else {
         await nomina.runStaging(archivo.fileId);
+        await files.cargarLista();
         toast.success('Archivo de nómina cargado y ejecutado correctamente.');
       }
 
@@ -128,7 +134,7 @@ export function useCargaUploadModal({
         toast.error('Falló la carga automática del archivo de nómina.');
       }
     }
-  }, [activeEntity, catalogo, modalForm, nomina, userId]);
+  }, [activeEntity, catalogo, files, modalForm, nomina, userId]);
 
   return {
     isUploadModalOpen,

@@ -4,64 +4,54 @@ import { useCallback, useMemo } from 'react';
 import { toast } from 'sonner';
 
 import type { useCatalogoResource } from './useCatalogoResource';
+import type { useNominaFilesResource } from './useNominaFilesResource';
 import type { useStagingResource } from './useStagingResource';
 import type { NominaCargaEntity } from '../model/carga.types';
 
 type CatalogoState = ReturnType<typeof useCatalogoResource>;
+type FilesState = ReturnType<typeof useNominaFilesResource>;
 type NominaState = ReturnType<typeof useStagingResource>;
 
 type Params = {
   activeEntity: NominaCargaEntity;
-  searchFileId: string;
   catalogo: CatalogoState;
+  files: FilesState;
   nomina: NominaState;
 };
 
 export function useCargaExecution({
   activeEntity,
-  searchFileId,
   catalogo,
+  files,
   nomina,
 }: Params) {
   const activeError = useMemo(() => {
     if (activeEntity === 'catalogo') {
-      return catalogo.errorUpload ?? catalogo.errorRun ?? null;
+      return catalogo.errorUpload ?? catalogo.errorRun ?? files.errorLista ?? null;
     }
 
-    return nomina.errorRun ?? null;
-  }, [activeEntity, catalogo.errorRun, catalogo.errorUpload, nomina.errorRun]);
+    return nomina.errorRun ?? files.errorLista ?? null;
+  }, [activeEntity, catalogo.errorRun, catalogo.errorUpload, files.errorLista, nomina.errorRun]);
 
   const currentLoading = useMemo(() => {
     if (activeEntity === 'catalogo') {
-      return catalogo.loadingUpload || catalogo.loadingRun;
+      return catalogo.loadingUpload || catalogo.loadingRun || files.loadingLista;
     }
 
-    return nomina.loadingRun;
-  }, [activeEntity, catalogo.loadingRun, catalogo.loadingUpload, nomina.loadingRun]);
+    return nomina.loadingRun || files.loadingLista;
+  }, [activeEntity, catalogo.loadingRun, catalogo.loadingUpload, files.loadingLista, nomina.loadingRun]);
 
-  const canSearch = useMemo(
-    () => Number(searchFileId) > 0 && !currentLoading,
-    [currentLoading, searchFileId]
-  );
-
-  const canExecute = canSearch;
-
-  const handleExecute = useCallback(async () => {
-    const parsedFileId = Number(searchFileId);
-
-    if (!Number.isFinite(parsedFileId) || parsedFileId <= 0) {
-      toast.warning('Captura un fileId válido.');
-      return;
-    }
-
+  const handleExecuteFile = useCallback(async (fileId: number) => {
     try {
       if (activeEntity === 'catalogo') {
-        await catalogo.runCatalogo(parsedFileId);
+        await catalogo.runCatalogo(fileId);
+        await files.cargarLista();
         toast.success('Carga de catálogo ejecutada correctamente.');
         return;
       }
 
-      await nomina.runStaging(parsedFileId);
+      await nomina.runStaging(fileId);
+      await files.cargarLista();
       toast.success('Staging de nómina ejecutado correctamente.');
     } catch {
       if (activeEntity === 'catalogo') {
@@ -71,22 +61,11 @@ export function useCargaExecution({
 
       toast.error('No se pudo ejecutar el staging de nómina.');
     }
-  }, [activeEntity, catalogo, nomina, searchFileId]);
-
-  const shouldDimContent = useMemo(() => {
-    if (activeEntity === 'catalogo') {
-      return !catalogo.archivo && !catalogo.ejecucion;
-    }
-
-    return !nomina.ejecucion;
-  }, [activeEntity, catalogo.archivo, catalogo.ejecucion, nomina.ejecucion]);
+  }, [activeEntity, catalogo, files, nomina]);
 
   return {
     activeError,
     currentLoading,
-    canSearch,
-    canExecute,
-    shouldDimContent,
-    handleExecute,
+    handleExecuteFile,
   };
 }

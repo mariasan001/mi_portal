@@ -1,6 +1,7 @@
 import { Database, Files } from 'lucide-react';
 
 import NominaOptionCards from '@/features/admin/nomina/shared/ui/NominaOptionCards/NominaOptionCards';
+
 import type { NominaCargaEntity } from '../../model/carga.types';
 
 type Props = {
@@ -14,12 +15,14 @@ const options = [
     title: 'Catálogos',
     description: 'Sube archivos DBF, ejecútalos y consulta el resultado del proceso.',
     icon: Files,
+    badge: 'Paso 1',
   },
   {
     value: 'nomina',
     title: 'Nómina',
     description: 'Ejecuta el staging por fileId y visualiza el resultado más reciente.',
     icon: Database,
+    badge: 'Paso 2',
   },
 ] as const;
 

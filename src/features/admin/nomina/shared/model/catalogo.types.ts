@@ -11,13 +11,21 @@ export type NominaFileType =
 export type ArchivoNominaDto = {
   fileId: number;
   versionId: number;
+  payPeriodId: number;
+  periodCode: string;
+  stage: string;
   fileType: NominaFileType;
   fileName: string;
   filePath: string;
   checksumSha256: string;
   fileSizeBytes: number;
+  rowCount?: number | null;
   status: 'UPLOADED' | string;
   uploadedAt: string;
+  processedAt?: string | null;
+  createdByUserId?: number;
+  errorMessage?: string | null;
+  metadata?: string;
 };
 
 export type UploadArchivoNominaPayload = {

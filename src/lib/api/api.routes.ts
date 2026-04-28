@@ -16,6 +16,7 @@ export const API_RUTAS = {
     menu: (appCode: string) => `/api/apps/${encodeURIComponent(appCode)}/menu`,
   },
   nomina: {
+    files: '/api/admin/nomina/files',
     periods: '/api/admin/nomina/periods',
     periodDetalle: (periodId: number | string) =>
       `/api/admin/nomina/periods/${encodeURIComponent(String(periodId))}`,

@@ -6,6 +6,7 @@ import AdminInlineMessage from '@/features/admin/shared/ui/AdminInlineMessage/Ad
 import AdminPageShell from '@/features/admin/shared/ui/AdminPageShell/AdminPageShell';
 import AdminSurface from '@/features/admin/shared/ui/AdminSurface/AdminSurface';
 import NominaEmptyState from '@/features/admin/nomina/shared/ui/NominaEmptyState/NominaEmptyState';
+import NominaExplorerToolbar from '@/features/admin/nomina/shared/ui/NominaExplorerToolbar/NominaExplorerToolbar';
 import NominaHero from '@/features/admin/nomina/shared/ui/NominaHero/NominaHero';
 
 import { useConfiguracionController } from '../application/useConfiguracionController';
@@ -13,7 +14,6 @@ import { usePeriodosExplorer } from '../application/usePeriodosExplorer';
 import { useVersionesExplorer } from '../application/useVersionesExplorer';
 import { getContentEyebrow, getContentTitle } from '../model/configuracion.selectors';
 import NominaEntityCards from './components/NominaEntityCards';
-import NominaExplorerToolbar from './components/NominaExplorerToolbar';
 import PeriodosTable from './components/PeriodosTable';
 import PeriodoCreateForm from './components/PeriodoCreateForm';
 import VersionesTable from './components/VersionesTable';

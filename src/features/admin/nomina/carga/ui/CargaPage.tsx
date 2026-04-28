@@ -5,53 +5,48 @@ import AdminPageShell from '@/features/admin/shared/ui/AdminPageShell/AdminPageS
 import AdminSurface from '@/features/admin/shared/ui/AdminSurface/AdminSurface';
 import NominaEmptyState from '@/features/admin/nomina/shared/ui/NominaEmptyState/NominaEmptyState';
 import NominaHero from '@/features/admin/nomina/shared/ui/NominaHero/NominaHero';
-import NominaSectionHeader from '@/features/admin/nomina/shared/ui/NominaSectionHeader/NominaSectionHeader';
-import { Database, FileArchive, PlayCircle } from 'lucide-react';
 
 import { useCargaController } from '../application/useCargaController';
-import {
-  getContentEyebrow,
-  getContentTitle,
-  getEmptyDescription,
-  getEmptyTitle,
-} from '../model/carga.selectors';
-import CatalogoResultadoPanel from './components/CatalogoResultadoPanel';
+import ArchivosNominaTable from './components/ArchivosNominaTable';
 import NominaCargaEntityCards from './components/NominaCargaEntityCards';
-import NominaCargaToolbar from './components/NominaCargaToolbar';
+import NominaCargaExplorerToolbar from './components/NominaCargaExplorerToolbar';
 import NominaCargaUploadModal from './components/NominaCargaUploadModal';
-import NominaResultadoPanel from './components/NominaResultadoPanel';
 import s from './CargaPage.module.css';
 
 export default function CargaPage() {
   const vm = useCargaController();
 
+  const toolbar = (
+    <NominaCargaExplorerToolbar
+      query={vm.filesExplorer.query}
+      stageOptions={vm.filesExplorer.stageOptions}
+      stageValue={vm.filesExplorer.stageFilter}
+      statusOptions={vm.filesExplorer.statusOptions}
+      statusValue={vm.filesExplorer.statusFilter}
+      sortValue={vm.filesExplorer.sort}
+      onQueryChange={vm.filesExplorer.setQuery}
+      onStageChange={vm.filesExplorer.setStageFilter}
+      onStatusChange={vm.filesExplorer.setStatusFilter}
+      onSortChange={vm.filesExplorer.setSort}
+      onCreate={vm.openUploadModal}
+    />
+  );
+
   return (
     <AdminPageShell>
       <NominaHero
-        kicker="Nómina"
         title="Carga de catálogo y nómina"
-        subtitle="Sube, ejecuta y da seguimiento a archivos operativos del flujo de catálogo y staging de nómina desde una sola sesión."
-        badges={[
-          { icon: FileArchive, label: 'Catálogo' },
-          { icon: Database, label: 'Nómina' },
-          { icon: PlayCircle, label: 'Procesamiento' },
-        ]}
-        spacious
+        subtitle={
+          <>
+            <strong>Primero carga y ejecuta el catálogo.</strong> Después podrás
+            continuar con <em>el archivo de nómina asociado</em>.
+          </>
+        }
       />
 
       <NominaCargaEntityCards
         activeEntity={vm.activeEntity}
         onSelect={vm.handleSelectEntity}
-      />
-
-      <NominaCargaToolbar
-        activeEntity={vm.activeEntity}
-        searchFileId={vm.searchFileId}
-        loading={vm.currentLoading}
-        canExecute={vm.canExecute}
-        onSearchFileIdChange={vm.setSearchFileId}
-        onExecute={vm.handleExecute}
-        onPrimaryAction={vm.openUploadModal}
       />
 
       {vm.activeError ? (
@@ -60,41 +55,33 @@ export default function CargaPage() {
         </AdminInlineMessage>
       ) : null}
 
-      <AdminSurface
-        as="section"
-        className={s.contentShell}
-        idle={vm.shouldDimContent}
-        dimmed={vm.shouldDimContent}
-      >
-        <NominaSectionHeader
-          eyebrow={getContentEyebrow(vm.activeEntity)}
-          title={getContentTitle(vm.activeEntity)}
+      <AdminSurface as="section" className={s.contentShell}>
+        <ArchivosNominaTable
+          entity={vm.activeEntity}
+          items={vm.filesExplorer.filteredItems}
+          metaText={vm.filesExplorer.metaText}
+          loading={vm.currentLoading}
+          onRun={vm.handleExecuteFile}
+          runLabel={vm.activeEntity === 'catalogo' ? 'Ejecutar catálogo' : 'Ejecutar nómina'}
+          toolbar={toolbar}
+          emptyState={
+            vm.archivos.lista.length > 0 ? (
+              <NominaEmptyState
+                title="Sin coincidencias"
+                description="Prueba con otra búsqueda, cambia la etapa o ajusta el estatus para volver a ver archivos."
+                variant="inbox"
+                tone="compact"
+              />
+            ) : (
+              <NominaEmptyState
+                title="Sin archivos registrados"
+                description="Cuando existan archivos de nómina o catálogo, aparecerán aquí para operarlos desde una sola vista."
+                variant="inbox"
+                tone="compact"
+              />
+            )
+          }
         />
-
-        {vm.activeEntity === 'catalogo' ? (
-          vm.catalogo.archivo || vm.catalogo.ejecucion ? (
-            <CatalogoResultadoPanel
-              archivo={vm.catalogo.archivo}
-              ejecucion={vm.catalogo.ejecucion}
-            />
-          ) : (
-            <NominaEmptyState
-              title={getEmptyTitle('catalogo')}
-              description={getEmptyDescription('catalogo')}
-            />
-          )
-        ) : null}
-
-        {vm.activeEntity === 'nomina' ? (
-          vm.nomina.ejecucion ? (
-            <NominaResultadoPanel detalle={vm.nomina.ejecucion} />
-          ) : (
-            <NominaEmptyState
-              title={getEmptyTitle('nomina')}
-              description={getEmptyDescription('nomina')}
-            />
-          )
-        ) : null}
       </AdminSurface>
 
       <NominaCargaUploadModal
@@ -104,11 +91,7 @@ export default function CargaPage() {
         status={vm.modalStatus}
         error={vm.modalError}
         loadingUpload={vm.catalogo.loadingUpload}
-        loadingRun={
-          vm.activeEntity === 'catalogo'
-            ? vm.catalogo.loadingRun
-            : vm.nomina.loadingRun
-        }
+        loadingRun={vm.activeEntity === 'catalogo' ? vm.catalogo.loadingRun : vm.nomina.loadingRun}
         onClose={vm.closeUploadModal}
         onFieldChange={vm.updateModalField}
         onFileTypeChange={vm.setModalFileType}

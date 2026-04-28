@@ -6,43 +6,47 @@ import { useAuth } from '@/features/auth/context/auth.context';
 import type { NominaCargaEntity } from '../model/carga.types';
 import { useCatalogoResource } from './useCatalogoResource';
 import { useCargaExecution } from './useCargaExecution';
+import { useCargaFilesExplorer } from './useCargaFilesExplorer';
 import { useCargaUploadModal } from './useCargaUploadModal';
+import { useNominaFilesResource } from './useNominaFilesResource';
 import { useStagingResource } from './useStagingResource';
 
 export function useCargaController() {
   const { sesion } = useAuth();
   const catalogo = useCatalogoResource();
   const nomina = useStagingResource();
+  const archivos = useNominaFilesResource();
 
   const [activeEntity, setActiveEntity] = useState<NominaCargaEntity>('catalogo');
-  const [searchFileId, setSearchFileId] = useState('');
 
   const handleSelectEntity = useCallback((entity: NominaCargaEntity) => {
     setActiveEntity(entity);
-    setSearchFileId('');
   }, []);
+
+  const filesExplorer = useCargaFilesExplorer(archivos.lista, activeEntity);
 
   const execution = useCargaExecution({
     activeEntity,
-    searchFileId,
     catalogo,
+    files: archivos,
     nomina,
   });
 
   const uploadModal = useCargaUploadModal({
     activeEntity,
     catalogo,
+    files: archivos,
     nomina,
     userId: sesion?.userId,
   });
 
   return {
     activeEntity,
-    searchFileId,
-    setSearchFileId,
     handleSelectEntity,
     catalogo,
     nomina,
+    archivos,
+    filesExplorer,
     ...execution,
     ...uploadModal,
   };

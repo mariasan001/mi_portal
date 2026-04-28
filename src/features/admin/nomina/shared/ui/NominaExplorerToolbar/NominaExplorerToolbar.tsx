@@ -41,7 +41,11 @@ export default function NominaExplorerToolbar({
 }: Props) {
   return (
     <section className={s.toolbar}>
-      <div className={`${s.controls} ${layout === 'versiones' ? s.versionesLayout : s.periodosLayout}`}>
+      <div
+        className={`${s.controls} ${
+          layout === 'versiones' ? s.versionesLayout : s.periodosLayout
+        }`}
+      >
         {controls.map((control) => {
           if (control.kind === 'search') {
             return (
