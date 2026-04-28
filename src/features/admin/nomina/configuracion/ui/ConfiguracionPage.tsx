@@ -1,27 +1,27 @@
 'use client';
 
+import { useDeferredValue, useMemo, useState } from 'react';
 import AdminInlineMessage from '@/features/admin/shared/ui/AdminInlineMessage/AdminInlineMessage';
 import AdminPageShell from '@/features/admin/shared/ui/AdminPageShell/AdminPageShell';
 import AdminSurface from '@/features/admin/shared/ui/AdminSurface/AdminSurface';
 import NominaEmptyState from '@/features/admin/nomina/shared/ui/NominaEmptyState/NominaEmptyState';
 import NominaHero from '@/features/admin/nomina/shared/ui/NominaHero/NominaHero';
-import NominaSectionHeader from '@/features/admin/nomina/shared/ui/NominaSectionHeader/NominaSectionHeader';
-import { CalendarRange, Layers3, X } from 'lucide-react';
+import { X } from 'lucide-react';
 
 import { useConfiguracionController } from '../application/useConfiguracionController';
 import {
+  formatNominaCompactPeriod,
   getContentEyebrow,
   getContentTitle,
-  getDetailDescription,
   getSearchButtonLabel,
   getSearchLabel,
   getSearchPlaceholder,
 } from '../model/configuracion.selectors';
 import NominaConfigToolbar from './components/NominaConfigToolbar';
 import NominaEntityCards from './components/NominaEntityCards';
+import PeriodosExplorerToolbar from './components/PeriodosExplorerToolbar';
 import PeriodosTable from './components/PeriodosTable';
 import PeriodoCreateForm from './components/PeriodoCreateForm';
-import PeriodoResultadoPanel from './components/PeriodoResultadoPanel';
 import VersionesTable from './components/VersionesTable';
 import VersionCreateForm from './components/VersionCreateForm';
 import VersionResultadoPanel from './components/VersionResultadoPanel';
@@ -29,39 +29,92 @@ import s from './ConfiguracionPage.module.css';
 
 export default function ConfiguracionPage() {
   const vm = useConfiguracionController();
-  const hasRows =
-    vm.activeEntity === 'periodo'
-      ? vm.periodos.lista.length > 0
-      : vm.versiones.lista.length > 0;
+  const [periodQuery, setPeriodQuery] = useState('');
+  const [periodQuincenaFilter, setPeriodQuincenaFilter] = useState('all');
+  const [periodSort, setPeriodSort] = useState<'asc' | 'desc'>('desc');
+
+  const deferredPeriodQuery = useDeferredValue(periodQuery);
+
+  const periodQuincenaOptions = useMemo(() => {
+    return Array.from(new Set(vm.periodos.lista.map((item) => item.quincena))).sort(
+      (a, b) => a - b
+    );
+  }, [vm.periodos.lista]);
+
+  const filteredPeriodos = useMemo(() => {
+    const normalizedQuery = deferredPeriodQuery.trim().toLowerCase();
+
+    const filtered = vm.periodos.lista.filter((item) => {
+      if (periodQuincenaFilter !== 'all') {
+        const expected = Number(periodQuincenaFilter);
+        if (item.quincena !== expected) return false;
+      }
+
+      if (!normalizedQuery) return true;
+
+      const periodText = formatNominaCompactPeriod(
+        item.anio,
+        item.quincena,
+        item.periodoCode
+      ).toLowerCase();
+
+      return [
+        String(item.periodId),
+        String(item.anio),
+        String(item.quincena),
+        `q${item.quincena}`,
+        periodText,
+      ].some((value) => value.includes(normalizedQuery));
+    });
+
+    return filtered.sort((a, b) =>
+      periodSort === 'asc' ? a.periodId - b.periodId : b.periodId - a.periodId
+    );
+  }, [deferredPeriodQuery, periodQuincenaFilter, periodSort, vm.periodos.lista]);
+
+  const versionToolbar = (
+    <NominaConfigToolbar
+      searchLabel={getSearchLabel(vm.activeEntity)}
+      searchPlaceholder={getSearchPlaceholder(vm.activeEntity)}
+      searchButtonLabel={getSearchButtonLabel(vm.activeEntity)}
+      searchId={vm.searchId}
+      loading={vm.currentLoadingSearch}
+      canSearch={vm.canSearch}
+      onSearchIdChange={vm.setSearchId}
+      onSearch={vm.handleSearch}
+      onCreate={vm.openCreateModal}
+    />
+  );
+
+  const periodToolbar = (
+    <PeriodosExplorerToolbar
+      query={periodQuery}
+      quincenaOptions={periodQuincenaOptions}
+      quincenaValue={periodQuincenaFilter}
+      sortValue={periodSort}
+      onQueryChange={setPeriodQuery}
+      onQuincenaChange={setPeriodQuincenaFilter}
+      onSortChange={setPeriodSort}
+      onCreate={vm.openCreateModal}
+    />
+  );
 
   return (
     <AdminPageShell>
       <NominaHero
-        kicker="Nómina"
         title="Gestión de períodos y versiones"
-        subtitle="Consulta, crea y organiza la configuración base del procesamiento de nómina."
-        badges={[
-          { icon: CalendarRange, label: 'Período' },
-          { icon: Layers3, label: 'Versión' },
-        ]}
-        spacious
+        subtitle={
+          <>
+            <strong>Primero crea o selecciona un período.</strong> Después podrás
+            registrar <em>una versión asociada a ese período</em> 
+          </>
+        }
       />
 
       <NominaEntityCards
         activeEntity={vm.activeEntity}
+        hasPeriodos={vm.periodos.lista.length > 0}
         onSelect={vm.handleSelectEntity}
-      />
-
-      <NominaConfigToolbar
-        searchLabel={getSearchLabel(vm.activeEntity)}
-        searchPlaceholder={getSearchPlaceholder(vm.activeEntity)}
-        searchButtonLabel={getSearchButtonLabel(vm.activeEntity)}
-        searchId={vm.searchId}
-        loading={vm.currentLoadingSearch}
-        canSearch={vm.canSearch}
-        onSearchIdChange={vm.setSearchId}
-        onSearch={vm.handleSearch}
-        onCreate={vm.openCreateModal}
       />
 
       {vm.activeError ? (
@@ -72,20 +125,34 @@ export default function ConfiguracionPage() {
 
       <AdminSurface as="section" className={s.contentShell}>
         {vm.activeEntity === 'periodo' ? (
-          vm.periodos.lista.length > 0 ? (
-            <PeriodosTable
-              items={vm.periodos.lista}
-              selectedId={vm.periodos.detalle?.periodId ?? null}
-              onSelect={vm.handleSelectPeriodo}
-            />
-          ) : (
-            <NominaEmptyState
-              title="Sin períodos registrados"
-              description="Cuando existan períodos de nómina, aparecerán aquí para compararlos y seleccionar uno."
-              variant="inbox"
-              tone="compact"
-            />
-          )
+          <PeriodosTable
+            items={filteredPeriodos}
+            metaText={
+              filteredPeriodos.length === vm.periodos.lista.length
+                ? `${vm.periodos.lista.length} registros`
+                : `${filteredPeriodos.length} de ${vm.periodos.lista.length} registros`
+            }
+            selectedId={vm.periodos.detalle?.periodId ?? null}
+            onSelect={vm.handleSelectPeriodo}
+            toolbar={periodToolbar}
+            emptyState={
+              vm.periodos.lista.length > 0 ? (
+                <NominaEmptyState
+                  title="Sin coincidencias"
+                  description="Prueba con otra búsqueda, cambia la quincena o modifica el orden para volver a ver registros."
+                  variant="inbox"
+                  tone="compact"
+                />
+              ) : (
+                <NominaEmptyState
+                  title="Sin períodos registrados"
+                  description="Cuando existan períodos de nómina, aparecerán aquí para compararlos y seleccionar uno."
+                  variant="inbox"
+                  tone="compact"
+                />
+              )
+            }
+          />
         ) : null}
 
         {vm.activeEntity === 'version' ? (
@@ -94,48 +161,33 @@ export default function ConfiguracionPage() {
               items={vm.versiones.lista}
               selectedId={vm.versiones.detalle?.versionId ?? null}
               onSelect={vm.handleSelectVersion}
+              toolbar={versionToolbar}
             />
           ) : (
-            <NominaEmptyState
-              title="Sin versiones registradas"
-              description="Cuando existan versiones de nómina, aparecerán aquí para explorarlas y seleccionar una."
-              variant="inbox"
-              tone="compact"
-            />
-          )
-        ) : null}
-
-        <NominaSectionHeader
-          eyebrow={getContentEyebrow(vm.activeEntity)}
-          title={getContentTitle(vm.activeEntity, 'resultados')}
-          description={getDetailDescription(vm.activeEntity, hasRows)}
-        />
-
-        {vm.activeEntity === 'periodo' ? (
-          vm.periodos.detalle ? (
-            <PeriodoResultadoPanel detalle={vm.periodos.detalle} />
-          ) : (
-            <NominaEmptyState
-              title="Sin selección todavía"
-              description={
-                hasRows
-                  ? 'Selecciona un período de la tabla superior para revisar su detalle completo.'
-                  : 'Crea un nuevo período o espera a que existan registros para ver el detalle aquí.'
-              }
-            />
+            <>
+              {versionToolbar}
+              <NominaEmptyState
+                title="Sin versiones registradas"
+                description="Cuando existan versiones de nómina, aparecerán aquí para explorarlas y seleccionar una."
+                variant="inbox"
+                tone="compact"
+              />
+            </>
           )
         ) : null}
 
         {vm.activeEntity === 'version' ? (
           vm.versiones.detalle ? (
-            <VersionResultadoPanel detalle={vm.versiones.detalle} />
+            <div className={s.detailBlock}>
+              <VersionResultadoPanel detalle={vm.versiones.detalle} />
+            </div>
           ) : (
             <NominaEmptyState
               title="Sin selección todavía"
               description={
-                hasRows
-                  ? 'Selecciona una versión de la tabla superior para revisar su detalle completo.'
-                  : 'Crea una nueva versión o espera a que existan registros para ver el detalle aquí.'
+                vm.versiones.lista.length > 0
+                  ? 'Selecciona una versión de la tabla superior para revisar su resumen y datos complementarios.'
+                  : 'Crea una nueva versión o espera a que existan registros para ver su resumen aquí.'
               }
             />
           )

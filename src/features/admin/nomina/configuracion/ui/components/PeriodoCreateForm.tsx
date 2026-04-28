@@ -1,9 +1,4 @@
-import {
-  CalendarDays,
-  CalendarRange,
-  Clock3,
-  Hash,
-} from 'lucide-react';
+import { CalendarDays, CalendarRange, Clock3, Hash, Sparkles } from 'lucide-react';
 import { FormEvent, useMemo, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 
@@ -29,14 +24,14 @@ function getRangeMessage(form: CrearPeriodoNominaPayload) {
   return null;
 }
 
-export default function PeriodoCreateForm({
-  loading,
-  onSubmit,
-}: Props) {
+export default function PeriodoCreateForm({ loading, onSubmit }: Props) {
   const shouldReduceMotion = useReducedMotion();
+  const currentYear = new Date().getFullYear();
+  const yearOptions = Array.from({ length: 6 }, (_, index) => currentYear - 1 + index);
+  const quincenaOptions = Array.from({ length: 24 }, (_, index) => index + 1);
 
   const [form, setForm] = useState<CrearPeriodoNominaPayload>({
-    anio: new Date().getFullYear(),
+    anio: currentYear,
     quincena: 1,
     fechaInicio: '',
     fechaFin: '',
@@ -75,124 +70,157 @@ export default function PeriodoCreateForm({
       animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
       transition={{ duration: 0.22 }}
     >
-      <p className={s.intro}>
-        Define el año, la quincena y las fechas operativas que identifican el período.
-      </p>
-
-      <div className={s.grid2}>
-        <label className={s.field}>
-          <span className={s.fieldLabel}>
-            <span className={s.iconWrap}>
-              <Hash size={13} />
-            </span>
-            Año
+      <div className={s.topbar}>
+        <div className={s.guide}>
+          <span className={s.guideIcon}>
+            <Sparkles size={14} />
           </span>
+          <p>
+            Captura la identidad del período y luego define sus fechas operativas.
+          </p>
+        </div>
 
-          <input
-            type="number"
-            min="2000"
-            value={form.anio}
-            onChange={(event) =>
-              setForm((prev) => ({
-                ...prev,
-                anio: Number(event.target.value),
-              }))
-            }
-            placeholder="Ej. 2026"
-          />
-          <small className={s.helper}>Usa el año fiscal o administrativo del período.</small>
-        </label>
-
-        <label className={s.field}>
-          <span className={s.fieldLabel}>
-            <span className={s.iconWrap}>
-              <CalendarRange size={13} />
-            </span>
-            Quincena
-          </span>
-
-          <input
-            type="number"
-            min="1"
-            max="24"
-            value={form.quincena}
-            onChange={(event) =>
-              setForm((prev) => ({
-                ...prev,
-                quincena: Number(event.target.value),
-              }))
-            }
-            placeholder="Ej. 1"
-          />
-          <small className={s.helper}>Captura un valor entre 1 y 24.</small>
-        </label>
+        <div className={s.metaPills}>
+          <span className={s.metaPill}>Año {form.anio || '—'}</span>
+          <span className={s.metaPill}>Quincena {form.quincena || '—'}</span>
+        </div>
       </div>
 
-      <div className={s.grid3}>
-        <label className={s.field}>
-          <span className={s.fieldLabel}>
-            <span className={s.iconWrap}>
-              <CalendarDays size={13} />
+      <section className={s.sectionCard}>
+        <div className={s.sectionHeader}>
+          <div>
+            <h4>Identificación</h4>
+            <p>Define los datos base con los que se registra o recupera el período.</p>
+          </div>
+        </div>
+
+        <div className={s.grid2}>
+          <label className={s.field}>
+            <span className={s.fieldLabel}>
+              <span className={s.iconWrap}>
+                <Hash size={12} />
+              </span>
+              Año
             </span>
-            Fecha de inicio
-          </span>
 
-          <input
-            type="date"
-            value={form.fechaInicio}
-            onChange={(event) =>
-              setForm((prev) => ({
-                ...prev,
-                fechaInicio: event.target.value,
-              }))
-            }
-          />
-        </label>
+            <select
+              value={form.anio}
+              onChange={(event) =>
+                setForm((prev) => ({
+                  ...prev,
+                  anio: Number(event.target.value),
+                }))
+              }
+            >
+              {yearOptions.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+            <small className={s.helper}>Usa el año fiscal o administrativo del período.</small>
+          </label>
 
-        <label className={s.field}>
-          <span className={s.fieldLabel}>
-            <span className={s.iconWrap}>
-              <CalendarDays size={13} />
+          <label className={s.field}>
+            <span className={s.fieldLabel}>
+              <span className={s.iconWrap}>
+                <CalendarRange size={12} />
+              </span>
+              Quincena
             </span>
-            Fecha de fin
-          </span>
 
-          <input
-            type="date"
-            value={form.fechaFin}
-            onChange={(event) =>
-              setForm((prev) => ({
-                ...prev,
-                fechaFin: event.target.value,
-              }))
-            }
-          />
-        </label>
+            <select
+              value={form.quincena}
+              onChange={(event) =>
+                setForm((prev) => ({
+                  ...prev,
+                  quincena: Number(event.target.value),
+                }))
+              }
+            >
+              {quincenaOptions.map((value) => (
+                <option key={value} value={value}>
+                  Quincena {value}
+                </option>
+              ))}
+            </select>
+            <small className={s.helper}>Captura un valor entre 1 y 24.</small>
+          </label>
+        </div>
+      </section>
 
-        <label className={s.field}>
-          <span className={s.fieldLabel}>
-            <span className={s.iconWrap}>
-              <Clock3 size={13} />
+      <section className={s.sectionCard}>
+        <div className={s.sectionHeader}>
+          <div>
+            <h4>Calendario operativo</h4>
+            <p>Estas fechas marcan el inicio, cierre y pago esperado del período.</p>
+          </div>
+        </div>
+
+        <div className={s.grid3}>
+          <label className={s.field}>
+            <span className={s.fieldLabel}>
+              <span className={s.iconWrap}>
+                <CalendarDays size={12} />
+              </span>
+              Fecha de inicio
             </span>
-            Fecha de pago estimada
-          </span>
 
-          <input
-            type="date"
-            value={form.fechaPagoEstimada}
-            onChange={(event) =>
-              setForm((prev) => ({
-                ...prev,
-                fechaPagoEstimada: event.target.value,
-              }))
-            }
-          />
-        </label>
-      </div>
+            <input
+              type="date"
+              value={form.fechaInicio}
+              onChange={(event) =>
+                setForm((prev) => ({
+                  ...prev,
+                  fechaInicio: event.target.value,
+                }))
+              }
+            />
+          </label>
 
-      {validationMessage ? (
-        <p className={s.validation}>{validationMessage}</p>
-      ) : null}
+          <label className={s.field}>
+            <span className={s.fieldLabel}>
+              <span className={s.iconWrap}>
+                <CalendarDays size={12} />
+              </span>
+              Fecha de fin
+            </span>
+
+            <input
+              type="date"
+              value={form.fechaFin}
+              onChange={(event) =>
+                setForm((prev) => ({
+                  ...prev,
+                  fechaFin: event.target.value,
+                }))
+              }
+            />
+          </label>
+
+          <label className={s.field}>
+            <span className={s.fieldLabel}>
+              <span className={s.iconWrap}>
+                <Clock3 size={12} />
+              </span>
+              Fecha de pago estimada
+            </span>
+
+            <input
+              type="date"
+              value={form.fechaPagoEstimada}
+              onChange={(event) =>
+                setForm((prev) => ({
+                  ...prev,
+                  fechaPagoEstimada: event.target.value,
+                }))
+              }
+            />
+          </label>
+        </div>
+      </section>
+
+      {validationMessage ? <p className={s.validation}>{validationMessage}</p> : null}
 
       <div className={s.actions}>
         <motion.button
@@ -202,7 +230,7 @@ export default function PeriodoCreateForm({
           whileHover={!shouldReduceMotion && canSubmit ? { y: -1 } : undefined}
           whileTap={!shouldReduceMotion && canSubmit ? { scale: 0.99 } : undefined}
         >
-          {loading ? 'Procesando...' : 'Crear / recuperar período'}
+          {loading ? 'Procesando...' : 'Crear o recuperar período'}
         </motion.button>
       </div>
     </motion.form>

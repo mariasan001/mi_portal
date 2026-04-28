@@ -5,27 +5,38 @@ import type { ConfiguracionEntity } from '../../model/configuracion.types';
 
 type Props = {
   activeEntity: ConfiguracionEntity;
+  hasPeriodos: boolean;
   onSelect: (entity: ConfiguracionEntity) => void;
 };
 
-const options = [
-  {
-    value: 'periodo',
-    title: 'Periodos',
-    description:
-      'Consulta periodos existentes y registra nuevos periodos de pago con sus fechas clave.',
-    icon: CalendarRange,
-  },
-  {
-    value: 'version',
-    title: 'Versiones',
-    description:
-      'Consulta versiones por ID y crea una nueva versión asociada al período y etapa correspondiente.',
-    icon: Layers3,
-  },
-] as const;
+export default function NominaEntityCards({
+  activeEntity,
+  hasPeriodos,
+  onSelect,
+}: Props) {
+  const options = [
+    {
+      value: 'periodo',
+      title: 'Períodos',
+      description:
+        'Crea, revisa o selecciona el período base con sus fechas clave para iniciar el flujo.',
+      icon: CalendarRange,
+      badge: 'Paso 1',
+    },
+    {
+      value: 'version',
+      title: 'Versiones',
+      description:
+        'Asocia una versión al período elegido y define la etapa de trabajo correspondiente.',
+      icon: Layers3,
+      badge: hasPeriodos ? 'Paso 2' : 'Bloqueado',
+      disabled: !hasPeriodos,
+      disabledReason: hasPeriodos
+        ? undefined
+        : 'Primero crea al menos un período para habilitar este paso.',
+    },
+  ] as const;
 
-export default function NominaEntityCards({ activeEntity, onSelect }: Props) {
   return (
     <NominaOptionCards
       activeValue={activeEntity}

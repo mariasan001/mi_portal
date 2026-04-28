@@ -76,11 +76,11 @@ export async function POST(req: Request) {
   try {
     payload = await req.json();
   } catch {
-    return invalidJsonBody('Body invalido');
+    return invalidJsonBody('Body inválido');
   }
 
   if (!isCrearVersionNominaPayload(payload)) {
-    return invalidPayload('Payload invalido');
+    return invalidPayload('Payload inválido');
   }
 
   try {

@@ -2,7 +2,6 @@ import {
   CalendarDays,
   CheckCircle2,
   FileText,
-  Hash,
   Layers3,
   ShieldCheck,
 } from 'lucide-react';
@@ -121,16 +120,6 @@ export default function VersionResultadoPanel({ detalle }: Props) {
           </div>
 
           <div className={s.inlineInfoRow}>
-            <div className={s.inlineBlock}>
-              <div className={s.inlineHead}>
-                <div className={s.inlineIcon}>
-                  <Hash size={13} />
-                </div>
-                <span>Código del período</span>
-              </div>
-              <strong>{detalle.periodCode || '—'}</strong>
-            </div>
-
             <div className={s.inlineBlock}>
               <div className={s.inlineHead}>
                 <div className={s.inlineIcon}>

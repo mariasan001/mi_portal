@@ -68,8 +68,8 @@ export function useConfiguracionController() {
     if (!Number.isFinite(id) || id <= 0) {
       toast.warning(
         activeEntity === 'periodo'
-          ? 'Captura un periodId valido.'
-          : 'Captura un versionId valido.'
+          ? 'Captura un periodId válido.'
+          : 'Captura un versionId válido.'
       );
       return;
     }
@@ -77,16 +77,16 @@ export function useConfiguracionController() {
     try {
       if (activeEntity === 'periodo') {
         await periodos.consultarPorId(id);
-        toast.success('Periodo consultado correctamente.');
+        toast.success('Período consultado correctamente.');
       } else {
         await versiones.consultarPorId(id);
-        toast.success('Version consultada correctamente.');
+        toast.success('Versión consultada correctamente.');
       }
     } catch {
       toast.error(
         activeEntity === 'periodo'
-          ? 'No se pudo consultar el periodo.'
-          : 'No se pudo consultar la version.'
+          ? 'No se pudo consultar el período.'
+          : 'No se pudo consultar la versión.'
       );
     }
   }
@@ -97,9 +97,9 @@ export function useConfiguracionController() {
     try {
       await periodos.crearPeriodo(payload);
       setIsCreateModalOpen(false);
-      toast.success('Periodo creado o recuperado correctamente.');
+      toast.success('Período creado o recuperado correctamente.');
     } catch {
-      toast.error('No se pudo crear o recuperar el periodo.');
+      toast.error('No se pudo crear o recuperar el período.');
     }
   }
 
@@ -120,9 +120,9 @@ export function useConfiguracionController() {
       });
 
       setIsCreateModalOpen(false);
-      toast.success('Version creada correctamente.');
+      toast.success('Versión creada correctamente.');
     } catch {
-      toast.error('No se pudo crear la version.');
+      toast.error('No se pudo crear la versión.');
     }
   }
 

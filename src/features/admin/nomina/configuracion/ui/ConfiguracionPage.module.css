@@ -22,6 +22,12 @@
   border-radius: 22px;
   box-shadow: var(--shadow-sm);
   min-width: 0;
+  animation: surfaceIn 0.28s ease both;
+}
+
+.detailBlock {
+  padding-top: 6px;
+  border-top: 1px solid color-mix(in srgb, var(--border) 84%, transparent);
 }
 
 .errorBanner {
@@ -48,7 +54,6 @@
   line-height: 1.5;
 }
 
-/* MODAL */
 .modalOverlay {
   position: fixed;
   inset: 0;
@@ -144,6 +149,17 @@
   padding: 18px 22px 22px;
 }
 
+@keyframes surfaceIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (max-width: 1080px) {
   .page {
     padding: 20px;
@@ -207,5 +223,11 @@
 
   .modalBody {
     padding: 16px 18px 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contentShell {
+    animation: none !important;
   }
 }

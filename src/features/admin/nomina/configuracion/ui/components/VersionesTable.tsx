@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { VersionNominaDto } from '@/features/admin/nomina/shared/model/versiones.types';
 import {
   formatNominaBool,
@@ -12,15 +13,23 @@ type Props = {
   items: VersionNominaDto[];
   selectedId?: number | null;
   onSelect: (item: VersionNominaDto) => void;
+  toolbar?: ReactNode;
 };
 
-export default function VersionesTable({ items, selectedId, onSelect }: Props) {
+export default function VersionesTable({
+  items,
+  selectedId,
+  onSelect,
+  toolbar,
+}: Props) {
   return (
     <section className={s.wrap}>
       <div className={s.header}>
         <h4 className={s.title}>Versiones registradas</h4>
         <span className={s.meta}>{items.length} registros</span>
       </div>
+
+      {toolbar ? <div className={s.toolbarSlot}>{toolbar}</div> : null}
 
       <div className={s.surface}>
         <table className={s.table}>

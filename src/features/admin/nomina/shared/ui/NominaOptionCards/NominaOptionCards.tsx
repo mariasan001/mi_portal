@@ -9,6 +9,9 @@ type NominaOptionCard<T extends string> = {
   title: string;
   description: string;
   icon: LucideIcon;
+  badge?: string;
+  disabled?: boolean;
+  disabledReason?: string;
 };
 
 type Props<T extends string> = {
@@ -48,21 +51,34 @@ export default function NominaOptionCards<T extends string>({
       {options.map((option) => {
         const Icon = option.icon;
         const isActive = option.value === activeValue;
+        const isDisabled = Boolean(option.disabled);
 
         return (
           <motion.button
             key={option.value}
             type="button"
-            className={cx(s.card, isActive ? s.active : s.inactive)}
-            onClick={() => onSelect(option.value)}
+            className={cx(
+              s.card,
+              isActive ? s.active : s.inactive,
+              isDisabled && s.disabled
+            )}
+            onClick={() => {
+              if (!isDisabled) {
+                onSelect(option.value);
+              }
+            }}
+            disabled={isDisabled}
+            aria-disabled={isDisabled}
             variants={itemVariants}
             transition={{ duration: 0.24 }}
             whileHover={
-              shouldReduceMotion
+              shouldReduceMotion || isDisabled
                 ? undefined
                 : { y: -2, transition: { duration: 0.16 } }
             }
-            whileTap={shouldReduceMotion ? undefined : { scale: 0.992 }}
+            whileTap={
+              shouldReduceMotion || isDisabled ? undefined : { scale: 0.992 }
+            }
             layout
           >
             <div className={s.iconWrap}>
@@ -75,23 +91,18 @@ export default function NominaOptionCards<T extends string>({
               <div className={s.headRow}>
                 <h2>{option.title}</h2>
 
-                {isActive ? (
-                  <motion.span
-                    className={s.stateBadge}
-                    initial={
-                      shouldReduceMotion ? false : { opacity: 0, scale: 0.92 }
-                    }
-                    animate={
-                      shouldReduceMotion ? undefined : { opacity: 1, scale: 1 }
-                    }
-                    transition={{ duration: 0.18 }}
-                  >
-                    Activo
-                  </motion.span>
+                {option.badge ? (
+                  <span className={cx(s.stepBadge, isActive && s.stepBadgeActive)}>
+                    {option.badge}
+                  </span>
                 ) : null}
               </div>
 
               <p>{option.description}</p>
+
+              {isDisabled && option.disabledReason ? (
+                <p className={s.helperText}>{option.disabledReason}</p>
+              ) : null}
             </div>
           </motion.button>
         );
