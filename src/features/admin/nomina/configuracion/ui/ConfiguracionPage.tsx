@@ -1,39 +1,44 @@
 'use client';
 
 import { useDeferredValue, useMemo, useState } from 'react';
+import { X } from 'lucide-react';
+
 import AdminInlineMessage from '@/features/admin/shared/ui/AdminInlineMessage/AdminInlineMessage';
 import AdminPageShell from '@/features/admin/shared/ui/AdminPageShell/AdminPageShell';
 import AdminSurface from '@/features/admin/shared/ui/AdminSurface/AdminSurface';
 import NominaEmptyState from '@/features/admin/nomina/shared/ui/NominaEmptyState/NominaEmptyState';
 import NominaHero from '@/features/admin/nomina/shared/ui/NominaHero/NominaHero';
-import { X } from 'lucide-react';
 
 import { useConfiguracionController } from '../application/useConfiguracionController';
 import {
   formatNominaCompactPeriod,
+  formatNominaTitle,
   getContentEyebrow,
   getContentTitle,
-  getSearchButtonLabel,
-  getSearchLabel,
-  getSearchPlaceholder,
 } from '../model/configuracion.selectors';
-import NominaConfigToolbar from './components/NominaConfigToolbar';
 import NominaEntityCards from './components/NominaEntityCards';
 import PeriodosExplorerToolbar from './components/PeriodosExplorerToolbar';
 import PeriodosTable from './components/PeriodosTable';
 import PeriodoCreateForm from './components/PeriodoCreateForm';
+import VersionesExplorerToolbar from './components/VersionesExplorerToolbar';
 import VersionesTable from './components/VersionesTable';
 import VersionCreateForm from './components/VersionCreateForm';
-import VersionResultadoPanel from './components/VersionResultadoPanel';
 import s from './ConfiguracionPage.module.css';
 
 export default function ConfiguracionPage() {
   const vm = useConfiguracionController();
+
   const [periodQuery, setPeriodQuery] = useState('');
   const [periodQuincenaFilter, setPeriodQuincenaFilter] = useState('all');
   const [periodSort, setPeriodSort] = useState<'asc' | 'desc'>('desc');
 
+  const [versionQuery, setVersionQuery] = useState('');
+  const [versionStageFilter, setVersionStageFilter] = useState('all');
+  const [versionStatusFilter, setVersionStatusFilter] = useState('all');
+  const [versionSort, setVersionSort] = useState<'asc' | 'desc'>('desc');
+
   const deferredPeriodQuery = useDeferredValue(periodQuery);
+  const deferredVersionQuery = useDeferredValue(versionQuery);
 
   const periodQuincenaOptions = useMemo(() => {
     return Array.from(new Set(vm.periodos.lista.map((item) => item.quincena))).sort(
@@ -72,19 +77,62 @@ export default function ConfiguracionPage() {
     );
   }, [deferredPeriodQuery, periodQuincenaFilter, periodSort, vm.periodos.lista]);
 
-  const versionToolbar = (
-    <NominaConfigToolbar
-      searchLabel={getSearchLabel(vm.activeEntity)}
-      searchPlaceholder={getSearchPlaceholder(vm.activeEntity)}
-      searchButtonLabel={getSearchButtonLabel(vm.activeEntity)}
-      searchId={vm.searchId}
-      loading={vm.currentLoadingSearch}
-      canSearch={vm.canSearch}
-      onSearchIdChange={vm.setSearchId}
-      onSearch={vm.handleSearch}
-      onCreate={vm.openCreateModal}
-    />
-  );
+  const versionStageOptions = useMemo(() => {
+    const knownStages = ['Previa', 'Integrada'];
+    const presentStages = vm.versiones.lista.map((item) => formatNominaTitle(item.stage));
+
+    return Array.from(new Set([...knownStages, ...presentStages]));
+  }, [vm.versiones.lista]);
+
+  const versionStatusOptions = useMemo(() => {
+    return Array.from(
+      new Set(vm.versiones.lista.map((item) => formatNominaTitle(item.status)))
+    );
+  }, [vm.versiones.lista]);
+
+  const filteredVersiones = useMemo(() => {
+    const normalizedQuery = deferredVersionQuery.trim().toLowerCase();
+
+    const filtered = vm.versiones.lista.filter((item) => {
+      const stageText = formatNominaTitle(item.stage);
+      const statusText = formatNominaTitle(item.status);
+
+      if (versionStageFilter !== 'all' && stageText !== versionStageFilter) {
+        return false;
+      }
+
+      if (versionStatusFilter !== 'all' && statusText !== versionStatusFilter) {
+        return false;
+      }
+
+      if (!normalizedQuery) return true;
+
+      const periodText = formatNominaCompactPeriod(item.anio, item.quincena, item.periodCode);
+
+      return [
+        String(item.versionId),
+        String(item.payPeriodId),
+        String(item.anio ?? ''),
+        String(item.quincena ?? ''),
+        periodText,
+        stageText,
+        statusText,
+      ]
+        .join(' ')
+        .toLowerCase()
+        .includes(normalizedQuery);
+    });
+
+    return filtered.sort((a, b) =>
+      versionSort === 'asc' ? a.versionId - b.versionId : b.versionId - a.versionId
+    );
+  }, [
+    deferredVersionQuery,
+    versionSort,
+    versionStageFilter,
+    versionStatusFilter,
+    vm.versiones.lista,
+  ]);
 
   const periodToolbar = (
     <PeriodosExplorerToolbar
@@ -99,6 +147,22 @@ export default function ConfiguracionPage() {
     />
   );
 
+  const versionToolbar = (
+    <VersionesExplorerToolbar
+      query={versionQuery}
+      stageOptions={versionStageOptions}
+      stageValue={versionStageFilter}
+      statusOptions={versionStatusOptions}
+      statusValue={versionStatusFilter}
+      sortValue={versionSort}
+      onQueryChange={setVersionQuery}
+      onStageChange={setVersionStageFilter}
+      onStatusChange={setVersionStatusFilter}
+      onSortChange={setVersionSort}
+      onCreate={vm.openCreateModal}
+    />
+  );
+
   return (
     <AdminPageShell>
       <NominaHero
@@ -106,7 +170,7 @@ export default function ConfiguracionPage() {
         subtitle={
           <>
             <strong>Primero crea o selecciona un período.</strong> Después podrás
-            registrar <em>una versión asociada a ese período</em> 
+            registrar <em>una versión asociada a ese período</em>.
           </>
         }
       />
@@ -156,42 +220,36 @@ export default function ConfiguracionPage() {
         ) : null}
 
         {vm.activeEntity === 'version' ? (
-          vm.versiones.lista.length > 0 ? (
-            <VersionesTable
-              items={vm.versiones.lista}
-              selectedId={vm.versiones.detalle?.versionId ?? null}
-              onSelect={vm.handleSelectVersion}
-              toolbar={versionToolbar}
-            />
-          ) : (
-            <>
-              {versionToolbar}
-              <NominaEmptyState
-                title="Sin versiones registradas"
-                description="Cuando existan versiones de nómina, aparecerán aquí para explorarlas y seleccionar una."
-                variant="inbox"
-                tone="compact"
-              />
-            </>
-          )
+          <VersionesTable
+            items={filteredVersiones}
+            metaText={
+              filteredVersiones.length === vm.versiones.lista.length
+                ? `${vm.versiones.lista.length} registros`
+                : `${filteredVersiones.length} de ${vm.versiones.lista.length} registros`
+            }
+            selectedId={vm.versiones.detalle?.versionId ?? null}
+            onSelect={vm.handleSelectVersion}
+            toolbar={versionToolbar}
+            emptyState={
+              vm.versiones.lista.length > 0 ? (
+                <NominaEmptyState
+                  title="Sin coincidencias"
+                  description="Prueba con otra búsqueda, cambia la etapa o ajusta el estatus para volver a ver registros."
+                  variant="inbox"
+                  tone="compact"
+                />
+              ) : (
+                <NominaEmptyState
+                  title="Sin versiones registradas"
+                  description="Cuando existan versiones de nómina, aparecerán aquí para explorarlas y seleccionar una."
+                  variant="inbox"
+                  tone="compact"
+                />
+              )
+            }
+          />
         ) : null}
 
-        {vm.activeEntity === 'version' ? (
-          vm.versiones.detalle ? (
-            <div className={s.detailBlock}>
-              <VersionResultadoPanel detalle={vm.versiones.detalle} />
-            </div>
-          ) : (
-            <NominaEmptyState
-              title="Sin selección todavía"
-              description={
-                vm.versiones.lista.length > 0
-                  ? 'Selecciona una versión de la tabla superior para revisar su resumen y datos complementarios.'
-                  : 'Crea una nueva versión o espera a que existan registros para ver su resumen aquí.'
-              }
-            />
-          )
-        ) : null}
       </AdminSurface>
 
       {vm.isCreateModalOpen ? (
@@ -209,9 +267,7 @@ export default function ConfiguracionPage() {
           >
             <div className={s.modalHeader}>
               <div className={s.modalHeaderCopy}>
-                <span className={s.modalEyebrow}>
-                  {getContentEyebrow(vm.activeEntity)}
-                </span>
+                <span className={s.modalEyebrow}>{getContentEyebrow(vm.activeEntity)}</span>
                 <h3 id="nomina-create-modal-title">
                   {getContentTitle(vm.activeEntity, 'crear')}
                 </h3>
@@ -244,6 +300,7 @@ export default function ConfiguracionPage() {
               {vm.activeEntity === 'version' ? (
                 <VersionCreateForm
                   loading={vm.versiones.loadingCreate}
+                  periodos={vm.periodos.lista}
                   ultimaCreada={null}
                   onSubmit={vm.handleCreateVersion}
                 />

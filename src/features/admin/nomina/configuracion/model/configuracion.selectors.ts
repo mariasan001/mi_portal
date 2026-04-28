@@ -38,6 +38,20 @@ export function formatNominaStatusTone(status?: string | null) {
   return 'muted';
 }
 
+export function formatNominaStatusLabel(status?: string | null) {
+  const normalized = String(status ?? '')
+    .trim()
+    .toUpperCase();
+
+  if (normalized === 'RELEASED') return 'Liberada';
+  if (normalized === 'LOADED') return 'Cargada';
+  if (normalized === 'FAILED' || normalized === 'ERROR') return 'Error';
+  if (normalized === 'PENDING') return 'Pendiente';
+  if (normalized === 'PROCESSING') return 'En proceso';
+
+  return formatNominaTitle(status);
+}
+
 export function formatNominaBool(value: boolean) {
   return value ? 'Sí' : 'No';
 }
