@@ -13,8 +13,33 @@ export function formatNominaDate(value: string) {
   }).format(date);
 }
 
+export function formatNominaCompactPeriod(
+  anio?: number | null,
+  quincena?: number | null,
+  periodCode?: string | null
+) {
+  if (typeof anio === 'number' && typeof quincena === 'number') {
+    return `${anio} / Q${quincena}`;
+  }
+
+  return periodCode || '-';
+}
+
+export function formatNominaStatusTone(status?: string | null) {
+  const normalized = String(status ?? '')
+    .trim()
+    .toUpperCase();
+
+  if (normalized === 'RELEASED') return 'success';
+  if (normalized === 'LOADED') return 'info';
+  if (normalized === 'FAILED' || normalized === 'ERROR') return 'danger';
+  if (normalized === 'PENDING' || normalized === 'PROCESSING') return 'warning';
+
+  return 'muted';
+}
+
 export function formatNominaBool(value: boolean) {
-  return value ? 'Si' : 'No';
+  return value ? 'Sí' : 'No';
 }
 
 export function formatNominaTitle(value?: string | null) {
@@ -53,11 +78,11 @@ export function formatNominaDateTimeLong(value?: string | null) {
     hour12: true,
   }).format(date);
 
-  return `${weekday} ${day} de ${month} · ${time}`;
+  return `${weekday} ${day} de ${month} - ${time}`;
 }
 
 export function getSearchLabel(entity: ConfiguracionEntity) {
-  return entity === 'periodo' ? 'Buscar periodo por ID' : 'Buscar version por ID';
+  return entity === 'periodo' ? 'Buscar período por ID' : 'Buscar versión por ID';
 }
 
 export function getSearchPlaceholder(entity: ConfiguracionEntity) {
@@ -65,11 +90,11 @@ export function getSearchPlaceholder(entity: ConfiguracionEntity) {
 }
 
 export function getSearchButtonLabel(entity: ConfiguracionEntity) {
-  return entity === 'periodo' ? 'Consultar periodo' : 'Consultar version';
+  return entity === 'periodo' ? 'Consultar período' : 'Consultar versión';
 }
 
 export function getContentEyebrow(entity: ConfiguracionEntity) {
-  return entity === 'periodo' ? 'Periodo' : 'Version';
+  return entity === 'periodo' ? 'Período' : 'Versión';
 }
 
 export function getContentTitle(
@@ -77,12 +102,23 @@ export function getContentTitle(
   mode: 'resultados' | 'crear'
 ) {
   if (mode === 'resultados') {
+    return entity === 'periodo' ? 'Detalle del período' : 'Detalle de la versión';
+  }
+
+  return entity === 'periodo' ? 'Crear o recuperar período' : 'Crear versión';
+}
+
+export function getDetailDescription(
+  entity: ConfiguracionEntity,
+  hasRows: boolean
+) {
+  if (!hasRows) {
     return entity === 'periodo'
-      ? 'Resultado de consulta'
-      : 'Resultado de version';
+      ? 'Cuando existan períodos registrados, aquí podrás revisar el detalle completo del registro activo.'
+      : 'Cuando existan versiones registradas, aquí podrás revisar el detalle completo de la versión activa.';
   }
 
   return entity === 'periodo'
-    ? 'Crear o recuperar periodo'
-    : 'Crear version';
+    ? 'La tabla superior te ayuda a comparar períodos y este bloque muestra el registro seleccionado.'
+    : 'La tabla superior te ayuda a comparar versiones y este bloque muestra el registro seleccionado.';
 }

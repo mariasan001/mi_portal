@@ -14,6 +14,12 @@ export function obtenerPeriodoNomina(
   });
 }
 
+export function listarPeriodosNomina(opts?: { signal?: AbortSignal }) {
+  return api.get<PeriodoNominaDto[]>(API_RUTAS.nomina.periods, {
+    signal: opts?.signal,
+  });
+}
+
 export function crearORecuperarPeriodoNomina(
   payload: CrearPeriodoNominaPayload,
   opts?: { signal?: AbortSignal }

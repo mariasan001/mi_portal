@@ -1,6 +1,7 @@
 import { obtenerBatchBaseUrl } from '@/lib/config/entorno';
 import {
   buildProxyHeaders,
+  copySearchParams,
   forwardResponse,
   invalidJsonBody,
   invalidPayload,
@@ -36,6 +37,31 @@ function isCrearVersionNominaPayload(
     typeof body.createdByUserId === 'number' &&
     Number.isFinite(body.createdByUserId)
   );
+}
+
+export async function GET(req: Request) {
+  const forbidden = await requireAdminAccess(req);
+  if (forbidden) {
+    return forbidden;
+  }
+
+  const baseUrl = obtenerBatchBaseUrl();
+
+  try {
+    const sourceUrl = new URL(req.url);
+    const targetUrl = new URL(`${baseUrl}/api/admin/nomina/versions`);
+    copySearchParams(sourceUrl, targetUrl, ['payPeriodId']);
+
+    const upstream = await fetch(targetUrl, {
+      method: 'GET',
+      headers: buildProxyHeaders({ req }),
+      cache: 'no-store',
+    });
+
+    return forwardResponse(upstream);
+  } catch (error) {
+    return upstreamUnavailable('BATCH', error);
+  }
 }
 
 export async function POST(req: Request) {

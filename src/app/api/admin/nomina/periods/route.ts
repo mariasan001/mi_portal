@@ -1,6 +1,7 @@
 import { obtenerBatchBaseUrl } from '@/lib/config/entorno';
 import {
   buildProxyHeaders,
+  copySearchParams,
   forwardResponse,
   invalidJsonBody,
   invalidPayload,
@@ -38,6 +39,31 @@ function isCrearPeriodoPayload(value: unknown): value is CrearPeriodoPayload {
     typeof body.fechaPagoEstimada === 'string' &&
     body.fechaPagoEstimada.trim().length > 0
   );
+}
+
+export async function GET(req: Request) {
+  const forbidden = await requireAdminAccess(req);
+  if (forbidden) {
+    return forbidden;
+  }
+
+  const baseUrl = obtenerBatchBaseUrl();
+
+  try {
+    const sourceUrl = new URL(req.url);
+    const targetUrl = new URL(`${baseUrl}/api/admin/nomina/periods`);
+    copySearchParams(sourceUrl, targetUrl, []);
+
+    const upstream = await fetch(targetUrl, {
+      method: 'GET',
+      headers: buildProxyHeaders({ req }),
+      cache: 'no-store',
+    });
+
+    return forwardResponse(upstream);
+  } catch (error) {
+    return upstreamUnavailable('BATCH', error);
+  }
 }
 
 export async function POST(req: Request) {

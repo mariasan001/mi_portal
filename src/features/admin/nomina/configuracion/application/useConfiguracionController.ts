@@ -26,22 +26,32 @@ export function useConfiguracionController() {
 
   const activeError = useMemo(() => {
     if (activeEntity === 'periodo') {
-      return periodos.errorDetalle || periodos.errorCreate;
+      return periodos.errorLista || periodos.errorDetalle || periodos.errorCreate;
     }
 
-    return versiones.errorDetalle || versiones.errorCreate;
+    return versiones.errorLista || versiones.errorDetalle || versiones.errorCreate;
   }, [
     activeEntity,
     periodos.errorCreate,
     periodos.errorDetalle,
+    periodos.errorLista,
     versiones.errorCreate,
     versiones.errorDetalle,
+    versiones.errorLista,
   ]);
 
   function handleSelectEntity(entity: ConfiguracionEntity) {
     setActiveEntity(entity);
     setSearchId('');
     setIsCreateModalOpen(false);
+  }
+
+  function handleSelectPeriodo(detalle: NonNullable<typeof periodos.detalle>) {
+    periodos.seleccionarDetalle(detalle);
+  }
+
+  function handleSelectVersion(detalle: NonNullable<typeof versiones.detalle>) {
+    versiones.seleccionarDetalle(detalle);
   }
 
   function openCreateModal() {
@@ -127,6 +137,8 @@ export function useConfiguracionController() {
     currentLoadingSearch,
     sesion,
     setSearchId,
+    handleSelectPeriodo,
+    handleSelectVersion,
     handleSelectEntity,
     handleSearch,
     handleCreatePeriodo,

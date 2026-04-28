@@ -12,20 +12,27 @@ import { useConfiguracionController } from '../application/useConfiguracionContr
 import {
   getContentEyebrow,
   getContentTitle,
+  getDetailDescription,
   getSearchButtonLabel,
   getSearchLabel,
   getSearchPlaceholder,
 } from '../model/configuracion.selectors';
 import NominaConfigToolbar from './components/NominaConfigToolbar';
 import NominaEntityCards from './components/NominaEntityCards';
+import PeriodosTable from './components/PeriodosTable';
 import PeriodoCreateForm from './components/PeriodoCreateForm';
 import PeriodoResultadoPanel from './components/PeriodoResultadoPanel';
+import VersionesTable from './components/VersionesTable';
 import VersionCreateForm from './components/VersionCreateForm';
 import VersionResultadoPanel from './components/VersionResultadoPanel';
 import s from './ConfiguracionPage.module.css';
 
 export default function ConfiguracionPage() {
   const vm = useConfiguracionController();
+  const hasRows =
+    vm.activeEntity === 'periodo'
+      ? vm.periodos.lista.length > 0
+      : vm.versiones.lista.length > 0;
 
   return (
     <AdminPageShell>
@@ -64,9 +71,44 @@ export default function ConfiguracionPage() {
       ) : null}
 
       <AdminSurface as="section" className={s.contentShell}>
+        {vm.activeEntity === 'periodo' ? (
+          vm.periodos.lista.length > 0 ? (
+            <PeriodosTable
+              items={vm.periodos.lista}
+              selectedId={vm.periodos.detalle?.periodId ?? null}
+              onSelect={vm.handleSelectPeriodo}
+            />
+          ) : (
+            <NominaEmptyState
+              title="Sin períodos registrados"
+              description="Cuando existan períodos de nómina, aparecerán aquí para compararlos y seleccionar uno."
+              variant="inbox"
+              tone="compact"
+            />
+          )
+        ) : null}
+
+        {vm.activeEntity === 'version' ? (
+          vm.versiones.lista.length > 0 ? (
+            <VersionesTable
+              items={vm.versiones.lista}
+              selectedId={vm.versiones.detalle?.versionId ?? null}
+              onSelect={vm.handleSelectVersion}
+            />
+          ) : (
+            <NominaEmptyState
+              title="Sin versiones registradas"
+              description="Cuando existan versiones de nómina, aparecerán aquí para explorarlas y seleccionar una."
+              variant="inbox"
+              tone="compact"
+            />
+          )
+        ) : null}
+
         <NominaSectionHeader
           eyebrow={getContentEyebrow(vm.activeEntity)}
           title={getContentTitle(vm.activeEntity, 'resultados')}
+          description={getDetailDescription(vm.activeEntity, hasRows)}
         />
 
         {vm.activeEntity === 'periodo' ? (
@@ -74,8 +116,12 @@ export default function ConfiguracionPage() {
             <PeriodoResultadoPanel detalle={vm.periodos.detalle} />
           ) : (
             <NominaEmptyState
-              title="Sin consulta todavía"
-              description="Usa la barra superior para buscar un período por ID o crea uno nuevo desde esta misma sesión."
+              title="Sin selección todavía"
+              description={
+                hasRows
+                  ? 'Selecciona un período de la tabla superior para revisar su detalle completo.'
+                  : 'Crea un nuevo período o espera a que existan registros para ver el detalle aquí.'
+              }
             />
           )
         ) : null}
@@ -85,8 +131,12 @@ export default function ConfiguracionPage() {
             <VersionResultadoPanel detalle={vm.versiones.detalle} />
           ) : (
             <NominaEmptyState
-              title="Sin consulta todavía"
-              description="Consulta una versión por ID o crea una nueva versión asociada a un período existente."
+              title="Sin selección todavía"
+              description={
+                hasRows
+                  ? 'Selecciona una versión de la tabla superior para revisar su detalle completo.'
+                  : 'Crea una nueva versión o espera a que existan registros para ver el detalle aquí.'
+              }
             />
           )
         ) : null}

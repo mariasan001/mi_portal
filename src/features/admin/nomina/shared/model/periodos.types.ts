@@ -6,6 +6,7 @@ export type PeriodoNominaDto = {
   fechaInicio: string;
   fechaFin: string;
   fechaPagoEstimada: string;
+  createdAt?: string;
 };
 
 export type CrearPeriodoNominaPayload = {

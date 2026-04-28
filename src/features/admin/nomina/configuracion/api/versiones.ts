@@ -14,6 +14,19 @@ export function obtenerVersionNomina(
   });
 }
 
+export function listarVersionesNomina(
+  opts?: { signal?: AbortSignal; payPeriodId?: number }
+) {
+  const qs =
+    typeof opts?.payPeriodId === 'number' && Number.isFinite(opts.payPeriodId)
+      ? `?payPeriodId=${encodeURIComponent(String(opts.payPeriodId))}`
+      : '';
+
+  return api.get<VersionNominaDto[]>(`${API_RUTAS.nomina.versiones}${qs}`, {
+    signal: opts?.signal,
+  });
+}
+
 export function crearVersionNomina(
   payload: CrearVersionNominaPayload,
   opts?: { signal?: AbortSignal }
