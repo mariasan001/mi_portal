@@ -1,15 +1,15 @@
 .toolbar {
   display: block;
-  padding: 14px 16px;
+  padding: 12px 14px;
   border: 1px solid var(--border-soft);
-  border-radius: 16px;
+  border-radius: 15px;
   background: #fcfcfc;
   animation: toolbarIn 0.3s ease both;
 }
 
 .controls {
   display: grid;
-  gap: 10px;
+  gap: 8px;
   align-items: end;
 }
 
@@ -29,7 +29,7 @@
 .searchField,
 .selectField {
   display: grid;
-  gap: 5px;
+  gap: 4px;
   min-width: 0;
   overflow: hidden;
 }
@@ -55,7 +55,7 @@
 
 .searchIcon {
   position: absolute;
-  left: 14px;
+  left: 13px;
   top: 50%;
   transform: translateY(-50%);
   color: rgba(10, 10, 10, 0.38);
@@ -68,9 +68,9 @@
   max-width: 100%;
   display: block;
   box-sizing: border-box;
-  min-height: 38px;
+  min-height: 36px;
   border: 1px solid var(--border-soft);
-  border-radius: 11px;
+  border-radius: 10px;
   background: #fff;
   color: var(--text);
   font: inherit;
@@ -83,11 +83,11 @@
 }
 
 .searchField input {
-  padding: 0 11px 0 36px;
+  padding: 0 10px 0 34px;
 }
 
 .selectField select {
-  padding: 0 12px;
+  padding: 0 11px;
   appearance: none;
 }
 
@@ -106,26 +106,26 @@
 
 .orderIcon {
   position: absolute;
-  left: 11px;
-  bottom: 11px;
+  left: 10px;
+  bottom: 10px;
   color: rgba(10, 10, 10, 0.42);
   pointer-events: none;
 }
 
 .selectWithIcon select {
-  padding-left: 31px;
+  padding-left: 29px;
 }
 
 .createButton {
   width: 100%;
-  min-height: 38px;
+  min-height: 36px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 0 14px;
+  padding: 0 13px;
   border: 1px solid rgba(159, 33, 65, 0.12);
-  border-radius: 14px;
+  border-radius: 12px;
   background: rgba(159, 33, 65, 0.05);
   color: var(--vino);
   font: inherit;
@@ -170,7 +170,7 @@
 
 @media (max-width: 720px) {
   .toolbar {
-    padding: 12px;
+    padding: 11px;
     border-radius: 14px;
   }
 
