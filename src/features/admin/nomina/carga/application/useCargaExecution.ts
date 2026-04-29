@@ -31,7 +31,7 @@ export function useCargaExecution({
   files,
   nomina,
 }: Params) {
-  const { backgroundTask, setBackgroundTask } = useAdminBackgroundTask();
+  const { setBackgroundTask } = useAdminBackgroundTask();
   const progressIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const dismissTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -285,7 +285,6 @@ export function useCargaExecution({
 
   return {
     activeError,
-    backgroundTask,
     currentLoading,
     handleExecuteFile,
     handleExecuteGroup,

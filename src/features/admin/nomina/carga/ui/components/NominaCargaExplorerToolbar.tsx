@@ -66,8 +66,8 @@ export default function NominaCargaExplorerToolbar({
           onChange: (value) => onSortChange(value as 'asc' | 'desc'),
           withOrderIcon: true,
           options: [
-            { label: 'Mayor  primero', value: 'desc' },
-            { label: 'Menor  primero', value: 'asc' },
+            { label: 'Mayor primero', value: 'desc' },
+            { label: 'Menor primero', value: 'asc' },
           ],
         },
       ]}

@@ -98,7 +98,7 @@ export default function NominaCargaUploadModal({
           <section className={s.section}>
             <div className={s.sectionHead}>
               <h4>Identificación</h4>
-              <p>{isCatalogo ? 'Elige la versión y el tipo de archivo.' : 'Elige la versión.'}</p>
+              <p>{isCatalogo ? 'Elige la versión y el tipo de archivo.' : 'Elige la versión de trabajo.'}</p>
             </div>
 
             <div className={s.grid}>
@@ -149,7 +149,7 @@ export default function NominaCargaUploadModal({
               <p>
                 {isCatalogo
                   ? 'Selecciona el DBF que se cargará en este flujo.'
-                  : 'Selecciona uno o varios DBF para preparar la cola.'}
+                  : 'Selecciona uno o varios DBF para iniciar la cola.'}
               </p>
             </div>
 

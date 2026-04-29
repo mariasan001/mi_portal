@@ -93,7 +93,7 @@ export function useCargaUploadModal({
   const [modalStatus, setModalStatus] = useState<NominaCargaModalStatus>('idle');
   const [modalError, setModalError] = useState<string | null>(null);
   const [submitIntent, setSubmitIntent] = useState<SubmitIntent>(null);
-  const { backgroundTask, setBackgroundTask } = useAdminBackgroundTask();
+  const { setBackgroundTask } = useAdminBackgroundTask();
   const progressIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const dismissTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -444,7 +444,6 @@ export function useCargaUploadModal({
   }, [stopDismissTimeout, stopProgressLoop]);
 
   return {
-    backgroundTask,
     isUploadModalOpen,
     modalForm,
     modalStatus,
