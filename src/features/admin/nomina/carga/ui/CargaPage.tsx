@@ -62,6 +62,7 @@ export default function CargaPage() {
           metaText={vm.filesExplorer.metaText}
           loading={vm.currentLoading}
           onRun={vm.handleExecuteFile}
+          onRunGroup={vm.activeEntity === 'nomina' ? vm.handleExecuteGroup : undefined}
           runLabel={vm.activeEntity === 'catalogo' ? 'Ejecutar catálogo' : 'Ejecutar nómina'}
           toolbar={toolbar}
           emptyState={
@@ -92,10 +93,14 @@ export default function CargaPage() {
         error={vm.modalError}
         loadingUpload={vm.catalogo.loadingUpload}
         loadingRun={vm.activeEntity === 'catalogo' ? vm.catalogo.loadingRun : vm.nomina.loadingRun}
+        loadingVersiones={vm.versiones.loadingLista}
+        submitIntent={vm.submitIntent}
+        versiones={vm.versiones.lista}
         onClose={vm.closeUploadModal}
         onFieldChange={vm.updateModalField}
         onFileTypeChange={vm.setModalFileType}
-        onSubmit={vm.handleUploadAndRun}
+        onUploadOnly={vm.handleUploadOnly}
+        onUploadAndRun={vm.handleUploadAndRun}
       />
     </AdminPageShell>
   );

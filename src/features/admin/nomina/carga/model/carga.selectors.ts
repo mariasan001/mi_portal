@@ -143,6 +143,31 @@ export function formatFileTypeLabel(value?: string | null) {
   return value.toUpperCase();
 }
 
+const NOMINA_FILE_TYPE_PATTERNS: Array<[string, string]> = [
+  ['HNCOMGRA', 'HNCOMGRA'],
+  ['HNCOMADI', 'HNCOMADI'],
+  ['CONTAGUB', 'CONTAGUB'],
+  ['TCOMP', 'TCOMP'],
+  ['TCALC', 'TCALC'],
+  ['COMP', 'COMP'],
+  ['CALC', 'CALC'],
+  ['CATALOGO', 'CATALOGO'],
+];
+
+export function inferNominaFileTypeFromName(fileName?: string | null) {
+  if (!fileName) return null;
+
+  const normalized = fileName.trim().toUpperCase();
+
+  for (const [pattern, fileType] of NOMINA_FILE_TYPE_PATTERNS) {
+    if (normalized.startsWith(pattern) || normalized.includes(`_${pattern}`)) {
+      return fileType;
+    }
+  }
+
+  return null;
+}
+
 export function formatNominaFileDisplayName(
   value?: string | null,
   fileType?: string | null

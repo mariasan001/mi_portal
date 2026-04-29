@@ -9,6 +9,7 @@ import { useCargaExecution } from './useCargaExecution';
 import { useCargaFilesExplorer } from './useCargaFilesExplorer';
 import { useCargaUploadModal } from './useCargaUploadModal';
 import { useNominaFilesResource } from './useNominaFilesResource';
+import { useCargaVersionesResource } from './useCargaVersionesResource';
 import { useStagingResource } from './useStagingResource';
 
 export function useCargaController() {
@@ -16,6 +17,7 @@ export function useCargaController() {
   const catalogo = useCatalogoResource();
   const nomina = useStagingResource();
   const archivos = useNominaFilesResource();
+  const versiones = useCargaVersionesResource();
 
   const [activeEntity, setActiveEntity] = useState<NominaCargaEntity>('catalogo');
 
@@ -37,6 +39,7 @@ export function useCargaController() {
     catalogo,
     files: archivos,
     nomina,
+    versiones,
     userId: sesion?.userId,
   });
 
@@ -46,6 +49,7 @@ export function useCargaController() {
     catalogo,
     nomina,
     archivos,
+    versiones,
     filesExplorer,
     ...execution,
     ...uploadModal,

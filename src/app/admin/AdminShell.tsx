@@ -3,10 +3,11 @@
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 
+import { AdminBackgroundTaskProvider } from '@/features/admin/shared/context/admin-background-task.context';
+import AdminFloatingBubble from '@/features/admin/shared/ui/AdminFloatingBubble/AdminFloatingBubble';
 import { useAuth } from '@/features/auth/context/auth.context';
 import { SidebarMenu } from '@/features/navegacion/ui/SidebarMenu';
 
-import AdminFloatingBubble from './AdminFloatingBubble';
 import s from './AdminShell.module.css';
 
 type Props = {
@@ -22,17 +23,19 @@ export default function AdminShell({ children, appCode }: Props) {
   const userName = sesion?.username?.trim() || null;
 
   return (
-    <div className={`${s.layout} ${isCollapsed ? s.isCollapsed : ''}`}>
-      <SidebarMenu
-        appCode={resolvedAppCode}
-        userLabel="Usuario"
-        userName={userName}
-        onLogout={logout}
-        onCollapsedChange={setIsCollapsed}
-      />
+    <AdminBackgroundTaskProvider>
+      <div className={`${s.layout} ${isCollapsed ? s.isCollapsed : ''}`}>
+        <SidebarMenu
+          appCode={resolvedAppCode}
+          userLabel="Usuario"
+          userName={userName}
+          onLogout={logout}
+          onCollapsedChange={setIsCollapsed}
+        />
 
-      <main className={s.main}>{children}</main>
-      <AdminFloatingBubble />
-    </div>
+        <main className={s.main}>{children}</main>
+        <AdminFloatingBubble />
+      </div>
+    </AdminBackgroundTaskProvider>
   );
 }

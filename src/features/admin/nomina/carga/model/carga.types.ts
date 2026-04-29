@@ -13,5 +13,23 @@ export type NominaCargaModalStatus =
 export type CatalogoModalForm = {
   versionId: string;
   fileType: NominaFileType;
-  file: File | null;
+  files: File[];
+};
+
+export type NominaCargaBackgroundTaskStatus =
+  | 'idle'
+  | 'uploading'
+  | 'running'
+  | 'success'
+  | 'error';
+
+export type NominaCargaBackgroundTask = {
+  visible: boolean;
+  title: string;
+  detail: string;
+  progress: number;
+  status: NominaCargaBackgroundTaskStatus;
+  currentItemLabel?: string;
+  currentIndex?: number;
+  totalItems?: number;
 };

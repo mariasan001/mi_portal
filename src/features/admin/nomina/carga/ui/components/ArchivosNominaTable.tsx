@@ -29,7 +29,8 @@ type Props = {
   items: ArchivoNominaDto[];
   loading?: boolean;
   metaText?: string;
-  onRun: (fileId: number) => void;
+  onRun: (fileId: number, fileType?: string) => void;
+  onRunGroup?: (items: ArchivoNominaDto[]) => void;
   runLabel: string;
   toolbar?: ReactNode;
 };
@@ -51,14 +52,14 @@ function buildStatusClass(status?: string | null) {
   return `${s.statusBadge} ${s.statusNeutral}`;
 }
 
-function getRunState(status?: string | null, runLabel: string) {
+function getRunState(status?: string | null, runLabel?: string) {
   switch ((status ?? '').toUpperCase()) {
     case 'PROCESSED':
       return { disabled: true, label: 'Ya procesado' };
     case 'PROCESSING':
       return { disabled: true, label: 'En proceso' };
     default:
-      return { disabled: false, label: runLabel };
+      return { disabled: false, label: runLabel ?? 'Ejecutar' };
   }
 }
 
@@ -89,7 +90,7 @@ function groupNominaFiles(items: ArchivoNominaDto[]): NominaFilesGroup[] {
 function renderCatalogRow(
   item: ArchivoNominaDto,
   loading: boolean,
-  onRun: (fileId: number) => void,
+  onRun: (fileId: number, fileType?: string) => void,
   runLabel: string
 ) {
   const runState = getRunState(item.status, runLabel);
@@ -111,15 +112,13 @@ function renderCatalogRow(
 
         <div className={s.identityCopy}>
           <strong title={item.fileName}>{titleDisplayName}</strong>
-          <span>
-            {`${formatPeriodCodeLabel(item.periodCode)} · ${formatNominaTitle(item.stage)}`}
-          </span>
+          <span>{`${formatPeriodCodeLabel(item.periodCode)} · ${formatNominaTitle(item.stage)}`}</span>
         </div>
       </div>
 
       <dl className={s.metrics}>
         <div className={s.metric}>
-          <dt>Version asociada</dt>
+          <dt>Versión asociada</dt>
           <dd>{formatVersionDisplayLabel(item.periodCode, item.versionId)}</dd>
         </div>
 
@@ -129,7 +128,7 @@ function renderCatalogRow(
         </div>
 
         <div className={s.metric}>
-          <dt>Tamano</dt>
+          <dt>Tamaño</dt>
           <dd>{formatBytes(item.fileSizeBytes)}</dd>
         </div>
 
@@ -165,7 +164,7 @@ function renderCatalogRow(
         <button
           type="button"
           className={s.runButton}
-          onClick={() => onRun(item.fileId)}
+          onClick={() => onRun(item.fileId, item.fileType)}
           disabled={loading || runState.disabled}
         >
           <Play size={15} />
@@ -189,28 +188,26 @@ function renderCatalogRow(
 function renderNominaGroup(
   group: NominaFilesGroup,
   loading: boolean,
-  onRun: (fileId: number) => void,
+  onRun: (fileId: number, fileType?: string) => void,
+  onRunGroup: ((items: ArchivoNominaDto[]) => void) | undefined,
   runLabel: string
 ) {
   const processedCount = group.items.filter(
     (item) => (item.status ?? '').toUpperCase() === 'PROCESSED'
   ).length;
-  const pendingCount = group.items.length - processedCount;
+  const pendingCount = group.items.filter(
+    (item) => !['PROCESSED', 'PROCESSING'].includes((item.status ?? '').toUpperCase())
+  ).length;
 
   return (
     <details key={group.key} className={s.groupCard}>
       <summary className={s.groupSummary}>
         <div className={s.groupIdentity}>
-          <strong>{`Version ${group.periodCode}`}</strong>
-          <span>
-            {`${formatPeriodCodeLabel(group.periodCode)} · ${formatNominaTitle(group.stage)}`}
-          </span>
+          <strong>{`Versión ${group.periodCode}`}</strong>
+          <span>{`${formatPeriodCodeLabel(group.periodCode)} · ${formatNominaTitle(group.stage)}`}</span>
         </div>
 
         <div className={s.groupMeta}>
-          <span className={s.groupMetaItem}>
-            Version asociada <strong>{formatVersionDisplayLabel(group.periodCode, group.versionId)}</strong>
-          </span>
           <span className={s.groupMetaItem}>
             {group.items.length} {group.items.length === 1 ? 'archivo' : 'archivos'}
           </span>
@@ -224,6 +221,21 @@ function renderNominaGroup(
           >
             {pendingCount} pendientes
           </span>
+          {pendingCount > 0 && onRunGroup ? (
+            <button
+              type="button"
+              className={s.summaryRunButton}
+              onClick={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                onRunGroup(group.items);
+              }}
+              disabled={loading}
+            >
+              <Play size={14} />
+              <span>Ejecutar pendientes</span>
+            </button>
+          ) : null}
           <span className={s.groupChevron} aria-hidden="true">
             <ChevronDown size={16} />
           </span>
@@ -254,7 +266,7 @@ function renderNominaGroup(
 
               <dl className={s.groupMetrics}>
                 <div className={s.groupMetric}>
-                  <dt>Tamano</dt>
+                  <dt>Tamaño</dt>
                   <dd>{formatBytes(item.fileSizeBytes)}</dd>
                 </div>
 
@@ -282,7 +294,7 @@ function renderNominaGroup(
                 <button
                   type="button"
                   className={s.runButton}
-                  onClick={() => onRun(item.fileId)}
+                  onClick={() => onRun(item.fileId, item.fileType)}
                   disabled={loading || runState.disabled}
                 >
                   <Play size={15} />
@@ -304,6 +316,7 @@ export default function ArchivosNominaTable({
   loading = false,
   metaText,
   onRun,
+  onRunGroup,
   runLabel,
   toolbar,
 }: Props) {
@@ -326,7 +339,7 @@ export default function ArchivosNominaTable({
         ) : (
           <div className={s.groupList}>
             {groupedNominaItems.map((group) =>
-              renderNominaGroup(group, loading, onRun, runLabel)
+              renderNominaGroup(group, loading, onRun, onRunGroup, runLabel)
             )}
           </div>
         )
