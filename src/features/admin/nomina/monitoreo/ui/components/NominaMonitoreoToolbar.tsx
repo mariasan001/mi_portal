@@ -1,66 +1,60 @@
-import { RotateCcw, Search } from 'lucide-react';
+import s from '@/features/admin/nomina/shared/ui/NominaExplorerToolbar/NominaExplorerToolbar.module.css';
 
-import {
-  NominaToolbarButton,
-  NominaToolbarInput,
-  NominaToolbarLabel,
-  NominaToolbarShell,
-  NominaToolbarSurface,
-} from '@/features/admin/nomina/shared/ui/NominaToolbar/NominaToolbar';
+type Option = {
+  label: string;
+  value: string;
+};
 
 type Props = {
-  payPeriodId: string;
+  selectedPeriodId: string;
+  options: Option[];
+  helperText: string;
   loading: boolean;
-  canSubmit: boolean;
-  onChange: (value: string) => void;
-  onSubmit: () => void;
-  onReset: () => void;
+  onSelectPeriod: (value: string) => void;
 };
 
 export default function NominaMonitoreoToolbar({
-  payPeriodId,
+  selectedPeriodId,
+  options,
+  helperText,
   loading,
-  canSubmit,
-  onChange,
-  onSubmit,
-  onReset,
+  onSelectPeriod,
 }: Props) {
   return (
-    <NominaToolbarShell
-      aside={
-        <NominaToolbarButton
-          icon={<RotateCcw size={16} />}
-          onClick={onReset}
-          disabled={loading}
-          tone="secondary"
+    <section className={s.toolbar}>
+      <div
+        className={s.controls}
+        style={{ gridTemplateColumns: 'minmax(0, 1fr)' }}
+      >
+        <label className={s.selectField}>
+          <span className={s.fieldLabel}>Período</span>
+          <select
+            value={selectedPeriodId}
+            onChange={(event) => onSelectPeriod(event.target.value)}
+            disabled={loading}
+          >
+            <option value="">Selecciona un período</option>
+            {options.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+
+      {helperText ? (
+        <p
+          style={{
+            margin: '8px 0 0',
+            color: 'rgba(10, 10, 10, 0.62)',
+            fontSize: '11px',
+            lineHeight: 1.45,
+          }}
         >
-          Limpiar
-        </NominaToolbarButton>
-      }
-    >
-      <NominaToolbarLabel htmlFor="nomina-monitoreo-period-id">
-        Período a monitorear
-      </NominaToolbarLabel>
-
-      <NominaToolbarSurface>
-        <NominaToolbarInput
-          icon={<Search size={16} />}
-          input={
-            <input
-              id="nomina-monitoreo-period-id"
-              type="number"
-              min="1"
-              value={payPeriodId}
-              onChange={(e) => onChange(e.target.value)}
-              placeholder="Ej. 202601"
-            />
-          }
-        />
-
-        <NominaToolbarButton disabled={!canSubmit || loading} onClick={onSubmit}>
-          {loading ? 'Consultando...' : 'Consultar estado'}
-        </NominaToolbarButton>
-      </NominaToolbarSurface>
-    </NominaToolbarShell>
+          {helperText}
+        </p>
+      ) : null}
+    </section>
   );
 }

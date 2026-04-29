@@ -1,13 +1,10 @@
 'use client';
 
-import { Activity, CalendarRange, ShieldCheck } from 'lucide-react';
-
+import NominaEmptyState from '@/features/admin/nomina/shared/ui/NominaEmptyState/NominaEmptyState';
+import NominaHero from '@/features/admin/nomina/shared/ui/NominaHero/NominaHero';
 import AdminInlineMessage from '@/features/admin/shared/ui/AdminInlineMessage/AdminInlineMessage';
 import AdminPageShell from '@/features/admin/shared/ui/AdminPageShell/AdminPageShell';
 import AdminSurface from '@/features/admin/shared/ui/AdminSurface/AdminSurface';
-import NominaEmptyState from '@/features/admin/nomina/shared/ui/NominaEmptyState/NominaEmptyState';
-import NominaHero from '@/features/admin/nomina/shared/ui/NominaHero/NominaHero';
-import NominaSectionHeader from '@/features/admin/nomina/shared/ui/NominaSectionHeader/NominaSectionHeader';
 
 import { useMonitoreoController } from '../application/useMonitoreoController';
 import NominaMonitoreoResultadoPanel from './components/NominaMonitoreoResultadoPanel';
@@ -20,55 +17,41 @@ export default function MonitoreoPage() {
   return (
     <AdminPageShell>
       <NominaHero
-        kicker="Nómina"
         title="Monitoreo del período"
-        subtitle="Consulta el estado resumido del período de nómina, incluyendo banderas de carga, validación y liberación."
-        badges={[
-          { icon: CalendarRange, label: 'Período' },
-          { icon: Activity, label: 'Monitoreo' },
-          { icon: ShieldCheck, label: 'Estado' },
-        ]}
+        subtitle={
+          <>
+            <strong>Primero consulta el período que quieres revisar.</strong> Después podrás
+            validar <em>su estado operativo, alertas y liberación</em>.
+          </>
+        }
       />
-
-      <NominaMonitoreoToolbar
-        payPeriodId={vm.payPeriodId}
-        loading={vm.loadingEstado}
-        canSubmit={vm.canSubmit}
-        onChange={vm.setPayPeriodId}
-        onSubmit={vm.handleConsult}
-        onReset={vm.handleReset}
-      />
-
-      {vm.errorEstado ? (
-        <AdminInlineMessage title="Ocurrió un problema" tone="error">
-          {vm.errorEstado}
-        </AdminInlineMessage>
-      ) : null}
 
       <AdminSurface className={s.resultCard} as="div">
-        <NominaSectionHeader
-          eyebrow="Resultado"
-          title={
-            vm.estadoPeriodo
-              ? 'Estado del período consultado'
-              : 'Resultado del monitoreo'
-          }
-          description={
-            vm.estadoPeriodo
-              ? 'Revisa el estado consolidado, las versiones activas y las banderas operativas del período.'
-              : 'Aquí se mostrará el resumen general del período una vez que realices una consulta.'
-          }
+        <NominaMonitoreoToolbar
+          selectedPeriodId={vm.selectedPeriodId}
+          options={vm.options}
+          helperText={vm.helperText}
+          loading={vm.loadingEstado || vm.loadingPeriodos}
+          onSelectPeriod={vm.handleSelectPeriod}
         />
+
+        {vm.activeError ? (
+          <AdminInlineMessage title="Ocurrió un problema" tone="error">
+            {vm.activeError}
+          </AdminInlineMessage>
+        ) : null}
 
         {vm.estadoPeriodo ? (
           <NominaMonitoreoResultadoPanel detalle={vm.estadoPeriodo} />
         ) : (
-          <NominaEmptyState
-            title="Aún no has consultado ningún período"
-            description="Captura un payPeriodId válido para revisar el estado general del proceso de nómina."
-            variant="inbox"
-            tone="compact"
-          />
+          <div className={s.emptyArea}>
+            <NominaEmptyState
+              title="Aún no has consultado ningún período"
+              description="Busca y selecciona un período existente para revisar el estado general del proceso de nómina."
+              variant="inbox"
+              tone="compact"
+            />
+          </div>
         )}
       </AdminSurface>
     </AdminPageShell>

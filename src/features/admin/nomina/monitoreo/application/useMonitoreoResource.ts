@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import { toErrorMessage } from '@/lib/api/api.errors';
+
 import { obtenerEstadoPeriodo } from '@/features/admin/nomina/monitoreo/api/queries';
 import {
   errorState,
@@ -10,6 +10,8 @@ import {
   successState,
   type AsyncState,
 } from '@/features/admin/nomina/shared/lib/request-state';
+import { toErrorMessage } from '@/lib/api/api.errors';
+
 import type { NominaPeriodoEstadoDto } from '../model/monitoreo.types';
 
 export function useMonitoreoResource() {
@@ -22,10 +24,10 @@ export function useMonitoreoResource() {
       const response = await obtenerEstadoPeriodo(payPeriodId);
       setEstadoPeriodo(successState(response));
       return response;
-    } catch (e) {
-      const message = toErrorMessage(e, 'No se pudo consultar el estado del período');
+    } catch (error) {
+      const message = toErrorMessage(error, 'No se pudo consultar el estado del período.');
       setEstadoPeriodo((current) => errorState(message, current.data));
-      throw e;
+      throw error;
     }
   }, []);
 
