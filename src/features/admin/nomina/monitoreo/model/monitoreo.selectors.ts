@@ -51,19 +51,6 @@ export function formatPeriodoOptionLabel(periodo: PeriodoLike) {
     : `${periodo.anio} · Quincena ${periodo.quincena}`;
 }
 
-export function matchesPeriodoQuery(periodo: PeriodoLike, query: string) {
-  const normalizedQuery = query.trim().toLowerCase();
-  if (!normalizedQuery) return true;
-
-  return [
-    getPeriodoCode(periodo),
-    String(periodo.anio),
-    `quincena ${periodo.quincena}`,
-    `q${periodo.quincena}`,
-    formatPeriodoOptionLabel(periodo),
-  ].some((candidate) => String(candidate).toLowerCase().includes(normalizedQuery));
-}
-
 export function getMonitoreoMainStatus(detalle: NominaPeriodoEstadoDto) {
   if (detalle.released) {
     return {

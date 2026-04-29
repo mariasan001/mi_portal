@@ -17,11 +17,11 @@ export default function MonitoreoPage() {
   return (
     <AdminPageShell>
       <NominaHero
-        title="Monitoreo del período"
+        title="Monitoreo del periodo"
         subtitle={
           <>
-            <strong>Primero consulta el período que quieres revisar.</strong> Después podrás
-            validar <em>su estado operativo, alertas y liberación</em>.
+            <strong>Primero consulta el periodo que quieres revisar.</strong> Despues podras
+            validar <em>su estado operativo, alertas y liberacion</em>.
           </>
         }
       />
@@ -36,7 +36,7 @@ export default function MonitoreoPage() {
         />
 
         {vm.activeError ? (
-          <AdminInlineMessage title="Ocurrió un problema" tone="error">
+          <AdminInlineMessage title="Ocurrio un problema" tone="error">
             {vm.activeError}
           </AdminInlineMessage>
         ) : null}
@@ -46,8 +46,8 @@ export default function MonitoreoPage() {
         ) : (
           <div className={s.emptyArea}>
             <NominaEmptyState
-              title="Aún no has consultado ningún período"
-              description="Busca y selecciona un período existente para revisar el estado general del proceso de nómina."
+              title="Aun no has consultado ningun periodo"
+              description="Busca y selecciona un periodo existente para revisar el estado general del proceso de nomina."
               variant="inbox"
               tone="compact"
             />

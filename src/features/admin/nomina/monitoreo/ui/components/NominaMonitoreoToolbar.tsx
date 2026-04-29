@@ -22,18 +22,15 @@ export default function NominaMonitoreoToolbar({
 }: Props) {
   return (
     <section className={s.toolbar}>
-      <div
-        className={s.controls}
-        style={{ gridTemplateColumns: 'minmax(0, 1fr)' }}
-      >
+      <div className={s.controls} style={{ gridTemplateColumns: 'minmax(0, 1fr)' }}>
         <label className={s.selectField}>
-          <span className={s.fieldLabel}>Período</span>
+          <span className={s.fieldLabel}>Periodo</span>
           <select
             value={selectedPeriodId}
             onChange={(event) => onSelectPeriod(event.target.value)}
             disabled={loading}
           >
-            <option value="">Selecciona un período</option>
+            <option value="">Selecciona un periodo</option>
             {options.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
@@ -43,18 +40,7 @@ export default function NominaMonitoreoToolbar({
         </label>
       </div>
 
-      {helperText ? (
-        <p
-          style={{
-            margin: '8px 0 0',
-            color: 'rgba(10, 10, 10, 0.62)',
-            fontSize: '11px',
-            lineHeight: 1.45,
-          }}
-        >
-          {helperText}
-        </p>
-      ) : null}
+      {helperText ? <p className={s.helperText}>{helperText}</p> : null}
     </section>
   );
 }

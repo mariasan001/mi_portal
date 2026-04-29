@@ -19,7 +19,7 @@ export function useMonitoreoPeriodosResource() {
       setLista(response);
       return response;
     } catch (error) {
-      const message = toErrorMessage(error, 'No se pudo cargar la lista de períodos.');
+      const message = toErrorMessage(error, 'No se pudo cargar la lista de periodos.');
       setErrorLista(message);
       throw error;
     } finally {
