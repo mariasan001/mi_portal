@@ -1,12 +1,42 @@
-.resultCard {
+.contentShell {
   position: relative;
   display: grid;
   gap: 18px;
   overflow: hidden;
 }
 
+.toolbarArea {
+  display: grid;
+  gap: 10px;
+}
+
+.metaText {
+  justify-self: end;
+  color: var(--muted-2);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.2;
+  opacity: 0.84;
+}
+
+.emptyArea {
+  min-height: 160px;
+  display: grid;
+  align-content: start;
+}
+
+.emptyArea > * {
+  min-height: 160px;
+  box-shadow: none;
+}
+
 @media (max-width: 640px) {
-  .resultCard {
+  .contentShell {
     gap: 16px;
+  }
+
+  .emptyArea,
+  .emptyArea > * {
+    min-height: 150px;
   }
 }

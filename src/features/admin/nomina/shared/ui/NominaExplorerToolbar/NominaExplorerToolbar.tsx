@@ -28,7 +28,7 @@ type ToolbarControl = SearchControl | SelectControl;
 
 type Props = {
   controls: ToolbarControl[];
-  onCreate: () => void;
+  onCreate?: () => void;
   createLabel?: string;
   layout?: 'periodos' | 'versiones';
 };
@@ -101,12 +101,14 @@ export default function NominaExplorerToolbar({
           );
         })}
 
-        <div className={s.actions}>
-          <button type="button" className={s.createButton} onClick={onCreate}>
-            <Plus size={16} />
-            <span>{createLabel}</span>
-          </button>
-        </div>
+        {onCreate ? (
+          <div className={s.actions}>
+            <button type="button" className={s.createButton} onClick={onCreate}>
+              <Plus size={16} />
+              <span>{createLabel}</span>
+            </button>
+          </div>
+        ) : null}
       </div>
     </section>
   );

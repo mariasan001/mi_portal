@@ -1,11 +1,11 @@
 .panel {
   display: grid;
-  gap: 16px;
-  padding: 18px;
-  border-radius: 22px;
-  background: var(--surface);
-  border: 1px solid var(--border-soft);
-  box-shadow: var(--shadow-sm);
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(17, 24, 39, 0.07);
+  box-shadow: 0 1px 0 rgba(17, 24, 39, 0.02);
 }
 
 .primary {
@@ -21,8 +21,8 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border-soft);
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(17, 24, 39, 0.06);
 }
 
 .headerCopy {
@@ -34,40 +34,42 @@
 .countBadge {
   display: inline-flex;
   align-items: center;
-  min-height: 26px;
-  padding: 0 10px;
+  min-height: 24px;
+  padding: 0 9px;
   border-radius: 999px;
   background: rgba(188, 148, 90, 0.08);
   border: 1px solid rgba(188, 148, 90, 0.14);
   color: #8a6a3d;
-  font-size: 10.5px;
+  font-size: 9px;
   font-weight: 700;
   white-space: nowrap;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .header h3 {
   margin: 0;
   color: var(--text);
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 800;
   line-height: 1.15;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
 
 .header p {
   margin: 0;
   color: var(--muted);
   font-size: 12px;
-  line-height: 1.55;
+  line-height: 1.5;
 }
 
 .empty {
-  min-height: 132px;
+  min-height: 120px;
   display: grid;
   place-items: center;
-  padding: 18px;
+  padding: 16px;
   border: 1px dashed rgba(10, 10, 10, 0.1);
-  border-radius: 18px;
+  border-radius: 16px;
   background:
     linear-gradient(
       180deg,
@@ -82,23 +84,23 @@
   max-width: 44ch;
   color: var(--muted);
   font-size: 12px;
-  line-height: 1.65;
+  line-height: 1.6;
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  gap: 12px;
 }
 
 .item {
   display: grid;
-  gap: 7px;
+  gap: 6px;
   min-width: 0;
-  padding: 14px 15px;
-  border: 1px solid var(--border-soft);
-  border-radius: 18px;
-  background: #faf9f7;
+  padding: 12px 14px;
+  border: 1px solid rgba(17, 24, 39, 0.06);
+  border-radius: 14px;
+  background: rgba(252, 252, 252, 0.92);
   transition:
     transform 0.18s ease,
     border-color 0.18s ease,
@@ -116,8 +118,8 @@
 .item dt {
   margin: 0;
   color: var(--muted);
-  font-size: 10px;
-  font-weight: 800;
+  font-size: 9px;
+  font-weight: 700;
   line-height: 1.2;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -127,8 +129,8 @@
 .item dd {
   margin: 0;
   color: var(--text);
-  font-size: 15px;
-  font-weight: 800;
+  font-size: 13px;
+  font-weight: 700;
   line-height: 1.35;
   letter-spacing: -0.01em;
   word-break: break-word;
@@ -136,9 +138,8 @@
 
 @media (max-width: 840px) {
   .panel {
-    gap: 14px;
     padding: 14px;
-    border-radius: 18px;
+    border-radius: 16px;
   }
 
   .header {

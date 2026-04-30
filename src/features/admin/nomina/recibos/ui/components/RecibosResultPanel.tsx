@@ -29,12 +29,10 @@ export default function RecibosResultPanel({
     <section className={`${s.panel} ${toneClass}`}>
       <header className={s.header}>
         <div className={s.headerCopy}>
-          <h3>{title}</h3>
-          <p>
-            {data
-              ? 'Se muestra la respuesta tecnica registrada para esta operacion.'
-              : 'Todavia no hay informacion registrada en este bloque.'}
-          </p>
+          {data ? <h3>{title}</h3> : null}
+          {data ? (
+            <p>Se muestra la respuesta tecnica registrada para esta operacion.</p>
+          ) : null}
         </div>
 
         {data ? (

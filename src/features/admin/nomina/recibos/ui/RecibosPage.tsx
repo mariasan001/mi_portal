@@ -1,85 +1,104 @@
 'use client';
 
-import AdminPageShell from '@/features/admin/shared/ui/AdminPageShell/AdminPageShell';
-import AdminSurface from '@/features/admin/shared/ui/AdminSurface/AdminSurface';
 import NominaEmptyState from '@/features/admin/nomina/shared/ui/NominaEmptyState/NominaEmptyState';
 import NominaHero from '@/features/admin/nomina/shared/ui/NominaHero/NominaHero';
-import NominaSectionHeader from '@/features/admin/nomina/shared/ui/NominaSectionHeader/NominaSectionHeader';
-import { FileText, RefreshCw } from 'lucide-react';
-import NominaRecibosActionCards from './components/NominaRecibosActionCards';
-import NominaRecibosReleasePanel from './components/NominaRecibosReleasePanel';
-import NominaRecibosResultsSection from './components/NominaRecibosResultsSection';
-import NominaRecibosToolbar from './components/NominaRecibosToolbar';
-import s from './RecibosPage.module.css';
+import AdminInlineMessage from '@/features/admin/shared/ui/AdminInlineMessage/AdminInlineMessage';
+import AdminPageShell from '@/features/admin/shared/ui/AdminPageShell/AdminPageShell';
+import AdminSurface from '@/features/admin/shared/ui/AdminSurface/AdminSurface';
+
 import { useRecibosController } from '../application/useRecibosController';
+import { useRecibosExplorer } from '../application/useRecibosExplorer';
+import NominaRecibosExplorerToolbar from './components/NominaRecibosExplorerToolbar';
+import NominaRecibosVersionAccordion from './components/NominaRecibosVersionAccordion';
+import s from './RecibosPage.module.css';
 
 export default function RecibosPage() {
   const vm = useRecibosController();
+  const explorer = useRecibosExplorer(vm.versionCards);
+
+  const toolbar = (
+    <NominaRecibosExplorerToolbar
+      query={explorer.query}
+      stageOptions={explorer.stageOptions}
+      stageValue={explorer.stageFilter}
+      statusOptions={explorer.statusOptions}
+      statusValue={explorer.statusFilter}
+      sortValue={explorer.sort}
+      onQueryChange={explorer.setQuery}
+      onStageChange={explorer.setStageFilter}
+      onStatusChange={explorer.setStatusFilter}
+      onSortChange={explorer.setSort}
+    />
+  );
 
   return (
     <AdminPageShell>
       <NominaHero
-        kicker="Nómina"
-        title="Liberación de nómina"
-        subtitle="Gestiona la generación, liberación y sincronización de recibos de nómina."
-        badges={[
-          { icon: FileText, label: 'Recibos' },
-          { icon: RefreshCw, label: 'Liberación y sincronización' },
-        ]}
+        title="Liberacion de nomina"
+        subtitle={
+          <>
+            <strong>Selecciona una version para continuar su flujo previo.</strong>{' '}
+            Despues podras ejecutar <em>snapshots, recibos, sincronizacion y liberacion</em> desde una sola vista.
+          </>
+        }
       />
 
-      <NominaRecibosActionCards
-        activeAction={vm.activeAction}
-        onSelect={vm.setActiveAction}
-      />
+      {vm.currentError ? (
+        <AdminInlineMessage title="Ocurrio un problema" tone="error">
+          {vm.currentError}
+        </AdminInlineMessage>
+      ) : null}
 
-      <NominaRecibosToolbar
-        activeAction={vm.activeAction}
-        versionId={vm.form.versionId}
-        loading={vm.currentLoading}
-        canExecute={vm.canExecute}
-        onChangeVersionId={(value) => vm.updateField('versionId', value)}
-        onExecute={vm.executeActiveAction}
-      />
+      <AdminSurface as="section" className={s.contentShell}>
+        {vm.versionCards.length ? (
+          <div className={s.toolbarArea}>
+            {toolbar}
+            <span className={s.metaText}>{explorer.metaText}</span>
+          </div>
+        ) : null}
 
-      <AdminSurface as="section" className={s.resultCard}>
-        <NominaSectionHeader
-          eyebrow="Resultado"
-          title={vm.currentTitle}
-          description={vm.currentDescription}
-          status={vm.generalStatus}
-          summaryItems={vm.summaryItems}
-          showSummary={vm.hasAnyResult}
-        />
-
-        {vm.hasAnyResult ? (
-          <NominaRecibosResultsSection
-            activeAction={vm.activeAction}
-            snapshots={vm.results.snapshots}
-            receipts={vm.results.receipts}
-            release={vm.results.release}
-            coreSync={vm.results.coreSync}
-          />
+        {vm.versionCards.length ? (
+          explorer.filteredItems.length ? (
+            <NominaRecibosVersionAccordion
+              items={explorer.filteredItems}
+              selectedVersionId={vm.selectedVersionId}
+              activeAction={vm.activeAction}
+              loading={vm.currentLoading}
+              technicalFlowLoading={vm.technicalFlowLoading}
+              technicalFlowVersionId={vm.technicalFlowVersionId}
+              form={vm.form}
+              results={vm.results}
+              onSelectVersion={vm.setSelectedVersionId}
+              onSelectAction={vm.setActiveAction}
+              onUpdateField={vm.updateField}
+              onExecuteStep={vm.executeStep}
+              onExecuteTechnicalFlow={vm.executeTechnicalFlow}
+            />
+          ) : (
+            <div className={s.emptyArea}>
+              <NominaEmptyState
+                title="Sin coincidencias"
+                description="Prueba con otra busqueda, ajusta el estatus o cambia el orden para volver a ver versiones."
+                variant="inbox"
+                tone="compact"
+              />
+            </div>
+          )
         ) : (
-          <NominaEmptyState
-            title="Aún no has ejecutado ninguna acción"
-            description="Selecciona una opción del flujo principal o ejecuta la liberación cuando corresponda."
-            variant="inbox"
-          />
+          <div className={s.emptyArea}>
+            <NominaEmptyState
+              title={
+                vm.loadingVersions
+                  ? 'Cargando versiones de nomina'
+                  : 'Aun no hay versiones para trabajar'
+              }
+              description="Cuando la API de versiones responda, aqui podras abrir cada version y continuar su flujo tecnico."
+              variant="inbox"
+              tone="compact"
+            />
+          </div>
         )}
       </AdminSurface>
-
-      <NominaRecibosReleasePanel
-        versionId={vm.form.versionId}
-        releasedByUserId={vm.form.releasedByUserId}
-        comments={vm.form.comments}
-        loading={vm.releaseLoading}
-        canExecute={vm.canRelease}
-        onChangeVersionId={(value) => vm.updateField('versionId', value)}
-        onChangeReleasedByUserId={(value) => vm.updateField('releasedByUserId', value)}
-        onChangeComments={(value) => vm.updateField('comments', value)}
-        onExecute={vm.executeRelease}
-      />
     </AdminPageShell>
   );
 }

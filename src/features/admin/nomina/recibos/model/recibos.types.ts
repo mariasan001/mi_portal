@@ -1,14 +1,46 @@
-export type RecibosAction = 'snapshots' | 'recibos' | 'sincronizacion';
+import type { VersionNominaDto } from '@/features/admin/nomina/shared/model/versiones.types';
+
+export type RecibosAction =
+  | 'snapshots'
+  | 'recibos'
+  | 'sincronizacion'
+  | 'liberacion';
 
 export type RecibosFormState = {
-  versionId: string;
-  releasedByUserId: string;
   comments: string;
 };
 
-export type RecibosSummaryItem = {
+export type RecibosStepStatus = 'blocked' | 'ready' | 'done';
+
+export type RecibosVersionProgress = {
+  snapshotsDone: boolean;
+  receiptsDone: boolean;
+  coreSyncDone: boolean;
+  releaseDone: boolean;
+  snapshots: Record<string, unknown> | null;
+  receipts: Record<string, unknown> | null;
+  coreSync: Record<string, unknown> | null;
+  release: Record<string, unknown> | null;
+};
+
+export type RecibosStepItem = {
+  key: RecibosAction;
   label: string;
-  value: string;
+  description: string;
+  status: RecibosStepStatus;
+  canExecute: boolean;
+};
+
+export type RecibosVersionCardItem = {
+  version: VersionNominaDto;
+  periodLabel: string;
+  subtitle: string;
+  statusLabel: string;
+  statusTone: string;
+  stageLabel: string;
+  progressLabel: string;
+  progressTone: 'neutral' | 'warn' | 'ok';
+  steps: RecibosStepItem[];
 };
 
 export type GenerarSnapshotsResponseDto = {
@@ -54,9 +86,3 @@ export type CoreSyncResponseDto = {
   servidorPublicoAffected: number;
   plazaPrincipalAffected: number;
 };
-
-export type NominaRecibosStepKey =
-  | 'snapshots'
-  | 'receipts'
-  | 'release'
-  | 'core-sync';
