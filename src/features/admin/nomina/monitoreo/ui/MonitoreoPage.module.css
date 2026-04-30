@@ -1,38 +1,44 @@
 .resultCard {
   display: grid;
+  grid-template-rows: auto 1fr;
   gap: 16px;
+  min-height: 580px;
   padding: 18px 20px;
-  box-shadow: none !important;
-  align-content: start;
 }
 
 .emptyArea {
-  min-height: 160px;
+  min-height: 300px;
   display: grid;
-  align-content: start;
+  align-content: stretch;
 }
 
 .emptyArea > * {
-  min-height: 160px;
+  min-height: 300px;
   box-shadow: none;
+  align-content: center;
+  justify-items: center;
 }
 
 @media (max-width: 1080px) {
   .resultCard {
+    min-height: 520px;
     padding: 18px;
+  }
+
+  .emptyArea,
+  .emptyArea > * {
+    min-height: 270px;
   }
 }
 
 @media (max-width: 640px) {
   .resultCard {
+    min-height: 440px;
     padding: 16px;
   }
 
-  .emptyArea {
-    min-height: 150px;
-  }
-
+  .emptyArea,
   .emptyArea > * {
-    min-height: 150px;
+    min-height: 220px;
   }
 }

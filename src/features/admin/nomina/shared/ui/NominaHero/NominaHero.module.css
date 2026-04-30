@@ -45,9 +45,9 @@
 
 .subtitle strong,
 .subtitle em {
-  color: var(--vino);
+  color: rgba(10, 10, 10, 0.72);
   font-style: normal;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 @keyframes fadeUp {

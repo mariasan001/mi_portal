@@ -21,7 +21,7 @@ export default function MonitoreoPage() {
         subtitle={
           <>
             <strong>Primero consulta el periodo que quieres revisar.</strong> Despues podras
-            validar <em>su estado operativo, alertas y liberacion</em>.
+            validar <em>su estado operativo.</em>.
           </>
         }
       />

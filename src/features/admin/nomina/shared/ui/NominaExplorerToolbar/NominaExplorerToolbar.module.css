@@ -4,6 +4,7 @@
   border: 1px solid var(--border-soft);
   border-radius: 15px;
   background: #fcfcfc;
+  box-shadow: 0 8px 22px rgba(10, 10, 10, 0.03);
   animation: toolbarIn 0.3s ease both;
 }
 

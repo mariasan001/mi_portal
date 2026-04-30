@@ -11,6 +11,7 @@
   border-radius: 18px;
   background: #fff;
   overflow: hidden;
+  box-shadow: 0 8px 20px rgba(17, 24, 39, 0.03);
 }
 
 .cardOpen {

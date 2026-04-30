@@ -1,10 +1,11 @@
 .contentShell {
-  min-height: 420px;
+  min-height: 580px;
   align-content: start;
 }
 
 .resultCard {
   display: grid;
+  grid-template-rows: auto 1fr;
   gap: 16px;
   padding: 18px 20px;
   box-shadow: none !important;
@@ -22,14 +23,16 @@
 }
 
 .emptyArea {
-  min-height: 160px;
+  min-height: 300px;
   display: grid;
-  align-content: start;
+  align-content: stretch;
 }
 
 .emptyArea > * {
-  min-height: 160px;
+  min-height: 300px;
   box-shadow: none;
+  align-content: center;
+  justify-items: center;
 }
 
 .emptyBlock {
@@ -152,12 +155,25 @@
 }
 
 @media (max-width: 1080px) {
+  .contentShell {
+    min-height: 520px;
+  }
+
   .resultCard {
     padding: 18px;
+  }
+
+  .emptyArea,
+  .emptyArea > * {
+    min-height: 270px;
   }
 }
 
 @media (max-width: 640px) {
+  .contentShell {
+    min-height: 440px;
+  }
+
   .resultCard {
     gap: 16px;
     padding: 16px;
@@ -168,11 +184,11 @@
   }
 
   .emptyArea {
-    min-height: 150px;
+    min-height: 220px;
   }
 
   .emptyArea > * {
-    min-height: 150px;
+    min-height: 220px;
   }
 
   .accordion {
