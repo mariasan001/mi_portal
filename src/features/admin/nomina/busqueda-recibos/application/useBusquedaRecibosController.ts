@@ -5,10 +5,24 @@ import { toast } from 'sonner';
 
 import { buildBusquedaRecibosSummary } from '../model/busqueda-recibos.selectors';
 import type { BusquedaRecibosFormState } from '../model/busqueda-recibos.types';
+import { useBusquedaRecibosPeriodosResource } from './useBusquedaRecibosPeriodosResource';
 import { useBusquedaRecibosResource } from './useBusquedaRecibosResource';
+
+function getPeriodCode(anio?: number, quincena?: number, periodoCode?: string | null) {
+  if (periodoCode) {
+    return periodoCode;
+  }
+
+  if (typeof anio === 'number' && typeof quincena === 'number') {
+    return `${String(quincena).padStart(2, '0')}${anio}`;
+  }
+
+  return '';
+}
 
 export function useBusquedaRecibosController() {
   const domain = useBusquedaRecibosResource();
+  const periodos = useBusquedaRecibosPeriodosResource();
   const [form, setForm] = useState<BusquedaRecibosFormState>({
     claveSp: '',
     periodCode: '',
@@ -27,6 +41,21 @@ export function useBusquedaRecibosController() {
   const canSearch = useMemo(
     () => Boolean(form.claveSp.trim() && form.periodCode.trim()),
     [form.claveSp, form.periodCode]
+  );
+
+  const periodOptions = useMemo(
+    () =>
+      [...periodos.data]
+        .map((item) => ({
+          code: getPeriodCode(item.anio, item.quincena, item.periodoCode),
+        }))
+        .filter((item) => Boolean(item.code))
+        .sort((a, b) => b.code.localeCompare(a.code))
+        .map((item) => ({
+          label: item.code,
+          value: item.code,
+        })),
+    [periodos.data]
   );
 
   const executeSearch = useCallback(async () => {
@@ -66,6 +95,9 @@ export function useBusquedaRecibosController() {
     form,
     updateField,
     canSearch,
+    periodOptions,
+    loadingPeriods: periodos.loading,
+    periodsError: periodos.error,
     executeSearch,
     loading: domain.loading,
     error: domain.error,

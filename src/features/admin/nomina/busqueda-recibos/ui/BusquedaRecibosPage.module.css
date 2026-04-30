@@ -1,12 +1,56 @@
-.resultContainer {
-  position: relative;
+.contentShell {
+  min-height: 580px;
+  align-content: start;
+}
+
+.resultCard {
   display: grid;
-  gap: 18px;
-  overflow: hidden;
+  grid-template-rows: auto 1fr;
+  gap: 16px;
+  padding: 18px 20px;
+  box-shadow: none !important;
+  align-content: start;
+}
+
+.emptyArea {
+  min-height: 300px;
+  display: grid;
+  align-content: stretch;
+}
+
+.emptyArea > * {
+  min-height: 300px;
+  box-shadow: none;
+  align-content: center;
+  justify-items: center;
+}
+
+@media (max-width: 1080px) {
+  .contentShell {
+    min-height: 520px;
+  }
+
+  .resultCard {
+    padding: 18px;
+  }
+
+  .emptyArea,
+  .emptyArea > * {
+    min-height: 270px;
+  }
 }
 
 @media (max-width: 640px) {
-  .resultContainer {
-    gap: 16px;
+  .contentShell {
+    min-height: 440px;
+  }
+
+  .resultCard {
+    padding: 16px;
+  }
+
+  .emptyArea,
+  .emptyArea > * {
+    min-height: 220px;
   }
 }

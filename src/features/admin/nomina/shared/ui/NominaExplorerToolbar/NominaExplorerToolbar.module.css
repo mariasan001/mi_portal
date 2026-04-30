@@ -27,6 +27,10 @@
     auto;
 }
 
+.busquedaLayout {
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.96fr) auto;
+}
+
 .searchField,
 .selectField {
   display: grid;
@@ -70,6 +74,7 @@
 }
 
 .searchField input,
+.plainInput,
 .selectField select {
   width: 100%;
   min-width: 0;
@@ -94,16 +99,27 @@
   padding: 0 10px 0 34px;
 }
 
-.selectField select {
+.plainInput {
+  padding: 0 11px;
+}
+
+.selectField select,
+.plainInput {
   padding: 0 11px;
   appearance: none;
 }
 
 .searchField input:focus,
+.plainInput:focus,
 .selectField select:focus {
   outline: none;
   border-color: rgba(188, 148, 90, 0.24);
   box-shadow: 0 0 0 4px rgba(188, 148, 90, 0.08);
+}
+
+.plainInput::placeholder {
+  color: rgba(10, 10, 10, 0.4);
+  font-weight: 400;
 }
 
 .selectWithIcon {
@@ -148,7 +164,14 @@
     border-color 0.18s ease;
 }
 
-.createButton:hover {
+.createButton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.createButton:hover:not(:disabled) {
   transform: translateY(-1px);
   border-color: rgba(159, 33, 65, 0.16);
   background: rgba(159, 33, 65, 0.08);

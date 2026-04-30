@@ -1,9 +1,18 @@
+import type { LucideIcon } from 'lucide-react';
 import { ArrowDownWideNarrow, Plus, Search } from 'lucide-react';
 
 import s from './NominaExplorerToolbar.module.css';
 
 type SearchControl = {
   kind: 'search';
+  label: string;
+  placeholder: string;
+  value: string;
+  onChange: (value: string) => void;
+};
+
+type InputControl = {
+  kind: 'input';
   label: string;
   placeholder: string;
   value: string;
@@ -24,13 +33,21 @@ type SelectControl = {
   withOrderIcon?: boolean;
 };
 
-type ToolbarControl = SearchControl | SelectControl;
+type ToolbarControl = SearchControl | InputControl | SelectControl;
+
+type ActionConfig = {
+  label: string;
+  onClick: () => void;
+  disabled?: boolean;
+  icon?: LucideIcon;
+};
 
 type Props = {
   controls: ToolbarControl[];
   onCreate?: () => void;
   createLabel?: string;
-  layout?: 'periodos' | 'versiones';
+  layout?: 'periodos' | 'versiones' | 'busqueda';
+  action?: ActionConfig;
 };
 
 export default function NominaExplorerToolbar({
@@ -38,12 +55,17 @@ export default function NominaExplorerToolbar({
   onCreate,
   createLabel = 'Crear nuevo',
   layout = 'periodos',
+  action,
 }: Props) {
   return (
     <section className={s.toolbar}>
       <div
         className={`${s.controls} ${
-          layout === 'versiones' ? s.versionesLayout : s.periodosLayout
+          layout === 'versiones'
+            ? s.versionesLayout
+            : layout === 'busqueda'
+              ? s.busquedaLayout
+              : s.periodosLayout
         }`}
       >
         {controls.map((control) => {
@@ -66,6 +88,21 @@ export default function NominaExplorerToolbar({
             );
           }
 
+          if (control.kind === 'input') {
+            return (
+              <label key={control.label} className={s.selectField}>
+                <span className={s.fieldLabel}>{control.label}</span>
+                <input
+                  type="text"
+                  className={s.plainInput}
+                  value={control.value}
+                  onChange={(event) => control.onChange(event.target.value)}
+                  placeholder={control.placeholder}
+                />
+              </label>
+            );
+          }
+
           return (
             <label key={control.label} className={s.selectField}>
               <span className={s.fieldLabel}>{control.label}</span>
@@ -78,8 +115,11 @@ export default function NominaExplorerToolbar({
                     value={control.value}
                     onChange={(event) => control.onChange(event.target.value)}
                   >
-                    {control.options.map((option) => (
-                      <option key={option.value} value={option.value}>
+                    {control.options.map((option, index) => (
+                      <option
+                        key={`${control.label}-${option.value || 'empty'}-${index}`}
+                        value={option.value}
+                      >
                         {option.label}
                       </option>
                     ))}
@@ -90,8 +130,11 @@ export default function NominaExplorerToolbar({
                   value={control.value}
                   onChange={(event) => control.onChange(event.target.value)}
                 >
-                  {control.options.map((option) => (
-                    <option key={option.value} value={option.value}>
+                  {control.options.map((option, index) => (
+                    <option
+                      key={`${control.label}-${option.value || 'empty'}-${index}`}
+                      value={option.value}
+                    >
                       {option.label}
                     </option>
                   ))}
@@ -100,6 +143,20 @@ export default function NominaExplorerToolbar({
             </label>
           );
         })}
+
+        {action ? (
+          <div className={s.actions}>
+            <button
+              type="button"
+              className={s.createButton}
+              onClick={action.onClick}
+              disabled={action.disabled}
+            >
+              {action.icon ? <action.icon size={16} /> : null}
+              <span>{action.label}</span>
+            </button>
+          </div>
+        ) : null}
 
         {onCreate ? (
           <div className={s.actions}>
