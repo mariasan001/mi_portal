@@ -4,19 +4,6 @@ import type {
   NominaStatus,
 } from '@/features/admin/nomina/shared/model/versiones.types';
 
-export type ProcesamientoView = 'summary' | 'preview' | 'errors';
-
-export type ResultHeader = {
-  eyebrow: string;
-  title: string;
-  description: string;
-};
-
-export type EmptyStateContent = {
-  title: string;
-  description: string;
-};
-
 export type SummaryTone = 'ok' | 'warn' | 'danger' | 'neutral';
 
 export type SummaryKpi = {
@@ -24,22 +11,6 @@ export type SummaryKpi = {
   label: string;
   value: number | string;
   tone?: SummaryTone;
-};
-
-export type SummaryField = {
-  key: string;
-  label: string;
-  value: number | string;
-  wide?: boolean;
-  icon:
-    | 'hash'
-    | 'file'
-    | 'status'
-    | 'folder'
-    | 'layers'
-    | 'warning';
-  tone?: SummaryTone;
-  asBadge?: boolean;
 };
 
 export type PayrollSummaryDto = {

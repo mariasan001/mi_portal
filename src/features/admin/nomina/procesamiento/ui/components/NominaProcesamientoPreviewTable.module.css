@@ -3,17 +3,17 @@
   gap: 8px;
 }
 
-/* CONTENEDOR */
 .tableShell {
-  border: 1px solid rgba(10, 10, 10, 0.07);
-  border-radius: 14px;
+  border: 1px solid rgba(17, 24, 39, 0.06);
+  border-radius: 18px;
   overflow: hidden;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 1px 0 rgba(17, 24, 39, 0.02);
 }
 
 .tableWrap {
   overflow-x: auto;
-  overflow-y: visible; /* 🔥 permite que el hover salga */
+  overflow-y: visible;
 }
 
 .table {
@@ -23,19 +23,18 @@
   border-spacing: 0;
 }
 
-/* HEADER */
 .table thead th {
-  padding: 8px 10px;
-  background: #f5f5f5;
-  font-size: 10px;
-  font-weight: 800;
+  padding: 9px 12px;
+  background: #f8f6f3;
+  font-size: 9px;
+  font-weight: 700;
   text-transform: uppercase;
-  border-bottom: 1px solid rgba(10, 10, 10, 0.06);
+  border-bottom: 1px solid rgba(17, 24, 39, 0.06);
   text-align: left;
-  color: rgba(10, 10, 10, 0.85);
+  color: var(--muted-2);
+  letter-spacing: 0.08em;
 }
 
-/* FILAS */
 .table tbody tr {
   transition: background 0.14s ease;
 }
@@ -44,111 +43,88 @@
   background: rgba(188, 148, 90, 0.03);
 }
 
-/* CELDAS */
 .table tbody td {
-  padding: 8px 10px;
+  padding: 10px 12px;
   font-size: 10px;
-  border-bottom: 1px solid rgba(10, 10, 10, 0.04);
+  border-bottom: 1px solid rgba(17, 24, 39, 0.04);
   white-space: nowrap;
   text-align: left;
   vertical-align: middle;
 }
 
-/* COLUMNAS */
-.table th:nth-child(7),
-.table td:nth-child(7) {
-  min-width: 260px;
+.table tbody tr:last-child td {
+  border-bottom: 0;
 }
 
-/* FILA INDEX */
+.table th:nth-child(7),
+.table td:nth-child(7) {
+  min-width: 220px;
+}
+
 .rowIndex {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-width: 28px;
   height: 20px;
+  padding: 0 8px;
   border-radius: 999px;
   background: rgba(10, 10, 10, 0.05);
   font-size: 10px;
   font-weight: 700;
+  color: rgba(10, 10, 10, 0.92);
+  line-height: 1;
 }
 
-/* BADGE */
 .fileTypeBadge {
-  padding: 2px 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 20px;
+  padding: 0 9px;
   border-radius: 999px;
   background: rgba(188, 148, 90, 0.08);
   border: 1px solid rgba(188, 148, 90, 0.12);
   font-size: 10px;
   font-weight: 700;
+  color: rgba(10, 10, 10, 0.92);
+  line-height: 1;
 }
 
-/* GENERAL */
 .cell {
   font-size: 10px;
-  font-weight: 400;
+  font-weight: 500;
   color: var(--muted);
 }
 
-/* 🔥 NOMBRE */
 .nameCell {
-  position: relative;
-  max-width: 260px;
+  max-width: 220px;
   overflow: hidden;
-}
-
-.nameText {
-  display: block;
-  font-size: 9px;
-  font-weight: 400;
   color: var(--muted);
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  transition: all 0.15s ease;
-}
-
-/* 🔥 HOVER EXPANSIÓN */
-.table tbody tr:hover .nameText {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-
-  white-space: normal;
-  overflow: visible;
-
-  background: #fff;
-  padding: 6px 8px;
-  border-radius: 6px;
-
-  box-shadow: 0 6px 14px rgba(0,0,0,0.08);
-
-  z-index: 10;
-
   font-size: 10px;
-  font-weight: 600;
-  color: var(--text);
+  font-weight: 500;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
-/* PLAZA */
 .plazaCell {
   font-size: 10px;
-  font-weight: 400;
+  font-weight: 500;
   color: rgba(10, 10, 10, 0.7);
 }
 
-/* STATUS */
 .statusBadge {
-  padding: 2px 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 20px;
+  padding: 0 9px;
   border-radius: 999px;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
+  line-height: 1;
 }
 
-/* ESTADOS */
 .ok {
   color: #0b7d57;
   background: rgba(25, 135, 84, 0.1);
@@ -167,4 +143,61 @@
 .neutral {
   color: var(--muted);
   background: rgba(10, 10, 10, 0.05);
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.paginationStatus {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.paginationBtn {
+  min-height: 34px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  border: 1px solid var(--border-soft);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease,
+    color 0.18s ease,
+    opacity 0.18s ease,
+    transform 0.18s ease;
+}
+
+.paginationBtn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: rgba(188, 148, 90, 0.22);
+  background: #faf7f1;
+}
+
+.paginationBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (max-width: 640px) {
+  .table {
+    min-width: 920px;
+  }
+
+  .pagination {
+    justify-content: center;
+  }
 }

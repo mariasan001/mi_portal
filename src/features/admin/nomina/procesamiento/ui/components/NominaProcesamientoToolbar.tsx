@@ -1,104 +1,59 @@
-import { RotateCcw, Search } from 'lucide-react';
-
-import {
-  NominaToolbarButton,
-  NominaToolbarInput,
-  NominaToolbarLabel,
-  NominaToolbarSecondaryInput,
-  NominaToolbarShell,
-  NominaToolbarSurface,
-} from '@/features/admin/nomina/shared/ui/NominaToolbar/NominaToolbar';
-
-type ProcesamientoView = 'summary' | 'preview' | 'errors';
+import s from './NominaProcesamientoToolbar.module.css';
 
 type Props = {
-  activeView: ProcesamientoView;
-  fileId: string;
-  limit: string;
+  periodFilter: string;
+  periodOptions: string[];
+  nameFilter: string;
+  nameOptions: string[];
   loading: boolean;
-  canSubmit: boolean;
-  onFileIdChange: (value: string) => void;
-  onLimitChange: (value: string) => void;
-  onConsult: () => void;
-  onReset: () => void;
+  onPeriodFilterChange: (value: string) => void;
+  onNameFilterChange: (value: string) => void;
 };
 
-function getLabel(view: ProcesamientoView) {
-  if (view === 'summary') return 'Consultar resumen';
-  if (view === 'preview') return 'Consultar vista previa';
-  return 'Consultar errores';
-}
-
-function getLimitLabel(view: ProcesamientoView) {
-  return view === 'errors' ? 'Limite de errores' : 'Limite de filas';
-}
-
 export default function NominaProcesamientoToolbar({
-  activeView,
-  fileId,
-  limit,
+  periodFilter,
+  periodOptions,
+  nameFilter,
+  nameOptions,
   loading,
-  canSubmit,
-  onFileIdChange,
-  onLimitChange,
-  onConsult,
-  onReset,
+  onPeriodFilterChange,
+  onNameFilterChange,
 }: Props) {
   return (
-    <NominaToolbarShell
-      aside={
-        <NominaToolbarButton
-          icon={<RotateCcw size={16} />}
-          onClick={onReset}
-          disabled={loading}
-          tone="secondary"
-        >
-          Limpiar
-        </NominaToolbarButton>
-      }
-    >
-      <NominaToolbarLabel htmlFor="nomina-procesamiento-file-id">
-        ID del archivo
-      </NominaToolbarLabel>
+    <section className={s.toolbar}>
+      <div className={s.controls}>
+        <label className={s.filterField}>
+          <span className={s.fieldLabel}>Periodo</span>
+          <select
+            value={periodFilter}
+            onChange={(event) => onPeriodFilterChange(event.target.value)}
+            disabled={loading}
+          >
+            <option value="all">Todos</option>
+            {periodOptions.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        </label>
 
-      <NominaToolbarSurface>
-        <NominaToolbarInput
-          icon={<Search size={16} />}
-          input={
-            <input
-              id="nomina-procesamiento-file-id"
-              type="number"
-              min="1"
-              value={fileId}
-              onChange={(e) => onFileIdChange(e.target.value)}
-              placeholder="Ej. 40"
-            />
-          }
-        />
-
-        {activeView !== 'summary' ? (
-          <NominaToolbarSecondaryInput
-            label={getLimitLabel(activeView)}
-            input={
-              <input
-                type="number"
-                min="1"
-                value={limit}
-                onChange={(e) => onLimitChange(e.target.value)}
-                placeholder={activeView === 'errors' ? '50' : '20'}
-              />
-            }
-          />
-        ) : null}
-
-        <NominaToolbarButton
-          icon={<Search size={16} />}
-          disabled={!canSubmit || loading}
-          onClick={onConsult}
-        >
-          {loading ? 'Consultando...' : getLabel(activeView)}
-        </NominaToolbarButton>
-      </NominaToolbarSurface>
-    </NominaToolbarShell>
+        <label className={s.filterField}>
+          <span className={s.fieldLabel}>Nombre</span>
+          <select
+            value={nameFilter}
+            onChange={(event) => onNameFilterChange(event.target.value)}
+            disabled={loading}
+          >
+            <option value="all">Todos</option>
+            {nameOptions.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+    </section>
   );
 }

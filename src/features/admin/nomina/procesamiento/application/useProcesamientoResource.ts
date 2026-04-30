@@ -77,6 +77,27 @@ export function useProcesamientoResource() {
     }
   }, []);
 
+  const resetSummary = useCallback(() => {
+    setSummary(null);
+    setErrorSummary(null);
+  }, []);
+
+  const resetPreview = useCallback(() => {
+    setPreviewRows([]);
+    setErrorPreview(null);
+  }, []);
+
+  const resetErrors = useCallback(() => {
+    setErrorRows([]);
+    setErrorErrors(null);
+  }, []);
+
+  const resetAll = useCallback(() => {
+    resetSummary();
+    resetPreview();
+    resetErrors();
+  }, [resetErrors, resetPreview, resetSummary]);
+
   return {
     summary,
     previewRows,
@@ -90,5 +111,9 @@ export function useProcesamientoResource() {
     consultarSummary,
     consultarPreview,
     consultarErrors,
+    resetSummary,
+    resetPreview,
+    resetErrors,
+    resetAll,
   };
 }

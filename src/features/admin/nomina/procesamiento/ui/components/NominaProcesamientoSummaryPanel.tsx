@@ -2,43 +2,25 @@ import {
   AlertTriangle,
   CheckCircle2,
   FileSpreadsheet,
-  FolderKanban,
-  Hash,
-  Layers3,
   ShieldCheck,
 } from 'lucide-react';
 
 import type { PayrollSummaryDto } from '@/features/admin/nomina/procesamiento/model/procesamiento.types';
+import type { ArchivoNominaDto } from '@/features/admin/nomina/shared/model/catalogo.types';
 import {
-  getSummaryFields,
+  formatProcesamientoFileTypeLabel,
+  formatProcesamientoStageLabel,
+  formatProcesamientoStatusLabel,
+  getStatusTone,
   getSummaryKpis,
-  type SummaryField,
 } from '@/features/admin/nomina/procesamiento/model/procesamiento.selectors';
 
 import s from './NominaProcesamientoSummaryPanel.module.css';
 
 type Props = {
   detalle: PayrollSummaryDto;
+  archivo: ArchivoNominaDto | null;
 };
-
-function getFieldIcon(icon: SummaryField['icon']) {
-  switch (icon) {
-    case 'hash':
-      return <Hash size={15} />;
-    case 'file':
-      return <FileSpreadsheet size={15} />;
-    case 'status':
-      return <CheckCircle2 size={15} />;
-    case 'folder':
-      return <FolderKanban size={15} />;
-    case 'layers':
-      return <Layers3 size={15} />;
-    case 'warning':
-      return <AlertTriangle size={15} />;
-    default:
-      return <Hash size={15} />;
-  }
-}
 
 function getKpiIcon(key: string) {
   switch (key) {
@@ -66,20 +48,14 @@ function getKpiHint(key: string) {
   }
 }
 
-export default function NominaProcesamientoSummaryPanel({ detalle }: Props) {
+export default function NominaProcesamientoSummaryPanel({
+  detalle,
+  archivo,
+}: Props) {
   const kpis = getSummaryKpis(detalle);
-  const fields = getSummaryFields(detalle);
-
-  const fileStatus = fields.find((field) => field.key === 'fileStatus');
-  const versionStatus = fields.find((field) => field.key === 'versionStatus');
-  const fileName = fields.find((field) => field.key === 'fileName');
-  const filePath = fields.find((field) => field.key === 'filePath');
-  const fileType = fields.find((field) => field.key === 'fileType');
-  const fileId = fields.find((field) => field.key === 'fileId');
-  const versionId = fields.find((field) => field.key === 'versionId');
-  const stage = fields.find((field) => field.key === 'stage');
-  const payPeriodId = fields.find((field) => field.key === 'payPeriodId');
-  const periodCode = fields.find((field) => field.key === 'periodCode');
+  const fileStatusTone = getStatusTone(detalle.fileStatus);
+  const versionStatusTone = getStatusTone(detalle.versionStatus);
+  const displayName = detalle.fileName.replace(/\.dbf$/i, '');
 
   return (
     <section className={s.panel}>
@@ -87,155 +63,62 @@ export default function NominaProcesamientoSummaryPanel({ detalle }: Props) {
         {kpis.map((kpi) => (
           <article
             key={kpi.key}
-            className={`${s.kpiCard} ${kpi.tone ? s[`kpi_${kpi.tone}`] : ''}`}
+            className={`${s.kpiCard} ${kpi.tone ? s[`tone_${kpi.tone}`] : ''}`}
           >
             <div className={s.kpiHead}>
-              <div className={`${s.kpiIcon} ${s[`kpiIcon_${kpi.key}`]}`}>
-                {getKpiIcon(kpi.key)}
-              </div>
-
+              <span className={s.kpiIcon}>{getKpiIcon(kpi.key)}</span>
               <span className={s.kpiLabel}>{kpi.label}</span>
             </div>
-
-            <div className={s.kpiBody}>
-              <strong className={s.kpiValue}>{kpi.value}</strong>
-              <small className={s.kpiHint}>{getKpiHint(kpi.key)}</small>
-            </div>
+            <strong className={s.kpiValue}>{kpi.value}</strong>
+            <small className={s.kpiHint}>{getKpiHint(kpi.key)}</small>
           </article>
         ))}
       </div>
 
-      <div className={s.summaryContainer}>
-        <div className={s.summaryShell}>
-          <div className={s.topGrid}>
-            <article className={`${s.infoCard} ${s.heroCard}`}>
-              <div className={s.heroHead}>
-                <div className={s.heroIconWrap}>
-                  <FileSpreadsheet size={18} />
-                </div>
-
-                <div className={s.heroCopy}>
-                  <span className={s.cardLabel}>Archivo procesado</span>
-                  <strong>{periodCode?.value ?? '-'}</strong>
-                  <small>Resumen base del procesamiento consultado</small>
-                </div>
-              </div>
-            </article>
-
-            <article className={s.infoCard}>
-              <div className={s.itemHead}>
-                <div className={s.iconWrap}>
-                  {getFieldIcon(fileId?.icon ?? 'hash')}
-                </div>
-                <dt>{fileId?.label ?? 'ID del archivo'}</dt>
-              </div>
-              <dd>{fileId?.value ?? '-'}</dd>
-            </article>
-
-            <article className={s.infoCard}>
-              <div className={s.itemHead}>
-                <div className={s.iconWrap}>
-                  {getFieldIcon(fileType?.icon ?? 'file')}
-                </div>
-                <dt>{fileType?.label ?? 'Tipo de archivo'}</dt>
-              </div>
-              <dd>{fileType?.value ?? '-'}</dd>
-            </article>
-
-            <article className={s.infoCard}>
-              <div className={s.itemHead}>
-                <div className={s.iconWrap}>
-                  <CheckCircle2 size={15} />
-                </div>
-                <dt>Estatus del archivo</dt>
-              </div>
-              <dd>
-                {fileStatus?.asBadge && fileStatus.tone ? (
-                  <span className={`${s.statusBadge} ${s[fileStatus.tone]}`}>
-                    {fileStatus.value}
-                  </span>
-                ) : (
-                  fileStatus?.value ?? '-'
-                )}
-              </dd>
-            </article>
-
-            <article className={s.infoCard}>
-              <div className={s.itemHead}>
-                <div className={s.iconWrap}>
-                  <ShieldCheck size={15} />
-                </div>
-                <dt>Estatus de version</dt>
-              </div>
-              <dd>
-                {versionStatus?.asBadge && versionStatus.tone ? (
-                  <span className={`${s.statusBadge} ${s[versionStatus.tone]}`}>
-                    {versionStatus.value}
-                  </span>
-                ) : (
-                  versionStatus?.value ?? '-'
-                )}
-              </dd>
-            </article>
+      <section className={s.detailPanel}>
+        <div className={s.identity}>
+          <div className={s.identityTop}>
+            {archivo ? <span className={s.idBadge}>#{archivo.fileId}</span> : null}
+            <span className={`${s.statusBadge} ${s[fileStatusTone]}`}>
+              {formatProcesamientoStatusLabel(detalle.fileStatus)}
+            </span>
+            <span className={`${s.statusBadge} ${s[versionStatusTone]}`}>
+              {formatProcesamientoStatusLabel(detalle.versionStatus)}
+            </span>
           </div>
 
-          <div className={s.fileGrid}>
-            <article
-              className={`${s.fileCard} ${s.fileCardWide} ${s.fileCardName}`}
-            >
-              <div className={s.itemHead}>
-                <div className={s.iconWrap}>
-                  {getFieldIcon(fileName?.icon ?? 'folder')}
-                </div>
-                <dt>{fileName?.label ?? 'Nombre del archivo'}</dt>
-              </div>
-              <dd className={s.fileValue}>{fileName?.value ?? '-'}</dd>
-            </article>
-
-            <article className={`${s.fileCard} ${s.fileCardWide}`}>
-              <div className={s.itemHead}>
-                <div className={s.iconWrap}>
-                  {getFieldIcon(filePath?.icon ?? 'folder')}
-                </div>
-                <dt>{filePath?.label ?? 'Ruta del archivo'}</dt>
-              </div>
-              <dd className={s.pathValue}>{filePath?.value ?? '-'}</dd>
-            </article>
-          </div>
-
-          <div className={s.bottomGrid}>
-            <article className={s.miniCard}>
-              <div className={s.itemHead}>
-                <div className={s.iconWrap}>
-                  {getFieldIcon(versionId?.icon ?? 'layers')}
-                </div>
-                <dt>{versionId?.label ?? 'ID de version'}</dt>
-              </div>
-              <dd>{versionId?.value ?? '-'}</dd>
-            </article>
-
-            <article className={s.miniCard}>
-              <div className={s.itemHead}>
-                <div className={s.iconWrap}>
-                  {getFieldIcon(stage?.icon ?? 'layers')}
-                </div>
-                <dt>{stage?.label ?? 'Etapa'}</dt>
-              </div>
-              <dd>{stage?.value ?? '-'}</dd>
-            </article>
-
-            <article className={s.miniCard}>
-              <div className={s.itemHead}>
-                <div className={s.iconWrap}>
-                  {getFieldIcon(payPeriodId?.icon ?? 'hash')}
-                </div>
-                <dt>{payPeriodId?.label ?? 'ID del periodo'}</dt>
-              </div>
-              <dd>{payPeriodId?.value ?? '-'}</dd>
-            </article>
+          <div className={s.identityCopy}>
+            <strong title={detalle.fileName}>{displayName}</strong>
+            <span>
+              {detalle.periodCode} - {formatProcesamientoStageLabel(detalle.stage)}
+            </span>
           </div>
         </div>
-      </div>
+
+        <dl className={s.metrics}>
+          <div className={s.metric}>
+            <dt>Tipo</dt>
+            <dd>{formatProcesamientoFileTypeLabel(detalle.fileType)}</dd>
+          </div>
+
+          <div className={s.metric}>
+            <dt>Etapa</dt>
+            <dd>{formatProcesamientoStageLabel(detalle.stage)}</dd>
+          </div>
+        </dl>
+
+        <div className={s.side}>
+          <div className={s.sideCard}>
+            <div className={s.sideHead}>
+              <span className={s.sideIcon}>
+                <ShieldCheck size={15} />
+              </span>
+              <span>Estado del archivo</span>
+            </div>
+            <strong>{formatProcesamientoStatusLabel(detalle.fileStatus)}</strong>
+          </div>
+        </div>
+      </section>
     </section>
   );
 }

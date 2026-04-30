@@ -1,4 +1,5 @@
 import { AlertTriangle } from 'lucide-react';
+import { useMemo, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import type { PayrollErrorRowDto } from '@/features/admin/nomina/procesamiento/model/procesamiento.types';
 import { formatCellValue } from '@/features/admin/nomina/procesamiento/model/procesamiento.selectors';
@@ -23,8 +24,18 @@ const columns: Array<{
   { key: 'errorDetailCell', label: 'Detalle del error' },
 ];
 
+const PAGE_SIZE = 10;
+
 export default function NominaProcesamientoErrorsTable({ rows }: Props) {
   const shouldReduceMotion = useReducedMotion();
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+  const paginatedRows = useMemo(() => {
+    const start = (safeCurrentPage - 1) * PAGE_SIZE;
+    return rows.slice(start, start + PAGE_SIZE);
+  }, [rows, safeCurrentPage]);
 
   return (
     <motion.section
@@ -45,7 +56,7 @@ export default function NominaProcesamientoErrorsTable({ rows }: Props) {
             </thead>
 
             <tbody>
-              {rows.map((row, index) => (
+              {paginatedRows.map((row, index) => (
                 <motion.tr
                   key={`${row.fileId}-${row.rowNum}-${index}`}
                   initial={shouldReduceMotion ? false : { opacity: 0 }}
@@ -94,6 +105,32 @@ export default function NominaProcesamientoErrorsTable({ rows }: Props) {
           </table>
         </div>
       </div>
+
+      {rows.length > PAGE_SIZE ? (
+        <div className={s.pagination}>
+          <button
+            type="button"
+            className={s.paginationBtn}
+            onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+            disabled={safeCurrentPage === 1}
+          >
+            Anterior
+          </button>
+
+          <div className={s.paginationStatus}>
+            Pagina {safeCurrentPage} de {totalPages}
+          </div>
+
+          <button
+            type="button"
+            className={s.paginationBtn}
+            onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+            disabled={safeCurrentPage === totalPages}
+          >
+            Siguiente
+          </button>
+        </div>
+      ) : null}
     </motion.section>
   );
 }

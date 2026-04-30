@@ -1,7 +1,9 @@
+import { useMemo, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import type { PayrollPreviewRowDto } from '@/features/admin/nomina/procesamiento/model/procesamiento.types';
 import {
   formatCellValue,
+  formatProcesamientoStatusLabel,
   getPreviewStatusTone,
 } from '@/features/admin/nomina/procesamiento/model/procesamiento.selectors';
 import s from './NominaProcesamientoPreviewTable.module.css';
@@ -28,8 +30,18 @@ const columns: Array<{
   { key: 'loadStatusBadge', label: 'Estatus' },
 ];
 
+const PAGE_SIZE = 10;
+
 export default function NominaProcesamientoPreviewTable({ rows }: Props) {
   const shouldReduceMotion = useReducedMotion();
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+  const paginatedRows = useMemo(() => {
+    const start = (safeCurrentPage - 1) * PAGE_SIZE;
+    return rows.slice(start, start + PAGE_SIZE);
+  }, [rows, safeCurrentPage]);
 
   return (
     <motion.section
@@ -50,7 +62,7 @@ export default function NominaProcesamientoPreviewTable({ rows }: Props) {
             </thead>
 
             <tbody>
-              {rows.map((row, index) => {
+              {paginatedRows.map((row, index) => {
                 const statusTone = getPreviewStatusTone(row.loadStatus) as StatusTone;
 
                 return (
@@ -73,9 +85,7 @@ export default function NominaProcesamientoPreviewTable({ rows }: Props) {
                     <td className={s.cell}>{formatCellValue(row.neyemp)}</td>
                     <td className={s.cell}>{formatCellValue(row.neyrfc)}</td>
 
-                    <td className={s.nameCell}>
-                      <span className={s.nameText}>{formatCellValue(row.negnom)}</span>
-                    </td>
+                    <td className={s.nameCell}>{formatCellValue(row.negnom)}</td>
 
                     <td className={s.plazaCell}>{formatCellValue(row.necpza)}</td>
 
@@ -83,7 +93,7 @@ export default function NominaProcesamientoPreviewTable({ rows }: Props) {
 
                     <td>
                       <span className={`${s.statusBadge} ${s[statusTone]}`}>
-                        {formatCellValue(row.loadStatus)}
+                        {formatProcesamientoStatusLabel(row.loadStatus)}
                       </span>
                     </td>
                   </motion.tr>
@@ -93,6 +103,32 @@ export default function NominaProcesamientoPreviewTable({ rows }: Props) {
           </table>
         </div>
       </div>
+
+      {rows.length > PAGE_SIZE ? (
+        <div className={s.pagination}>
+          <button
+            type="button"
+            className={s.paginationBtn}
+            onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+            disabled={safeCurrentPage === 1}
+          >
+            Anterior
+          </button>
+
+          <div className={s.paginationStatus}>
+            Pagina {safeCurrentPage} de {totalPages}
+          </div>
+
+          <button
+            type="button"
+            className={s.paginationBtn}
+            onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+            disabled={safeCurrentPage === totalPages}
+          >
+            Siguiente
+          </button>
+        </div>
+      ) : null}
     </motion.section>
   );
 }

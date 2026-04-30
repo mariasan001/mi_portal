@@ -1,82 +1,125 @@
+import type { ArchivoNominaDto } from '@/features/admin/nomina/shared/model/catalogo.types';
+
 import type {
-  EmptyStateContent,
-  PayrollErrorRowDto,
-  PayrollPreviewRowDto,
   PayrollSummaryDto,
-  ProcesamientoView,
-  ResultHeader,
-  SummaryField,
   SummaryKpi,
   SummaryTone,
 } from './procesamiento.types';
 
-export function getProcesamientoDefaultLimit(view: ProcesamientoView): string {
-  return view === 'errors' ? '50' : '20';
+export function getProcesamientoDefaultLimit(kind: 'preview' | 'errors'): string {
+  return kind === 'errors' ? '50' : '20';
 }
 
-export function getProcesamientoResultHeader(params: {
-  activeView: ProcesamientoView;
-  summary: PayrollSummaryDto | null;
-  previewRows: PayrollPreviewRowDto[];
-  errorRows: PayrollErrorRowDto[];
-}): ResultHeader {
-  const { activeView, summary, previewRows, errorRows } = params;
-
-  if (activeView === 'summary') {
-    return {
-      eyebrow: 'Resultado',
-      title: summary
-        ? 'Resumen del procesamiento consultado'
-        : 'Resumen del procesamiento',
-      description: summary
-        ? 'Aqui se muestran los indicadores principales y el estado general del archivo procesado.'
-        : 'Consulta un ID de archivo para visualizar metricas generales, estatus y conteos clave del procesamiento.',
-    };
-  }
-
-  if (activeView === 'preview') {
-    return {
-      eyebrow: 'Resultado',
-      title: previewRows.length
-        ? 'Vista previa del archivo consultado'
-        : 'Vista previa del archivo',
-      description:
-        'Revisa una muestra de filas procesadas para validar la informacion operativa del archivo.',
-    };
-  }
-
-  return {
-    eyebrow: 'Resultado',
-    title: errorRows.length ? 'Detalle de errores consultados' : 'Filas con error',
-    description:
-      'Consulta filas con incidencias detectadas durante el procesamiento para revisar el motivo del error.',
-  };
+export function formatProcesamientoFileTypeLabel(value?: string | null) {
+  if (!value) return 'Archivo';
+  if (value.toUpperCase() === 'CATALOGO') return 'Catalogo';
+  return value.toUpperCase();
 }
 
-export function getProcesamientoEmptyState(
-  activeView: ProcesamientoView
-): EmptyStateContent {
-  if (activeView === 'summary') {
-    return {
-      title: 'Aun no has consultado ningun resumen',
-      description:
-        'Captura un ID de archivo valido para revisar las metricas generales del archivo procesado.',
-    };
+export function formatProcesamientoStageLabel(value?: string | null) {
+  if (!value) return 'Sin etapa';
+
+  return value
+    .toLowerCase()
+    .split(/[_\s-]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
+}
+
+export function formatProcesamientoStatusLabel(value?: string | null) {
+  const normalized = (value ?? '').toUpperCase();
+
+  switch (normalized) {
+    case 'PROCESSED':
+      return 'Procesado';
+    case 'LOADED':
+    case 'UPLOADED':
+      return 'Cargado';
+    case 'PROCESSING':
+      return 'En proceso';
+    case 'COMPLETED':
+      return 'Completado';
+    case 'SUCCESS':
+      return 'Exitoso';
+    case 'VALIDATED':
+      return 'Validado';
+    case 'FAILED':
+    case 'ERROR':
+      return 'Error';
+    case 'RELEASED':
+      return 'Liberada';
+    case 'PENDING':
+      return 'Pendiente';
+    default:
+      return formatProcesamientoStageLabel(value);
+  }
+}
+
+export function getProcesamientoFileNameFilter(file: ArchivoNominaDto): string {
+  return formatProcesamientoFileTypeLabel(file.fileType);
+}
+
+export function matchesProcesamientoFilters(params: {
+  file: ArchivoNominaDto;
+  periodFilter: string;
+  nameFilter: string;
+}) {
+  const { file, periodFilter, nameFilter } = params;
+  const matchesPeriod =
+    periodFilter === 'all' || file.periodCode === periodFilter;
+
+  if (!matchesPeriod) {
+    return false;
   }
 
-  if (activeView === 'preview') {
-    return {
-      title: 'Aun no has cargado una vista previa',
-      description:
-        'Consulta un ID de archivo y un limite para visualizar una muestra de filas procesadas.',
-    };
-  }
+  return (
+    nameFilter === 'all' ||
+    getProcesamientoFileNameFilter(file) === nameFilter
+  );
+}
 
-  return {
-    title: 'Aun no has consultado filas con error',
-    description:
-      'Consulta un ID de archivo y un limite para revisar las incidencias detectadas en el procesamiento.',
-  };
+export function getProcesamientoPeriodOptions(files: ArchivoNominaDto[]) {
+  return Array.from(new Set(files.map((file) => file.periodCode).filter(Boolean))).sort(
+    (left, right) => right.localeCompare(left)
+  );
+}
+
+export function getProcesamientoNameOptions(
+  files: ArchivoNominaDto[],
+  periodFilter: string
+) {
+  return Array.from(
+    new Set(
+      files
+        .filter((file) =>
+          matchesProcesamientoFilters({
+            file,
+            periodFilter,
+            nameFilter: 'all',
+          })
+        )
+        .map(getProcesamientoFileNameFilter)
+    )
+  ).sort((left, right) => left.localeCompare(right));
+}
+
+export function findProcesamientoFileByFilters(params: {
+  files: ArchivoNominaDto[];
+  periodFilter: string;
+  nameFilter: string;
+}) {
+  const { files, periodFilter, nameFilter } = params;
+
+  return (
+    files.find((file) =>
+      matchesProcesamientoFilters({
+        file,
+        periodFilter,
+        nameFilter,
+      })
+    ) ?? null
+  );
 }
 
 export function getStatusTone(value: string): SummaryTone {
@@ -172,80 +215,6 @@ export function getSummaryKpis(detalle: PayrollSummaryDto): SummaryKpi[] {
       label: 'Con error',
       value: detalle.errorRows,
       tone: errorTone,
-    },
-  ];
-}
-
-export function getSummaryFields(detalle: PayrollSummaryDto): SummaryField[] {
-  const fileStatusTone = getStatusTone(detalle.fileStatus);
-  const versionStatusTone = getStatusTone(detalle.versionStatus);
-
-  return [
-    {
-      key: 'fileId',
-      label: 'ID del archivo',
-      value: detalle.fileId,
-      icon: 'hash',
-    },
-    {
-      key: 'fileType',
-      label: 'Tipo de archivo',
-      value: detalle.fileType,
-      icon: 'file',
-    },
-    {
-      key: 'fileStatus',
-      label: 'Estatus del archivo',
-      value: detalle.fileStatus,
-      icon: 'status',
-      tone: fileStatusTone,
-      asBadge: true,
-    },
-    {
-      key: 'fileName',
-      label: 'Nombre del archivo',
-      value: detalle.fileName,
-      icon: 'folder',
-      wide: true,
-    },
-    {
-      key: 'filePath',
-      label: 'Ruta del archivo',
-      value: detalle.filePath,
-      icon: 'folder',
-      wide: true,
-    },
-    {
-      key: 'versionId',
-      label: 'ID de version',
-      value: detalle.versionId,
-      icon: 'layers',
-    },
-    {
-      key: 'stage',
-      label: 'Etapa',
-      value: detalle.stage,
-      icon: 'layers',
-    },
-    {
-      key: 'versionStatus',
-      label: 'Estatus de version',
-      value: detalle.versionStatus,
-      icon: 'warning',
-      tone: versionStatusTone,
-      asBadge: true,
-    },
-    {
-      key: 'payPeriodId',
-      label: 'ID del periodo',
-      value: detalle.payPeriodId,
-      icon: 'hash',
-    },
-    {
-      key: 'periodCode',
-      label: 'Codigo del periodo',
-      value: detalle.periodCode,
-      icon: 'hash',
     },
   ];
 }
